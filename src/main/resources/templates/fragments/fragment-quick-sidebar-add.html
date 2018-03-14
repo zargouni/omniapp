@@ -1,0 +1,272 @@
+<!-- begin::Quick Sidebar -->
+<div data-th-fragment="quick-sidebar-add" id="m_quick_sidebar_add"
+	class="m-quick-sidebar-add m-quick-sidebar-add--tabbed m-quick-sidebar-add--skin-light">
+
+	<div class="m-quick-sidebar-add__content m--hide">
+		<span id="m_quick_sidebar_add_close"
+			class="m-quick-sidebar-add__close"><i class="la la-close"></i></span>
+		<ul id="m_quick_sidebar_add_tabs"
+			class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--brand"
+			role="tablist">
+			<li class="nav-item m-tabs__item"><a
+				class="nav-link m-tabs__link active" data-toggle="tab"
+				href="#m_quick_sidebar_add_tabs_new_task" role="tab">New Task</a></li>
+			<li class="nav-item m-tabs__item"><a
+				class="nav-link m-tabs__link" data-toggle="tab"
+				href="#m_quick_sidebar_add_tabs_new_service" role="tab">New
+					Service</a></li>
+			<li class="nav-item m-tabs__item"><a
+				class="nav-link m-tabs__link" data-toggle="tab"
+				href="#m_quick_sidebar_add_tabs_new_operation" role="tab">New
+					Operation</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active m-scrollable"
+				id="m_quick_sidebar_add_tabs_new_task" role="tabpanel">
+
+				<!--begin::Form New Task-->
+				<form class="m-form">
+					<div class="m-portlet__body">
+						<div class="form-group m-form__group">
+							<label for="">Select project:</label> <select
+								class="custom-select form-control">
+								<option selected="">Open this select menu</option>
+								<option value="1">Project One</option>
+								<option value="2">Two</option>
+								<option value="3">Three</option>
+							</select>
+						</div>
+						<div class="form-group m-form__group">
+							<label for="">Select service:</label> <select
+								class="custom-select form-control">
+								<option selected="">Open this select menu</option>
+								<option value="1">Service One</option>
+								<option value="2">Service Two</option>
+								<option value="3">Service Three</option>
+							</select>
+						</div>
+						<div class="m-form__group form-group">
+							<label for="">Task name:</label> <input type="text"
+								class="form-control m-input" id="exampleInputEmail1"
+								aria-describedby="emailHelp" placeholder="Task Name">
+						</div>
+
+						<div class="m-form__group form-group">
+							<!--begin::Item-->
+
+							<div class="m-accordion__item">
+								<div class="m-accordion__item-head collapsed" role="tab"
+									id="m_accordion_7_item_1_head" data-toggle="collapse"
+									href="#m_accordion_7_item_1_body" aria-expanded="false">
+									<span class="m-accordion__item-icon"><i
+										class="fa flaticon-user-ok"></i></span> <span
+										class="m-accordion__item-title">Task information</span> <span
+										class="m-accordion__item-mode"></span>
+								</div>
+
+								<div class="m-accordion__item-body collapse"
+									id="m_accordion_7_item_1_body" role="tabpanel"
+									aria-labelledby="m_accordion_7_item_1_head"
+									data-parent="#m_accordion_7" style="">
+									<div class="m-accordion__item-content">
+										<div class="m-form__group form-group">
+											<label for="">Owner:</label> <input type="text"
+												class="form-control m-input" id="exampleInputEmail1"
+												aria-describedby="emailHelp" placeholder="Select user">
+										</div>
+										<div class="form-group m-form__group row">
+											<div class="col-lg-6">
+												<label for="">Start Date</label>
+
+												<div class="input-group date">
+													<input type="text" class="form-control m-input"
+														placeholder="Start date" id="m_datepicker_4_1">
+													<div class="input-group-append">
+														<span class="input-group-text"> <i
+															class="la la-calendar-check-o"></i>
+														</span>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6">
+												<label for="">End Date</label>
+
+												<div class="input-group date">
+													<input type="text" class="form-control m-input"
+														placeholder="End date" id="m_datepicker_4_2">
+													<div class="input-group-append">
+														<span class="input-group-text"> <i
+															class="la la-calendar-check-o"></i>
+														</span>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-group m-form__group">
+										<label for="">Priority:</label> <select
+											class="custom-select form-control">
+											<option selected="">None</option>
+											<option value="1">Low</option>
+											<option value="2">Medium</option>
+											<option value="3">High</option>
+										</select>
+									</div>
+								</div>
+
+
+							</div>
+							<!--end::Item-->
+
+						</div>
+					</div>
+
+					<div class="m-portlet__foot m-portlet__foot--fit">
+						<div class="m-form__actions m-form__actions--right">
+							<div class="row">
+								<div class="col m--align-left">
+									<button type="reset" class="btn btn-brand">Add</button>
+								</div>
+								<div class="col m--align-right">
+									<button type="reset" class="btn btn-secondary">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+
+				<!--end::Form New Task-->
+
+			</div>
+
+			<div class="tab-pane  m-scrollable"
+				id="m_quick_sidebar_add_tabs_new_service" role="tabpanel">
+
+				<!--begin::Form New Service-->
+				<form class="m-form">
+					<div class="m-portlet__body">
+						<div class="form-group m-form__group">
+							<label for="">Select project:</label> <select
+								class="custom-select form-control">
+								<option selected="">Open this select menu</option>
+								<option value="1">Project One</option>
+								<option value="2">Two</option>
+								<option value="3">Three</option>
+							</select>
+						</div>
+						<div class="form-group m-form__group">
+							<label for="">Select operation:</label> <select
+								class="custom-select form-control">
+								<option selected="">Open this select menu</option>
+								<option value="1">Operation One</option>
+								<option value="2">Operation Two</option>
+								<option value="3">Operation Three</option>
+							</select>
+						</div>
+						<div class="m-form__group form-group">
+							<label for="">Service name:</label> <input type="text"
+								class="form-control m-input" id="exampleInputEmail1"
+								aria-describedby="emailHelp" placeholder="Service Name">
+						</div>
+
+					</div>
+
+					<div class="m-portlet__foot m-portlet__foot--fit">
+						<div class="m-form__actions m-form__actions--right">
+							<div class="row">
+								<div class="col m--align-left">
+									<button type="reset" class="btn btn-brand">Add</button>
+								</div>
+								<div class="col m--align-right">
+									<button type="reset" class="btn btn-secondary">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+
+				<!--end::Form New Service-->
+
+			</div>
+
+			<div class="tab-pane  m-scrollable"
+				id="m_quick_sidebar_add_tabs_new_operation" role="tabpanel">
+
+				<!--begin::Form New Operation-->
+
+				<form class="m-form">
+					<div class="m-portlet__body">
+						<div class="form-group m-form__group">
+							<label for="">Select project:</label> <select
+								class="custom-select form-control">
+								<option selected="">Open this select menu</option>
+								<option value="1">Project One</option>
+								<option value="2">Two</option>
+								<option value="3">Three</option>
+							</select>
+						</div>
+						<div class="m-form__group form-group">
+							<label for="">Operation name:</label> <input type="text"
+								class="form-control m-input" id="exampleInputEmail1"
+								aria-describedby="emailHelp" placeholder="Operation Name">
+						</div>
+
+						<div class="form-group m-form__group row">
+							<div class="col-lg-6">
+								<label for="">Start Date</label>
+								<div class="input-group date">
+									<input type="text" class="form-control m-input"
+										placeholder="Start date" id="m_datepicker_4_3">
+									<div class="input-group-append">
+										<span class="input-group-text"> <i
+											class="la la-calendar-check-o"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-lg-6">
+								<label for="">End Date</label>
+								<div class="input-group date">
+
+									<input type="text" class="form-control m-input"
+										placeholder="End date" id="m_datepicker_4_4">
+									<div class="input-group-append">
+										<span class="input-group-text"> <i
+											class="la la-calendar-check-o"></i>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="m-form__group form-group">
+							<label for="">Who is responsible ?</label> <input type="text"
+								class="form-control m-input" id="exampleInputEmail1"
+								aria-describedby="emailHelp" placeholder="Select user">
+						</div>
+
+					</div>
+
+					<div class="m-portlet__foot m-portlet__foot--fit">
+						<div class="m-form__actions m-form__actions--right">
+							<div class="row">
+								<div class="col m--align-left">
+									<button type="reset" class="btn btn-brand">Add</button>
+								</div>
+								<div class="col m--align-right">
+									<button type="reset" class="btn btn-secondary">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+
+				<!--end::Form New Operation-->
+
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end::Quick Sidebar -->

@@ -1,0 +1,267 @@
+<div class="m-content" data-th-fragment="projects-table">
+
+	<div class="m-portlet m-portlet--mobile">
+		<div class="m-portlet__body">
+			<!--begin: Search Form -->
+			<div
+				class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
+				<div class="row align-items-center">
+					<div class="col-xl-8 order-2 order-xl-1">
+						<div class="form-group m-form__group row align-items-center">
+							<div class="col-md-4">
+								<div class="m-form__group m-form__group--inline">
+									<div class="m-form__label">
+										<label>Status:</label>
+									</div>
+									<div class="m-form__control">
+										<div
+											class="btn-group bootstrap-select form-control m-bootstrap-select">
+											<button type="button"
+												class="btn dropdown-toggle bs-placeholder btn-default"
+												data-toggle="dropdown" role="button" data-id="m_form_status"
+												title="All" aria-expanded="false">
+												<span class="filter-option pull-left">All</span>&nbsp;<span
+													class="bs-caret"><span class="caret"></span></span>
+											</button>
+											<div class="dropdown-menu open" role="combobox"
+												x-placement="bottom-start"
+												style="max-height: 190.703px; overflow: hidden; min-height: 15px; position: absolute; transform: translate3d(0px, 37px, 0px); top: 0px; left: 0px; will-change: transform;">
+												<ul class="dropdown-menu inner" role="listbox"
+													aria-expanded="false"
+													style="max-height: 176.703px; overflow-y: auto; min-height: 1px;">
+													<li data-original-index="0" class="selected"><a
+														tabindex="0" class="" data-tokens="null" role="option"
+														aria-disabled="false" aria-selected="true"><span
+															class="text">All</span><span
+															class="glyphicon glyphicon-ok check-mark"></span></a></li>
+													<li data-original-index="1"><a tabindex="0" class=""
+														data-tokens="null" role="option" aria-disabled="false"
+														aria-selected="false"><span class="text">Pending</span><span
+															class="glyphicon glyphicon-ok check-mark"></span></a></li>
+													<li data-original-index="2"><a tabindex="0" class=""
+														data-tokens="null" role="option" aria-disabled="false"
+														aria-selected="false"><span class="text">Delivered</span><span
+															class="glyphicon glyphicon-ok check-mark"></span></a></li>
+													<li data-original-index="3"><a tabindex="0" class=""
+														data-tokens="null" role="option" aria-disabled="false"
+														aria-selected="false"><span class="text">Canceled</span><span
+															class="glyphicon glyphicon-ok check-mark"></span></a></li>
+												</ul>
+											</div>
+											<select class="form-control m-bootstrap-select"
+												id="m_form_status" tabindex="-98">
+												<option value="">All</option>
+												<option value="1">Pending</option>
+												<option value="2">Delivered</option>
+												<option value="3">Canceled</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="d-md-none m--margin-bottom-10"></div>
+							</div>
+							<div class="col-md-4">
+								<div class="m-form__group m-form__group--inline">
+									<div class="m-form__label">
+										<label class="m-label m-label--single">Type:</label>
+									</div>
+									<div class="m-form__control">
+										<div
+											class="btn-group bootstrap-select form-control m-bootstrap-select">
+											<button type="button"
+												class="btn dropdown-toggle bs-placeholder btn-default"
+												data-toggle="dropdown" role="button" data-id="m_form_type"
+												title="All">
+												<span class="filter-option pull-left">All</span>&nbsp;<span
+													class="bs-caret"><span class="caret"></span></span>
+											</button>
+											<div class="dropdown-menu open" role="combobox">
+												<ul class="dropdown-menu inner" role="listbox"
+													aria-expanded="false">
+													<li data-original-index="0" class="selected"><a
+														tabindex="0" class="" data-tokens="null" role="option"
+														aria-disabled="false" aria-selected="true"><span
+															class="text">All</span><span
+															class="glyphicon glyphicon-ok check-mark"></span></a></li>
+													<li data-original-index="1"><a tabindex="0" class=""
+														data-tokens="null" role="option" aria-disabled="false"
+														aria-selected="false"><span class="text">Online</span><span
+															class="glyphicon glyphicon-ok check-mark"></span></a></li>
+													<li data-original-index="2"><a tabindex="0" class=""
+														data-tokens="null" role="option" aria-disabled="false"
+														aria-selected="false"><span class="text">Retail</span><span
+															class="glyphicon glyphicon-ok check-mark"></span></a></li>
+													<li data-original-index="3"><a tabindex="0" class=""
+														data-tokens="null" role="option" aria-disabled="false"
+														aria-selected="false"><span class="text">Direct</span><span
+															class="glyphicon glyphicon-ok check-mark"></span></a></li>
+												</ul>
+											</div>
+											<select class="form-control m-bootstrap-select"
+												id="m_form_type" tabindex="-98">
+												<option value="">All</option>
+												<option value="1">Online</option>
+												<option value="2">Retail</option>
+												<option value="3">Direct</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="d-md-none m--margin-bottom-10"></div>
+							</div>
+							<div class="col-md-4">
+								<div class="m-input-icon m-input-icon--left">
+									<input type="text" class="form-control m-input"
+										placeholder="Search..." id="generalSearch"> <span
+										class="m-input-icon__icon m-input-icon__icon--left"> <span><i
+											class="la la-search"></i></span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-4 order-1 order-xl-2 m--align-right">
+						<a data-toggle="modal" data-target="#m_modal_5" href="#"
+							class="btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
+							<span> <i class="la la-plus"></i> <span>New Project Wizard</span>
+						</span>
+						</a>
+						<div class="m-separator m-separator--dashed d-xl-none"></div>
+					</div>
+				</div>
+			</div>
+			<!--end: Search Form -->
+
+			<!--begin: Datatable -->
+			<div
+				class="m-datatable m-datatable--default m-datatable--brand m-datatable--loaded">
+				<table class="m-datatable__table"
+					style="display: block; min-height: 300px; max-height: 550px;">
+					<thead class="m-datatable__head">
+						<tr class="m-datatable__row" style="left: 0px;">
+							<th title="Field #1"
+								class="m-datatable__cell m-datatable__cell--sort"
+								data-field="Project Name"><span style="width: 210px;">Project
+									name</span></th>
+							<th title="Field #2"
+								class="m-datatable__cell m-datatable__cell--sort"
+								data-field="Client"><span style="width: 110px;">Client</span></th>
+							<th title="Field #3"
+								class="m-datatable__cell m-datatable__cell--sort"
+								data-field="Percentage"><span style="width: 110px;">%</span></th>
+							<th title="Field #4"
+								class="m-datatable__cell m-datatable__cell--sort"
+								data-field="Owner"><span style="width: 110px;">Owner</span></th>
+							<th title="Field #5"
+								class="m-datatable__cell m-datatable__cell--sort"
+								data-field="Tasks"><span style="width: 110px;">Tasks</span></th>
+							<th title="Field #6"
+								class="m-datatable__cell m-datatable__cell--sort"
+								data-field="Operations"><span style="width: 110px;">Operations</span></th>
+							<th title="Field #7"
+								class="m-datatable__cell m-datatable__cell--sort"
+								data-field="Issues"><span style="width: 110px;">Issues</span></th>
+							<th title="Field #8"
+								class="m-datatable__cell m-datatable__cell--sort"
+								data-field="Start Date"><span style="width: 110px;">Start
+									Date</span></th>
+							<th title="Field #9"
+								class="m-datatable__cell m-datatable__cell--sort"
+								data-field="End Date"><span style="width: 110px;">End
+									Date</span></th>
+
+						</tr>
+					</thead>
+					<tbody
+						class="m-datatable__body"
+						style="">
+						
+						<tr data-row="0" class="m-datatable__row" style="left: 0px;">
+							<td data-field="Order ID" class="m-datatable__cell"><span
+								style="width: 210px;"><a href="/project">Project 1</a></span></td>
+							<td data-field="Owner" class="m-datatable__cell"><span
+								style="width: 110px;">Orange</span></td>
+							<td data-field="Contact" class="m-datatable__cell">
+								<div class="progress m-progress--sm" style="width: 110px">
+									<div class="progress-bar m--bg-warning" role="progressbar"
+										style="width: 50%;" aria-valuenow="50" aria-valuemin="0"
+										aria-valuemax="100"></div>
+								</div>
+							</td>
+							<td data-field="Car Make" class="m-datatable__cell"><span
+								style="width: 110px;">Zargouni</span></td>
+							<td data-field="Car Model" class="m-datatable__cell"><span
+								style="width: 110px;">Savana 2500</span></td>
+							<td data-field="Color" class="m-datatable__cell"><span
+								style="width: 110px;">Yellow</span></td>
+							<td data-field="Deposit Paid" class="m-datatable__cell"><span
+								style="width: 110px;">$99799.94</span></td>
+							<td data-field="Order Date" class="m-datatable__cell"><span
+								style="width: 110px;">2016-03-23</span></td>
+							<td data-field="Order Date" class="m-datatable__cell"><span
+								style="width: 110px;">2016-03-23</span></td>
+
+						</tr>
+						<tr data-row="1" class="m-datatable__row m-datatable__row--even"
+							style="left: 0px;">
+							<td data-field="Order ID" class="m-datatable__cell"><span
+								style="width: 210px;">Project 2</span></td>
+							<td data-field="Owner" class="m-datatable__cell"><span
+								style="width: 110px;">Ooredoo</span></td>
+							<td data-field="Contact" class="m-datatable__cell"><div
+									class="progress m-progress--sm" style="width: 110px">
+									<div class="progress-bar m--bg-accent" role="progressbar"
+										style="width: 75%;" aria-valuenow="75" aria-valuemin="0"
+										aria-valuemax="100"></div>
+								</div></td>
+							<td data-field="Car Make" class="m-datatable__cell"><span
+								style="width: 110px;">Zargouni</span></td>
+							<td data-field="Car Model" class="m-datatable__cell"><span
+								style="width: 110px;">Avalanche</span></td>
+							<td data-field="Color" class="m-datatable__cell"><span
+								style="width: 110px;">Fuscia</span></td>
+							<td data-field="Deposit Paid" class="m-datatable__cell"><span
+								style="width: 110px;">$88746.22</span></td>
+							<td data-field="Order Date" class="m-datatable__cell"><span
+								style="width: 110px;">2017-06-04</span></td>
+							<td data-field="Order Date" class="m-datatable__cell"><span
+								style="width: 110px;">2016-03-23</span></td>
+
+						</tr>
+						<tr data-row="2" class="m-datatable__row" style="left: 0px;">
+							<td data-field="Order ID" class="m-datatable__cell"><span
+								style="width: 210px;">Project 3</span></td>
+							<td data-field="Owner" class="m-datatable__cell"><span
+								style="width: 110px;">TT</span></td>
+							<td data-field="Contact" class="m-datatable__cell"><div
+									class="progress m-progress--sm" style="width: 110px">
+									<div class="progress-bar m--bg-danger" role="progressbar"
+										style="width: 30%;" aria-valuenow="30" aria-valuemin="0"
+										aria-valuemax="100"></div>
+								</div></td>
+							<td data-field="Car Make" class="m-datatable__cell"><span
+								style="width: 110px;">Zargouni</span></td>
+							<td data-field="Car Model" class="m-datatable__cell"><span
+								style="width: 110px;">Dakota</span></td>
+							<td data-field="Color" class="m-datatable__cell"><span
+								style="width: 110px;">Maroon</span></td>
+							<td data-field="Deposit Paid" class="m-datatable__cell"><span
+								style="width: 110px;">$57944.55</span></td>
+							<td data-field="Order Date" class="m-datatable__cell"><span
+								style="width: 110px;">2017-08-03</span></td>
+							<td data-field="Order Date" class="m-datatable__cell"><span
+								style="width: 110px;">2016-03-23</span></td>
+
+						</tr>
+						
+						
+
+					</tbody>
+				</table>
+
+
+			</div>
+			<!--end: Datatable -->
+		</div>
+	</div>
+</div>
