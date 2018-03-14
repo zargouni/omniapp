@@ -55,8 +55,12 @@ public class OperationRepositoryImpl implements OperationRepositoryCustom {
 
 	@Override
 	public List<User> findContributingUsers(Operation operation) {
-		// TODO Auto-generated method stub
-		return null;
+		List<User> users = null;
+		Query query = entityManager
+				.createQuery("SELECT u FROM User u, Operation o JOIN o.workingUsersList user WHERE o.id = :param AND user.id = u.id")
+				.setParameter("param", operation.getId());
+		users = (List<User>) query.getResultList();
+		return users;
 	}
 
 }

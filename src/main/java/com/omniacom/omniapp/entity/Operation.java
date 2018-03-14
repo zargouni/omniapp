@@ -37,7 +37,7 @@ public class Operation implements Serializable {
 	private List<Service> services;
 	
 	@ManyToMany(mappedBy="contributedOperationList")
-	private List<User> workingUserList;
+	private List<User> workingUsersList;
 	
 	@ManyToOne
 	private Site site;
@@ -171,8 +171,8 @@ public class Operation implements Serializable {
 	/**
 	 * @return the workingUserList
 	 */
-	public List<User> getWorkingUserList() {
-		return workingUserList;
+	public List<User> getWorkingUsersList() {
+		return workingUsersList;
 	}
 
 	/**
@@ -213,8 +213,8 @@ public class Operation implements Serializable {
 	/**
 	 * @param workingUserList the workingUserList to set
 	 */
-	public void setWorkingUserList(List<User> workingUserList) {
-		this.workingUserList = workingUserList;
+	public void setWorkingUsersList(List<User> workingUsersList) {
+		this.workingUsersList = workingUsersList;
 	}
 
 	/**

@@ -9,7 +9,9 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
+import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.custom.UserRepositoryCustom;
 import com.omniacom.omniapp.zohoAPI.Utils;
@@ -23,10 +25,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public User findOneByUserName(String userName) {
-		// TODO Auto-generated method stub
 		User user = null;
-		Query query = entityManager.createQuery("select u from User u where userName=:param").setParameter("param",
-				userName);
+		Query query = entityManager
+				.createQuery("SELECT u FROM User u WHERE userName=:param")
+				.setParameter("param",userName);
 		List<User> results = (List<User>) query.getResultList();
 		if (!results.isEmpty())
 			// ignores multiple results
@@ -37,7 +39,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public boolean updateLocalUserFromZoho(User user, String email, String password) {
-		// TODO Auto-generated method stub
 		String token = Utils.getAuthToken(email, password);
 		if (user.getZohoToken() == null) {
 			if (!token.equals("INVALID_PASSWORD")) {
@@ -52,24 +53,45 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public List<Project> findContributedProjects(User user) {
-		// DONE
-		String q = "SELECT p FROM Project p, User u JOIN u.contributedProjectList projects WHERE u.id = :param AND projects.id = p.id";
 		List<Project> projects = null;
-		Query query = entityManager.createQuery(q).setParameter("param", user.getId());
+		Query query = entityManager
+				.createQuery(
+				"SELECT p FROM Project p, User u JOIN u.contributedProjectList project WHERE u.id = :param AND project.id = p.id")
+				.setParameter("param", user.getId());
 		projects = (List<Project>) query.getResultList();
 		return projects;
 	}
-	
+
 	@Override
 	public List<Project> findOwnedProjects(User user) {
-		// TODO Auto-generated method stub
 		List<Project> projects = null;
-		Query query = entityManager.createQuery("select p from Project p where p.owner=:param").setParameter("param", user);
+		Query query = entityManager
+				.createQuery("SELECT p FROM Project p WHERE p.owner=:param")
+				.setParameter("param",
+				user);
 		projects = (List<Project>) query.getResultList();
 		return projects;
 	}
-	
-	
-	
+
+	@Override
+	public List<Task> findAllTasks(User user) {
+		List<Task> tasks = null;
+		Query query = entityManager
+				.createQuery("SELECT t FROM Task t, User u JOIN u.tasks task WHERE u.id = :param AND task.id = t.id")
+				.setParameter("param", user.getId());
+		tasks = (List<Task>) query.getResultList();
+		return tasks;
+	}
+
+	@Override
+	public List<Operation> findContributedOperations(User user) {
+		List<Operation> operations = null;
+		Query query = entityManager
+				.createQuery(
+				"SELECT o FROM Operation o, User u JOIN u.contributedOperationList operation WHERE u.id = :param AND operation.id = o.id")
+				.setParameter("param", user.getId());
+		operations = (List<Operation>) query.getResultList();
+		return operations;
+	}
 
 }

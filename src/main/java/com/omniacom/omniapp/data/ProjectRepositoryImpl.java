@@ -25,7 +25,8 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 	public List<Operation> findAllOperations(Project project) {
 		// TODO Auto-generated method stub
 		List<Operation> operations = null;
-		Query query = entityManager.createQuery("select op from Operation op where op.project=:param1")
+		Query query = entityManager
+				.createQuery("SELECT op FROM Operation op WHERE op.project=:param1")
 				.setParameter("param1", project);
 		operations = (List<Operation>) query.getResultList();
 		project.setOperations(operations);
@@ -36,9 +37,10 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 	@Override
 	public List<User> findContributingUsers(Project project) {
 		// DONE
-		String q = "SELECT u FROM User u, Project p JOIN p.workingTeamList team WHERE p.id = :param AND team.id = u.id";
 		List<User> users = null;
-		Query query = entityManager.createQuery(q).setParameter("param", project.getId());
+		Query query = entityManager
+				.createQuery("SELECT u FROM User u, Project p JOIN p.workingUsersList team WHERE p.id = :param AND team.id = u.id")
+				.setParameter("param", project.getId());
 		users = (List<User>) query.getResultList();
 		return users;
 	}

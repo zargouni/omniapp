@@ -111,8 +111,8 @@ public class OmniApp {
 		team.add(user1);
 		
 		//team.add(user1);
-		project.setWorkingTeamList(team);
-		project2.setWorkingTeamList(team);
+		project.setWorkingUsersList(team);
+		project2.setWorkingUsersList(team);
 		projectRepo.save(project);
 		projectRepo.save(project2);
 		

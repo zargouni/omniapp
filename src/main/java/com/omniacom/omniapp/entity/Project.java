@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -53,7 +52,7 @@ public class Project implements Serializable {
 
 	@ManyToMany
 	@JoinTable(name = "USER_PROJECTS", joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-	private List<User> workingTeamList;
+	private List<User> workingUsersList;
 
 	@OneToMany(mappedBy = "project")
 	private List<Operation> operations;
@@ -225,8 +224,8 @@ public class Project implements Serializable {
 	/**
 	 * @return the workingTeamList
 	 */
-	public List<User> getWorkingTeamList() {
-		return workingTeamList;
+	public List<User> getWorkingUsersList() {
+		return workingUsersList;
 	}
 
 	/**
@@ -248,8 +247,8 @@ public class Project implements Serializable {
 	 * @param workingTeamList
 	 *            the workingTeamList to set
 	 */
-	public void setWorkingTeamList(List<User> workingTeamList) {
-		this.workingTeamList = workingTeamList;
+	public void setWorkingUsersList(List<User> workingUsersList) {
+		this.workingUsersList = workingUsersList;
 	}
 
 	/**

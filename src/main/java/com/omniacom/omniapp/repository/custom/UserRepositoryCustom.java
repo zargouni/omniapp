@@ -4,7 +4,9 @@ import com.omniacom.omniapp.entity.User;
 
 import java.util.List;
 
-import com.omniacom.omniapp.entity.Project;;
+import com.omniacom.omniapp.entity.Operation;
+import com.omniacom.omniapp.entity.Project;
+import com.omniacom.omniapp.entity.Task;;
 
 
 public interface UserRepositoryCustom {
@@ -16,6 +18,10 @@ public interface UserRepositoryCustom {
 	public List<Project> findContributedProjects(User user);
 	
 	public List<Project> findOwnedProjects(User user);
+	
+	public List<Task> findAllTasks(User user);
+	
+	public List<Operation> findContributedOperations(User user);
 	
 	
 }
