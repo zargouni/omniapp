@@ -54,13 +54,7 @@ public class OmniApp {
 
 	}
 	public void test() throws Exception {
-		/*
-		 * Utils.token = Utils.getAuthToken("wala.zargouni@esprit.tn",
-		 * "sihemmylove1210"); Project pro = new Project("ay", new Date(), "helloooo",
-		 * "TND", "country", "zone"); com.zoho.projects.model.Project project =
-		 * papi.pushProject(pro);
-		 * System.out.println("ADDED PROJECT: "+project.getName());
-		 */
+		
 
 		// System.out.println(papi.deleteProject(project));
 		// Project p = projectRepo.findOne(1L);
@@ -87,10 +81,7 @@ public class OmniApp {
 			System.out.println("no passaran");
 		if(!userService.zohoAuthTokenExists(user))
 			System.out.println("no token");
-		
-		String email="walazargouni@gmail.com";
-		String passwordZ = "12101993";
-		userRepo.updateLocalUserFromZoho(user, email, passwordZ);*/
+		*/
 		
 		
 		Project project = new Project("contribution",new Date(), "test","EUR","France","none");
@@ -101,8 +92,8 @@ public class OmniApp {
 		project2.setOwner(userRepo.findOneByUserName("Iheb"));
 
 		//projectRepo.save(project2);
-		User user1 = new User("Iheb", "iheb", "iheb");
-		User user2 = new User("mum","mum","mum");
+		User user1 = new User("xx", "xx", "xx");
+		User user2 = new User("aa","aa","aa");
 		List<User> team = new ArrayList<User>();
 		userRepo.save(user2);
 		userRepo.save(user1);
@@ -119,16 +110,16 @@ public class OmniApp {
 		//project.setOwner(user1);
 		
 		/*
-		List<Project> projects = userRepo.findContributedProjects(userRepo.findOneByUserName("mum"));
+		List<Project> projects = userRepo.findContributedProjects(userRepo.findOneByUserName("aa"));
 		
 		for(Project p : projects) {
 			System.out.println(p.toString());
 		}*/
 		
 		
-		//System.out.println("Number of created projects by iheb: "+projectRepo.findOwnedProjectsByUser(userRepo.findOneByUserName("Iheb")).size());
+		//System.out.println("Number of created projects by iheb: "+projectRepo.findOwnedProjectsByUser(userRepo.findOneByUserName("xx")).size());
 		
-		//System.out.println("Number of contributed projects: "+userRepo.findContributedProjects(userRepo.findOneByUserName("mum")).size());
+		//System.out.println("Number of contributed projects: "+userRepo.findContributedProjects(userRepo.findOneByUserName("aa")).size());
 		
 		System.out.println("Number of contributing users : "+projectRepo.findContributingUsers(projectRepo.findOne(1L)).size());
 		
