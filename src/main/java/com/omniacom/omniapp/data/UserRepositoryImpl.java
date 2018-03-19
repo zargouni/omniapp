@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
+import com.omniacom.omniapp.entity.Role;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.custom.UserRepositoryCustom;
@@ -103,5 +104,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		comments = (List<Comment>) query.getResultList();
 		return comments;
 	}
+	
 
 }

@@ -14,6 +14,7 @@ import com.omniacom.omniapp.data.UserRepositoryImpl;
 import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
+import com.omniacom.omniapp.entity.Role;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
@@ -21,6 +22,7 @@ import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.CommentRepository;
 import com.omniacom.omniapp.repository.OperationRepository;
 import com.omniacom.omniapp.repository.ProjectRepository;
+import com.omniacom.omniapp.repository.RoleRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
 import com.omniacom.omniapp.repository.SnagRepository;
 import com.omniacom.omniapp.repository.TaskRepository;
@@ -170,6 +172,9 @@ public class OmniApp {
 	@Autowired
 	private TaskRepository taskRepo;
 	
+	@Autowired
+	private RoleRepository roleRepo;
+	
 	@PostConstruct
 	private void testTaskRepo() {
 		/*Task task = new Task("task", "none", "none", new Date(), new Date(), new Date(), 1);
@@ -193,8 +198,11 @@ public class OmniApp {
 		Task task = new Task("task1", "none", "none", new Date(), new Date(), new Date(), 1);
 		Task task2 = new Task("task2", "none", "none", new Date(), new Date(), new Date(), 1);
 		
-		User user2 = new User("HIM","howa","howa");
-		
+		User user2 = new User("wala","wala","wala");
+		Role admin = new Role("ADMIN");
+	
+		roleRepo.save(admin);	
+		user2.setRole(admin);
 		
 		
 		userRepo.save(user2);
@@ -203,7 +211,7 @@ public class OmniApp {
 		taskRepo.save(task);
 		taskRepo.save(task2);
 		
-		System.out.println("Number of tasks for him: "+ userRepo.findAllTasks(userRepo.findOneByUserName("HIM")).size()); 
+//		System.out.println("Number of tasks for him: "+ userRepo.findAllTasks(userRepo.findOneByUserName("HIM")).size()); 
 
 	}
 
