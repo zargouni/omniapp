@@ -288,6 +288,11 @@ public class Project implements Serializable {
 	public void setBoqs(List<BillOfQuantities> boqs) {
 		this.boqs = boqs;
 	}
+	
+	public void addUser(User user) {
+		this.workingUsersList.add(user);
+		user.getContributedProjectList().add(this);
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

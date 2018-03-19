@@ -16,12 +16,14 @@ import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Snag;
+import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.CommentRepository;
 import com.omniacom.omniapp.repository.OperationRepository;
 import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
 import com.omniacom.omniapp.repository.SnagRepository;
+import com.omniacom.omniapp.repository.TaskRepository;
 import com.omniacom.omniapp.repository.UserRepository;
 import com.omniacom.omniapp.service.UserService;
 import com.omniacom.omniapp.zohoAPI.OperationsAPI;
@@ -135,8 +137,6 @@ public class OmniApp {
 
 	@Autowired
 	SnagRepository snagRepo;
-	
-	@PostConstruct
 	private void testOperationRepo() {
 		Operation operation = new Operation("Operation1", "7-11-2017", "15-6-2018", 1);
 		Service service1 = new Service("service1", new Date(), 1, 2.2f);
@@ -165,6 +165,46 @@ public class OmniApp {
 		
 		
 		
+	}
+	
+	@Autowired
+	private TaskRepository taskRepo;
+	
+	@PostConstruct
+	private void testTaskRepo() {
+		/*Task task = new Task("task", "none", "none", new Date(), new Date(), new Date(), 1);
+		
+		User user = new User("wala","wala","wala");
+		User user2 = new User("howa","howa","howa");
+		User user3 = new User("howa","howa","howa");
+
+		userRepo.save(user);
+		userRepo.save(user2);
+		userRepo.save(user3);
+		
+		task.addUser(user2);
+		task.addUser(user);
+		task.addUser(user3);
+		
+		taskRepo.save(task);
+		
+		System.out.println("Number of users working: "+ taskRepo.findAllUsers(task).size()); */
+		
+		Task task = new Task("task1", "none", "none", new Date(), new Date(), new Date(), 1);
+		Task task2 = new Task("task2", "none", "none", new Date(), new Date(), new Date(), 1);
+		
+		User user2 = new User("HIM","howa","howa");
+		
+		
+		
+		userRepo.save(user2);
+		task.addUser(user2);
+		task2.addUser(user2);
+		taskRepo.save(task);
+		taskRepo.save(task2);
+		
+		System.out.println("Number of tasks for him: "+ userRepo.findAllTasks(userRepo.findOneByUserName("HIM")).size()); 
+
 	}
 
 }

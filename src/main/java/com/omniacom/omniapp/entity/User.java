@@ -1,6 +1,7 @@
 package com.omniacom.omniapp.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.JoinColumn;
@@ -34,24 +35,22 @@ public class User implements Serializable {
 	private Role role;
 
 	@OneToMany(mappedBy = "owner")
-	private List<Project> ownedProjects;
+	private List<Project> ownedProjects = new ArrayList<Project>();
 	
-	@ManyToMany(mappedBy = "workingTeamList")
-	private List<Project> contributedProjectList;
+	@ManyToMany(mappedBy = "workingUsersList")
+	private List<Project> contributedProjectList = new ArrayList<Project>();
 
 	@OneToMany(mappedBy = "responsible")
-	private List<Operation> operations;
+	private List<Operation> operations = new ArrayList<Operation>();
 
-	@ManyToMany
-	@JoinTable(name = "USER_OPERATIONS", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "operation_id", referencedColumnName = "id"))
-	private List<Operation> contributedOperationList;
+	@ManyToMany(mappedBy="workingUsersList")
+	private List<Operation> contributedOperationList = new ArrayList<Operation>();
 
-	@ManyToMany
-	@JoinTable(name = "USER_TASKS", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"))
-	private List<Task> tasks;
+	@ManyToMany(mappedBy="users")
+	private List<Task> tasks = new ArrayList<Task>();
 
 	@OneToMany(mappedBy = "user")
-	private List<Comment> comments;
+	private List<Comment> comments = new ArrayList<Comment>();
 
 	public User() {
 
@@ -274,6 +273,22 @@ public class User implements Serializable {
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
+	
+	public void addTask(Task task) {
+		this.tasks.add(task);
+		task.getUsers().add(this);
+	}
+	
+	public void addProject(Project project) {
+		this.contributedProjectList.add(project);
+		project.getWorkingUsersList().add(this);
+	}
+	
+	public void addOperation(Operation operation) {
+		this.contributedOperationList.add(operation);
+		operation.getWorkingUsersList().add(this);
+	}
+	
 
 	/*
 	 * (non-Javadoc)

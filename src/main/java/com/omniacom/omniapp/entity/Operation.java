@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -36,7 +38,8 @@ public class Operation implements Serializable {
 	@OneToMany( mappedBy = "operation")
 	private List<Service> services;
 	
-	@ManyToMany(mappedBy="contributedOperationList")
+	@ManyToMany
+	@JoinTable(name = "USER_OPERATION", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "operation_id", referencedColumnName = "id"))
 	private List<User> workingUsersList;
 	
 	@ManyToOne
@@ -243,6 +246,11 @@ public class Operation implements Serializable {
 	 */
 	public void setSite(Site site) {
 		this.site = site;
+	}
+	
+	public void addUser(User user) {
+		this.workingUsersList.add(user);
+		user.getContributedOperationList().add(this);
 	}
 	
 	

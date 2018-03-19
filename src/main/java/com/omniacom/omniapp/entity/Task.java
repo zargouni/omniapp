@@ -1,6 +1,7 @@
 package com.omniacom.omniapp.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
@@ -32,8 +35,9 @@ public class Task implements Serializable {
 	@ManyToOne
 	private Service service;
 	
-	@ManyToMany(mappedBy="tasks")
-	private List<User> users;
+	@ManyToMany
+	@JoinTable(name = "USER_TASK", joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+	private List<User> users = new ArrayList<User>();
 	
 	public Task() {
 
@@ -212,6 +216,11 @@ public class Task implements Serializable {
 		this.users = users;
 	}
 	
+	
+	public void addUser(User user) {
+		this.users.add(user);
+		user.getTasks().add(this);
+	}
 	
 
 }

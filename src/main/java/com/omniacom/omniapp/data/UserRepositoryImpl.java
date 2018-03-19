@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
@@ -92,6 +93,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 				.setParameter("param", user.getId());
 		operations = (List<Operation>) query.getResultList();
 		return operations;
+	}
+	
+	public List<Comment> findAllComments(User user) {
+		List<Comment> comments = null;
+		Query query = entityManager
+				.createQuery("SELECT c FROM Comment c WHERE c.user.id = :param")
+				.setParameter("param", user.getId());
+		comments = (List<Comment>) query.getResultList();
+		return comments;
 	}
 
 }
