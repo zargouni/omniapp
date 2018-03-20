@@ -1,5 +1,5 @@
 <!-- begin::New Project Sidebar -->
-<div data-th-fragment="new-project-sidebar"
+<div th:fragment="new-project-sidebar"
 	class="m_new_project_sidebar m-new-project-sidebar  m-new-project-sidebar--tabbed m-new-project-sidebar--skin-light">
 
 	<div class="m-new-project-sidebar__content m--hide">
@@ -15,7 +15,7 @@
 
 
 		<!--begin::Form New Project-->
-		<form class="m-form">
+		<form class="m-form" th:action="@{/home}" th:object="${project}" method="post">
 			<div class="m-portlet__body">
 				<div class="form-group m-form__group row">
 
@@ -23,20 +23,18 @@
 						<label for="">Project Name : </label> 
 					</div>
 					<div class="col-lg-8">
-						<input type="text"
-								class="form-control m-input" id="exampleInputEmail1"
-								aria-describedby="emailHelp" placeholder="Project Name">
+						<input th:field="*{name}" type="text"
+								class="form-control m-input" 
+								placeholder="Project Name">
 					</div>
 				</div>
 
 				<div class="form-group m-form__group row">
 
 					<div class="col-lg-8">
-						<select class="custom-select form-control">
-							<option selected="">Select Client</option>
-							<option value="1">Ooredoo</option>
-							<option value="2">Orange</option>
-							<option value="3">Tunisie Télécom</option>
+						<select th:field="*{client}" class="custom-select form-control">
+							<option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.name}">Ooredoo</option>
+							
 						</select>
 					</div>
 					<div class="col-lg-4">
@@ -49,19 +47,17 @@
 				<div class="form-group m-form__group row">
 
 					<div class="col-lg-8">
-						<select class="custom-select form-control">
-							<option selected="">Select Country</option>
-							<option value="1">Tunisia</option>
-							<option value="2">Senegal</option>
-							<option value="3">Other</option>
+						<select th:field="*{country}" class="custom-select form-control">
+							<option value="TN">Tunisia</option>
+							<option value="SN">Senegal</option>
+							<option value="OTHER">Other</option>
 						</select>
 					</div>
 					<div class="col-lg-4">
-						<select class="custom-select form-control">
-							<option selected="">Select Currency</option>
-							<option value="1">TND</option>
-							<option value="2">EUR</option>
-							<option value="3">USD</option>
+						<select  th:field="*{currency}" class="custom-select form-control">
+							<option value="TND">TND</option>
+							<option value="EUR">EUR</option>
+							<option value="USD">USD</option>
 						</select>
 					</div>
 				</div>
@@ -88,8 +84,8 @@
 						<label>Select Zone :</label>
 					</div>
 					<div class="col-lg-8">
-						<select class="custom-select form-control">
-							<option selected="">Choose from this list</option>
+						<select  th:field="*{zone}" class="custom-select form-control">
+							
 							<option value="1">Zone 1</option>
 							<option value="2">Zone 2</option>
 							<option value="3">Zone 3</option>
@@ -99,7 +95,7 @@
 				<div class="m-form__group form-group">
 					<label for="">Owner:</label> <select
 						class="custom-select form-control">
-						<option selected="">Me</option>
+						<option value="2" selected="">Me</option>
 						<option value="1">Other</option>
 					</select>
 				</div>
@@ -113,7 +109,7 @@
 				<div class="m-form__actions m-form__actions--right">
 					<div class="row">
 						<div class="col m--align-left">
-							<button type="reset" class="btn btn-brand">Add</button>
+							<button type="submit" class="btn btn-brand">Add</button>
 						</div>
 						<div class="col m--align-right">
 							<button type="reset" class="btn btn-secondary">Cancel</button>

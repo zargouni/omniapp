@@ -7,4 +7,6 @@ import com.omniacom.omniapp.repository.custom.ClientRepositoryCustom;
 
 public interface ClientRepository extends CrudRepository<Client, Long>, ClientRepositoryCustom {
 
+	
+
 }

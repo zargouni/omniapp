@@ -11,6 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.omniacom.omniapp.data.UserRepositoryImpl;
+import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
@@ -19,6 +20,7 @@ import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
+import com.omniacom.omniapp.repository.ClientRepository;
 import com.omniacom.omniapp.repository.CommentRepository;
 import com.omniacom.omniapp.repository.OperationRepository;
 import com.omniacom.omniapp.repository.ProjectRepository;
@@ -175,6 +177,9 @@ public class OmniApp {
 	@Autowired
 	private RoleRepository roleRepo;
 	
+	@Autowired
+	private ClientRepository clientRepo;
+	
 	@PostConstruct
 	private void testTaskRepo() {
 		/*Task task = new Task("task", "none", "none", new Date(), new Date(), new Date(), 1);
@@ -210,6 +215,21 @@ public class OmniApp {
 		task2.addUser(user2);
 		taskRepo.save(task);
 		taskRepo.save(task2);
+		
+		Client client = new Client("Ooredoo");
+		Client client2 = new Client("Orange");
+		
+		clientRepo.save(client);
+		clientRepo.save(client2);
+		
+		Project project = new Project();
+		project.setName("aaaaaaaaa");
+		project.setCreationDate(new Date());
+		project.setClient(client2);
+		
+		projectRepo.save(project);
+		
+		//System.out.println("CLient id is: "+clientRepo.findByName("Orange").getName());
 		
 //		System.out.println("Number of tasks for him: "+ userRepo.findAllTasks(userRepo.findOneByUserName("HIM")).size()); 
 

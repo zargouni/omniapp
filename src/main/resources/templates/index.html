@@ -6,8 +6,7 @@
 <head th:replace="fragments/fragment-head-html :: head"></head>
 <!-- end::Head -->
 
-
-<!-- end::Body -->
+<!-- Begin::Body -->
 <body
 	class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default">
 
@@ -15,59 +14,19 @@
 	<div layout:fragment="content"
 		class="m-grid m-grid--hor m-grid--root m-page">
 
-		<!-- begin::Body -->
+		<!-- begin::Content -->
 		<div
 			class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
-
-			<!-- BEGIN: Left Aside -->
-
-<!-- 			<button class="m-aside-left-close  m-aside-left-close--skin-dark " -->
-<!-- 				id="m_aside_left_close_btn"> -->
-<!-- 				<i class="la la-close"></i> -->
-<!-- 			</button> -->
-
-			<!-- END: Left Aside -->
-
 			<div class="m-grid__item m-grid__item--fluid m-wrapper">
-
-				<!-- BEGIN: Subheader -->
-<!-- 				<div class="m-subheader "> -->
-<!-- 					<div class="d-flex align-items-center"> -->
-<!-- 						<div class="mr-auto"> -->
-<!-- 							<h3 class="m-subheader__title ">Dashboard</h3> -->
-<!-- 						</div> -->
-<!-- 						<div> -->
-<!-- 							<span class="m-subheader__daterange" -->
-<!-- 								id="m_dashboard_daterangepicker"> <span -->
-<!-- 								class="m-subheader__daterange-label"> <span -->
-<!-- 									class="m-subheader__daterange-title"></span> <span -->
-<!-- 									class="m-subheader__daterange-date m--font-brand"></span> -->
-<!-- 							</span> <a href="#" -->
-<!-- 								class="btn btn-sm btn-brand m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill"> -->
-<!-- 									<i class="la la-angle-down"></i> -->
-<!-- 							</a> -->
-<!-- 							</span> -->
-<!-- 						</div> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
-				<!-- END: Subheader -->
-
 				<div
 					th:replace="fragments/fragment-home-main-content :: home-main-content"></div>
 			</div>
-
-
 		</div>
 
-		<!-- end:: Body -->
-
-
-
-
+		<!-- end:: Content -->
 
 	</div>
 	<!-- end:: Page -->
-
 
 	<!-- begin::Scroll Top -->
 	<div class="m-scroll-top m-scroll-top--skin-top"
@@ -76,40 +35,6 @@
 		<i class="la la-arrow-up"></i>
 	</div>
 	<!-- end::Scroll Top -->
-	<!-- begin::Quick Nav -->
-	<!-- 	<ul class="m-nav-sticky" style="margin-top: 30px;"> -->
-	<!-- 		<li class="m-nav-sticky__item" data-toggle="m-tooltip" -->
-	<!-- 			title="Layout Builder" data-placement="left"><a -->
-	<!-- 			href="index2b54.html?page=builder&amp;demo=default"><i -->
-	<!-- 				class="la la-cog"></i></a></li> -->
-	<!-- 		<!-- -->
-	<!-- 	<li class="m-nav-sticky__item" data-toggle="m-tooltip" title="Showcase" data-placement="left"> -->
-	<!-- 		<a href=""><i class="la la-eye"></i></a> -->
-	<!-- 	</li> -->
-	<!-- 	<li class="m-nav-sticky__item" data-toggle="m-tooltip" title="Pre-sale Chat" data-placement="left"> -->
-	<!-- 		<a href="" ><i class="la la-comments-o"></i></a> -->
-	<!-- 	</li> -->
-	<!-- 	-->
-	-->
-	<!-- 		<li class="m-nav-sticky__item" data-toggle="m-tooltip" -->
-	<!-- 			title="Purchase" data-placement="left"><a -->
-	<!-- 			href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" -->
-	<!-- 			target="_blank"><i class="la la-cart-arrow-down"></i></a></li> -->
-	<!-- 		<li class="m-nav-sticky__item" data-toggle="m-tooltip" -->
-	<!-- 			title="Documentation" data-placement="left"><a -->
-	<!-- 			href="https://keenthemes.com/metronic/documentation.html" -->
-	<!-- 			target="_blank"><i class="la la-code-fork"></i></a></li> -->
-	<!-- 		<li class="m-nav-sticky__item" data-toggle="m-tooltip" title="Support" -->
-	<!-- 			data-placement="left"><a -->
-	<!-- 			href="https://keenthemes.com/forums/forum/support/metronic5/" -->
-	<!-- 			target="_blank"><i class="la la-life-ring"></i></a></li> -->
-	<!-- 	</ul> -->
-	<!-- end::Quick Nav -->
-
-
-
-
-
 
 </body>
 <!-- end::Body -->

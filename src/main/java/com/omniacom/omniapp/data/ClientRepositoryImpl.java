@@ -23,7 +23,6 @@ public class ClientRepositoryImpl implements ClientRepositoryCustom {
 	
 	@Override
 	public List<Site> findAllSites(Client client) {
-		// TODO Auto-generated method stub
 		List<Site> sites = null;
 		Query query = entityManager.createQuery("SELECT s FROM Site s WHERE s.client.id = :param")
 				.setParameter("param", client.getId());
@@ -33,11 +32,24 @@ public class ClientRepositoryImpl implements ClientRepositoryCustom {
 	
 	@Override
 	public List<Project> findAllProjects(Client client) {
-		// TODO Auto-generated method stub
 		List<Project> projects = null;
 		Query query = entityManager.createQuery("SELECT p FROM Project p WHERE p.client.id = :param")
 				.setParameter("param", client.getId());
 		projects = (List<Project>) query.getResultList();
 		return projects;	}
+
+	@Override
+	public Client findByName(String name) {
+		Client client = null;
+		Query query = entityManager
+				.createQuery("SELECT c FROM Client c WHERE c.name=:param")
+				.setParameter("param",name);
+		List<Client> results = (List<Client>) query.getResultList();
+		if (!results.isEmpty())
+			// ignores multiple results
+			client = (Client) results.get(0);
+
+		return client;
+	}
 
 }

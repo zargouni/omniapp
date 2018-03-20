@@ -11,5 +11,7 @@ public interface ClientRepositoryCustom {
 	public List<Site> findAllSites(Client client);
 	
 	public List<Project> findAllProjects(Client client);
+	
+	public Client findByName(String name);
 
 }
