@@ -9,7 +9,7 @@
 				<div class="m-portlet__head">
 					<div class="m-portlet__head-caption">
 						<div class="m-portlet__head-title">
-							<h3 class="m-portlet__head-text m--font-light">My Overview</h3>
+							<h3 class="m-portlet__head-text m--font-light">Overview</h3>
 						</div>
 					</div>
 					<div class="m-portlet__head-tools">
@@ -94,24 +94,84 @@
 		<!--end:: Widgets/My Overview-->
 		<div class="col-xl-6">
 			<div
-				class="m-portlet m-portlet--bordered-semi m-portlet--widget-fit m-portlet--full-height m-portlet--skin-light  m-portlet--rounded-force">
+				class="m-portlet m-portlet--full-height ">
 				<div class="m-portlet__head">
 					<div style="width: 50%" class="m-portlet__head-caption">
 						<div class="m-portlet__head-title">
 							<h3 class="m-portlet__head-text">My Tasks</h3>
 						</div>
 					</div>
-					<div style="width: 50%; position: absolute; left: 85%; top:17px; ">
+					<div style="width: 50%; position: absolute; left: 85%; top: 17px;">
 						<button type="button" class="btn btn-outline-brand btn-sm">
 							All Tasks</button>
 					</div>
 				</div>
 				<div class="m-portlet__body">
 					<!--begin::Section-->
-					<div class="m-section">
-						<div class="m-loader m-loader--brand"
-							style=" position: absolute; left: 0; top: 50%; width: 100%;"></div>
-
+					<div class="tab-content">
+						<div class="tab-pane active" id="m_widget2_tab1_content">
+							<div class="m-widget2">
+								<div th:each="task : ${tasks}"class="m-widget2__item m-widget2__item--primary">
+									<div class="m-widget2__checkbox">
+										<label
+											class="m-checkbox m-checkbox--solid m-checkbox--single m-checkbox--brand">
+											<input type="checkbox"> <span></span>
+										</label>
+									</div>
+									<div class="m-widget2__desc">
+										<span th:text="${task.name}" class="m-widget2__text"> Make Metronic Great
+											Again.Lorem Ipsum Amet </span><br> <span
+											th:text="${task.endDate}" class="m-widget2__user-name"> 
+										</span>
+									</div>
+									<div class="m-widget2__actions">
+										<div class="m-widget2__actions-nav">
+											<div
+												class="m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push"
+												data-dropdown-toggle="hover">
+												<a href="#" class="m-dropdown__toggle"> <i
+													class="la la-ellipsis-h"></i>
+												</a>
+												<div class="m-dropdown__wrapper">
+													<span
+														class="m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust"></span>
+													<div class="m-dropdown__inner">
+														<div class="m-dropdown__body">
+															<div class="m-dropdown__content">
+																<ul class="m-nav">
+																	<li class="m-nav__item"><a href="#"
+																		class="m-nav__link"> <i
+																			class="m-nav__link-icon flaticon-share"></i> <span
+																			class="m-nav__link-text">Activity</span>
+																	</a></li>
+																	<li class="m-nav__item"><a href="#"
+																		class="m-nav__link"> <i
+																			class="m-nav__link-icon flaticon-chat-1"></i> <span
+																			class="m-nav__link-text">Messages</span>
+																	</a></li>
+																	<li class="m-nav__item"><a href="#"
+																		class="m-nav__link"> <i
+																			class="m-nav__link-icon flaticon-info"></i> <span
+																			class="m-nav__link-text">FAQ</span>
+																	</a></li>
+																	<li class="m-nav__item"><a href="#"
+																		class="m-nav__link"> <i
+																			class="m-nav__link-icon flaticon-lifebuoy"></i> <span
+																			class="m-nav__link-text">Support</span>
+																	</a></li>
+																</ul>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								</div>
+						</div>
+						<div class="tab-pane" id="m_widget2_tab2_content"></div>
+						<div class="tab-pane" id="m_widget2_tab3_content"></div>
 					</div>
 					<!--end::Section-->
 
@@ -137,7 +197,7 @@
 					<!--begin::Section-->
 					<div class="m-section">
 						<div class="m-loader m-loader--brand"
-							style=" position: absolute; left: 0; top: 50%; width: 100%;"></div>
+							style="position: absolute; left: 0; top: 50%; width: 100%;"></div>
 					</div>
 					<!--end::Section-->
 
@@ -160,7 +220,7 @@
 					<!--begin::Section-->
 					<div class="m-section">
 						<div class="m-loader m-loader--brand"
-							style=" position: absolute; left: 0; top: 50%; width: 100%;"></div>
+							style="position: absolute; left: 0; top: 50%; width: 100%;"></div>
 					</div>
 					<!--end::Section-->
 
@@ -179,7 +239,7 @@
 							<h3 class="m-portlet__head-text">My Issues</h3>
 						</div>
 					</div>
-					<div style="width: 50%; position: absolute; left: 72%; top:17px; ">
+					<div style="width: 50%; position: absolute; left: 72%; top: 17px;">
 						<button type="button" class="btn btn-outline-brand btn-sm">
 							View More</button>
 					</div>
@@ -188,7 +248,7 @@
 					<!--begin::Section-->
 					<div class="m-section">
 						<div class="m-loader m-loader--brand"
-							style=" position: absolute; left: 0; top: 50%; width: 100%;"></div>
+							style="position: absolute; left: 0; top: 50%; width: 100%;"></div>
 					</div>
 					<!--end::Section-->
 
@@ -201,7 +261,7 @@
 	</div>
 	<!--End::Section-->
 
-	
+
 
 	<!--Begin::Section-->
 	<div class="row">
@@ -240,7 +300,7 @@
 
 
 
-	
-	
+
+
 
 </div>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+	
+<head th:replace="fragments/fragment-head-html :: head"></head>
+
+<body>
+	<!-- BEGIN: Header -->
+	<header
+		th:replace="fragments/fragment-header-general :: header-general"></header>
+	<!-- END: Header -->
+	
+		<div layout:fragment="content"></div>
+		<!-- begin::Footer -->
+		<footer th:replace="fragments/fragment-footer :: footer"> </footer>
+		<!-- end::Footer -->
+
+	<!-- Begin :: Modal New Client Wizard -->
+
+	<div class="modal fade show" id="m_modal_4" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+
+				<div class="modal-body">
+
+					<div
+						class="m-wizard m-wizard--2 m-wizard--success m-wizard--step-first"
+						id="m_wizard">
+						<!--begin: Message container -->
+						<div class="m-portlet__padding-x">
+							<!-- Here you can put a message or alert -->
+						</div>
+						<!--end: Message container -->
+						<!--begin: Form Wizard Head -->
+						<div class="m-wizard__head m-portlet__padding-x">
+							<!--begin: Form Wizard Progress -->
+							<div class="m-wizard__progress">
+								<div class="progress">
+									<div class="progress-bar" role="progressbar"
+										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							</div>
+							<!--end: Form Wizard Progress -->
+							<!--begin: Form Wizard Nav -->
+							<div class="m-wizard__nav">
+								<div class="m-wizard__steps">
+									<div class="m-wizard__step m-wizard__step--current"
+										data-wizard-target="#m_wizard_form_step_1">
+										<a href="#" class="m-wizard__step-number"> <span><i
+												class="fa  flaticon-placeholder"></i></span>
+										</a>
+										<div class="m-wizard__step-info">
+											<div class="m-wizard__step-title">Client Information</div>
+
+										</div>
+									</div>
+									<div class="m-wizard__step"
+										data-wizard-target="#m_wizard_form_step_2">
+										<a href="#" class="m-wizard__step-number"> <span><i
+												class="fa  flaticon-layers"></i></span>
+										</a>
+										<div class="m-wizard__step-info">
+											<div class="m-wizard__step-title">Sites</div>
+
+										</div>
+									</div>
+									<div class="m-wizard__step"
+										data-wizard-target="#m_wizard_form_step_3">
+										<a href="#" class="m-wizard__step-number"> <span><i
+												class="fa  flaticon-layers"></i></span>
+										</a>
+										<div class="m-wizard__step-info">
+											<div class="m-wizard__step-title">Confirmation</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--end: Form Wizard Nav -->
+						</div>
+						<!--end: Form Wizard Head -->
+						<!--begin: Form Wizard Form-->
+						<div class="m-wizard__form">
+							<!--
+                1) Use m-form--label-align-left class to alight the form input lables to the right
+                2) Use m-form--state class to highlight input control borders on form validation
+                -->
+							<form class="m-form m-form--label-align-left- m-form--state-"
+								id="m_form" novalidate="novalidate">
+								<!--begin: Form Body -->
+								<div class="m-portlet__body">
+									<!--begin: Form Wizard Step 1-->
+									<div class="m-wizard__form-step m-wizard__form-step--current"
+										id="m_wizard_form_step_1">
+										<div class="row">
+											<div class="col-xl-8 offset-xl-2">
+												<div class="m-form__section m-form__section--first">
+
+													<form class="m-form">
+														<div class="m-portlet__body">
+															<div class="form-group m-form__group row">
+
+																<div class="col-lg-4">
+																	<label for="">Client Name : </label>
+
+																</div>
+																<div class="col-lg-8">
+																	<input type="text" class="form-control m-input">
+																</div>
+															</div>
+
+															<!-- Begin::Additional Client Infos -->
+															<div class="m-accordion__item">
+																<div class="m-accordion__item-head" role="tab"
+																	id="m_accordion_7_item_2_head" data-toggle="collapse"
+																	href="#m_accordion_7_item_2_body" aria-expanded="true"
+																	style="text-align: right; color: red;">
+																	<span class="m-accordion__item-icon"><i
+																		class="fa flaticon-list-3"></i></span> <span
+																		class="m-accordion__item-title">Additional
+																		client informations ?</span> <span
+																		class="m-accordion__item-mode"></span>
+
+																</div>
+																<br />
+																<div class="m-accordion__item-body collapse hide"
+																	id="m_accordion_7_item_2_body" role="tabpanel"
+																	aria-labelledby="m_accordion_7_item_2_head"
+																	data-parent="#m_accordion_7" style="">
+																	<div class="m-accordion__item-content">
+																		<div class="m-form__group form-group">
+																			<div class="form-group m-form__group row">
+
+																				<div class="col-lg-4">
+																					<label for="">Address :</label>
+
+																				</div>
+																				<div class="col-lg-8">
+																					<input type="text" class="form-control m-input">
+																				</div>
+																			</div>
+																			<div class="form-group m-form__group row">
+
+																				<div class="col-lg-4">
+																					<label for="">Phone :</label>
+
+																				</div>
+																				<div class="col-lg-8">
+																					<input type="text" class="form-control m-input">
+																				</div>
+																			</div>
+
+																		</div>
+																	</div>
+																</div>
+
+
+															</div>
+															<!--  End:: Additional Client Infos -->
+
+
+														</div>
+
+
+													</form>
+
+												</div>
+
+											</div>
+										</div>
+									</div>
+									<!--end: Form Wizard Step 1-->
+									<!--begin: Form Wizard Step 2-->
+									<div class="m-wizard__form-step" id="m_wizard_form_step_2">
+										<div class="row">
+											<div class="col-xl-8 offset-lg-2">
+
+												<div class="m-form__section m-form__section--first">
+
+													<div
+														style="margin-top: auto; margin-bottom: auto; text-align: center;">
+														<a href="#"
+															class="btn btn-success btn-lg m-btn m-btn m-btn--icon">
+															<span> <i class="la la-file-excel-o"></i> <span>Import
+																	from .xls file</span>
+														</span>
+														</a>
+													</div>
+												</div>
+
+												<h3 class="m-form__heading-title"
+													style="margin-top: auto; margin-bottom: auto; text-align: center; text-size: 24px;">
+													OR</h3>
+												<div class="m-form__section ">
+													<div class="m-form__heading">
+														<h3 class="m-form__heading-title">Add sites</h3>
+													</div>
+
+
+													<div id="m_repeater_2">
+
+														<div
+															class="m-scrollable mCustomScrollbar _mCS_3 mCS-autoHide"
+															data-scrollbar-shown="true" data-scrollable="true"
+															data-max-height="200"
+															style="max-height: 200px; height: 200px; position: relative; overflow: visible;">
+															<div id="mCSB_3"
+																class="mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside"
+																tabindex="0" style="max-height: none;">
+																<div id="mCSB_3_container" class="mCSB_container"
+																	style="position: relative; top: -240px; left: 0px;"
+																	dir="ltr"></div>
+															</div>
+															<div id="mCSB_3_scrollbar_vertical"
+																class="mCSB_scrollTools mCSB_3_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical"
+																style="display: block;">
+																<div class="mCSB_draggerContainer">
+																	<div id="mCSB_3_dragger_vertical" class="mCSB_dragger"
+																		style="position: absolute; min-height: 50px; display: block; height: 57px; max-height: 180px; top: 68px;">
+																		<div class="mCSB_dragger_bar"
+																			style="line-height: 50px;"></div>
+																	</div>
+																	<div class="mCSB_draggerRail"></div>
+																</div>
+															</div>
+
+
+
+
+															<div data-repeater-list="" class="col-lg-12">
+																<div data-repeater-item="" class="m--margin-bottom-10">
+																	<div class="form-group m-form__group row">
+
+																		<div class="col-lg-4">
+																			<label for="">Site Name : </label>
+
+																		</div>
+																		<div class="col-lg-8">
+																			<input type="text" class="form-control m-input">
+																		</div>
+																	</div>
+
+																	<div class="form-group m-form__group row">
+
+																		<div class="col-lg-4">
+																			<label for="">State : </label>
+
+																		</div>
+																		<div class="col-lg-8">
+																			<input type="text" class="form-control m-input">
+																		</div>
+																	</div>
+
+																	<div
+																		class="m-separator m-separator--dashed m-separator--lg"></div>
+
+
+																</div>
+															</div>
+														</div>
+
+														<div data-repeater-create="" style="float: right;"
+															class="btn btn btn-warning m-btn m-btn--icon">
+															<span> <i class="la la-plus"></i> <span>Another
+																	one ?</span>
+															</span>
+
+														</div>
+
+													</div>
+												</div>
+											</div>
+
+										</div>
+										<!--end: Form Wizard Step 2-->
+										<!--begin: Form Wizard Step 3-->
+										<div class="m-wizard__form-step" id="m_wizard_form_step_3">
+											<div class="row">
+												<div class="col-xl-8 offset-xl-2">
+													<div class="m-form__section m-form__section--first">
+
+														<form class="m-form">
+															<div class="m-portlet__body">
+																<div class="form-group m-form__group row">
+
+																	<div class="col-lg-4">
+																		<label for="">Client Name : </label>
+
+																	</div>
+																	<div class="col-lg-8">
+																		<input type="text" class="form-control m-input">
+																	</div>
+																</div>
+
+																<!-- Begin::Additional Client Infos -->
+																<div class="m-accordion__item">
+																	<div class="m-accordion__item-head" role="tab"
+																		id="m_accordion_7_item_2_head" data-toggle="collapse"
+																		href="#m_accordion_7_item_2_body" aria-expanded="true"
+																		style="text-align: right; color: red;">
+																		<span class="m-accordion__item-icon"><i
+																			class="fa flaticon-list-3"></i></span> <span
+																			class="m-accordion__item-title">Additional
+																			client informations ?</span> <span
+																			class="m-accordion__item-mode"></span>
+
+																	</div>
+																	<br />
+																	<div class="m-accordion__item-body collapse hide"
+																		id="m_accordion_7_item_2_body" role="tabpanel"
+																		aria-labelledby="m_accordion_7_item_2_head"
+																		data-parent="#m_accordion_7" style="">
+																		<div class="m-accordion__item-content">
+																			<div class="m-form__group form-group">
+																				<div class="form-group m-form__group row">
+
+																					<div class="col-lg-4">
+																						<label for="">Address :</label>
+
+																					</div>
+																					<div class="col-lg-8">
+																						<input type="text" class="form-control m-input">
+																					</div>
+																				</div>
+																				<div class="form-group m-form__group row">
+
+																					<div class="col-lg-4">
+																						<label for="">Phone :</label>
+
+																					</div>
+																					<div class="col-lg-8">
+																						<input type="text" class="form-control m-input">
+																					</div>
+																				</div>
+
+																			</div>
+																		</div>
+																	</div>
+
+
+																</div>
+																<!--  End:: Additional Client Infos -->
+
+
+															</div>
+
+
+														</form>
+
+													</div>
+
+												</div>
+											</div>
+										</div>
+										<!--end: Form Wizard Step 3-->
+
+
+
+									</div>
+									<!--end: Form Body -->
+									<!--begin: Form Actions -->
+									<div
+										class="m-portlet__foot m-portlet__foot--fit m--margin-top-40">
+										<div class="m-form__actions">
+											<div class="row">
+												<div class="col-lg-2"></div>
+												<div class="col-lg-4 m--align-left">
+													<a href="#"
+														class="btn btn-secondary m-btn m-btn--custom m-btn--icon"
+														data-wizard-action="prev"> <span> <i
+															class="la la-arrow-left"></i>&nbsp;&nbsp; <span>Back</span>
+													</span>
+													</a>
+												</div>
+												<div class="col-lg-4 m--align-right">
+													<a href="#"
+														class="btn btn-primary m-btn m-btn--custom m-btn--icon"
+														data-wizard-action="submit"> <span> <i
+															class="la la-check"></i>&nbsp;&nbsp; <span>Submit</span>
+													</span>
+													</a> <a href="#"
+														class="btn btn-warning m-btn m-btn--custom m-btn--icon"
+														data-wizard-action="next"> <span> <span>Save
+																&amp; Continue</span>&nbsp;&nbsp; <i class="la la-arrow-right"></i>
+													</span>
+													</a>
+												</div>
+												<div class="col-lg-2"></div>
+											</div>
+										</div>
+									</div>
+									<!--end: Form Actions -->
+							</form>
+						</div>
+						<!--end: Form Wizard Form-->
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- END :: Modal New Client Wizard -->
+	
+		<!--begin::Base Scripts -->
+	<script src="assets/vendors/base/vendors.bundle.js"
+		type="text/javascript"></script>
+	<script src="assets/demo/default/base/scripts.bundle.js"
+		type="text/javascript"></script>
+	<!--end::Base Scripts -->
+
+
+	<!--begin::Page Vendors -->
+	<script src="assets/vendors/custom/fullcalendar/fullcalendar.bundle.js"
+		type="text/javascript"></script>
+	<!--end::Page Vendors -->
+
+
+
+	<!--begin::Page Resources -->
+	<script
+		src="assets/demo/default/custom/components/forms/widgets/bootstrap-datepicker.js"
+		type="text/javascript"></script>
+	<!--end::Page Resources -->
+
+	<!--begin::Page Snippets -->
+	<script src="assets/app/js/dashboard.js" type="text/javascript"></script>
+	<!--end::Page Snippets -->
+
+
+	<!--begin::Page Resources -->
+	<script
+		src="assets/demo/default/custom/components/forms/wizard/wizard.js"
+		type="text/javascript"></script>
+	<!--end::Page Resources -->
+
+	<!--begin::Page Resources -->
+	<script
+		src="assets/demo/default/custom/components/forms/widgets/form-repeater.js"
+		type="text/javascript"></script>
+	<!--end::Page Resources -->
+	
+</body>
+</html>
