@@ -3,7 +3,8 @@
 	class="m_new_project_sidebar m-new-project-sidebar  m-new-project-sidebar--tabbed m-new-project-sidebar--skin-light">
 
 	<div class="m-new-project-sidebar__content m--hide">
-		<span id="m_new_project_sidebar_close"
+		<span 
+
 			class="m-new-project-sidebar__close"><i class="la la-close"></i></span>
 
 		<ul class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--brand"
@@ -15,17 +16,18 @@
 
 
 		<!--begin::Form New Project-->
-		<form class="m-form" th:action="@{/home}" th:object="${project}" method="post">
+		<form class="m-form" th:action="${addProjectFormAction}"
+			th:object="${project}" target="noTarget"
+			method="post">
 			<div class="m-portlet__body">
 				<div class="form-group m-form__group row">
 
 					<div class="col-lg-4">
-						<label for="">Project Name : </label> 
+						<label for="">Project Name : </label>
 					</div>
 					<div class="col-lg-8">
-						<input th:field="*{name}" type="text"
-								class="form-control m-input" 
-								placeholder="Project Name">
+						<input th:field="*{name}" type="text" class="form-control m-input"
+							placeholder="Project Name">
 					</div>
 				</div>
 
@@ -33,8 +35,9 @@
 
 					<div class="col-lg-8">
 						<select th:field="*{client}" class="custom-select form-control">
-							<option th:each="client : ${clients}" th:value="${client.id}" th:text="${client.name}">Ooredoo</option>
-							
+							<option th:each="client : ${clients}" th:value="${client.id}"
+								th:text="${client.name}">Ooredoo</option>
+
 						</select>
 					</div>
 					<div class="col-lg-4">
@@ -54,7 +57,7 @@
 						</select>
 					</div>
 					<div class="col-lg-4">
-						<select  th:field="*{currency}" class="custom-select form-control">
+						<select th:field="*{currency}" class="custom-select form-control">
 							<option value="TND">TND</option>
 							<option value="EUR">EUR</option>
 							<option value="USD">USD</option>
@@ -84,8 +87,8 @@
 						<label>Select Zone :</label>
 					</div>
 					<div class="col-lg-8">
-						<select  th:field="*{zone}" class="custom-select form-control">
-							
+						<select th:field="*{zone}" class="custom-select form-control">
+
 							<option value="1">Zone 1</option>
 							<option value="2">Zone 2</option>
 							<option value="3">Zone 3</option>
@@ -102,14 +105,16 @@
 
 
 
-			
+
 			</div>
 
 			<div class="m-portlet__foot m-portlet__foot--fit">
 				<div class="m-form__actions m-form__actions--right">
 					<div class="row">
 						<div class="col m--align-left">
-							<button type="submit" class="btn btn-brand">Add</button>
+							
+								<button type="submit" class="btn btn-brand">Add</button>
+							
 						</div>
 						<div class="col m--align-right">
 							<button type="reset" class="btn btn-secondary">Cancel</button>
@@ -124,6 +129,7 @@
 
 
 	</div>
+	<iframe width="0" height="0" border="0" name="noTarget" id="noTarget"></iframe>
 </div>
 
 
