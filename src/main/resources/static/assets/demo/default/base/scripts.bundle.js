@@ -5428,11 +5428,13 @@ var mNewProjectSelectZone = function() {
 }
 
 
+
 $(document).ready(function() {
     mQuickSidebar.init();
     mQuickSidebarAdd.init(); 
     mNewProjectSidebar.init();
     mNewProjectSelectZone();
+    
 });
 
 

@@ -13,8 +13,6 @@ public interface UserRepositoryCustom {
 	
 	public User findOneByUserName(String username);
 	
-	public boolean updateLocalUserFromZoho(User user,String email, String password);
-	
 	public List<Project> findContributedProjects(User user);
 	
 	public List<Project> findOwnedProjects(User user);

@@ -29,6 +29,9 @@ public class User implements Serializable {
 	private String userName;
 	private String password;
 	
+	private String firstName;
+	private String lastName;
+	
 	@Column(unique = true)
 	private String email;
 	private String zohoToken;
@@ -301,6 +304,34 @@ public class User implements Serializable {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", userName=" + userName + ", password=" + password + "]";
+	}
+
+	/**
+	 * @return the firstName
+	 */
+	public String getFirstName() {
+		return firstName;
+	}
+
+	/**
+	 * @return the lastName
+	 */
+	public String getLastName() {
+		return lastName;
+	}
+
+	/**
+	 * @param firstName the firstName to set
+	 */
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	/**
+	 * @param lastName the lastName to set
+	 */
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 }

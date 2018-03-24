@@ -32,6 +32,7 @@ import com.omniacom.omniapp.repository.UserRepository;
 import com.omniacom.omniapp.service.UserService;
 import com.omniacom.omniapp.zohoAPI.OperationsAPI;
 import com.omniacom.omniapp.zohoAPI.ProjectsAPI;
+import com.omniacom.omniapp.zohoAPI.UsersAPI;
 
 @SpringBootApplication
 public class OmniApp {
@@ -141,6 +142,9 @@ public class OmniApp {
 
 	@Autowired
 	SnagRepository snagRepo;
+	
+	@Autowired
+	UsersAPI usersApi;
 	private void testOperationRepo() {
 		Operation operation = new Operation("Operation1", "7-11-2017", "15-6-2018", 1);
 		Service service1 = new Service("service1", new Date(), 1, 2.2f);
@@ -204,6 +208,9 @@ public class OmniApp {
 		Task task2 = new Task("task2", "none", "none", new Date(), new Date(), new Date(), 1);
 		
 		User user2 = new User("wala","wala","wala");
+		user2.setFirstName("wala");
+		user2.setLastName("zargouni");
+		//user2.setZohoToken("ac3d1f234e2dc1807d102298c5a0dac0");
 		Role admin = new Role("ADMIN");
 	
 		roleRepo.save(admin);	
@@ -228,6 +235,7 @@ public class OmniApp {
 		project.setClient(client2);
 		
 		projectRepo.save(project);
+		
 		
 		//System.out.println("CLient id is: "+clientRepo.findByName("Orange").getName());
 		

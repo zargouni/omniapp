@@ -1,10 +1,10 @@
 package com.omniacom.omniapp.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -16,6 +16,8 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import com.omniacom.omniapp.converter.ClientConverter;
 
 @Configuration
+@ComponentScan(basePackages = { "com.omniacom.omniapp.controller",
+"com.omniacom.omniapp.validator" })
 public class ThymeleafWebMvcConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
@@ -43,12 +45,11 @@ public class ThymeleafWebMvcConfig extends WebMvcConfigurerAdapter {
 		return templateResolver;
 	}
 
-	
-
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addConverter(new ClientConverter());
 	}
 
+	
 
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.omniacom.omniapp.entity.Operation;
+import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.OperationRepository;
 import com.zoho.projects.api.MilestonesAPI;
 import com.zoho.projects.model.Milestone;
@@ -16,12 +17,15 @@ public class OperationsAPI {
 	@Autowired
 	private OperationRepository operationRepo;
 	
+	@Autowired
+	private UsersAPI usersApi;
+	
 	private MilestonesAPI milestonesApi;
 	
 	
-	public Milestone pushMilestone(Operation operation, String id) throws IOException {
-		milestonesApi = new MilestonesAPI(Utils.token,
-				Utils.getPortalId());
+	public Milestone pushMilestone(Operation operation, String id,User user) throws IOException {
+		milestonesApi = new MilestonesAPI(usersApi.getUserAuthToken(user),
+				usersApi.getPortalId(user));
 		
 		
 		Milestone zohoResult = null;

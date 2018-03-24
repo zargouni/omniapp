@@ -12,11 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
-import com.omniacom.omniapp.entity.Role;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.custom.UserRepositoryCustom;
-import com.omniacom.omniapp.zohoAPI.Utils;
 
 @Repository
 @Transactional
@@ -39,19 +37,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return user;
 	}
 
-	@Override
-	public boolean updateLocalUserFromZoho(User user, String email, String password) {
-		String token = Utils.getAuthToken(email, password);
-		if (user.getZohoToken() == null) {
-			if (!token.equals("INVALID_PASSWORD")) {
-				user.setZohoToken(token);
-				entityManager.merge(user);
-				entityManager.flush();
-				return true;
-			}
-		}
-		return false;
-	}
+	
 
 	@Override
 	public List<Project> findContributedProjects(User user) {

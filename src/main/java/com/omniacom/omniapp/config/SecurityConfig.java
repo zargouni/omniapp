@@ -33,6 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 			.formLogin()
 				.loginPage("/login")
+				.defaultSuccessUrl("/")
 				.permitAll()
 				.and()
 			.logout()
@@ -41,6 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.deleteCookies("JSESSIONID")
 				.invalidateHttpSession(true) 
 				.permitAll();
+		http.csrf().disable();
 					
 		
 	}

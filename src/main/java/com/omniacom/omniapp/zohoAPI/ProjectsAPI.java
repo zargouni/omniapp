@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.omniacom.omniapp.entity.Project;
+import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.ProjectRepository;
 
 @Component
@@ -14,12 +15,15 @@ public class ProjectsAPI {
 	@Autowired
 	private ProjectRepository projectRepo;
 	
+	@Autowired
+	private UsersAPI usersApi;
+	
 	private com.zoho.projects.api.ProjectsAPI projectsApi;
 	
 	
-	public com.zoho.projects.model.Project pushProject(Project project) throws IOException {
-		projectsApi = new com.zoho.projects.api.ProjectsAPI(Utils.token,
-				Utils.getPortalId());
+	public com.zoho.projects.model.Project pushProject(Project project,User user) throws IOException {
+		projectsApi = new com.zoho.projects.api.ProjectsAPI(usersApi.getUserAuthToken(user),
+				usersApi.getPortalId(user));
 		
 		
 		com.zoho.projects.model.Project zohoResult = null;
