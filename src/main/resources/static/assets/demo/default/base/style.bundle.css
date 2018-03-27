@@ -50219,12 +50219,15 @@ to {
 	float: none;
 	margin: 0;
 	padding: 0;
+		
+	
 }
 
 .m-aside-menu .m-menu__nav .m-menu__inner .m-menu__content,
 	.m-aside-menu .m-menu__nav .m-menu__submenu .m-menu__content {
 	padding: 0;
 	margin: 0;
+	
 }
 
 .m-aside-menu .m-menu__nav .m-menu__inner .m-menu__content>.m-menu__item,
@@ -50250,7 +50253,7 @@ to {
 .m-aside-menu .m-menu__nav .m-menu__item {
 	display: block;
 	float: none;
-	height: auto;
+	height: 70px;
 	padding: 0;
 }
 

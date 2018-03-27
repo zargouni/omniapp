@@ -17,10 +17,10 @@ public class ProjectValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		
-		ValidationUtils.rejectIfEmpty(errors, "name", "Project name must not be empty");
-		ValidationUtils.rejectIfEmpty(errors, "client", "Select project's client");
-		ValidationUtils.rejectIfEmpty(errors, "country", "Select project's country");
-		ValidationUtils.rejectIfEmpty(errors, "currency", "Select project's currency");
+		ValidationUtils.rejectIfEmpty(errors, "name", "project.name.empty");
+		ValidationUtils.rejectIfEmpty(errors, "client", "project.client.empty");
+		ValidationUtils.rejectIfEmpty(errors, "country", "project.country.empty");
+		ValidationUtils.rejectIfEmpty(errors, "currency", "project.currency.empty");
 		//ValidationUtils.rejectIfEmpty(errors, "owner", "project.owner.empty");
 
 		

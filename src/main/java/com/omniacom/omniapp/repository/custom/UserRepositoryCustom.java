@@ -21,5 +21,9 @@ public interface UserRepositoryCustom {
 	
 	public List<Operation> findContributedOperations(User user);
 	
+	public List<Task> findCompletedTasks(User user);
+	
+	public List<Task> findOnGoingTasks(User user);
+	
 	
 }

@@ -121,11 +121,10 @@
 						</div>
 					</div>
 					<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-						<a data-toggle="modal" data-target="#m_modal_5" href="#"
-							class="btn btn-primary m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
-							<span> <i class="la la-plus"></i> <span>New Project Wizard</span>
-						</span>
-						</a>
+						<button type="button"
+							class="btn m-btn--square  btn-primary m-btn m-btn--custom"
+							data-toggle="modal" data-target="#m_modal_12">New
+							Project Wizard</button>
 						<div class="m-separator m-separator--dashed d-xl-none"></div>
 					</div>
 				</div>
@@ -133,135 +132,109 @@
 			<!--end: Search Form -->
 
 			<!--begin: Datatable -->
+
 			<div
-				class="m-datatable m-datatable--default m-datatable--brand m-datatable--loaded">
+				class="m_datatable m-datatable m-datatable--default m-datatable--brand m-datatable--loaded"
+				id="auto_column_hide" style="">
 				<table class="m-datatable__table"
-					style="display: block; min-height: 300px; max-height: 550px;">
+					style="display: block; min-height: 300px; overflow-x: auto;">
 					<thead class="m-datatable__head">
 						<tr class="m-datatable__row" style="left: 0px;">
-							<th title="Field #1"
+							<th
+								class="m-datatable__cell m-datatable__toggle-detail m-datatable__cell--sort"><span
+								style="width: 21px;"></span></th>
+							<th data-field="OrderID"
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 150px;">Order ID</span></th>
+							<th data-field="ShipCountry"
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 150px;">Ship Country</span></th>
+							<th data-field="ShipCity"
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 110px;">Ship City</span></th>
+							<th data-field="Currency"
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 100px;">Currency</span></th>
+							<th data-field="ShipDate"
 								class="m-datatable__cell m-datatable__cell--sort"
-								data-field="Project Name"><span style="width: 210px;">Project
-									name</span></th>
-							<th title="Field #2"
+								data-sort="asc"><span style="width: 110px;">Ship
+									Date<i class="la la-arrow-up"></i>
+							</span></th>
+							<th data-field="Latitude"
 								class="m-datatable__cell m-datatable__cell--sort"
-								data-field="Client"><span style="width: 110px;">Client</span></th>
-							<th title="Field #3"
+								style="display: none;"><span style="width: 110px;">Latitude</span></th>
+							<th data-field="Longitude"
 								class="m-datatable__cell m-datatable__cell--sort"
-								data-field="Percentage"><span style="width: 110px;">%</span></th>
-							<th title="Field #4"
+								style="display: none;"><span style="width: 110px;">Longitude</span></th>
+							<th data-field="Notes"
 								class="m-datatable__cell m-datatable__cell--sort"
-								data-field="Owner"><span style="width: 110px;">Owner</span></th>
-							<th title="Field #5"
+								style="display: none;"><span style="width: 350px;">Notes</span></th>
+							<th data-field="Department"
 								class="m-datatable__cell m-datatable__cell--sort"
-								data-field="Tasks"><span style="width: 110px;">Tasks</span></th>
-							<th title="Field #6"
+								style="display: none;"><span style="width: 110px;">Department</span></th>
+							<th data-field="Website"
 								class="m-datatable__cell m-datatable__cell--sort"
-								data-field="Operations"><span style="width: 110px;">Operations</span></th>
-							<th title="Field #7"
+								style="display: none;"><span style="width: 110px;">Website</span></th>
+							<th data-field="TotalPayment"
 								class="m-datatable__cell m-datatable__cell--sort"
-								data-field="Issues"><span style="width: 110px;">Issues</span></th>
-							<th title="Field #8"
+								style="display: none;"><span style="width: 110px;">Total
+									Payment</span></th>
+							<th data-field="Status"
 								class="m-datatable__cell m-datatable__cell--sort"
-								data-field="Start Date"><span style="width: 110px;">Start
-									Date</span></th>
-							<th title="Field #9"
-								class="m-datatable__cell m-datatable__cell--sort"
-								data-field="End Date"><span style="width: 110px;">End
-									Date</span></th>
-
+								style="display: none;"><span style="width: 110px;">Status</span></th>
+							<th data-field="Type"
+								class="m-datatable__cell m-datatable__cell--sort" style=""><span
+								style="width: 110px;">Type</span></th>
 						</tr>
 					</thead>
-					<tbody
-						class="m-datatable__body"
-						style="">
-						
-						<tr data-row="0" class="m-datatable__row" style="left: 0px;">
-							<td data-field="Order ID" class="m-datatable__cell"><span
-								style="width: 210px;"><a href="/project">Project 1</a></span></td>
-							<td data-field="Owner" class="m-datatable__cell"><span
-								style="width: 110px;">Orange</span></td>
-							<td data-field="Contact" class="m-datatable__cell">
-								<div class="progress m-progress--sm" style="width: 110px">
-									<div class="progress-bar m--bg-warning" role="progressbar"
-										style="width: 50%;" aria-valuenow="50" aria-valuemin="0"
-										aria-valuemax="100"></div>
-								</div>
-							</td>
-							<td data-field="Car Make" class="m-datatable__cell"><span
-								style="width: 110px;">Zargouni</span></td>
-							<td data-field="Car Model" class="m-datatable__cell"><span
-								style="width: 110px;">Savana 2500</span></td>
-							<td data-field="Color" class="m-datatable__cell"><span
-								style="width: 110px;">Yellow</span></td>
-							<td data-field="Deposit Paid" class="m-datatable__cell"><span
-								style="width: 110px;">$99799.94</span></td>
-							<td data-field="Order Date" class="m-datatable__cell"><span
-								style="width: 110px;">2016-03-23</span></td>
-							<td data-field="Order Date" class="m-datatable__cell"><span
-								style="width: 110px;">2016-03-23</span></td>
-
-						</tr>
-						<tr data-row="1" class="m-datatable__row m-datatable__row--even"
+					<tbody class="m-datatable__body" style="">
+						<tr th:each="project : ${allProjects}" class="m-datatable__row"
 							style="left: 0px;">
-							<td data-field="Order ID" class="m-datatable__cell"><span
-								style="width: 210px;">Project 2</span></td>
-							<td data-field="Owner" class="m-datatable__cell"><span
-								style="width: 110px;">Ooredoo</span></td>
-							<td data-field="Contact" class="m-datatable__cell"><div
-									class="progress m-progress--sm" style="width: 110px">
-									<div class="progress-bar m--bg-accent" role="progressbar"
-										style="width: 75%;" aria-valuenow="75" aria-valuemin="0"
-										aria-valuemax="100"></div>
-								</div></td>
-							<td data-field="Car Make" class="m-datatable__cell"><span
-								style="width: 110px;">Zargouni</span></td>
-							<td data-field="Car Model" class="m-datatable__cell"><span
-								style="width: 110px;">Avalanche</span></td>
-							<td data-field="Color" class="m-datatable__cell"><span
-								style="width: 110px;">Fuscia</span></td>
-							<td data-field="Deposit Paid" class="m-datatable__cell"><span
-								style="width: 110px;">$88746.22</span></td>
-							<td data-field="Order Date" class="m-datatable__cell"><span
-								style="width: 110px;">2017-06-04</span></td>
-							<td data-field="Order Date" class="m-datatable__cell"><span
-								style="width: 110px;">2016-03-23</span></td>
-
+							<td class="m_project_details_sidebar_toggle"><a
+								class="m-datatable__toggle-detail" href="#"><i
+									class="fa fa-caret-right" style="width: 21px;"></i></a></td>
+							<td data-field="OrderID" class="m-datatable__cell"><a th:href="@{/project(id=${project.id})}"><span
+								th:text="${project.name}" style="width: 150px;"></span></a></td>
+							<td data-field="ShipCountry" class="m-datatable__cell"><span
+								th:text="${project.client.name}" style="width: 150px;">NG
+									- Sapele</span></td>
+							<td data-field="ShipCity" class="m-datatable__cell"><span
+								th:text="${project.owner.userName}" style="width: 110px;">Sapele</span></td>
+							<td data-field="Currency" class="m-datatable__cell"><span
+								th:text="${project.country}" style="width: 100px;">NGN</span></td>
+							<td class="m-datatable__cell--sorted m-datatable__cell"><span
+								th:text="${project.currency}" style="width: 110px;">1/1/2016</span></td>
+							<td data-field="Latitude" class="m-datatable__cell"><span
+								style="width: 110px;">5.8750769</span></td>
+							<td data-field="Longitude" class="m-datatable__cell"
+								style="display: none;"><span style="width: 110px;">5.6931356</span></td>
+							<td data-field="Notes" class="m-datatable__cell"
+								style="display: none;"><span style="width: 350px;">adipiscing
+									molestie hendrerit at vulputate vitae nisl aenean lectus
+									pellentesque eget nunc donec quis orci eget orci vehicula</span></td>
+							<td data-field="Department" class="m-datatable__cell"
+								style="display: none;"><span style="width: 110px;">Shoes</span></td>
+							<td data-field="Website" class="m-datatable__cell"
+								style="display: none;"><span style="width: 110px;">whitehouse.gov</span></td>
+							<td data-field="TotalPayment" class="m-datatable__cell"
+								style="display: none;"><span style="width: 110px;">88,211.68
+									NGN</span></td>
+							<td data-field="Status" class="m-datatable__cell"
+								style="display: none;"><span style="width: 110px;"><span
+									class="m-badge  m-badge--primary m-badge--wide">Canceled</span></span></td>
+							<td data-field="Type" class="m-datatable__cell"
+								style="display: none;"><span style="width: 110px;"><span
+									class="m-badge m-badge--danger m-badge--dot"></span>&nbsp;<span
+									class="m--font-bold m--font-danger">Online</span></span></td>
 						</tr>
-						<tr data-row="2" class="m-datatable__row" style="left: 0px;">
-							<td data-field="Order ID" class="m-datatable__cell"><span
-								style="width: 210px;">Project 3</span></td>
-							<td data-field="Owner" class="m-datatable__cell"><span
-								style="width: 110px;">TT</span></td>
-							<td data-field="Contact" class="m-datatable__cell"><div
-									class="progress m-progress--sm" style="width: 110px">
-									<div class="progress-bar m--bg-danger" role="progressbar"
-										style="width: 30%;" aria-valuenow="30" aria-valuemin="0"
-										aria-valuemax="100"></div>
-								</div></td>
-							<td data-field="Car Make" class="m-datatable__cell"><span
-								style="width: 110px;">Zargouni</span></td>
-							<td data-field="Car Model" class="m-datatable__cell"><span
-								style="width: 110px;">Dakota</span></td>
-							<td data-field="Color" class="m-datatable__cell"><span
-								style="width: 110px;">Maroon</span></td>
-							<td data-field="Deposit Paid" class="m-datatable__cell"><span
-								style="width: 110px;">$57944.55</span></td>
-							<td data-field="Order Date" class="m-datatable__cell"><span
-								style="width: 110px;">2017-08-03</span></td>
-							<td data-field="Order Date" class="m-datatable__cell"><span
-								style="width: 110px;">2016-03-23</span></td>
-
-						</tr>
-						
 						
 
 					</tbody>
 				</table>
-
-
 			</div>
 			<!--end: Datatable -->
+
+
 		</div>
 	</div>
 </div>

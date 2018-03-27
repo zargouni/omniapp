@@ -5427,6 +5427,63 @@ var mNewProjectSelectZone = function() {
     
 }
 
+var mProjectDetailsSidebar = function() {
+    var topbarAside = $('.m_project_details_sidebar');
+    //var topbarAsideTabs = $('#m_project_details_sidebar_tabs');    
+    var topbarAsideClose = $('#m_project_details_sidebar_close');
+    var topbarAsideToggle = $('.m_project_details_sidebar_toggle');
+    var topbarAsideContent = topbarAside.find('.m-project-details-sidebar__content');
+
+    var initForm = function() {
+        var messenger = $('#m_project_details_sidebar_tabs_new_task');  
+
+          
+        
+        // reinit on window resize
+        mUtil.addResizeHandler(init);
+    }
+
+   
+    var initOffcanvasTabs = function() {
+        initForm();
+        
+    }
+
+    var initOffcanvas = function() {
+        topbarAside.mOffcanvas({
+            class: 'm-project-details-sidebar',
+            overlay: true,  
+            close: topbarAsideClose,
+            toggle: topbarAsideToggle
+        });   
+
+        // run once on first time dropdown shown
+        topbarAside.mOffcanvas().one('afterShow', function() {
+            mApp.block(topbarAside);
+
+            setTimeout(function() {
+                mApp.unblock(topbarAside);
+                
+                topbarAsideContent.removeClass('m--hide');
+
+                initOffcanvasTabs();
+            }, 1000);                         
+        });
+    }
+
+    return {     
+        init: function() {  
+            if (topbarAside.length === 0) {
+                return;
+            }
+
+            initOffcanvas(); 
+        }
+    };
+}();
+
+
+
 
 
 $(document).ready(function() {
@@ -5435,6 +5492,7 @@ $(document).ready(function() {
     mNewProjectSidebar.init();
     mNewProjectSelectZone();
     
+	 mProjectDetailsSidebar.init();
 });
 
 

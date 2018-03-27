@@ -5,48 +5,49 @@
 	data-th-fragment="left-sidebar-project">
 	<!-- BEGIN: Aside Menu -->
 	<div id="m_ver_menu"
-		class="m-aside-menu  m-aside-menu--skin-dark m-aside-menu--submenu-skin-dark "
-		data-menu-vertical="true" data-menu-scrollable="false"
+		class="m-aside-menu  m-aside-menu--skin-dark "
+		data-menu-vertical="false" data-menu-scrollable="true"
 		data-menu-dropdown-timeout="500">
 		<ul class="m-menu__nav  m-menu__nav--dropdown-submenu-arrow ">
-			<li data-skin="dark" data-toggle="m-tooltip" data-placement="right"
+			
+			<li id="project_dashboard_toggle" data-skin="dark" data-toggle="m-tooltip" data-placement="right"
 				title="" data-original-title="Dashboard"
 				class="m-menu__item  m-menu__item--active" aria-haspopup="true"><a
-				href="#" class="m-menu__link "><i
+				href="#dashboard" class="m-menu__link "><i
 					class="m-menu__link-icon flaticon-line-graph"></i></a></li>
 
-			<li data-skin="dark" data-toggle="m-tooltip" data-placement="right"
+			<li id="project_feed_toggle" data-skin="dark" data-toggle="m-tooltip" data-placement="right"
 				title="" data-original-title="Feed"
 				class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"
-				data-menu-submenu-toggle="hover"><a href="#"
+				data-menu-submenu-toggle="hover"><a href="#feed"
 				class="m-menu__link m-menu__toggle"><i
 					class="m-menu__link-icon la	la-feed"></i></a></li>
 
-			<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"
+			<li id="project_tasks_toggle" class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"
 			data-skin="dark" data-toggle="m-tooltip" data-placement="right"
 				title="" data-original-title="Tasks"
-				data-menu-submenu-toggle="hover"><a href="#"
+				data-menu-submenu-toggle="hover"><a href="#tasks"
 				class="m-menu__link m-menu__toggle"><i
 					class="m-menu__link-icon la	la-tasks"></i></a></li>
 
-			<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"
+			<li id="project_issues_toggle" class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"
 				data-menu-submenu-toggle="hover"
 				data-skin="dark" data-toggle="m-tooltip" data-placement="right"
-				title="" data-original-title="Issues"><a href="#"
+				title="" data-original-title="Issues"><a href="#issues"
 				class="m-menu__link m-menu__toggle"><i
 					class="m-menu__link-icon la	la-thumbs-down"></i></a></li>
 
-			<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"
+			<li id="project_operations_toggle" class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"
 				data-menu-submenu-toggle="hover"
 				data-skin="dark" data-toggle="m-tooltip" data-placement="right"
-				title="" data-original-title="Operations"><a href="#"
+				title="" data-original-title="Operations"><a href="#operations"
 				class="m-menu__link m-menu__toggle"><i
 					class="m-menu__link-icon la la-puzzle-piece"></i></a></li>
 
-			<li class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"
+			<li id="project_calendar_toggle" class="m-menu__item  m-menu__item--submenu" aria-haspopup="true"
 				data-menu-submenu-toggle="hover"
 				data-skin="dark" data-toggle="m-tooltip" data-placement="right"
-				title="" data-original-title="Calendar"><a href="#"
+				title="" data-original-title="Calendar"><a href="#calendar"
 				class="m-menu__link m-menu__toggle"><i
 					class="m-menu__link-icon la la-calendar"></i></a></li>
 		</ul>

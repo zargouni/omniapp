@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.User;
@@ -33,6 +34,29 @@ import com.omniacom.omniapp.zohoAPI.ProjectsAPI;
 @RequestMapping("/")
 @SessionAttributes("auth")
 public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
+	
+	private String TASK_STATUS_ONGOING = StaticString.TASK_STATUS_ONGOING;
+	private String TASK_STATUS_COMPLETED = StaticString.TASK_STATUS_COMPLETED;
+	
+	@ModelAttribute(name = "TASK_STATUS_ONGOING")
+	public String going() {
+		return this.TASK_STATUS_ONGOING;
+	}
+	
+	@ModelAttribute(name = "TASK_STATUS_COMPLETED")
+	public String complete() {
+		return this.TASK_STATUS_COMPLETED;
+	}
+
+	@ModelAttribute(name = "project")
+	public Project initProject() {
+		return new Project();
+	}
+
+	@ModelAttribute(name = "clients")
+	public Iterable<Client> getClients() {
+		return clientService.findAllClients();
+	}
 
 	@Autowired
 	private ProjectValidator projectValidator;
@@ -42,37 +66,36 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private ClientService clientService;
-	
+
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private ProjectsAPI projectsApi;
-	
-	//Change other controllers to match this one me tensesh
+
+	// Change other controllers to match this one me tensesh
 	@Autowired
-    private IAuthenticationFacade authenticationFacade;
-	
-	//@ModelAttribute(name="auth")
+	private IAuthenticationFacade authenticationFacade;
+
 	public Authentication getAuth() {
 		Authentication auth = authenticationFacade.getAuthentication();
 		return auth;
 	}
-	
-	//@ModelAttribute(name="sessionUser") 
+
 	public User getSessionUser() {
 		return userService.findByUserName(getAuth().getName());
 	}
-	//yeah yeah
-	
+	// yeah yeah
+
 	@GetMapping("/")
 	public String index(Model model) {
-		//model.addAttribute("addProjectFormAction", "home/add-project");
-		if(getSessionUser().getZohoToken() == null)
-		return "redirect:/zoho";
+		// model.addAttribute("addProjectFormAction", "home/add-project");
+		if (getSessionUser().getZohoToken() == null)
+			return "redirect:/zoho";
+		
 		return "redirect:/home";
 	}
-	
+
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
 		binder.addValidators(projectValidator);
@@ -86,9 +109,9 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		if (!result.hasErrors()) {
 			projectService.addProject(project);
-			
+
 			response.setStatus("SUCCESS");
-			projectsApi.pushProject(project,getSessionUser());
+			//projectsApi.pushProject(project, getSessionUser());
 			// response.setResult(userList);
 		} else {
 			response.setStatus("FAIL");
@@ -96,16 +119,6 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		}
 
 		return response;
-	}
-
-	@ModelAttribute(name = "project")
-	public Project initProject() {
-		return new Project();
-	}
-
-	@ModelAttribute(name = "clients")
-	public Iterable<Client> getClients() {
-		return clientService.findAllClients();
 	}
 	
 	

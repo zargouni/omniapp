@@ -1,0 +1,106 @@
+.m-project-details-sidebar .m-project-details-sidebar__close {
+	position: absolute;
+	font-size: 1.4rem;
+	cursor: pointer;
+}
+
+.m-project-details-sidebar .mCSB_scrollTools {
+	right: -13px !important;
+}
+
+.m-project-details-sidebar.m-project-details-sidebar--tabbed .m-project-details-sidebar__close
+	{
+	top: 16px;
+	right: 30px;
+}
+
+.m-project-details-sidebar.m-project-details-sidebar--tabbed .m-tabs.m-tabs-line
+	{
+	margin: 0 0 30px 0;
+}
+
+.m-project-details-sidebar.m-project-details-sidebar--tabbed .m-tabs.m-tabs-line>.m-tabs__item>.m-tabs__link
+	{
+	padding: 15px 0;
+}
+
+.m-project-details-sidebar {
+	background-color: #ffffff;
+	-webkit-box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.2);
+	-moz-box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.2);
+	box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.2);
+}
+
+.m-project-details-sidebar .m-project-details-sidebar__close {
+	color: #cfcedb;
+}
+
+.m-project-details-sidebar .m-project-details-sidebar__close:hover {
+	color: #716aca;
+}
+
+.m-project-details-sidebar.m-project-details-sidebar--skin-dark {
+	background-color: #ffffff;
+	-webkit-box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.4);
+	-moz-box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.4);
+	box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.4);
+}
+
+.m-project-details-sidebar.m-project-details-sidebar--skin-dark .m-project-details-sidebar__close
+	{
+	color: #dfdff1;
+}
+
+.m-project-details-sidebar.m-project-details-sidebar--skin-dark .m-project-details-sidebar__close:hover
+	{
+	color: #716aca;
+}
+
+.m-project-details-sidebar-close {
+	display: none;
+}
+
+.m-project-details-sidebar {
+	display: block !important;
+	z-index: 1001;
+	position: fixed;
+	
+	right:0;
+	left:0;
+	overflow-x: auto;
+	-webkit-transform: translate3d(0, 0, 0);
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	height: 200px !important;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	bottom: -210px;
+}
+
+.m-project-details-sidebar.m-project-details-sidebar--on {
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	bottom: 0;
+}
+
+.m-project-details-sidebar-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	overflow: hidden;
+	z-index: 1000;
+	background: rgba(0, 0, 0, 0.1);
+	-webkit-animation: m-offcanvas-overlay-fade-in .3s linear 1;
+	-moz-animation: m-offcanvas-overlay-fade-in .3s linear 1;
+	-ms-animation: m-offcanvas-overlay-fade-in .3s linear 1;
+	-o-animation: m-offcanvas-overlay-fade-in .3s linear 1;
+	animation: m-offcanvas-overlay-fade-in .3s linear 1;
+}

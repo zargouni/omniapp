@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.UserRepository;
@@ -43,6 +44,9 @@ public class UserService implements UserDetailsService {
 		return userRepo.findAllTasks(user);
 	}
 	
+	public List<Project> findAllContributedProjects(User user){
+		return userRepo.findContributedProjects(user);
+	}
 	public User findByUserName(String userName) {
 		return userRepo.findOneByUserName(userName);
 	}

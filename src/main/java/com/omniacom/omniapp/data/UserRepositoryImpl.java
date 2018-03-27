@@ -9,6 +9,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
@@ -44,9 +45,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		List<Project> projects = null;
 		Query query = entityManager
 				.createQuery(
-				"SELECT p FROM Project p, User u JOIN u.contributedProjectList project WHERE u.id = :param AND project.id = p.id")
+				"SELECT p FROM Project p, User u LEFT OUTER JOIN u.contributedProjectList project WHERE u.id = :param AND project.id = p.id")
 				.setParameter("param", user.getId());
 		projects = (List<Project>) query.getResultList();
+		projects.addAll(findOwnedProjects(user));
 		return projects;
 	}
 
@@ -54,9 +56,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public List<Project> findOwnedProjects(User user) {
 		List<Project> projects = null;
 		Query query = entityManager
-				.createQuery("SELECT p FROM Project p WHERE p.owner=:param")
+				.createQuery("SELECT p FROM Project p WHERE p.owner.id=:param")
 				.setParameter("param",
-				user);
+				user.getId());
 		projects = (List<Project>) query.getResultList();
 		return projects;
 	}
@@ -89,6 +91,32 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 				.setParameter("param", user.getId());
 		comments = (List<Comment>) query.getResultList();
 		return comments;
+	}
+
+
+
+	@Override
+	public List<Task> findCompletedTasks(User user) {
+		List<Task> tasks = null;
+		Query query = entityManager
+				.createQuery("SELECT t FROM Task t, User u JOIN u.tasks task WHERE u.id = :param AND task.id = t.id AND task.status = :param1")
+				.setParameter("param", user.getId())
+				.setParameter("param1", StaticString.TASK_STATUS_COMPLETED);
+		tasks = (List<Task>) query.getResultList();
+		return tasks;
+	}
+
+
+
+	@Override
+	public List<Task> findOnGoingTasks(User user) {
+		List<Task> tasks = null;
+		Query query = entityManager
+				.createQuery("SELECT t FROM Task t, User u JOIN u.tasks task WHERE u.id = :param AND task.id = t.id AND task.status = :param1")
+				.setParameter("param", user.getId())
+				.setParameter("param1", StaticString.TASK_STATUS_ONGOING);
+		tasks = (List<Task>) query.getResultList();
+		return tasks;
 	}
 	
 

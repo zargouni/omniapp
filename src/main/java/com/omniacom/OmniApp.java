@@ -204,9 +204,10 @@ public class OmniApp {
 		
 		System.out.println("Number of users working: "+ taskRepo.findAllUsers(task).size()); */
 		
-		Task task = new Task("task1", "none", "none", new Date(), new Date(), new Date(), 1);
-		Task task2 = new Task("task2", "none", "none", new Date(), new Date(), new Date(), 1);
-		
+		//Task task = new Task("task1", "none", "none", new Date(), new Date(), new Date(), 1);
+		//task.setStatus(StaticString.TASK_STATUS_COMPLETED);
+		//Task task2 = new Task("task2", "none", "none", new Date(), new Date(), new Date(), 1);
+		//task2.setStatus(StaticString.TASK_STATUS_ONGOING);
 		User user2 = new User("wala","wala","wala");
 		user2.setFirstName("wala");
 		user2.setLastName("zargouni");
@@ -218,10 +219,10 @@ public class OmniApp {
 		
 		
 		userRepo.save(user2);
-		task.addUser(user2);
-		task2.addUser(user2);
-		taskRepo.save(task);
-		taskRepo.save(task2);
+		//task.addUser(user2);
+		//task2.addUser(user2);
+		//taskRepo.save(task);
+		//taskRepo.save(task2);
 		
 		Client client = new Client("Ooredoo");
 		Client client2 = new Client("Orange");
@@ -229,12 +230,35 @@ public class OmniApp {
 		clientRepo.save(client);
 		clientRepo.save(client2);
 		
-		Project project = new Project();
-		project.setName("aaaaaaaaa");
-		project.setCreationDate(new Date());
-		project.setClient(client2);
+		//Project project = new Project();
+		//project.setName("aaaaaaaaa");
+		//project.setCreationDate(new Date());
+		//project.setClient(client2);
 		
-		projectRepo.save(project);
+		//projectRepo.save(project);
+		
+		Project proj = new Project();
+		proj.setName("xD");
+		proj.setCreationDate(new Date());
+		
+		Operation oper = new Operation();
+		oper.setProject(proj);
+		
+		Service serv = new Service();
+		serv.setOperation(oper);
+		
+		Task task3 = new Task();
+		task3.setService(serv);
+		task3.setStatus(StaticString.TASK_STATUS_COMPLETED);
+		Task task4 = new Task();
+		task4.setStatus(StaticString.TASK_STATUS_ONGOING);
+		task4.setService(serv);
+		
+		projectRepo.save(proj);
+		operationRepo.save(oper);
+		serviceRepo.save(serv);
+		taskRepo.save(task3);
+		taskRepo.save(task4);
 		
 		
 		//System.out.println("CLient id is: "+clientRepo.findByName("Orange").getName());
