@@ -104,3 +104,32 @@
 	-o-animation: m-offcanvas-overlay-fade-in .3s linear 1;
 	animation: m-offcanvas-overlay-fade-in .3s linear 1;
 }
+
+.omnia{
+    font-family: 'zohoproj'!important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.fonticon40 {
+    font-size: 40px;
+    color: #bcbbbb!important;
+}
+
+.emptydashboardbox {
+    border-radius: 100px;
+    -moz-border-radius: 100px;
+    -webkit-border-radius: 100px;
+    border: 2px solid #bcbbbb;
+    width: 100px;
+    height: 100px;
+    display: inline-block;
+    line-height: 100px!important;
+    text-align: center;
+}
+

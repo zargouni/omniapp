@@ -1,17 +1,64 @@
 <th:block th:fragment="fragment-dashboard">
 
-	<div class="m-portlet ">
+	<div class="m-portlet">
+
 		<div class="m-portlet__body  m-portlet__body--no-padding">
 			<div class="row m-row--no-padding m-row--col-separator-xl">
 				<div class="col-md-12 col-lg-6 col-xl-3">
-					<!--begin::Total Profit-->
-					<div class="m-widget24">
-						<div class="m-widget24__item">
-							<h4 class="m-widget24__title">Task Status</h4>
-							<span id="piechart"></span>
+					<div
+						class="m-portlet m-portlet--rounded m-portlet--unair m-portlet--head-sm">
+						<div class="m-portlet__head">
+							<div class="m-portlet__head-caption">
+								<div class="m-portlet__head-title">
+									<h3 class="m-portlet__head-text">Task status</h3>
+								</div>
+							</div>
+						</div>
+						<div class="m-portlet__body">
+							<!--begin::Total Profit-->
+							<div class="m-widget24">
+								<div class="m-widget24__item">
+									<div id="piechart"></div>
+
+									<div id="piechart_error" style="display: none;">
+										<div style="display: table-cell; vertical-align: middle;">
+
+											<table width="90%" align="center" border="0" cellpadding="0"
+												cellspacing="0">
+												<tbody>
+													<tr>
+														<td align="center"><div
+																class="emptydashboardbox omnia fonticon40">
+
+																<div class="m-demo-icon__preview">
+																	<i style="font-size: 40px;" class="flaticon-tool"></i>
+																</div>
+															</div></td>
+													</tr>
+													<tr>
+														<td align="center" height="110px">
+															<div>
+																<span class="col777 pt12 lh25">No tasks found.
+																	Add tasks and view their progress here</span>
+															</div>
+														</td>
+													</tr>
+													<tr>
+														<td align="center"><button type="button"
+																class="btn btn-primary btn-sm">Add new tasks</button></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+
+
+								</div>
+							</div>
+							<!--end::Total Profit-->
 						</div>
 					</div>
-					<!--end::Total Profit-->
+
 				</div>
 				<div class="col-md-12 col-lg-6 col-xl-3">
 					<!--begin::New Feedbacks-->

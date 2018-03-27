@@ -52,68 +52,6 @@ function doAddProjectAjaxPost() {
 	});
 }
 
-function projectDashboardTaskPieChart() {
-	var completed;
-	var onGoing;
-	
-	piechart = document.getElementById("piechart");
-	$.ajax({
-		type : "GET",
-		url : '/get-global-task-status',
-		success : function(response) {
-			// we have the response
-			if (response.status == "SUCCESS") {
-				completed = response.result[0];
-				onGoing = response.result[1];
-			} else {
-				completed = 0;
-				onGoing = 0;
-
-			}
-		},
-		error : function(e) {
-			alert('Error: ' + e);
-		}
-	});
-
-	if (completed == 0 && onGoing == 0) {
-		piechart.html("hello");
-	} else {
-		google.charts.load('current', {
-			'packages' : [ 'corechart' ]
-		});
-		google.charts.setOnLoadCallback(drawChart);
-	}
-	
-	function drawChart() {
-
-		var data = google.visualization.arrayToDataTable([
-				[ 'Task', 'Status' ], [ 'Open', onGoing ],
-				[ 'Closed', completed ],
-
-		]);
-
-		var options = {
-			width : 300,
-			height : 200,
-			pieHole : 0.4,
-			pieSliceTextStyle: {
-	            color: 'black',
-	          },
-			colors : [ '#f4516c', '#34bfa3' ],
-			fontName : 'Poppins',
-			legend : {
-				position : 'bottom'
-			}
-		};
-
-		var chart = new google.visualization.PieChart(document
-				.getElementById('piechart'));
-
-		chart.draw(data, options);
-	}
-
-}
 
 function projectDynamicContent() {
 
@@ -147,8 +85,72 @@ function projectDynamicContent() {
 
 }
 
-$(document).ready(function() {
+function projectDashboardTaskPieChart() {
+	var completed;
+	var onGoing;
+	
+	$.ajax({
+		type : "GET",
+		url : '/get-global-task-status',
+		success : function(response) {
+			// we have the response
+			if (response.status == "SUCCESS") {
+				completed = response.result[0];
+				onGoing = response.result[1];
+			} else {
+				completed = 0;
+				onGoing = 0;
 
+			}
+		},
+		error : function(e) {
+			alert('Error: ' + e);
+		}
+	});
+
+	
+		google.charts.load('current', {
+			'packages' : [ 'corechart' ]
+		});
+		google.charts.setOnLoadCallback(drawChart);
+	
+	function drawChart() {
+
+		var data = google.visualization.arrayToDataTable([
+				[ 'Task', 'Status' ], [ 'Open', onGoing ],
+				[ 'Closed', completed ],
+
+		]);
+
+		var options = {
+			width : 239,
+			height : 200,
+			pieHole : 0.4,
+			pieSliceTextStyle: {
+	            color: 'black',
+	          },
+			colors : [ '#f4516c', '#34bfa3' ],
+			fontName : 'Poppins',
+			legend : {
+				position : 'bottom'
+			}
+		};
+		if (completed == 0 && onGoing == 0) {
+			$("#piechart_error").show();
+			
+		}else{
+		var chart = new google.visualization.PieChart(document
+				.getElementById('piechart'));
+
+		chart.draw(data, options);
+		}
+	}
+
+}
+
+
+
+$(document).ready(function() {
 	projectDashboardTaskPieChart();
 
 	projectDynamicContent();
