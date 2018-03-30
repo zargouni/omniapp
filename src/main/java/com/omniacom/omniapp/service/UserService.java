@@ -3,6 +3,7 @@ package com.omniacom.omniapp.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,20 +17,30 @@ import com.omniacom.omniapp.repository.UserRepository;
 @Service
 public class UserService implements UserDetailsService {
 
-	
+	@Autowired
+	private IAuthenticationFacade authenticationFacade;
+
 	private UserRepository userRepo;
-	
+
 	@Autowired
 	public UserService(UserRepository userRepo) {
 		this.userRepo = userRepo;
 	}
-	
 
 	public boolean zohoAuthTokenExists(User user) {
 		if (user != null)
-			if (user.getZohoToken() != null )
+			if (user.getZohoToken() != null)
 				return true;
 		return false;
+	}
+
+	public Authentication getAuth() {
+		Authentication auth = authenticationFacade.getAuthentication();
+		return auth;
+	}
+
+	public User getSessionUser() {
+		return this.findByUserName(getAuth().getName());
 	}
 
 	@Override
@@ -39,20 +50,25 @@ public class UserService implements UserDetailsService {
 			throw new UsernameNotFoundException(userName);
 		return new UserDetailsImpl(user);
 	}
-	
-	public List<Task> findAllTasks(User user){
+
+	public List<Task> findAllTasks(User user) {
 		return userRepo.findAllTasks(user);
 	}
-	
-	public List<Project> findAllContributedProjects(User user){
+
+	public List<Project> findAllContributedProjects(User user) {
 		return userRepo.findContributedProjects(user);
 	}
+
 	public User findByUserName(String userName) {
 		return userRepo.findOneByUserName(userName);
 	}
-	
+
 	public User findById(Long id) {
 		return userRepo.findOne(id);
+	}
+
+	public List<Project> findAllOwnedProjects(User user) {
+		return userRepo.findOwnedProjects(user);
 	}
 
 }

@@ -4,20 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import com.omniacom.omniapp.entity.User;
-import com.omniacom.omniapp.service.UserService;
+import com.omniacom.omniapp.entity.Service;
+import com.omniacom.omniapp.service.ServiceService;
 
 @Component
-public class UserConverter implements Converter<String, User> {
+public class ServiceConverter implements Converter<String, Service> {
 
 	@Autowired
-	private UserService userService;
+	ServiceService serviceService;
 	
 	@Override
-	public User convert(String id) {
+	public Service convert(String id) {
 		try {
-            Long userId = Long.valueOf(id);
-            return userService.findById(userId);
+            Long serviceId = Long.valueOf(id);
+            return serviceService.findById(serviceId);
         } catch (NumberFormatException e) {
             return null;
         }

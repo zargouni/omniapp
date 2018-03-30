@@ -5483,7 +5483,6 @@ var mProjectDetailsSidebar = function() {
 }();
 
 
-
 $(document).ready(function() {
 
     mQuickSidebar.init();

@@ -15,30 +15,38 @@ import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 public class Service implements Serializable {
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue (strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String name;
-	
+
 	@CreatedDate
 	private Date creationDate;
 	private int flag;
 	private float priceHT;
 	private long zohoId;
-	
+
+	@ManyToOne
+	private Project project;
+
 	@ManyToOne
 	private Operation operation;
-	
-	@OneToMany( mappedBy = "service")
+
+	@OneToMany(mappedBy = "service")
 	private List<Task> tasks;
-	
+
 	public Service() {
 
+	}
+
+	public Service(String name, Project project) {
+		this.name = name;
+		this.project = project;
 	}
 
 	public Service(String name, Date creationDate, int flag, float priceHT) {
@@ -64,75 +72,92 @@ public class Service implements Serializable {
 		this.priceHT = priceHT;
 		this.zohoId = zohoId;
 	}
-	
+
 	/**
 	 * @return the id
 	 */
 	public long getId() {
 		return id;
 	}
+
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @return the creationDate
 	 */
 	public Date getCreationDate() {
 		return creationDate;
 	}
+
 	/**
 	 * @return the flag
 	 */
 	public int getFlag() {
 		return flag;
 	}
+
 	/**
 	 * @return the priceHT
 	 */
 	public float getPriceHT() {
 		return priceHT;
 	}
+
 	/**
 	 * @return the zohoId
 	 */
 	public long getZohoId() {
 		return zohoId;
 	}
+
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
+
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
-	 * @param creationDate the creationDate to set
+	 * @param creationDate
+	 *            the creationDate to set
 	 */
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
 	}
+
 	/**
-	 * @param flag the flag to set
+	 * @param flag
+	 *            the flag to set
 	 */
 	public void setFlag(int flag) {
 		this.flag = flag;
 	}
+
 	/**
-	 * @param priceHT the priceHT to set
+	 * @param priceHT
+	 *            the priceHT to set
 	 */
 	public void setPriceHT(float priceHT) {
 		this.priceHT = priceHT;
 	}
+
 	/**
-	 * @param zohoId the zohoId to set
+	 * @param zohoId
+	 *            the zohoId to set
 	 */
 	public void setZohoId(long zohoId) {
 		this.zohoId = zohoId;
@@ -153,19 +178,34 @@ public class Service implements Serializable {
 	}
 
 	/**
-	 * @param operation the operation to set
+	 * @param operation
+	 *            the operation to set
 	 */
 	public void setOperation(Operation operation) {
 		this.operation = operation;
 	}
 
 	/**
-	 * @param tasks the tasks to set
+	 * @param tasks
+	 *            the tasks to set
 	 */
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
 	}
-	
-	
+
+	/**
+	 * @return the project
+	 */
+	public Project getProject() {
+		return project;
+	}
+
+	/**
+	 * @param project
+	 *            the project to set
+	 */
+	public void setProject(Project project) {
+		this.project = project;
+	}
 
 }

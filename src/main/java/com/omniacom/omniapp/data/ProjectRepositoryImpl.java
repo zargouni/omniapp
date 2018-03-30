@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
+import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.custom.ProjectRepositoryCustom;
@@ -66,6 +67,15 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 		tasks = (List<Task>) query.getResultList();
 
 		return tasks;
+	}
+
+	@Override
+	public List<Service> findAllServices(Project project) {
+		List<Service> services = null;
+		Query query = entityManager.createQuery("SELECT s FROM Service s WHERE s.project=:param")
+				.setParameter("param", project);
+		services = (List<Service>) query.getResultList();
+		return services;
 	}
 
 }

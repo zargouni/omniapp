@@ -1,31 +1,23 @@
 package com.omniacom.omniapp.controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.omniacom.omniapp.entity.Project;
-import com.omniacom.omniapp.entity.User;
-import com.omniacom.omniapp.repository.ProjectRepository;
-import com.omniacom.omniapp.service.IAuthenticationFacade;
 import com.omniacom.omniapp.service.ProjectService;
 import com.omniacom.omniapp.service.UserService;
 import com.omniacom.omniapp.validator.JsonResponse;
 
-@Controller
+@RestController
 public class ProjectController {
-
-	@Autowired
-	private IAuthenticationFacade authenticationFacade;
 
 	@Autowired
 	private UserService userService;
@@ -35,21 +27,10 @@ public class ProjectController {
 
 	private Project currentProject;
 
-	@ModelAttribute(name = "auth")
-	public Authentication getAuth() {
-		Authentication auth = authenticationFacade.getAuthentication();
-		return auth;
-	}
-
-	@ModelAttribute(name = "sessionUser")
-	public User getSessionUser() {
-		return userService.findByUserName(getAuth().getName());
-	}
-
 	@GetMapping("/project")
-	public String project(Model model, @RequestParam("id") long projectId) {
-		setCurrentProject(projectService.findOneById(projectId));
-		return "project";
+	public ModelAndView index(Model model, @RequestParam("id") long projectId) {
+//		setCurrentProject(projectService.findOneById(projectId));
+		return new ModelAndView("project");
 	}
 
 	@GetMapping("/get-global-task-status")
@@ -67,42 +48,42 @@ public class ProjectController {
 	}
 
 	@GetMapping("/dashboard")
-	public String dashboard() {
-		return "fragments/project-fragments/fragment-dashboard :: fragment-dashboard";
+	public ModelAndView dashboard() {
+		return new ModelAndView("fragments/project-fragments/fragment-dashboard :: fragment-dashboard");
 	}
 
 	@GetMapping("/feed")
-	public String feed() {
-		return "fragments/project-fragments/fragment-feed :: fragment-feed";
+	public ModelAndView feed() {
+		return new ModelAndView("fragments/project-fragments/fragment-feed :: fragment-feed");
 	}
 
 	@GetMapping("/operations")
-	public String operations() {
-		return "fragments/project-fragments/fragment-operations :: fragment-operations";
+	public ModelAndView operations() {
+		return new ModelAndView("fragments/project-fragments/fragment-operations :: fragment-operations");
 	}
 
 	@GetMapping("/tasks")
-	public String tasks() {
-		return "fragments/project-fragments/fragment-tasks :: fragment-tasks";
+	public ModelAndView tasks() {
+		return new ModelAndView("fragments/project-fragments/fragment-tasks :: fragment-tasks");
 	}
 
 	@GetMapping("/issues")
-	public String issues() {
-		return "fragments/project-fragments/fragment-issues :: fragment-issues";
+	public ModelAndView issues() {
+		return new ModelAndView("fragments/project-fragments/fragment-issues :: fragment-issues");
 	}
 
 	@GetMapping("/calendar")
-	public String calendar() {
-		return "fragments/project-fragments/fragment-calendar :: fragment-calendar";
+	public ModelAndView calendar() {
+		return new ModelAndView("fragments/project-fragments/fragment-calendar :: fragment-calendar");
 	}
 
-	@ModelAttribute(name = "currentProject")
-	public Project getCurrentProject() {
-		return currentProject;
-	}
-
-	public void setCurrentProject(Project currentProject) {
-		this.currentProject = currentProject;
-	}
+//	@ModelAttribute(name = "currentProject")
+//	public Project getCurrentProject() {
+//		return currentProject;
+//	}
+//
+//	public void setCurrentProject(Project currentProject) {
+//		this.currentProject = currentProject;
+//	}
 
 }

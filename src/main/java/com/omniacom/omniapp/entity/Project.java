@@ -56,6 +56,9 @@ public class Project implements Serializable {
 
 	@OneToMany(mappedBy = "project")
 	private List<Operation> operations;
+	
+	@OneToMany(mappedBy = "project")
+	private List<Service> services;
 
 	public Project() {
 
@@ -302,6 +305,20 @@ public class Project implements Serializable {
 		return "Project [id=" + id + ", name=" + name + ", creationDate=" + creationDate + ", description="
 				+ description + ", currency=" + currency + ", country=" + country + ", zone=" + zone + ", zohoId="
 				+ zohoId + ", owner=" + owner + "]";
+	}
+
+	/**
+	 * @return the services
+	 */
+	public List<Service> getServices() {
+		return services;
+	}
+
+	/**
+	 * @param services the services to set
+	 */
+	public void setServices(List<Service> services) {
+		this.services = services;
 	}
 
 }

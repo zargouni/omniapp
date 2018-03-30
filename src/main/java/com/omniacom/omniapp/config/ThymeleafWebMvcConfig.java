@@ -14,6 +14,8 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import com.omniacom.omniapp.converter.ClientConverter;
+import com.omniacom.omniapp.converter.ProjectConverter;
+import com.omniacom.omniapp.converter.ServiceConverter;
 
 @Configuration
 @ComponentScan(basePackages = { "com.omniacom.omniapp.controller",
@@ -48,6 +50,10 @@ public class ThymeleafWebMvcConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addConverter(new ClientConverter());
+		registry.addConverter(new ProjectConverter());
+		registry.addConverter(new ServiceConverter());
+
+
 	}
 
 	
