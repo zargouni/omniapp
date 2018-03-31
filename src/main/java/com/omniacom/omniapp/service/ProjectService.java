@@ -37,6 +37,18 @@ public class ProjectService {
 		sizes.add(projectRepo.findAllOnGoingTasks(project).size());
 		return sizes;
 	}
+	
+	public Integer findCompletedTasksCount(Project project) {
+		return projectRepo.findAllCompletedTasks(project).size();
+	}
+	
+	public Integer findOnGoingTasksCount(Project project) {
+		return projectRepo.findAllOnGoingTasks(project).size();
+	}
+	
+	public Integer findTaskCount(Project project) {
+		return projectRepo.findAllCompletedTasks(project).size()+ projectRepo.findAllOnGoingTasks(project).size();
+	}
 
 	public Iterable<com.omniacom.omniapp.entity.Service> findAllServices(Project selectedProject) {
 		// TODO Auto-generated method stub

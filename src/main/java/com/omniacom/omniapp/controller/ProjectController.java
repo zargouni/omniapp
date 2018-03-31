@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,24 +28,20 @@ public class ProjectController {
 
 	private Project currentProject;
 
-	@GetMapping("/project")
-	public ModelAndView index(Model model, @RequestParam("id") long projectId) {
-//		setCurrentProject(projectService.findOneById(projectId));
-		return new ModelAndView("project");
+	@ModelAttribute
+	public void addAtributes(Model model) {
+		model.addAttribute("taskCount", projectService.findTaskCount(currentProject));
+		model.addAttribute("completedTasksCount", projectService.findCompletedTasksCount(currentProject));
+		model.addAttribute("onGoingTasksCount", projectService.findOnGoingTasksCount(currentProject));
 	}
 
-	@GetMapping("/get-global-task-status")
-	public @ResponseBody JsonResponse getGlobalTaskStatus() throws IOException {
-
-		JsonResponse response = new JsonResponse();
-		List<Integer> statusCount = projectService.findTaskStatusCount(currentProject);
-		if (statusCount.get(0) == 0 && statusCount.get(1) == 0) {
-			response.setStatus("FAIL");
-			return response;
-		}
-		response.setStatus("SUCCESS");
-		response.setResult(statusCount);
-		return response;
+	@GetMapping("/project")
+	public ModelAndView index(Model model, @RequestParam("id") long projectId) {
+		setCurrentProject(projectService.findOneById(projectId));
+		// System.out.println("size:"+projectService.findTaskCount(projectService.findOneById(projectId)));
+		if (projectService.findOneById(projectId) == null)
+			return new ModelAndView("index");
+		return new ModelAndView("project");
 	}
 
 	@GetMapping("/dashboard")
@@ -77,13 +74,13 @@ public class ProjectController {
 		return new ModelAndView("fragments/project-fragments/fragment-calendar :: fragment-calendar");
 	}
 
-//	@ModelAttribute(name = "currentProject")
-//	public Project getCurrentProject() {
-//		return currentProject;
-//	}
-//
-//	public void setCurrentProject(Project currentProject) {
-//		this.currentProject = currentProject;
-//	}
+	// @ModelAttribute(name = "currentProject")
+	// public Project getCurrentProject() {
+	// return currentProject;
+	// }
+	//
+	public void setCurrentProject(Project currentProject) {
+		this.currentProject = currentProject;
+	}
 
 }

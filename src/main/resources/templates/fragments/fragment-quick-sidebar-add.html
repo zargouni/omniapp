@@ -25,8 +25,9 @@
 				id="m_quick_sidebar_add_tabs_new_task" role="tabpanel">
 
 				<!--begin::Form New Task-->
-				<form th:replace="fragments/form-fragments/fragment-new-task-form :: new-task-form">
-					</form>
+				<form
+					th:replace="fragments/form-fragments/fragment-new-task-form :: new-task-form">
+				</form>
 
 				<!--end::Form New Task-->
 
@@ -86,73 +87,8 @@
 				id="m_quick_sidebar_add_tabs_new_operation" role="tabpanel">
 
 				<!--begin::Form New Operation-->
-
-				<form class="m-form">
-					<div class="m-portlet__body">
-						<div class="form-group m-form__group">
-							<label for="">Select project:</label> <select
-								class="custom-select form-control">
-								<option selected="">Open this select menu</option>
-								<option value="1">Project One</option>
-								<option value="2">Two</option>
-								<option value="3">Three</option>
-							</select>
-						</div>
-						<div class="m-form__group form-group">
-							<label for="">Operation name:</label> <input type="text"
-								class="form-control m-input" id="exampleInputEmail1"
-								aria-describedby="emailHelp" placeholder="Operation Name">
-						</div>
-
-						<div class="form-group m-form__group row">
-							<div class="col-lg-6">
-								<label for="">Start Date</label>
-								<div class="input-group date">
-									<input type="text" class="form-control m-input"
-										placeholder="Start date" id="m_datepicker_4_3">
-									<div class="input-group-append">
-										<span class="input-group-text"> <i
-											class="la la-calendar-check-o"></i>
-										</span>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-lg-6">
-								<label for="">End Date</label>
-								<div class="input-group date">
-
-									<input type="text" class="form-control m-input"
-										placeholder="End date" id="m_datepicker_4_4">
-									<div class="input-group-append">
-										<span class="input-group-text"> <i
-											class="la la-calendar-check-o"></i>
-										</span>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="m-form__group form-group">
-							<label for="">Who is responsible ?</label> <input type="text"
-								class="form-control m-input" id="exampleInputEmail1"
-								aria-describedby="emailHelp" placeholder="Select user">
-						</div>
-
-					</div>
-
-					<div class="m-portlet__foot m-portlet__foot--fit">
-						<div class="m-form__actions m-form__actions--right">
-							<div class="row">
-								<div class="col m--align-left">
-									<button type="reset" class="btn btn-brand">Add</button>
-								</div>
-								<div class="col m--align-right">
-									<button type="reset" class="btn btn-secondary">Cancel</button>
-								</div>
-							</div>
-						</div>
-					</div>
+				<form
+					th:replace="fragments/form-fragments/fragment-new-operation-form :: new-operation-form">
 				</form>
 
 				<!--end::Form New Operation-->
@@ -162,3 +98,4 @@
 	</div>
 </div>
 <!-- end::Quick Sidebar -->
+

@@ -1,6 +1,7 @@
 package com.omniacom.omniapp.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -24,8 +25,8 @@ public class Operation implements Serializable {
 	@GeneratedValue( strategy = GenerationType.IDENTITY)
 	private long id;
 	private String name;
-	private String startDate;
-	private String endDate;
+	private Date startDate;
+	private Date endDate;
 	private int flag;
 	private long zohoId;
 	
@@ -56,20 +57,20 @@ public class Operation implements Serializable {
 
 	}
 	
-	public Operation(String name, String startDate, String endDate, int flag) {
+	public Operation(String name, Date startDate, Date endDate, int flag) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.flag = flag;
 	}
-	public Operation(String name, String startDate, String endDate, int flag, long zohoId) {
+	public Operation(String name, Date startDate, Date endDate, int flag, long zohoId) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.flag = flag;
 		this.zohoId = zohoId;
 	}
-	public Operation(long id, String name, String startDate, String endDate, int flag, long zohoId) {
+	public Operation(long id, String name, Date startDate, Date endDate, int flag, long zohoId) {
 		this.id = id;
 		this.name = name;
 		this.startDate = startDate;
@@ -92,13 +93,13 @@ public class Operation implements Serializable {
 	/**
 	 * @return the startDate
 	 */
-	public String getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
 	/**
 	 * @return the endDate
 	 */
-	public String getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
 	/**
@@ -128,13 +129,13 @@ public class Operation implements Serializable {
 	/**
 	 * @param startDate the startDate to set
 	 */
-	public void setStartDate(String startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 	/**
 	 * @param endDate the endDate to set
 	 */
-	public void setEndDate(String endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 	/**

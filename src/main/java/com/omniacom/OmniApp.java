@@ -145,36 +145,36 @@ public class OmniApp {
 	
 	@Autowired
 	UsersAPI usersApi;
-	private void testOperationRepo() {
-		Operation operation = new Operation("Operation1", "7-11-2017", "15-6-2018", 1);
-		Service service1 = new Service("service1", new Date(), 1, 2.2f);
-		Service service2 = new Service("service2", new Date(), 1, 2.2f);
-		operationRepo.save(operation);
-		service1.setOperation(operation);
-		service2.setOperation(operation);
-		serviceRepo.save(service1);
-		serviceRepo.save(service2);
-		
-		Comment comment1 = new Comment(new Date(), "xx");
-		comment1.setOperation(operation);
-		commentRepo.save(comment1);
-		
-		Snag snag1 = new Snag("snag", "cc", new Date(), "barcha");
-		snag1.setOperation(operation);
-		snagRepo.save(snag1);
-		
-		Snag snag2 = new Snag("snag2", "cc", new Date(), "barcha");
-		snag2.setOperation(operation);
-		snagRepo.save(snag2);
-		
-		System.out.println("Number of services:"+ operationRepo.findAllServices(operation).size());
-		System.out.println("Number of comments:"+ operationRepo.findAllComments(operation).size());
-		System.out.println("Number of snags:"+ operationRepo.findAllSnags(operation).size());
-		
-		
-		
-	}
-	
+//	private void testOperationRepo() {
+//		Operation operation = new Operation("Operation1", "7-11-2017", "15-6-2018", 1);
+//		Service service1 = new Service("service1", new Date(), 1, 2.2f);
+//		Service service2 = new Service("service2", new Date(), 1, 2.2f);
+//		operationRepo.save(operation);
+//		service1.setOperation(operation);
+//		service2.setOperation(operation);
+//		serviceRepo.save(service1);
+//		serviceRepo.save(service2);
+//		
+//		Comment comment1 = new Comment(new Date(), "xx");
+//		comment1.setOperation(operation);
+//		commentRepo.save(comment1);
+//		
+//		Snag snag1 = new Snag("snag", "cc", new Date(), "barcha");
+//		snag1.setOperation(operation);
+//		snagRepo.save(snag1);
+//		
+//		Snag snag2 = new Snag("snag2", "cc", new Date(), "barcha");
+//		snag2.setOperation(operation);
+//		snagRepo.save(snag2);
+//		
+//		System.out.println("Number of services:"+ operationRepo.findAllServices(operation).size());
+//		System.out.println("Number of comments:"+ operationRepo.findAllComments(operation).size());
+//		System.out.println("Number of snags:"+ operationRepo.findAllSnags(operation).size());
+//		
+//		
+//		
+//	}
+//	
 	@Autowired
 	private TaskRepository taskRepo;
 	

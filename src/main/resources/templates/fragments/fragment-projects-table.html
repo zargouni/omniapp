@@ -130,61 +130,46 @@
 				</div>
 			</div>
 			<!--end: Search Form -->
-
+			
 			<!--begin: Datatable -->
-
 			<div
-				class="m_datatable m-datatable m-datatable--default m-datatable--brand m-datatable--loaded"
-				id="auto_column_hide" style="">
+				class="m_datatable m-datatable m-datatable--default m-datatable--loaded"
+				id="ajax_data" style="">
 				<table class="m-datatable__table"
 					style="display: block; min-height: 300px; overflow-x: auto;">
 					<thead class="m-datatable__head">
 						<tr class="m-datatable__row" style="left: 0px;">
-							<th
-								class="m-datatable__cell m-datatable__toggle-detail m-datatable__cell--sort"><span
-								style="width: 21px;"></span></th>
+							<th data-field="RecordID"
+								class="m-datatable__cell--center m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 50px;">#</span></th>
 							<th data-field="OrderID"
-								class="m-datatable__cell m-datatable__cell--sort"><span
-								style="width: 150px;">Order ID</span></th>
-							<th data-field="ShipCountry"
-								class="m-datatable__cell m-datatable__cell--sort"><span
-								style="width: 150px;">Ship Country</span></th>
-							<th data-field="ShipCity"
-								class="m-datatable__cell m-datatable__cell--sort"><span
-								style="width: 110px;">Ship City</span></th>
-							<th data-field="Currency"
-								class="m-datatable__cell m-datatable__cell--sort"><span
-								style="width: 100px;">Currency</span></th>
-							<th data-field="ShipDate"
 								class="m-datatable__cell m-datatable__cell--sort"
-								data-sort="asc"><span style="width: 110px;">Ship
-									Date<i class="la la-arrow-up"></i>
-							</span></th>
-							<th data-field="Latitude"
-								class="m-datatable__cell m-datatable__cell--sort"
-								style="display: none;"><span style="width: 110px;">Latitude</span></th>
-							<th data-field="Longitude"
-								class="m-datatable__cell m-datatable__cell--sort"
-								style="display: none;"><span style="width: 110px;">Longitude</span></th>
-							<th data-field="Notes"
-								class="m-datatable__cell m-datatable__cell--sort"
-								style="display: none;"><span style="width: 350px;">Notes</span></th>
-							<th data-field="Department"
-								class="m-datatable__cell m-datatable__cell--sort"
-								style="display: none;"><span style="width: 110px;">Department</span></th>
-							<th data-field="Website"
-								class="m-datatable__cell m-datatable__cell--sort"
-								style="display: none;"><span style="width: 110px;">Website</span></th>
+								data-sort="asc"><span style="width: 110px;">Order ID<i
+									class="la la-arrow-up"></i></span></th>
 							<th data-field="TotalPayment"
-								class="m-datatable__cell m-datatable__cell--sort"
-								style="display: none;"><span style="width: 110px;">Total
-									Payment</span></th>
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 110px;">Payment</span></th>
+							<th data-field="ShipDate"
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 110px;">Ship Date</span></th>
+							<th data-field="PaymentDate"
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 150px;">Payment Date</span></th>
+							<th data-field="Latitude"
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 110px;">Latitude</span></th>
+							<th data-field="Longitude"
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 110px;">Longitude</span></th>
 							<th data-field="Status"
-								class="m-datatable__cell m-datatable__cell--sort"
-								style="display: none;"><span style="width: 110px;">Status</span></th>
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 110px;">Status</span></th>
 							<th data-field="Type"
-								class="m-datatable__cell m-datatable__cell--sort" style=""><span
+								class="m-datatable__cell m-datatable__cell--sort"><span
 								style="width: 110px;">Type</span></th>
+							<th data-field="Actions"
+								class="m-datatable__cell m-datatable__cell--sort"><span
+								style="width: 110px;">Actions</span></th>
 						</tr>
 					</thead>
 					<tbody class="m-datatable__body" style="">
@@ -193,8 +178,9 @@
 							<td class="m_project_details_sidebar_toggle"><a
 								class="m-datatable__toggle-detail" href="#"><i
 									class="fa fa-caret-right" style="width: 21px;"></i></a></td>
-							<td data-field="OrderID" class="m-datatable__cell"><a th:href="@{/project(id=${project.id})}"><span
-								th:text="${project.name}" style="width: 150px;"></span></a></td>
+							<td data-field="OrderID" class="m-datatable__cell"><a
+								th:href="@{/project(id=${project.id})}"><span
+									th:text="${project.name}" style="width: 150px;"></span></a></td>
 							<td data-field="ShipCountry" class="m-datatable__cell"><span
 								th:text="${project.client.name}" style="width: 150px;">NG
 									- Sapele</span></td>
@@ -227,11 +213,14 @@
 									class="m-badge m-badge--danger m-badge--dot"></span>&nbsp;<span
 									class="m--font-bold m--font-danger">Online</span></span></td>
 						</tr>
-						
 
 					</tbody>
 				</table>
+	
 			</div>
+
+
+
 			<!--end: Datatable -->
 
 

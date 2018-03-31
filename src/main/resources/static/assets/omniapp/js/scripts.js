@@ -54,6 +54,66 @@ function doAddProjectAjaxPost() {
 	});
 }
 
+function doAddOperationAjaxPost() {
+	// get the form values
+	var nameError = $('#operation_name_error');
+	var projectError = $('#operation_project_error');
+	var startDateError = $('#operation_startDate_error');
+	var endDateError = $('#operation_endDate_error');
+	var name = $('#operation_name').val();
+	var project = $('#select_project_new_operation').val();
+	var startDate = $('#m_datepicker_4_3').val();
+	var endDate = $('#m_datepicker_4_4').val();
+//	var currency = $('#project_currency').val();
+//	var owner = $('#project_owner').val();
+
+	nameError.hide('fast');
+	projectError.hide('fast');
+	startDateError.hide('fast');
+	endDateError.hide('fast');
+
+	$.ajax({
+		type : "POST",
+		url : '/add-operation',
+		data : "name=" + name + "&project=" + project + "&startDate=" + startDate
+				+ "&endDate=" + endDate,
+		success : function(response) {
+			// we have the response
+			
+			if (response.status == "SUCCESS") {
+				toastr.success("Operation Added successfully", "Well done!");
+
+				$('#operation_name').val('');
+				$('#select_project_new_operation').val('');
+				$('#m_datepicker_4_3').val('');
+				$('#m_datepicker_4_4').val('');
+
+				//$('#error').hide('slow');
+			} else {
+				//toastr.error("Couldn't add operation", "Error");
+
+				for (i = 0; i < response.result.length; i++) {
+					console.log(response.result[i].code);
+					if (response.result[i].code == "operation.name.empty")
+						nameError.show('slow');
+					if (response.result[i].code == "operation.project.empty")
+						projectError.show('slow');
+					if (response.result[i].code == "operation.startDate.empty")
+						startDateError.show('slow');
+					if (response.result[i].code == "operation.endDate.empty")
+						endDateError.show('slow');
+					if (response.result[i].code == "operation.date.nomatch")
+						toastr.warning("Dates don't match", "Warning");
+				}
+
+			}
+		},
+		error : function(e) {
+			toastr.error("Couldn't add operation", "Server Error");
+		}
+	});
+}
+
 function doAddTaskAjaxPost() {
 	// get the form values
 	var nameError = $('#task_name_error');
@@ -118,72 +178,12 @@ function doAddTaskAjaxPost() {
 	});
 }
 
-function projectDashboardTaskPieChart() {
-	var completed;
-	var onGoing;
-
-	$.ajax({
-		type : "GET",
-		url : '/get-global-task-status',
-		success : function(response) {
-			// we have the response
-			if (response.status == "SUCCESS") {
-				completed = response.result[0];
-				onGoing = response.result[1];
-			} else {
-				completed = 0;
-				onGoing = 0;
-
-			}
-		},
-		error : function(e) {
-			alert('Error: ' + e);
-		}
-	});
-
-	google.charts.setOnLoadCallback(drawChart, true);
-
-	function drawChart() {
-
-		var data = google.visualization.arrayToDataTable([
-				[ 'Task', 'Status' ], [ 'Open', onGoing ],
-				[ 'Closed', completed ],
-
-		]);
-
-		var options = {
-			width : 239,
-			height : 200,
-			pieHole : 0.4,
-			pieSliceTextStyle : {
-				color : 'black',
-			},
-			colors : [ '#f4516c', '#34bfa3' ],
-			fontName : 'Poppins',
-			legend : {
-				position : 'bottom'
-			}
-		};
-		if (completed == 0 && onGoing == 0) {
-			$("#piechart_error").show();
-
-		} else {
-			$("#piechart_error").hide();
-			var chart = new google.visualization.PieChart(document
-					.getElementById('piechart'));
-
-			chart.draw(data, options);
-		}
-	}
-
-}
-
 function projectDynamicContent() {
 
 	$("#m_dynamic_content_project").load("/dashboard");
 
 	$("#project_dashboard_toggle").on("click", function() {
-		$("#m_dynamic_content_project").load("/dashboard",projectDashboardTaskPieChart());
+		$("#m_dynamic_content_project").load("/dashboard");
 	});
 
 	$("#project_feed_toggle").on("click", function() {
@@ -252,6 +252,7 @@ function populateSelectOwnedProjects() {
 				html_text += "<option value='" + response[0].id + "'>"
 						+ response[0].name + "</option>";
 				$("#select_project_new_task").html(html_text);
+				$("#select_project_new_operation").html(html_text);
 				updateSelectServices();
 			} else {
 				for (i = 0; i < response.length; i++) {
@@ -264,13 +265,18 @@ function populateSelectOwnedProjects() {
 							+ "</option>";
 				}
 				$("#select_project_new_task").html(html_text);
+				$("#select_project_new_operation").html(html_text);
+
 			}
+			$("#select_project_new_operation").selectpicker('refresh');
 
 			$("#select_project_new_task").selectpicker('refresh');
 
 		},
 		error : function(e) {
 			$("#select_project_new_task").html(
+					"<option value=''>Nothing selected</option>");
+			$("#select_project_new_operation").html(
 					"<option value=''>Nothing selected</option>");
 
 		}
@@ -282,18 +288,55 @@ function populateSidebarAdd() {
 	populateSelectOwnedProjects();
 }
 
+function projectDashboardTaskPieChart() {
+	function drawChart() {
+
+		var data = google.visualization.arrayToDataTable([
+				[ 'Task', 'Status' ], [ 'Open', onGoing ],
+				[ 'Closed', completed ],
+
+		]);
+
+		var options = {
+			width : 239,
+			height : 200,
+			pieHole : 0.4,
+			pieSliceTextStyle : {
+				color : 'black',
+			},
+			colors : [ '#f4516c', '#34bfa3' ],
+			fontName : 'Poppins',
+			legend : {
+				position : 'bottom'
+			}
+		};
+		if (completed == 0 && onGoing == 0) {
+			$("#piechart_error").show();
+
+		} else {
+			$("#piechart_error").hide();
+			var chart = new google.visualization.PieChart(document
+					.getElementById('piechart'));
+
+			chart.draw(data, options);
+		}
+	}
+	google.charts.load('current', {
+		'packages' : [ 'corechart' ]
+	});
+	google.charts.setOnLoadCallback(drawChart);
+}
+
+
+
+
 $(document).ready(function() {
+		
 	$("#select_service_div").hide();
 
 	$("#select_project_new_task").change(function() {
 		updateSelectServices();
 	});
-
-	google.charts.load('current', {
-		'packages' : [ 'corechart' ]
-	});
-
-	projectDashboardTaskPieChart();
 
 	projectDynamicContent();
 	toastr.options = {

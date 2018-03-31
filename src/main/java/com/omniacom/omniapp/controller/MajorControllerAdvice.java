@@ -20,14 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.service.ClientService;
+import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
 import com.omniacom.omniapp.service.TaskService;
 import com.omniacom.omniapp.service.UserService;
 import com.omniacom.omniapp.validator.JsonResponse;
+import com.omniacom.omniapp.validator.OperationValidator;
 import com.omniacom.omniapp.validator.ProjectValidator;
 import com.omniacom.omniapp.validator.TaskValidator;
 import com.omniacom.omniapp.zohoAPI.ProjectsAPI;
@@ -44,6 +47,9 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private ProjectValidator projectValidator;
+
+	@Autowired
+	private OperationValidator operationValidator;
 	
 	@Autowired
 	private TaskValidator taskValidator;
@@ -52,17 +58,35 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	private ProjectService projectService;
 
 	@Autowired
+	private OperationService operationService;
+
+	@Autowired
 	private ClientService clientService;
 
 	@Autowired
 	private UserService userService;
 
 	@Autowired
-	private ProjectsAPI projectsApi;
-
-	@Autowired
 	private TaskService taskService;
 
+	@Autowired
+	private ProjectsAPI projectsApi;
+	
+	@InitBinder("project")
+	public void setupProjectValidator(WebDataBinder binder) {
+	    binder.addValidators(projectValidator);
+	}
+	
+	@InitBinder("task")
+	protected void setupTaskValidator(WebDataBinder binder) {
+		binder.addValidators(taskValidator);
+	}
+	
+	@InitBinder("operation")
+	protected void setupOperationValidator(WebDataBinder binder) {
+		binder.addValidators(operationValidator);
+	}
+	
 	@ModelAttribute
 	public void addAtributes(Model model) {
 		model.addAttribute("TASK_STATUS_ONGOING", this.TASK_STATUS_ONGOING);
@@ -72,6 +96,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		model.addAttribute("task", new Task());
 		model.addAttribute("selectedProject", new Project());
 		model.addAttribute("sessionUser", userService.getSessionUser());
+		model.addAttribute("newOperation", new Operation());
 
 	}
 
@@ -108,15 +133,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		return "redirect:/home";
 	}
 
-	@InitBinder("project")
-	public void setupBinder(WebDataBinder binder) {
-	    binder.addValidators(projectValidator);
-	}
 	
-	@InitBinder("task")
-	protected void initBinder(WebDataBinder binder) {
-		binder.addValidators(taskValidator);
-	}
 
 	@PostMapping("/add-project")
 	public @ResponseBody JsonResponse addProject(@ModelAttribute("project") @Validated Project project,
@@ -145,7 +162,25 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JsonResponse response = new JsonResponse();
 
 		if (!result.hasErrors()) {
+			task.setStatus(TASK_STATUS_ONGOING);
 			taskService.addTask(task);
+			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+	
+	@PostMapping("/add-operation")
+	public @ResponseBody JsonResponse addOperation(@Validated @ModelAttribute("operation") Operation operation, BindingResult result)
+			throws IOException {
+
+		JsonResponse response = new JsonResponse();
+
+		if (!result.hasErrors()) {
+			operationService.addOperation(operation);
 			response.setStatus("SUCCESS");
 		} else {
 			response.setStatus("FAIL");

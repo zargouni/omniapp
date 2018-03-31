@@ -24,10 +24,12 @@ public class TaskValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "endDate", "task.endDate.empty");
 
 		Task task = (Task) target;
-		if(task.getStartDate() != null && task.getEndDate() != null)
-		if (task.getStartDate().after(task.getEndDate()))
-			errors.rejectValue("startDate", "task.date.nomatch");
+		if (task.getStartDate() != null && task.getEndDate() != null) {
 
+			if (task.getStartDate().after(task.getEndDate()))
+				errors.rejectValue("startDate", "task.date.nomatch");
+			
+		}
 	}
 
 }

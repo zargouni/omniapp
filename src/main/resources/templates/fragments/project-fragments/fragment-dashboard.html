@@ -18,9 +18,20 @@
 							<!--begin::Total Profit-->
 							<div class="m-widget24">
 								<div class="m-widget24__item">
-									<div id="piechart"></div>
 
-									<div id="piechart_error" style="display: none;">
+									<div th:if="${taskCount != 0}" id="piechart">
+										<script th:inline="javascript">
+											/*<![CDATA[*/
+											var completed = /*[[${completedTasksCount}]]*/'completed';
+											var onGoing = /*[[${onGoingTasksCount}]]*/'On going';
+											/*]]>*/
+											projectDashboardTaskPieChart(
+													completed, onGoing);
+										</script>
+									</div>
+
+
+									<div th:if="${taskCount == 0}">
 										<div style="display: table-cell; vertical-align: middle;">
 
 											<table width="90%" align="center" border="0" cellpadding="0"
