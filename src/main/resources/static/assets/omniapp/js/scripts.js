@@ -64,8 +64,8 @@ function doAddOperationAjaxPost() {
 	var project = $('#select_project_new_operation').val();
 	var startDate = $('#m_datepicker_4_3').val();
 	var endDate = $('#m_datepicker_4_4').val();
-//	var currency = $('#project_currency').val();
-//	var owner = $('#project_owner').val();
+	// var currency = $('#project_currency').val();
+	// var owner = $('#project_owner').val();
 
 	nameError.hide('fast');
 	projectError.hide('fast');
@@ -75,11 +75,11 @@ function doAddOperationAjaxPost() {
 	$.ajax({
 		type : "POST",
 		url : '/add-operation',
-		data : "name=" + name + "&project=" + project + "&startDate=" + startDate
-				+ "&endDate=" + endDate,
+		data : "name=" + name + "&project=" + project + "&startDate="
+				+ startDate + "&endDate=" + endDate,
 		success : function(response) {
 			// we have the response
-			
+
 			if (response.status == "SUCCESS") {
 				toastr.success("Operation Added successfully", "Well done!");
 
@@ -88,9 +88,9 @@ function doAddOperationAjaxPost() {
 				$('#m_datepicker_4_3').val('');
 				$('#m_datepicker_4_4').val('');
 
-				//$('#error').hide('slow');
+				// $('#error').hide('slow');
 			} else {
-				//toastr.error("Couldn't add operation", "Error");
+				// toastr.error("Couldn't add operation", "Error");
 
 				for (i = 0; i < response.result.length; i++) {
 					console.log(response.result[i].code);
@@ -327,11 +327,181 @@ function projectDashboardTaskPieChart() {
 	google.charts.setOnLoadCallback(drawChart);
 }
 
+function wizardSaveClient() {
+	name = $('#modal_client_name').val();
+	email = $('#modal_client_email').val();
+	phone = $('#modal_client_phone').val();
+	country = $('#modal_client_country').val();
+	address = $('#modal_client_address').val();
 
+	nameError = $('#modal_client_name_error');
+	var result = false;
+
+	$.ajax({
+		type : "POST",
+		url : '/wizard-save-client',
+		data : "name=" + name+"&email="+email+"&phone="+phone+"&country="+country+"&address="+address,
+		async : false,
+		success : function(response) {
+			// we have the response
+			if (response.status == "SUCCESS") {
+				//toastr.success("Client saved successfully", "Well done!");
+				result = true;
+
+			}else if(response.status == "FAIL" && response.result == "existing.client"){
+				toastr.error("This client exists already", "Error");
+			} else {
+				toastr.warning("Please fill client informations", "Warning");
+
+				for (i = 0; i < response.result.length; i++) {
+
+					if (response.result[i].code == "client.name.empty")
+						nameError.show('slow');
+
+				}
+				result = false;
+			}
+		},
+		error : function(e) {
+			toastr.error("Couldn't add client", "Server Error");
+			result = false;
+		}
+	});
+
+	return result;
+
+}
+
+function wizardSaveSite(name,long,lat){
+		var result = false;
+
+	$.ajax({
+		type : "POST",
+		url : '/wizard-save-site',
+		data : "name=" + name +"&longitude="+ long +"&latitude="+ lat,
+		async : false,
+		success : function(response) {
+			// we have the response
+			if (response.status == "SUCCESS") {
+				//toastr.success("sites saved successfully", "Well done!");
+				result = true;
+
+			} else {
+				 toastr.warning("Please fill all site informations", "Warning");
+
+				result = false;
+			}
+		},
+		error : function(e) {
+			toastr.error("Couldn't add sites", "Server Error");
+			result = false;
+		}
+	});
+
+	return result;
+}
+
+
+
+function wizardSaveManualAddedSites() {
+	var result = false;
+	jQuery('.wizard-form-site').each(function(e)
+			{
+		var name = $(this).find('.wizard-form-site-name').val();
+		var long = $(this).find('.wizard-form-site-longitude').val();
+		var lat = $(this).find('.wizard-form-site-latitude').val();
+		result = wizardSaveSite(name,long,lat);
+			});
+
+	return result;
+}
+
+function ClientWizardPublish(){
+	$.ajax({
+		type : "POST",
+		url : '/client-wizard-publish',
+		success : function(response) {
+			// we have the response
+			if(response == true)
+				toastr.success("New Client added successfully", "Well done!");
+				
+
+			
+		},
+		error : function(e) {
+			toastr.error("Couldn't add client", "Server Error");
+			result = false;
+		}
+	});
+}
+
+function populateConfirmationSiteDetails(){
+	$.ajax({
+		type : "GET",
+		url : '/get-added-sites-wizard',
+	    success : function(response) {
+
+			var html_text = "";
+			for (i = 0; i < response.length; i++) {
+				
+				html_text += "<div class='form-group m-form__group m-form__group--sm row'>"
+				+"<label class='col-xl-3 col-lg-3 col-form-label'>Site name:</label>"
+				+"<div class='col-xl-9 col-lg-9'>"
+				+"	<span class='m-form__control-static'>"+ response[i].name +"</span>"
+				+"</div>"
+			+"</div>"
+			+"<div class='form-group m-form__group m-form__group--sm row'>"
+			+"	<label class='col-xl-3 col-lg-3 col-form-label'>Longitude:</label>"
+			+"	<div class='col-xl-9 col-lg-9'>"
+			+"		<span class='m-form__control-static'>"+ response[i].longitude +"</span>"
+			+"	</div>"
+			+"</div>"
+			+"<div"
+			+"	class='form-group m-form__group m-form__group--sm row'>"
+			+"	<label class='col-xl-3 col-lg-3 col-form-label'>Latitude:</label>"
+			+"	<div class='col-xl-9 col-lg-9'>"
+			+"		<span class='m-form__control-static'>"+ response[i].latitude +"</span>"
+			+"	</div>"
+			+"</div>";
+				
+
+			}
+			$("#confirm_site_details").append(html_text);
+		},
+		error : function(e) {
+			alert('Error: confirmation step wizard ' + e);
+		}
+	});
+
+}
+
+function populateConfirmationClientDetails(){
+	$.ajax({
+		type : "GET",
+		url : '/get-added-client-wizard',
+	    success : function(response) {
+
+			$("#confirm_client_name").html(response.name);
+			$("#confirm_client_email").html(response.email);
+			$("#confirm_client_phone").html(response.phone);
+			$("#confirm_client_country").html(response.country);
+			$("#confirm_client_address").html(response.address);
+			
+		},
+		error : function(e) {
+			alert('Error: confirmation step wizard ' + e);
+		}
+	});
+}
+
+function populateConfirmationStepWizard(){
+	populateConfirmationClientDetails();
+	populateConfirmationSiteDetails();
+}
 
 
 $(document).ready(function() {
-		
+
 	$("#select_service_div").hide();
 
 	$("#select_project_new_task").change(function() {
@@ -359,5 +529,4 @@ $(document).ready(function() {
 
 });
 
-// == Class definition
 

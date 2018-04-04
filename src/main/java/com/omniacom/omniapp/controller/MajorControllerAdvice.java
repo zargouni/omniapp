@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -20,18 +21,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
+import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.service.ClientService;
 import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
+import com.omniacom.omniapp.service.SiteService;
 import com.omniacom.omniapp.service.TaskService;
 import com.omniacom.omniapp.service.UserService;
+import com.omniacom.omniapp.validator.ClientValidator;
 import com.omniacom.omniapp.validator.JsonResponse;
 import com.omniacom.omniapp.validator.OperationValidator;
 import com.omniacom.omniapp.validator.ProjectValidator;
+import com.omniacom.omniapp.validator.SiteValidator;
 import com.omniacom.omniapp.validator.TaskValidator;
 import com.omniacom.omniapp.zohoAPI.ProjectsAPI;
 
@@ -50,9 +56,15 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private OperationValidator operationValidator;
-	
+
 	@Autowired
 	private TaskValidator taskValidator;
+
+	@Autowired
+	private ClientValidator clientValidator;
+
+	@Autowired
+	private SiteValidator siteValidator;
 
 	@Autowired
 	private ProjectService projectService;
@@ -71,22 +83,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private ProjectsAPI projectsApi;
-	
-	@InitBinder("project")
-	public void setupProjectValidator(WebDataBinder binder) {
-	    binder.addValidators(projectValidator);
-	}
-	
-	@InitBinder("task")
-	protected void setupTaskValidator(WebDataBinder binder) {
-		binder.addValidators(taskValidator);
-	}
-	
-	@InitBinder("operation")
-	protected void setupOperationValidator(WebDataBinder binder) {
-		binder.addValidators(operationValidator);
-	}
-	
+
 	@ModelAttribute
 	public void addAtributes(Model model) {
 		model.addAttribute("TASK_STATUS_ONGOING", this.TASK_STATUS_ONGOING);
@@ -97,10 +94,21 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		model.addAttribute("selectedProject", new Project());
 		model.addAttribute("sessionUser", userService.getSessionUser());
 		model.addAttribute("newOperation", new Operation());
+		model.addAttribute("client", new Client());
+		model.addAttribute("site", new Site());
+		model.addAttribute("addedClient", this.newClient);
 
 	}
 
 	// private List<Service> selectedProjectServices;
+
+	@GetMapping("/")
+	public String index(Model model) {
+		if (userService.getSessionUser().getZohoToken() == null)
+			return "redirect:/zoho";
+
+		return "redirect:/home";
+	}
 
 	@GetMapping("/set-select-owned-projects")
 	public @ResponseBody JSONArray setSelectOwnedProjects() {
@@ -124,16 +132,6 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JSONArray json = JSONArray.fromObject(jsonArray);
 		return json;
 	}
-
-	@GetMapping("/")
-	public String index(Model model) {
-		if (userService.getSessionUser().getZohoToken() == null)
-			return "redirect:/zoho";
-
-		return "redirect:/home";
-	}
-
-	
 
 	@PostMapping("/add-project")
 	public @ResponseBody JsonResponse addProject(@ModelAttribute("project") @Validated Project project,
@@ -172,10 +170,10 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		return response;
 	}
-	
+
 	@PostMapping("/add-operation")
-	public @ResponseBody JsonResponse addOperation(@Validated @ModelAttribute("operation") Operation operation, BindingResult result)
-			throws IOException {
+	public @ResponseBody JsonResponse addOperation(@Validated @ModelAttribute("operation") Operation operation,
+			BindingResult result) throws IOException {
 
 		JsonResponse response = new JsonResponse();
 
@@ -190,14 +188,131 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		return response;
 	}
 
+	List<Site> addedSiteList;
+	private Client newClient;
+
+	@PostMapping("/wizard-save-client")
+	public @ResponseBody JsonResponse saveClient(@Validated @ModelAttribute("client") Client client,
+			BindingResult result) throws IOException {
+		addedSiteList = new ArrayList<Site>();
+		JsonResponse response = new JsonResponse();
+
+		if (!result.hasErrors()) {
+			if (!clientService.clientExists(client)) {
+				this.newClient = client;
+				response.setStatus("SUCCESS");
+			}else {
+				response.setStatus("FAIL");
+				response.setResult("existing.client");
+			}
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+
+	@GetMapping("/get-added-sites-wizard")
+	public @ResponseBody JSONArray getAddedSites() {
+		List<JSONObject> jsonArray = new ArrayList<JSONObject>();
+		for (Site s : addedSiteList) {
+			jsonArray.add(jsonSite(s));
+		}
+		JSONArray json = JSONArray.fromObject(jsonArray);
+		return json;
+	}
+	
+	@GetMapping("/get-added-client-wizard")
+	public @ResponseBody JSONObject getAddedClient() {
+		
+		JSONObject json = JSONObject.fromObject(jsonClient(newClient));
+		return json;
+	}
+
+	@Autowired
+	private SiteService siteService;
+
+	@PostMapping("/wizard-save-site")
+	public @ResponseBody JsonResponse saveSite(@Validated @ModelAttribute("site") Site site, BindingResult result)
+			throws IOException {
+
+		JsonResponse response = new JsonResponse();
+
+		if (!result.hasErrors()) {
+			site.setClient(newClient);
+			if (!addedSiteList.contains(site))
+				addedSiteList.add(site);
+
+			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+
+	@PostMapping("/client-wizard-publish")
+	public @ResponseBody boolean saveNewClientWizard() {
+		clientService.addClient(newClient);
+		siteService.addSites(addedSiteList);
+
+		addedSiteList.clear();
+		return true;
+	}
+
+	// Convert objects to json format
 	public JSONObject jsonService(Service service) {
 		JSONObject jsonService = new JSONObject().element("id", service.getId()).element("name", service.getName());
 		return jsonService;
+	}
+	
+	public JSONObject jsonClient(Client client) {
+		JSONObject jsonClient = new JSONObject()
+						.element("name", client.getName())
+						.element("email", client.getEmail())
+						.element("phone", client.getPhone())
+						.element("country", client.getCountry())
+						.element("address", client.getAddress());
+		return jsonClient;
 	}
 
 	public JSONObject jsonProject(Project project) {
 		JSONObject jsonProject = new JSONObject().element("id", project.getId()).element("name", project.getName());
 		return jsonProject;
+	}
+
+	public JSONObject jsonSite(Site site) {
+		JSONObject jsonSite = new JSONObject().element("name", site.getName()).element("longitude", site.getLongitude())
+				.element("latitude", site.getLatitude());
+		return jsonSite;
+	}
+
+	// Set validators
+	@InitBinder("project")
+	public void setProjectValidator(WebDataBinder binder) {
+		binder.addValidators(projectValidator);
+	}
+
+	@InitBinder("task")
+	protected void setTaskValidator(WebDataBinder binder) {
+		binder.addValidators(taskValidator);
+	}
+
+	@InitBinder("operation")
+	protected void setOperationValidator(WebDataBinder binder) {
+		binder.addValidators(operationValidator);
+	}
+
+	@InitBinder("client")
+	protected void setClientValidator(WebDataBinder binder) {
+		binder.addValidators(clientValidator);
+	}
+
+	@InitBinder("site")
+	protected void setSiteValidator(WebDataBinder binder) {
+		binder.addValidators(siteValidator);
 	}
 
 }

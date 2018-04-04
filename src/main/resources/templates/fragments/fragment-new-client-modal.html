@@ -1,387 +1,421 @@
 <!-- Begin :: Modal New Client Wizard -->
-	<!--  TODO -->
-	<div th:fragment="new-client-modal" class="modal fade show" id="m_modal_4" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content">
+<!--  TODO -->
+<div th:fragment="new-client-modal" class="modal fade show"
+	id="m_modal_4" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
 
-				<div class="modal-body">
+			<div class="modal-body">
 
-					<div
-						class="m-wizard m-wizard--2 m-wizard--success m-wizard--step-first"
-						id="m_wizard">
-						<!--begin: Message container -->
-						<div class="m-portlet__padding-x">
-							<!-- Here you can put a message or alert -->
-						</div>
-						<!--end: Message container -->
-						<!--begin: Form Wizard Head -->
-						<div class="m-wizard__head m-portlet__padding-x">
-							<!--begin: Form Wizard Progress -->
-							<div class="m-wizard__progress">
-								<div class="progress">
-									<div class="progress-bar" role="progressbar"
-										aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-								</div>
+
+				<div
+					class="m-wizard m-wizard--2 m-wizard--success m-wizard--step-first"
+					id="m_wizard">
+					<!--begin: Message container -->
+					<div class="m-portlet__padding-x">
+						<!-- Here you can put a message or alert -->
+					</div>
+					<!--end: Message container -->
+					<!--begin: Form Wizard Head -->
+					<div class="m-wizard__head m-portlet__padding-x">
+						<!--begin: Form Wizard Progress -->
+						<div class="m-wizard__progress">
+							<div class="progress">
+								<div class="progress-bar" role="progressbar" aria-valuenow="100"
+									aria-valuemin="0" aria-valuemax="100"></div>
 							</div>
-							<!--end: Form Wizard Progress -->
-							<!--begin: Form Wizard Nav -->
-							<div class="m-wizard__nav">
-								<div class="m-wizard__steps">
-									<div class="m-wizard__step m-wizard__step--current"
-										data-wizard-target="#m_wizard_form_step_1">
-										<a href="#" class="m-wizard__step-number"> <span><i
-												class="fa  flaticon-placeholder"></i></span>
-										</a>
-										<div class="m-wizard__step-info">
-											<div class="m-wizard__step-title">Client Information</div>
+						</div>
+						<!--end: Form Wizard Progress -->
+						<!--begin: Form Wizard Nav -->
+						<div class="m-wizard__nav">
+							<div class="m-wizard__steps" style="pointer-events: none;">
+								<div class="m-wizard__step m-wizard__step--current"
+									data-wizard-target="#m_wizard_form_step_1">
+									<a href="#" class="m-wizard__step-number"> <span><i
+											class="fa  flaticon-placeholder"></i></span>
+									</a>
+									<div class="m-wizard__step-info">
+										<div class="m-wizard__step-title">Client Information</div>
 
-										</div>
-									</div>
-									<div class="m-wizard__step"
-										data-wizard-target="#m_wizard_form_step_2">
-										<a href="#" class="m-wizard__step-number"> <span><i
-												class="fa  flaticon-layers"></i></span>
-										</a>
-										<div class="m-wizard__step-info">
-											<div class="m-wizard__step-title">Sites</div>
-
-										</div>
-									</div>
-									<div class="m-wizard__step"
-										data-wizard-target="#m_wizard_form_step_3">
-										<a href="#" class="m-wizard__step-number"> <span><i
-												class="fa  flaticon-layers"></i></span>
-										</a>
-										<div class="m-wizard__step-info">
-											<div class="m-wizard__step-title">Confirmation</div>
-
-										</div>
 									</div>
 								</div>
+								<div class="m-wizard__step"
+									data-wizard-target="#m_wizard_form_step_2">
+									<a href="#" class="m-wizard__step-number"> <span><i
+											class="fa  flaticon-layers"></i></span>
+									</a>
+									<div class="m-wizard__step-info">
+										<div class="m-wizard__step-title">Sites</div>
+
+									</div>
+								</div>
+								<div class="m-wizard__step"
+									data-wizard-target="#m_wizard_form_step_3">
+									<a href="#" class="m-wizard__step-number"> <span><i
+											class="fa  flaticon-layers"></i></span>
+									</a>
+									<div class="m-wizard__step-info">
+										<div class="m-wizard__step-title">Confirmation</div>
+
+									</div>
+								</div>
 							</div>
-							<!--end: Form Wizard Nav -->
 						</div>
-						<!--end: Form Wizard Head -->
-						<!--begin: Form Wizard Form-->
-						<div class="m-wizard__form">
-							<!--
-                1) Use m-form--label-align-left class to alight the form input lables to the right
-                2) Use m-form--state class to highlight input control borders on form validation
-                -->
-							<form class="m-form m-form--label-align-left- m-form--state-"
-								id="m_form" novalidate="novalidate">
-								<!--begin: Form Body -->
-								<div class="m-portlet__body">
-									<!--begin: Form Wizard Step 1-->
-									<div class="m-wizard__form-step m-wizard__form-step--current"
-										id="m_wizard_form_step_1">
-										<div class="row">
-											<div class="col-xl-8 offset-xl-2">
-												<div class="m-form__section m-form__section--first">
+						<!--end: Form Wizard Nav -->
+					</div>
+					<!--end: Form Wizard Head -->
+					<!--begin: Form Wizard Form-->
 
-													<form class="m-form">
-														<div class="m-portlet__body">
-															<div class="form-group m-form__group row">
 
-																<div class="col-lg-4">
-																	<label for="">Client Name : </label>
+					<div class="m-wizard__form">
 
-																</div>
-																<div class="col-lg-8">
-																	<input type="text" class="form-control m-input">
-																</div>
+						<form class="m-form m-form--label-align-left- m-form--state-"
+							id="m_form" target="noTarget">
+
+							<!--begin: Form Body -->
+							<div class="m-portlet__body">
+
+								<!--begin: Form Wizard Step 1-->
+								<div class="m-wizard__form-step m-wizard__form-step--current"
+									id="m_wizard_form_step_1">
+									<div class="row">
+										<div class="col-xl-8 offset-xl-2">
+											<div class="m-form__section m-form__section--first">
+
+												<form class="m-form">
+													<div class="m-portlet__body">
+														<div class="form-group m-form__group row">
+
+															<div class="col-lg-4">
+																<label for="">Client Name : </label>
+
 															</div>
+															<div class="col-lg-8">
+																<input id="modal_client_name" type="text"
+																	class="form-control m-input">
+																<div id="modal_client_name_error"
+																	class="form-control-feedback"
+																	style="color: red; float: right; display: none;">Please
+																	enter a valid client name</div>
+															</div>
+														</div>
 
-															<!-- Begin::Additional Client Infos -->
-															<div class="m-accordion__item">
-																<div class="m-accordion__item-head" role="tab"
-																	id="m_accordion_7_item_2_head" data-toggle="collapse"
-																	href="#m_accordion_7_item_2_body" aria-expanded="true"
-																	style="text-align: right; color: red;">
-																	<span class="m-accordion__item-icon"><i
-																		class="fa flaticon-list-3"></i></span> <span
-																		class="m-accordion__item-title">Additional
-																		client informations ?</span> <span
-																		class="m-accordion__item-mode"></span>
+														<!-- Begin::Additional Client Infos -->
+														<div class="m-accordion__item">
+															<div class="m-accordion__item-head" role="tab"
+																id="m_accordion_7_item_2_head" data-toggle="collapse"
+																href="#m_accordion_7_item_2_body" aria-expanded="true"
+																style="text-align: right; color: red;">
+																<span class="m-accordion__item-icon"><i
+																	class="fa flaticon-list-3"></i></span> <span
+																	class="m-accordion__item-title">Additional
+																	client informations ?</span> <span
+																	class="m-accordion__item-mode"></span>
 
-																</div>
-																<br />
-																<div class="m-accordion__item-body collapse hide"
-																	id="m_accordion_7_item_2_body" role="tabpanel"
-																	aria-labelledby="m_accordion_7_item_2_head"
-																	data-parent="#m_accordion_7" style="">
-																	<div class="m-accordion__item-content">
-																		<div class="m-form__group form-group">
-																			<div class="form-group m-form__group row">
+															</div>
+															<br />
+															<div class="m-accordion__item-body collapse hide"
+																id="m_accordion_7_item_2_body" role="tabpanel"
+																aria-labelledby="m_accordion_7_item_2_head"
+																data-parent="#m_accordion_7" style="">
+																<div class="m-accordion__item-content">
+																	<div class="m-form__group form-group">
+																		<div class="form-group m-form__group row">
 
-																				<div class="col-lg-4">
-																					<label for="">Address :</label>
+																			<div class="col-lg-4">
+																				<label for="">Email :</label>
 
-																				</div>
-																				<div class="col-lg-8">
-																					<input type="text" class="form-control m-input">
-																				</div>
 																			</div>
-																			<div class="form-group m-form__group row">
-
-																				<div class="col-lg-4">
-																					<label for="">Phone :</label>
-
-																				</div>
-																				<div class="col-lg-8">
-																					<input type="text" class="form-control m-input">
-																				</div>
+																			<div class="col-lg-8">
+																				<input id="modal_client_email" type="text"
+																					class="form-control m-input">
 																			</div>
-
 																		</div>
+																		<div class="form-group m-form__group row">
+
+																			<div class="col-lg-4">
+																				<label for="">Phone :</label>
+
+																			</div>
+																			<div class="col-lg-8">
+																				<input id="modal_client_phone" type="text"
+																					class="form-control m-input">
+																			</div>
+																		</div>
+																		<div class="form-group m-form__group row">
+
+																			<div class="col-lg-4">
+																				<label for="">Country :</label>
+
+																			</div>
+																			<div class="col-lg-8">
+																				<input id="modal_client_country" type="text" class="form-control m-input">
+																			</div>
+																		</div>
+																		
+																		
+																		<div class="form-group m-form__group row">
+
+																			<div class="col-lg-4">
+																				<label for="">Address :</label>
+
+																			</div>
+																			<div class="col-lg-8">
+																				<input id="modal_client_address" type="text" class="form-control m-input">
+																			</div>
+																		</div>
+																		
+
 																	</div>
 																</div>
-
-
 															</div>
-															<!--  End:: Additional Client Infos -->
 
 
 														</div>
+														<!--  End:: Additional Client Infos -->
 
 
-													</form>
+													</div>
 
-												</div>
+
+												</form>
 
 											</div>
+
 										</div>
 									</div>
-									<!--end: Form Wizard Step 1-->
-									<!--begin: Form Wizard Step 2-->
-									<div class="m-wizard__form-step" id="m_wizard_form_step_2">
-										<div class="row">
-											<div class="col-xl-8 offset-lg-2">
+								</div>
+								<!--end: Form Wizard Step 1-->
 
-												<div class="m-form__section m-form__section--first">
+								<!--begin: Form Wizard Step 2-->
+								<div class="m-wizard__form-step" id="m_wizard_form_step_2">
+									<div class="row">
+										<div class="col-xl-8 offset-lg-2">
 
-													<div
-														style="margin-top: auto; margin-bottom: auto; text-align: center;">
-														<a href="#"
-															class="btn btn-success btn-lg m-btn m-btn m-btn--icon">
-															<span> <i class="la la-file-excel-o"></i> <span>Import
-																	from .xls file</span>
-														</span>
-														</a>
-													</div>
+											<div class="m-form__section m-form__section--first">
+
+												<div
+													style="margin-top: auto; margin-bottom: auto; text-align: center;">
+													<a href="#"
+														class="btn btn-success btn-lg m-btn m-btn m-btn--icon">
+														<span> <i class="la la-file-excel-o"></i> <span>Import
+																from .xls file</span>
+													</span>
+													</a>
 												</div>
+											</div>
 
-												<h3 class="m-form__heading-title"
-													style="margin-top: auto; margin-bottom: auto; text-align: center; text-size: 24px;">
-													OR</h3>
-												<div class="m-form__section ">
-													<div class="m-form__heading">
-														<h3 class="m-form__heading-title">Add sites</h3>
-													</div>
-
-
-													<div id="m_repeater_2">
-
-														<div
-															class="m-scrollable mCustomScrollbar _mCS_3 mCS-autoHide"
-															data-scrollbar-shown="true" data-scrollable="true"
-															data-max-height="200"
-															style="max-height: 200px; height: 200px; position: relative; overflow: visible;">
-															<div id="mCSB_3"
-																class="mCustomScrollBox mCS-minimal-dark mCSB_vertical mCSB_outside"
-																tabindex="0" style="max-height: none;">
-																<div id="mCSB_3_container" class="mCSB_container"
-																	style="position: relative; top: -240px; left: 0px;"
-																	dir="ltr"></div>
-															</div>
-															<div id="mCSB_3_scrollbar_vertical"
-																class="mCSB_scrollTools mCSB_3_scrollbar mCS-minimal-dark mCSB_scrollTools_vertical"
-																style="display: block;">
-																<div class="mCSB_draggerContainer">
-																	<div id="mCSB_3_dragger_vertical" class="mCSB_dragger"
-																		style="position: absolute; min-height: 50px; display: block; height: 57px; max-height: 180px; top: 68px;">
-																		<div class="mCSB_dragger_bar"
-																			style="line-height: 50px;"></div>
+											<h3 class="m-form__heading-title"
+												style="margin-top: auto; margin-bottom: auto; text-align: center; text-size: 24px;">
+												OR</h3>
+										</div>
+										<div class="m-form__section ">
+											<div id="m_repeater_1">
+												<div class="form-group  m-form__group row" id="m_repeater_1">
+													<label class="col-lg-2 col-form-label" style="left: 50px;">Sites:</label>
+													<div data-repeater-list="sites" class="col-lg-10">
+														<div data-repeater-item=""
+															class="form-group m-form__group row align-items-center wizard-form-site">
+															<div class="col-md-3">
+																<div class="m-form__group m-form__group--inline">
+																	<div class="m-form__label">
+																		<label>Name:</label>
 																	</div>
-																	<div class="mCSB_draggerRail"></div>
+																	<div class="m-form__control">
+																		<input type="text"
+																			class="form-control m-input wizard-form-site-name"
+																			placeholder="Site name">
+																	</div>
 																</div>
+																<div class="d-md-none m--margin-bottom-10"></div>
 															</div>
-
-
-
-
-															<div data-repeater-list="" class="col-lg-12">
-																<div data-repeater-item="" class="m--margin-bottom-10">
-																	<div class="form-group m-form__group row">
-
-																		<div class="col-lg-4">
-																			<label for="">Site Name : </label>
-
-																		</div>
-																		<div class="col-lg-8">
-																			<input type="text" class="form-control m-input">
-																		</div>
+															<div class="col-md-3">
+																<div class="m-form__group m-form__group--inline">
+																	<div class="m-form__label">
+																		<label class="m-label m-label--single">Long:</label>
 																	</div>
-
-																	<div class="form-group m-form__group row">
-
-																		<div class="col-lg-4">
-																			<label for="">State : </label>
-
-																		</div>
-																		<div class="col-lg-8">
-																			<input type="text" class="form-control m-input">
-																		</div>
+																	<div class="m-form__control">
+																		<input type="number"
+																			class="form-control m-input wizard-form-site-longitude"
+																			placeholder="Longitude">
 																	</div>
-
-																	<div
-																		class="m-separator m-separator--dashed m-separator--lg"></div>
-
-
+																</div>
+																<div class="d-md-none m--margin-bottom-10"></div>
+															</div>
+															<div class="col-md-3">
+																<div class="m-form__group m-form__group--inline">
+																	<div class="m-form__label">
+																		<label class="m-label m-label--single">Lat:</label>
+																	</div>
+																	<div class="m-form__control">
+																		<input type="number"
+																			class="form-control m-input wizard-form-site-latitude"
+																			placeholder="Latitude">
+																	</div>
+																</div>
+																<div class="d-md-none m--margin-bottom-10"></div>
+															</div>
+															<div class="col-md-3">
+																<div data-repeater-delete=""
+																	class="btn-sm btn btn-danger m-btn m-btn--icon m-btn--pill">
+																	<span> <i class="la la-trash-o"></i> <span>Delete</span>
+																	</span>
 																</div>
 															</div>
 														</div>
-
-														<div data-repeater-create="" style="float: right;"
-															class="btn btn btn-warning m-btn m-btn--icon">
-															<span> <i class="la la-plus"></i> <span>Another
-																	one ?</span>
+													</div>
+												</div>
+												<div class="m-form__group form-group row">
+													<label class="col-lg-2 col-form-label"></label>
+													<div class="col-lg-4">
+														<div data-repeater-create=""
+															class="btn btn btn-sm btn-brand m-btn m-btn--icon m-btn--pill m-btn--wide">
+															<span> <i class="la la-plus"></i> <span>Add</span>
 															</span>
-
 														</div>
-
 													</div>
 												</div>
 											</div>
-
 										</div>
-										<!--end: Form Wizard Step 2-->
-										<!--begin: Form Wizard Step 3-->
-										<div class="m-wizard__form-step" id="m_wizard_form_step_3">
-											<div class="row">
+
+									</div>
+								</div>
+								<!--end: Form Wizard Step 2-->
+
+								<!--begin: Form Wizard Step 3-->
+								<div class="m-wizard__form-step" id="m_wizard_form_step_3">
+									<div class="row">
+										<div class="col-xl-8 offset-xl-2">
+											<div class="m-form__section m-form__section--first">
 												<div class="col-xl-8 offset-xl-2">
-													<div class="m-form__section m-form__section--first">
+													<!--begin::Section-->
+													<ul
+														class="nav nav-tabs m-tabs-line--2x m-tabs-line m-tabs-line--danger"
+														role="tablist">
+														<li class="nav-item m-tabs__item"><a
+															class="nav-link m-tabs__link active show"
+															data-toggle="tab" href="#m_form_confirm_1" role="tab"
+															aria-selected="true">1. Client Information</a></li>
+														<li class="nav-item m-tabs__item"><a
+															class="nav-link m-tabs__link" data-toggle="tab"
+															href="#m_form_confirm_2" role="tab" aria-selected="false">2.
+																Sites</a></li>
 
-														<form class="m-form">
-															<div class="m-portlet__body">
-																<div class="form-group m-form__group row">
-
-																	<div class="col-lg-4">
-																		<label for="">Client Name : </label>
-
-																	</div>
-																	<div class="col-lg-8">
-																		<input type="text" class="form-control m-input">
+													</ul>
+													<div class="tab-content m--margin-top-40">
+														<div class="tab-pane active show" id="m_form_confirm_1"
+															role="tabpanel">
+															<div class="m-form__section m-form__section--first">
+																<div class="m-form__heading">
+																	<h4 class="m-form__heading-title">Client Details</h4>
+																</div>
+																<div
+																	class="form-group m-form__group m-form__group--sm row">
+																	<label class="col-xl-3 col-lg-3 col-form-label">Name:</label>
+																	<div class="col-xl-9 col-lg-9">
+																		<span id="confirm_client_name"
+																			class="m-form__control-static"></span>
 																	</div>
 																</div>
-
-																<!-- Begin::Additional Client Infos -->
-																<div class="m-accordion__item">
-																	<div class="m-accordion__item-head" role="tab"
-																		id="m_accordion_7_item_2_head" data-toggle="collapse"
-																		href="#m_accordion_7_item_2_body" aria-expanded="true"
-																		style="text-align: right; color: red;">
-																		<span class="m-accordion__item-icon"><i
-																			class="fa flaticon-list-3"></i></span> <span
-																			class="m-accordion__item-title">Additional
-																			client informations ?</span> <span
-																			class="m-accordion__item-mode"></span>
-
+																<div
+																	class="form-group m-form__group m-form__group--sm row">
+																	<label class="col-xl-3 col-lg-3 col-form-label">Email:</label>
+																	<div class="col-xl-9 col-lg-9">
+																		<span id="confirm_client_email"
+																			class="m-form__control-static"></span>
 																	</div>
-																	<br />
-																	<div class="m-accordion__item-body collapse hide"
-																		id="m_accordion_7_item_2_body" role="tabpanel"
-																		aria-labelledby="m_accordion_7_item_2_head"
-																		data-parent="#m_accordion_7" style="">
-																		<div class="m-accordion__item-content">
-																			<div class="m-form__group form-group">
-																				<div class="form-group m-form__group row">
-
-																					<div class="col-lg-4">
-																						<label for="">Address :</label>
-
-																					</div>
-																					<div class="col-lg-8">
-																						<input type="text" class="form-control m-input">
-																					</div>
-																				</div>
-																				<div class="form-group m-form__group row">
-
-																					<div class="col-lg-4">
-																						<label for="">Phone :</label>
-
-																					</div>
-																					<div class="col-lg-8">
-																						<input type="text" class="form-control m-input">
-																					</div>
-																				</div>
-
-																			</div>
-																		</div>
-																	</div>
-
-
 																</div>
-																<!--  End:: Additional Client Infos -->
-
-
+																<div
+																	class="form-group m-form__group m-form__group--sm row">
+																	<label class="col-xl-3 col-lg-3 col-form-label">Phone</label>
+																	<div class="col-xl-9 col-lg-9">
+																		<span id="confirm_client_phone"
+																			class="m-form__control-static"></span>
+																	</div>
+																</div>
+																<div
+																	class="form-group m-form__group m-form__group--sm row">
+																	<label class="col-xl-3 col-lg-3 col-form-label">Address</label>
+																	<div class="col-xl-9 col-lg-9">
+																		<span id="confirm_client_address"
+																			class="m-form__control-static"></span>
+																	</div>
+																</div>
 															</div>
-
-
-														</form>
-
+														</div>
+														<div class="tab-pane" id="m_form_confirm_2"
+															role="tabpanel">
+															<div id="confirm_site_details" class="m-form__section m-form__section--first">
+																<div class="m-form__heading">
+																	<h4 class="m-form__heading-title">Sites' Details</h4>
+																</div>
+																
+															</div>
+														
+														</div>
 													</div>
-
+													<!--end::Section-->
+													<!--end::Section-->
+													
 												</div>
-											</div>
-										</div>
-										<!--end: Form Wizard Step 3-->
 
 
-
-									</div>
-									<!--end: Form Body -->
-									<!--begin: Form Actions -->
-									<div
-										class="m-portlet__foot m-portlet__foot--fit m--margin-top-40">
-										<div class="m-form__actions">
-											<div class="row">
-												<div class="col-lg-2"></div>
-												<div class="col-lg-4 m--align-left">
-													<a href="#"
-														class="btn btn-secondary m-btn m-btn--custom m-btn--icon"
-														data-wizard-action="prev"> <span> <i
-															class="la la-arrow-left"></i>&nbsp;&nbsp; <span>Back</span>
-													</span>
-													</a>
-												</div>
-												<div class="col-lg-4 m--align-right">
-													<a href="#"
-														class="btn btn-primary m-btn m-btn--custom m-btn--icon"
-														data-wizard-action="submit"> <span> <i
-															class="la la-check"></i>&nbsp;&nbsp; <span>Submit</span>
-													</span>
-													</a> <a href="#"
-														class="btn btn-warning m-btn m-btn--custom m-btn--icon"
-														data-wizard-action="next"> <span> <span>Save
-																&amp; Continue</span>&nbsp;&nbsp; <i class="la la-arrow-right"></i>
-													</span>
-													</a>
-												</div>
-												<div class="col-lg-2"></div>
 											</div>
 										</div>
 									</div>
-									<!--end: Form Actions -->
-							</form>
-						</div>
-						<!--end: Form Wizard Form-->
+									<!--end: Form Wizard Step 3-->
+
+
+
+								</div>
+								<!--end: Form Body -->
+								</div>
+						</form>
 					</div>
 
+
+
+
+					<!--begin: Form Actions -->
+					<div class="m-portlet__foot m-portlet__foot--fit m--margin-top-40">
+						<div class="m-form__actions">
+							<div class="row">
+								<div class="col-lg-2"></div>
+								<div class="col-lg-4 m--align-left">
+									<a href="#"
+										class="btn btn-secondary m-btn m-btn--custom m-btn--icon"
+										data-wizard-action="prev"> <span> <i
+											class="la la-arrow-left"></i>&nbsp;&nbsp; <span>Back</span>
+									</span>
+									</a>
+								</div>
+								<div class="col-lg-4 m--align-right">
+									<a href="#"
+										class="btn btn-primary m-btn m-btn--custom m-btn--icon"
+										data-wizard-action="submit" onclick="ClientWizardPublish()">
+										<span> <i class="la la-check"></i>&nbsp;&nbsp; <span>Submit</span>
+									</span>
+									</a> <a id="modal_next_item" href="#"
+										class="btn btn-warning m-btn m-btn--custom m-btn--icon"
+										data-wizard-action="next"> <span> <span>Save
+												&amp; Continue</span>&nbsp;&nbsp; <i class="la la-arrow-right"></i>
+									</span>
+									</a>
+								</div>
+								<div class="col-lg-2"></div>
+							</div>
+						</div>
+					</div>
+					<!--end: Form Actions -->
 				</div>
+
+
+				<!--end: Form Wizard Form-->
 			</div>
+
 		</div>
 	</div>
+</div>
 
-	<!-- END :: Modal New Client Wizard -->
+<!-- END :: Modal New Client Wizard -->

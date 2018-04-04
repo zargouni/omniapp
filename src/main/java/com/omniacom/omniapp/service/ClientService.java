@@ -25,4 +25,17 @@ public class ClientService {
 		return clientRepo.findByName(name);
 	}
 
+	public void addClient(Client client) {
+		// TODO Auto-generated method stub
+		clientRepo.save(client);
+
+	}
+
+	public boolean clientExists(Client client) {
+		Client foundClient = clientRepo.findByName(client.getName());
+		if (client.equals(foundClient))
+			return true;
+		return false;
+	}
+
 }
