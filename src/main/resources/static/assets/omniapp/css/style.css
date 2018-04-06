@@ -133,3 +133,7 @@
     text-align: center;
 }
 
+.popover {
+   width: 370px !important;
+   max-width:370px !important;
+}

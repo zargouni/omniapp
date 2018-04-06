@@ -345,7 +345,7 @@ function wizardSaveClient() {
 		success : function(response) {
 			// we have the response
 			if (response.status == "SUCCESS") {
-				//toastr.success("Client saved successfully", "Well done!");
+				// toastr.success("Client saved successfully", "Well done!");
 				result = true;
 
 			}else if(response.status == "FAIL" && response.result == "existing.client"){
@@ -383,7 +383,7 @@ function wizardSaveSite(name,long,lat){
 		success : function(response) {
 			// we have the response
 			if (response.status == "SUCCESS") {
-				//toastr.success("sites saved successfully", "Well done!");
+				// toastr.success("sites saved successfully", "Well done!");
 				result = true;
 
 			} else {
@@ -400,8 +400,6 @@ function wizardSaveSite(name,long,lat){
 
 	return result;
 }
-
-
 
 function wizardSaveManualAddedSites() {
 	var result = false;
@@ -433,6 +431,7 @@ function ClientWizardPublish(){
 			result = false;
 		}
 	});
+	
 }
 
 function populateConfirmationSiteDetails(){
@@ -499,15 +498,60 @@ function populateConfirmationStepWizard(){
 	populateConfirmationSiteDetails();
 }
 
+function popoverContent(long,lat) {
+	var content =  "<img src='https://maps.googleapis.com/maps/api/staticmap?zoom=10&size=350x300&maptype=roadmap"
+			+"&markers=color:red%7Clabel:S%7C"+long+","+lat+"&key=AIzaSyDArbmGWjBSiyGLbUAGUMmR8vwNahwxdeg'></img>";
+		
+	return content;
+}
 
+	function gmapPopoverInit(){
+//		setTimeout(
+//				  function(long,lat) 
+//				  {
+//
+//					  $('[data-toggle="popover"]').popover({
+//						  title: popoverContent,
+//							html: true,
+//							placement: 'right',
+//							trigger: 'hover'
+//					  });
+//				  }, 500);
+		
+		$(".data-repeater").on('mouseover','.toggle_gmap', function (event){
+			var long = $(this).parent().find('input.wizard-form-site-longitude').val();
+			var lat = $(this).parent().find('input.wizard-form-site-latitude').val();
+			$(this).popover({
+				 content: popoverContent(long,lat),
+					html: true,
+					placement: 'right',
+					trigger: 'click'
+			  });
+			//gmapPopoverInit(long,lat);
+		});
+		
+	}
+    
 $(document).ready(function() {
-
+	
+	gmapPopoverInit();
 	$("#select_service_div").hide();
 
 	$("#select_project_new_task").change(function() {
 		updateSelectServices();
 	});
+	
+	
+    
+//	jQuery('.gmapSiteLocation').popover({
+//		title: popoverContent,
+//		html: true,
+//		placement: 'right',
+//		trigger: 'hover'
+//		});
 
+	
+	
 	projectDynamicContent();
 	toastr.options = {
 		"closeButton" : true,
@@ -526,7 +570,10 @@ $(document).ready(function() {
 		"showMethod" : "fadeIn",
 		"hideMethod" : "fadeOut"
 	};
+	
+	
+    });
 
-});
+
 
 

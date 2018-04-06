@@ -150,11 +150,12 @@
 
 																			</div>
 																			<div class="col-lg-8">
-																				<input id="modal_client_country" type="text" class="form-control m-input">
+																				<input id="modal_client_country" type="text"
+																					class="form-control m-input">
 																			</div>
 																		</div>
-																		
-																		
+
+
 																		<div class="form-group m-form__group row">
 
 																			<div class="col-lg-4">
@@ -162,10 +163,11 @@
 
 																			</div>
 																			<div class="col-lg-8">
-																				<input id="modal_client_address" type="text" class="form-control m-input">
+																				<input id="modal_client_address" type="text"
+																					class="form-control m-input">
 																			</div>
 																		</div>
-																		
+
 
 																	</div>
 																</div>
@@ -214,7 +216,7 @@
 											<div id="m_repeater_1">
 												<div class="form-group  m-form__group row" id="m_repeater_1">
 													<label class="col-lg-2 col-form-label" style="left: 50px;">Sites:</label>
-													<div data-repeater-list="sites" class="col-lg-10">
+													<div  name="data-repeater" data-repeater-list="sites" class="col-lg-10 data-repeater">
 														<div data-repeater-item=""
 															class="form-group m-form__group row align-items-center wizard-form-site">
 															<div class="col-md-3">
@@ -230,37 +232,48 @@
 																</div>
 																<div class="d-md-none m--margin-bottom-10"></div>
 															</div>
-															<div class="col-md-3">
+															<div name="longDiv" id="longDiv" class="col-md-3 longDiv">
 																<div class="m-form__group m-form__group--inline">
 																	<div class="m-form__label">
 																		<label class="m-label m-label--single">Long:</label>
 																	</div>
 																	<div class="m-form__control">
-																		<input type="number"
-																			class="form-control m-input wizard-form-site-longitude"
+																		<input name="longitude" id="longitude" type="number"
+																			class="form-control m-input wizard-form-site-longitude "
 																			placeholder="Longitude">
 																	</div>
 																</div>
 																<div class="d-md-none m--margin-bottom-10"></div>
 															</div>
-															<div class="col-md-3">
+															<div name="latDiv" id="latDiv" class="col-md-3">
 																<div class="m-form__group m-form__group--inline">
 																	<div class="m-form__label">
 																		<label class="m-label m-label--single">Lat:</label>
 																	</div>
 																	<div class="m-form__control">
-																		<input type="number"
+																		<input name="latitude" id="latitude" type="number"
 																			class="form-control m-input wizard-form-site-latitude"
 																			placeholder="Latitude">
 																	</div>
 																</div>
 																<div class="d-md-none m--margin-bottom-10"></div>
 															</div>
-															<div class="col-md-3">
+															
+
+																<button type="button" data-toggle="popover" data-placement="right"
+																	
+																	
+																	class="btn btn-primary m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air
+																	  toggle_gmap col-md-1">
+																	<i class="fa flaticon-placeholder-1"></i>
+																</button>
+
+
+															
+															<div class="col-md-1">
 																<div data-repeater-delete=""
-																	class="btn-sm btn btn-danger m-btn m-btn--icon m-btn--pill">
-																	<span> <i class="la la-trash-o"></i> <span>Delete</span>
-																	</span>
+																	class="btn btn-danger m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air">
+																	<i class="la la-trash-o"></i>
 																</div>
 															</div>
 														</div>
@@ -269,7 +282,7 @@
 												<div class="m-form__group form-group row">
 													<label class="col-lg-2 col-form-label"></label>
 													<div class="col-lg-4">
-														<div data-repeater-create=""
+														<div onclick="gmapPopoverInit()" data-repeater-create=""
 															class="btn btn btn-sm btn-brand m-btn m-btn--icon m-btn--pill m-btn--wide">
 															<span> <i class="la la-plus"></i> <span>Add</span>
 															</span>
@@ -346,18 +359,19 @@
 														</div>
 														<div class="tab-pane" id="m_form_confirm_2"
 															role="tabpanel">
-															<div id="confirm_site_details" class="m-form__section m-form__section--first">
+															<div id="confirm_site_details"
+																class="m-form__section m-form__section--first">
 																<div class="m-form__heading">
 																	<h4 class="m-form__heading-title">Sites' Details</h4>
 																</div>
-																
+
 															</div>
-														
+
 														</div>
 													</div>
 													<!--end::Section-->
 													<!--end::Section-->
-													
+
 												</div>
 
 
@@ -370,10 +384,9 @@
 
 								</div>
 								<!--end: Form Body -->
-								</div>
+							</div>
 						</form>
 					</div>
-
 
 
 
