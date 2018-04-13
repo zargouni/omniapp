@@ -1,3 +1,201 @@
-<th:block th:fragment="fragment-tasks">
-tasks
-</th:block>
+<div id="tasks-fragment" style="display: none;"
+	th:fragment="fragment-tasks">
+
+	<!-- 					<tbody class="m-datatable__body" style=""> -->
+	<!-- 					<tr style="left: 0px;" th:each="element : ${ServiceTasksMap}" -->
+	<!-- 							class="m-datatable__row"> -->
+
+
+	<!-- 							<td data-field="TaskName" class="m-datatable__cell"><span -->
+	<!-- 								th:text="${element.key.name}"> </span> -->
+	<!-- 								<table> -->
+	<!-- 									<tr th:each="task : ${element.value}"> -->
+	<!-- 										<td th:text="${task.name}">Some name</td> -->
+	<!-- 										<td th:text="${task.status}">Some name</td> -->
+	<!-- 																				<td th:text="${anews.url}">Some name</td> -->
+	<!-- 																				<td th:text="${anews.logo}">Some name</td> -->
+	<!-- 																				<td th:text="${anews.collectionDate}">Some name</td> -->
+	<!-- 									</tr> -->
+	<!-- 								</table></td> -->
+
+
+	<!-- 						</tr> -->
+	<!-- 						<tr style="left: 0px;" th:each="element : ${ServiceTasksMap}" -->
+	<!-- 							class="m-datatable__row"> -->
+	<!-- 							<td data-field="RecordID" -->
+	<!-- 								class="m-datatable__cell--center m-datatable__cell"><a -->
+	<!-- 								class="m-datatable__toggle-subtable" href="#" data-value="1" -->
+	<!-- 								title="Load sub table" style="width: 20px;"><i -->
+	<!-- 									class="fa fa-caret-right" style="width: 20px;"></i></a></td> -->
+
+	<!-- 							<td data-field="" class="m-datatable__cell" th:text="${element.key.name}"><span -->
+	<!-- 								style="width: 110px;">Tommie</span></td> -->
+	<!-- 							<td data-field="LastName" class="m-datatable__cell"><span -->
+	<!-- 								style="width: 110px;">Pee</span></td> -->
+	<!-- 							<td data-field="Company" class="m-datatable__cell"><span -->
+	<!-- 								style="width: 110px;">Roodel</span></td> -->
+	<!-- 							<td data-field="Email" class="m-datatable__cell"><span -->
+	<!-- 								style="width: 110px;">tpee0@slashdot.org</span></td> -->
+	<!-- 							<td data-field="Phone" class="m-datatable__cell"><span -->
+	<!-- 								style="width: 110px;">103-891-3486</span></td> -->
+	<!-- 							<td data-field="Status" class="m-datatable__cell"><span -->
+	<!-- 								style="width: 110px;"><span -->
+	<!-- 									class="m-badge  m-badge--success m-badge--wide">Success</span></span></td> -->
+	<!-- 							<td data-field="Type" class="m-datatable__cell"><span -->
+	<!-- 								style="width: 110px;"><span -->
+	<!-- 									class="m-badge m-badge--danger m-badge--dot"></span>&nbsp;<span -->
+	<!-- 									class="m--font-bold m--font-danger">Online</span></span></td> -->
+	<!-- 							<td data-field="Actions" class="m-datatable__cell"><span -->
+	<!-- 								style="overflow: visible; width: 110px;"> -->
+	<!-- 									<div class="dropdown "> -->
+	<!-- 										<a href="#" -->
+	<!-- 											class="btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" -->
+	<!-- 											data-toggle="dropdown"> <i class="la la-ellipsis-h"></i> -->
+	<!-- 										</a> -->
+	<!-- 										<div class="dropdown-menu dropdown-menu-right"> -->
+	<!-- 											<a class="dropdown-item" href="#"><i class="la la-edit"></i> -->
+	<!-- 												Edit Details</a> <a class="dropdown-item" href="#"><i -->
+	<!-- 												class="la la-leaf"></i> Update Status</a> <a -->
+	<!-- 												class="dropdown-item" href="#"><i class="la la-print"></i> -->
+	<!-- 												Generate Report</a> -->
+	<!-- 										</div> -->
+	<!-- 									</div> <a href="#" -->
+	<!-- 									class="m-portlet__nav-link btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" -->
+	<!-- 									title="Edit details"> <i class="la la-edit"></i> -->
+	<!-- 								</a> <a href="#" -->
+	<!-- 									class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" -->
+	<!-- 									title="Delete"> <i class="la la-trash"></i> -->
+	<!-- 								</a> -->
+	<!-- 							</span></td> -->
+	<!-- 						</tr> -->
+	<!-- 					</tbody> -->
+
+	<div class="m-content">
+
+		<div class="row">
+
+			<!--     <div class="col-lg-6"> -->
+			<!--begin::Portlet-->
+			<div class="m-portlet m-portlet--full-height">
+				<div class="m-portlet__head">
+					<div class="m-portlet__head-caption">
+						<div class="m-portlet__head-title">
+							<h3 class="m-portlet__head-text">Borderless &amp; Solid
+								Background Accordions</h3>
+						</div>
+					</div>
+				</div>
+				<div class="m-portlet__body">
+					<!--begin::Section-->
+					<div class="m-accordion m-accordion--bordered m-accordion--solid"
+						id="m_accordion_4" role="tablist">
+
+
+						<!--begin::Item-->
+						<div th:each="element : ${ServiceTasksMap}"
+							class="m-accordion__item" th:id="${element.key.id}">
+
+							<div name="head" class="m-accordion__item-head collapsed"
+								role="tab" id="m_accordion_4_item_100_head"
+								data-toggle="collapse" href="#m_accordion_4_item_100_body"
+								aria-expanded="false">
+								<span class="m-accordion__item-icon"><i
+									class="fa flaticon-user-ok"></i></span> <span
+									class="m-accordion__item-title" th:text="${element.key.name}">Lorem
+									Ipsum has been the industry</span> <span
+									class="m-accordion__item-mode"></span>
+							</div>
+
+							<div name="body" class="m-accordion__item-body collapse"
+								id="m_accordion_4_item_100_body" role="tabpanel"
+								aria-labelledby="m_accordion_4_item_100_head"
+								data-parent="#m_accordion_4" style="">
+								<div class="m-accordion__item-content">
+									<!-- hey -->
+									<table class="table table-sm m-table m-table--head-bg-brand">
+										<thead class="thead-inverse">
+											<tr>
+												<th>#</th>
+												<th width="30%">Task</th>
+												<th>Start Date</th>
+												<th>Due Date</th>
+												<th>Duration</th>
+												<th>Status</th>
+												<th>Priority</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each="task : ${element.value}">
+												<th scope="row"></th>
+												<td width="30%"><a data-toggle="modal"
+													data-target="#m_modal_6" th:text="${task.name}">task
+														name</a></td>
+												<td th:text="${task.startDate}">start date</td>
+												<td th:text="${task.endDate}">end
+													date</td>
+												<td th:text="${task.endDate}">duration</td>
+												<td th:if="${task.status == 'ONGOING'}"><span
+													class="m-badge m-badge--metal m-badge--wide">Pending</span>
+												</td>
+												<td th:if="${task.status == 'COMPLETED'}"><span
+													class="m-badge m-badge--success m-badge--wide">Completed</span>
+												</td>
+												<td th:text="${task.priority}">priority</td>
+											</tr>
+
+										</tbody>
+									</table>
+									<!-- hey -->
+
+								</div>
+							</div>
+							<script th:inline="javascript">
+								/*<![CDATA[*/
+								var service_id = /*[[${element.key.id}]]*/'id';
+
+								$("#" + service_id).children('div[name=head]')
+										.attr(
+												"id",
+												"m_accordion_4_item_"
+														+ service_id + "_head");
+								$("#" + service_id).children('div[name=head]')
+										.attr(
+												"href",
+												"#m_accordion_4_item_"
+														+ service_id + "_body");
+
+								$("#" + service_id).children('div[name=body]')
+										.attr(
+												"id",
+												"m_accordion_4_item_"
+														+ service_id + "_body");
+
+								$("#" + service_id).children('div[name=head]')
+										.attr(
+												"aria-labelledby",
+												"m_accordion_4_item_"
+														+ service_id + "_head");
+								/*]]>*/
+							</script>
+						</div>
+						<!--end::Item-->
+
+
+
+					</div>
+					<!--end::Section-->
+				</div>
+			</div>
+			<!--end::Portlet-->
+			<!--     </div> -->
+		</div>
+
+
+
+	</div>
+
+	
+
+
+
+</div>

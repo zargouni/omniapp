@@ -2,9 +2,9 @@
 <!--  TODO -->
 <div th:fragment="new-client-modal" class="modal fade show"
 	id="m_modal_4" tabindex="-1" role="dialog"
-	aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-	<div class="modal-dialog modal-lg" role="document">
-		<div class="modal-content">
+	aria-labelledby="exampleModalCenterTitle" aria-hidden="true" >
+	<div class="modal-dialog modal-lg" role="document" >
+		<div class="modal-content" style="background: #f2f2f2;">
 
 			<div class="modal-body">
 
@@ -101,81 +101,57 @@
 															</div>
 														</div>
 
-														<!-- Begin::Additional Client Infos -->
-														<div class="m-accordion__item">
-															<div class="m-accordion__item-head" role="tab"
-																id="m_accordion_7_item_2_head" data-toggle="collapse"
-																href="#m_accordion_7_item_2_body" aria-expanded="true"
-																style="text-align: right; color: red;">
-																<span class="m-accordion__item-icon"><i
-																	class="fa flaticon-list-3"></i></span> <span
-																	class="m-accordion__item-title">Additional
-																	client informations ?</span> <span
-																	class="m-accordion__item-mode"></span>
+														<div class="m-form__group form-group ">
+															<div class="form-group m-form__group row">
 
-															</div>
-															<br />
-															<div class="m-accordion__item-body collapse hide"
-																id="m_accordion_7_item_2_body" role="tabpanel"
-																aria-labelledby="m_accordion_7_item_2_head"
-																data-parent="#m_accordion_7" style="">
-																<div class="m-accordion__item-content">
-																	<div class="m-form__group form-group">
-																		<div class="form-group m-form__group row">
+																<div class="col-lg-2">
+																	<label for="">Email </label>
 
-																			<div class="col-lg-4">
-																				<label for="">Email :</label>
-
-																			</div>
-																			<div class="col-lg-8">
-																				<input id="modal_client_email" type="text"
-																					class="form-control m-input">
-																			</div>
-																		</div>
-																		<div class="form-group m-form__group row">
-
-																			<div class="col-lg-4">
-																				<label for="">Phone :</label>
-
-																			</div>
-																			<div class="col-lg-8">
-																				<input id="modal_client_phone" type="text"
-																					class="form-control m-input">
-																			</div>
-																		</div>
-																		<div class="form-group m-form__group row">
-
-																			<div class="col-lg-4">
-																				<label for="">Country :</label>
-
-																			</div>
-																			<div class="col-lg-8">
-																				<input id="modal_client_country" type="text"
-																					class="form-control m-input">
-																			</div>
-																		</div>
+																</div>
+																<div class="col-lg-4">
+																	<input id="modal_client_email" type="text"
+																		class="form-control m-input">
+																</div>
 
 
-																		<div class="form-group m-form__group row">
 
-																			<div class="col-lg-4">
-																				<label for="">Address :</label>
+																<div class="col-lg-2">
+																	<label for="">Phone </label>
 
-																			</div>
-																			<div class="col-lg-8">
-																				<input id="modal_client_address" type="text"
-																					class="form-control m-input">
-																			</div>
-																		</div>
-
-
-																	</div>
+																</div>
+																<div class="col-lg-4">
+																	<input id="modal_client_phone" type="text"
+																		class="form-control m-input">
 																</div>
 															</div>
+															<div class="form-group m-form__group row">
 
+																<div class="col-lg-2">
+																	<label for="">Country </label>
+
+																</div>
+																<div class="col-lg-4">
+																	<input id="modal_client_country" type="text"
+																		class="form-control m-input">
+																</div>
+
+
+
+
+
+																<div class="col-lg-2">
+																	<label for="">Address </label>
+
+																</div>
+																<div class="col-lg-4">
+																	<input id="modal_client_address" type="text"
+																		class="form-control m-input">
+																</div>
+
+															</div>
 
 														</div>
-														<!--  End:: Additional Client Infos -->
+
 
 
 													</div>
@@ -216,7 +192,8 @@
 											<div id="m_repeater_1">
 												<div class="form-group  m-form__group row" id="m_repeater_1">
 													<label class="col-lg-2 col-form-label" style="left: 50px;">Sites:</label>
-													<div  name="data-repeater" data-repeater-list="sites" class="col-lg-10 data-repeater">
+													<div name="data-repeater" data-repeater-list="sites"
+														class="col-lg-10 data-repeater">
 														<div data-repeater-item=""
 															class="form-group m-form__group row align-items-center wizard-form-site">
 															<div class="col-md-3">
@@ -258,18 +235,17 @@
 																</div>
 																<div class="d-md-none m--margin-bottom-10"></div>
 															</div>
-															
 
-																<button type="button" data-toggle="popover" data-placement="right"
-																	
-																	
-																	class="btn btn-primary m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air
+
+															<button type="button" data-toggle="popover"
+																data-placement="right"
+																class="btn btn-primary m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air
 																	  toggle_gmap col-md-1">
-																	<i class="fa flaticon-placeholder-1"></i>
-																</button>
+																<i class="fa flaticon-placeholder-1"></i>
+															</button>
 
 
-															
+
 															<div class="col-md-1">
 																<div data-repeater-delete=""
 																	class="btn btn-danger m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air">
@@ -410,7 +386,7 @@
 										<span> <i class="la la-check"></i>&nbsp;&nbsp; <span>Submit</span>
 									</span>
 									</a> <a id="modal_next_item" href="#"
-										class="btn btn-warning m-btn m-btn--custom m-btn--icon"
+										class="btn btn-brand m-btn m-btn--custom m-btn--icon"
 										data-wizard-action="next"> <span> <span>Save
 												&amp; Continue</span>&nbsp;&nbsp; <i class="la la-arrow-right"></i>
 									</span>

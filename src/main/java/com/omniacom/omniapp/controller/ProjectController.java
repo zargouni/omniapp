@@ -1,48 +1,115 @@
 package com.omniacom.omniapp.controller;
 
-import java.io.IOException;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.omniacom.omniapp.entity.Project;
+import com.omniacom.omniapp.entity.Service;
+import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.service.ProjectService;
-import com.omniacom.omniapp.service.UserService;
-import com.omniacom.omniapp.validator.JsonResponse;
+import com.omniacom.omniapp.service.ServiceService;
+
+import net.sf.json.JSONObject;
 
 @RestController
+@RequestMapping(params = "id")
 public class ProjectController {
-
-	@Autowired
-	private UserService userService;
 
 	@Autowired
 	private ProjectService projectService;
 
-	private Project currentProject;
-
-	@ModelAttribute
-	public void addAtributes(Model model) {
-		model.addAttribute("taskCount", projectService.findTaskCount(currentProject));
-		model.addAttribute("completedTasksCount", projectService.findCompletedTasksCount(currentProject));
-		model.addAttribute("onGoingTasksCount", projectService.findOnGoingTasksCount(currentProject));
-	}
+	@Autowired
+	ServiceService serviceService;
 
 	@GetMapping("/project")
-	public ModelAndView index(Model model, @RequestParam("id") long projectId) {
-		setCurrentProject(projectService.findOneById(projectId));
-		// System.out.println("size:"+projectService.findTaskCount(projectService.findOneById(projectId)));
-		if (projectService.findOneById(projectId) == null)
-			return new ModelAndView("index");
+	public ModelAndView index(Model model) {
+
+		if (projectService.getCurrentProject() == null)
+			return new ModelAndView("404");
 		return new ModelAndView("project");
 	}
+
+	@ModelAttribute
+	public void addAttributes(Model model, @RequestParam("id") long projectId) {
+		// set current project
+		projectService.setCurrentProject(projectService.findOneById(projectId));
+
+		model.addAttribute("taskCount", projectService.findTaskCount(projectService.getCurrentProject()));
+		model.addAttribute("completedTasksCount",
+				projectService.findCompletedTasksCount(projectService.getCurrentProject()));
+		model.addAttribute("onGoingTasksCount",
+				projectService.findOnGoingTasksCount(projectService.getCurrentProject()));
+		model.addAttribute("allServices", projectService.findAllServices(projectService.getCurrentProject()));
+		model.addAttribute("ServiceTasksMap", projectService.getMapServiceTasks(projectService.getCurrentProject()));
+
+	}
+
+	// @PostMapping("/get_services_all_tasks_for_current_project")
+	// public @ResponseBody JSONArray
+	// getAllTasksGroupedByService(@RequestParam("id") long projectId ) {
+	// Map<Service, List<Task>> map =
+	// projectService.getMapServiceTasks(projectService.findOneById(projectId));
+	//
+	// List<JSONObject> jsonArray = new ArrayList<JSONObject>();
+	//
+	// for (Map.Entry<Service, List<Task>> pair : map.entrySet()) {
+	// JSONObject jsonService = jsonService(pair.getKey());
+	// for(Task task : pair.getValue()) {
+	// jsonService.accumulate("tasks", jsonTask(task));
+	// }
+	// jsonArray.add(jsonService);
+	// //i += pair.getKey() + pair.getValue();
+	// }
+	// JSONArray json = JSONArray.fromObject(jsonArray);
+	// return json;
+	// }
+
+	// @PostMapping("/get_tasks_by_service")
+	// public @ResponseBody JSONArray getTasksByService(@RequestParam("serviceId")
+	// long serviceId ) {
+	// //Map<Service, List<Task>> map =
+	// projectService.getMapServiceTasks(projectService.findOneById(projectId));
+	// List<Task> tasks =
+	// serviceService.findAllTasks(serviceService.findById(serviceId));
+	// List<JSONObject> jsonList = new ArrayList<>();
+	// List<JSONObject> jsonArray = new ArrayList<JSONObject>();
+	//
+	// for (Map.Entry<Service, List<Task>> pair : map.entrySet()) {
+	// JSONObject jsonService = jsonService(pair.getKey());
+	// for(Task task : pair.getValue()) {
+	// jsonService.accumulate("tasks", jsonTask(task));
+	// }
+	// jsonArray.add(jsonService);
+	// //i += pair.getKey() + pair.getValue();
+	// }
+	// for(Task task : tasks) {
+	// JSONObject jsonTask = jsonTask(task);
+	// jsonList.add(jsonTask);
+	// }
+	// JSONArray json = JSONArray.fromObject(jsonList);
+	// return json;
+	// }
+
+	// @GetMapping("/get_tasks_by_service")
+	// public @ResponseBody JSONArray getTasksByService(@RequestParam("service_id")
+	// long serviceId) {
+	//
+	//
+	//// List<Task> tasks = (List<Task>)
+	// serviceService.findAllTasks(serviceService.findById(serviceId));
+	//// List<JSONObject> jsonArray = new ArrayList<JSONObject>();
+	//// for (Task t : tasks) {
+	//// jsonArray.add(jsonTask(t));
+	//// }
+	//// JSONArray json = JSONArray.fromObject(jsonArray);
+	// return json;
+	// }
 
 	@GetMapping("/dashboard")
 	public ModelAndView dashboard() {
@@ -79,8 +146,21 @@ public class ProjectController {
 	// return currentProject;
 	// }
 	//
-	public void setCurrentProject(Project currentProject) {
-		this.currentProject = currentProject;
+	// public void setCurrentProject(Project currentProject) {
+	// this.currentProject = currentProject;
+	// }
+
+	public JSONObject jsonTask(Task task) {
+		JSONObject jsonTask = new JSONObject().element("TaskId", task.getId()).element("TaskName", task.getName())
+				.element("TaskStartDate", task.getStartDate().toString())
+				.element("TaskEndDate", task.getEndDate().toString()).element("TaskStatus", task.getStatus())
+				.element("TaskPriority", task.getPriority()).element("TaskDuration", "");
+		return jsonTask;
+	}
+
+	public JSONObject jsonService(Service service) {
+		JSONObject jsonService = new JSONObject().element("id", service.getId()).element("name", service.getName());
+		return jsonService;
 	}
 
 }

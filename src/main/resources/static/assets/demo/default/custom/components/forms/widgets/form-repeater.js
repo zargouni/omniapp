@@ -23,7 +23,7 @@ var FormRepeater = function() {
     var demo2 = function() {
         $('#m_repeater_2').repeater({            
             initEmpty: false,
-           
+                      
             defaultValues: {
                 'text-input': 'foo'
             },
@@ -33,9 +33,9 @@ var FormRepeater = function() {
             },
 
             hide: function(deleteElement) {                 
-                if(confirm('Are you sure you want to delete this element?')) {
+                
                     $(this).slideUp(deleteElement);
-                }                                
+                                                
             }      
         });
     }

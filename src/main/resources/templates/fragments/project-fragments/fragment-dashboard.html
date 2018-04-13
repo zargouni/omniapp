@@ -1,6 +1,5 @@
-<th:block th:fragment="fragment-dashboard">
 
-	<div class="m-portlet">
+	<div id="dashboard-fragment" style="display:none;" th:fragment="fragment-dashboard" class="m-portlet">
 
 		<div class="m-portlet__body  m-portlet__body--no-padding">
 			<div class="row m-row--no-padding m-row--col-separator-xl">
@@ -25,8 +24,7 @@
 											var completed = /*[[${completedTasksCount}]]*/'completed';
 											var onGoing = /*[[${onGoingTasksCount}]]*/'On going';
 											/*]]>*/
-											projectDashboardTaskPieChart(
-													completed, onGoing);
+											
 										</script>
 									</div>
 
@@ -132,4 +130,3 @@
 			</div>
 		</div>
 	</div>
-</th:block>

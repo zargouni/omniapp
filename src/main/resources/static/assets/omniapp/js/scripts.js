@@ -179,31 +179,43 @@ function doAddTaskAjaxPost() {
 }
 
 function projectDynamicContent() {
+	projectDashboardTaskPieChart();
+	$("#dashboard-fragment").show();
 
-	$("#m_dynamic_content_project").load("/dashboard");
-
-	$("#project_dashboard_toggle").on("click", function() {
-		$("#m_dynamic_content_project").load("/dashboard");
+	$("#project_dashboard_toggle").on("click", function(event) {
+		$("#m_dynamic_content_project").children().hide();
+		projectDashboardTaskPieChart();
+		$("#dashboard-fragment").show();
 	});
 
 	$("#project_feed_toggle").on("click", function() {
-		$("#m_dynamic_content_project").load("/feed");
-	});
+	// alert("id: "+$("#m_dynamic_content_project").attr('id'));
+		$("#m_dynamic_content_project").children().hide();
+		$("#feed-fragment").show();
+
+		});
 
 	$("#project_tasks_toggle").on("click", function() {
-		$("#m_dynamic_content_project").load("/tasks");
-	});
+		$("#m_dynamic_content_project").children().hide();
+		
+		 // DatatableChildRemoteDataDemo.init();
+		$("#tasks-fragment").show();
+		
+		});
 
 	$("#project_operations_toggle").on("click", function() {
-		$("#m_dynamic_content_project").load("/operations");
+		$("#m_dynamic_content_project").children().hide();
+		$("#operations-fragment").show();
 	});
 
 	$("#project_issues_toggle").on("click", function() {
-		$("#m_dynamic_content_project").load("/issues");
+		$("#m_dynamic_content_project").children().hide();
+		$("#issues-fragment").show();	
 	});
 
 	$("#project_calendar_toggle").on("click", function() {
-		$("#m_dynamic_content_project").load("/calendar");
+		$("#m_dynamic_content_project").children().hide();
+		$("#calendar-fragment").show();
 	});
 
 }
@@ -415,9 +427,12 @@ function wizardSaveManualAddedSites() {
 }
 
 function ClientWizardPublish(){
+	$("#m_modal_4").modal('hide');
+
 	$.ajax({
 		type : "POST",
 		url : '/client-wizard-publish',
+		async : false,
 		success : function(response) {
 			// we have the response
 			if(response == true)
@@ -433,6 +448,7 @@ function ClientWizardPublish(){
 	});
 	
 }
+
 
 function populateConfirmationSiteDetails(){
 	$.ajax({
@@ -498,60 +514,49 @@ function populateConfirmationStepWizard(){
 	populateConfirmationSiteDetails();
 }
 
-function popoverContent(long,lat) {
-	var content =  "<img src='https://maps.googleapis.com/maps/api/staticmap?zoom=10&size=350x300&maptype=roadmap"
-			+"&markers=color:red%7Clabel:S%7C"+long+","+lat+"&key=AIzaSyDArbmGWjBSiyGLbUAGUMmR8vwNahwxdeg'></img>";
-		
-	return content;
-}
 
-	function gmapPopoverInit(){
-//		setTimeout(
-//				  function(long,lat) 
-//				  {
-//
-//					  $('[data-toggle="popover"]').popover({
-//						  title: popoverContent,
-//							html: true,
-//							placement: 'right',
-//							trigger: 'hover'
-//					  });
-//				  }, 500);
+function gmapPopoverInit(){
 		
-		$(".data-repeater").on('mouseover','.toggle_gmap', function (event){
-			var long = $(this).parent().find('input.wizard-form-site-longitude').val();
-			var lat = $(this).parent().find('input.wizard-form-site-latitude').val();
-			$(this).popover({
-				 content: popoverContent(long,lat),
+	$(".data-repeater").on('mouseover','.toggle_gmap', function (event){
+		$(this).popover({
+			 content: function(){
+					 	var long = $(this).parent().find('input.wizard-form-site-longitude').val();
+					 	var lat = $(this).parent().find('input.wizard-form-site-latitude').val();
+					 	var content = "<img src='https://maps.googleapis.com/maps/api/staticmap?zoom=10&size=350x300&maptype=roadmap"
+					 		+"&markers=color:red%7Clabel:S%7C"+long+","+lat+"&key=AIzaSyDArbmGWjBSiyGLbUAGUMmR8vwNahwxdeg'></img>"
+					 	return content;
+				 	},
 					html: true,
 					placement: 'right',
-					trigger: 'click'
+					trigger: 'hover'
 			  });
-			//gmapPopoverInit(long,lat);
+			
 		});
 		
 	}
-    
+	
+
+
+
+
 $(document).ready(function() {
 	
 	gmapPopoverInit();
+	
 	$("#select_service_div").hide();
 
 	$("#select_project_new_task").change(function() {
 		updateSelectServices();
 	});
+//	
+// function projectTasksAccordion(service_id){
+//		
+//		
+//
+// } ;
 	
 	
-    
-//	jQuery('.gmapSiteLocation').popover({
-//		title: popoverContent,
-//		html: true,
-//		placement: 'right',
-//		trigger: 'hover'
-//		});
-
-	
-	
+	  	
 	projectDynamicContent();
 	toastr.options = {
 		"closeButton" : true,
@@ -570,6 +575,7 @@ $(document).ready(function() {
 		"showMethod" : "fadeIn",
 		"hideMethod" : "fadeOut"
 	};
+	
 	
 	
     });

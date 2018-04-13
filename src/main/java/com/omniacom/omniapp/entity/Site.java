@@ -23,8 +23,8 @@ public class Site implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String name;
-	private float longitude;
-	private float latitude;
+	private double longitude;
+	private double latitude;
 	
 	@ManyToOne
 	private Client client;
@@ -65,13 +65,13 @@ public class Site implements Serializable {
 	/**
 	 * @return the longitude
 	 */
-	public float getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 	/**
 	 * @return the latitude
 	 */
-	public float getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 	/**
@@ -89,13 +89,13 @@ public class Site implements Serializable {
 	/**
 	 * @param longitude the longitude to set
 	 */
-	public void setLongitude(float longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 	/**
 	 * @param latitude the latitude to set
 	 */
-	public void setLatitude(float latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 
@@ -149,8 +149,11 @@ public class Site implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((client == null) ? 0 : client.hashCode());
-		result = prime * result + Float.floatToIntBits(latitude);
-		result = prime * result + Float.floatToIntBits(longitude);
+		long temp;
+		temp = Double.doubleToLongBits(latitude);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(longitude);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -172,9 +175,9 @@ public class Site implements Serializable {
 				return false;
 		} else if (!client.equals(other.client))
 			return false;
-		if (Float.floatToIntBits(latitude) != Float.floatToIntBits(other.latitude))
+		if (Double.doubleToLongBits(latitude) != Double.doubleToLongBits(other.latitude))
 			return false;
-		if (Float.floatToIntBits(longitude) != Float.floatToIntBits(other.longitude))
+		if (Double.doubleToLongBits(longitude) != Double.doubleToLongBits(other.longitude))
 			return false;
 		if (name == null) {
 			if (other.name != null)
@@ -183,6 +186,8 @@ public class Site implements Serializable {
 			return false;
 		return true;
 	}
+
+	
 
 	
 }

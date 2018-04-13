@@ -11,21 +11,25 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.omniacom.omniapp.data.UserRepositoryImpl;
+import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Role;
 import com.omniacom.omniapp.entity.Service;
+import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
+import com.omniacom.omniapp.repository.BoqRepository;
 import com.omniacom.omniapp.repository.ClientRepository;
 import com.omniacom.omniapp.repository.CommentRepository;
 import com.omniacom.omniapp.repository.OperationRepository;
 import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.RoleRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
+import com.omniacom.omniapp.repository.ServiceTemplateRepository;
 import com.omniacom.omniapp.repository.SnagRepository;
 import com.omniacom.omniapp.repository.TaskRepository;
 import com.omniacom.omniapp.repository.UserRepository;
@@ -184,87 +188,83 @@ public class OmniApp {
 	@Autowired
 	private ClientRepository clientRepo;
 	
+	@Autowired
+	private BoqRepository BoqRepo;
+	
+	@Autowired
+	private ServiceTemplateRepository serviceTemplateRepo;
+	
 	@PostConstruct
 	private void testTaskRepo() {
-		/*Task task = new Task("task", "none", "none", new Date(), new Date(), new Date(), 1);
 		
-		User user = new User("wala","wala","wala");
-		User user2 = new User("howa","howa","howa");
-		User user3 = new User("howa","howa","howa");
-
-		userRepo.save(user);
-		userRepo.save(user2);
-		userRepo.save(user3);
-		
-		task.addUser(user2);
-		task.addUser(user);
-		task.addUser(user3);
-		
-		taskRepo.save(task);
-		
-		System.out.println("Number of users working: "+ taskRepo.findAllUsers(task).size()); */
-		
-		//Task task = new Task("task1", "none", "none", new Date(), new Date(), new Date(), 1);
-		//task.setStatus(StaticString.TASK_STATUS_COMPLETED);
-		//Task task2 = new Task("task2", "none", "none", new Date(), new Date(), new Date(), 1);
-		//task2.setStatus(StaticString.TASK_STATUS_ONGOING);
-		User user2 = new User("wala","wala","wala");
-		user2.setFirstName("wala");
-		user2.setLastName("zargouni");
-		//user2.setZohoToken("ac3d1f234e2dc1807d102298c5a0dac0");
-		Role admin = new Role("ADMIN");
-	
-		roleRepo.save(admin);	
-		user2.setRole(admin);
-		
-		
-		userRepo.save(user2);
-		//task.addUser(user2);
-		//task2.addUser(user2);
-		//taskRepo.save(task);
-		//taskRepo.save(task2);
-		
-		Client client = new Client("Ooredoo");
-		Client client2 = new Client("Orange");
-		
-		clientRepo.save(client);
-		clientRepo.save(client2);
-		
-		//Project project = new Project();
-		//project.setName("aaaaaaaaa");
-		//project.setCreationDate(new Date());
-		//project.setClient(client2);
-		
-		//projectRepo.save(project);
-		
-		Project proj = new Project();
-		proj.setName("xD");
-		proj.setCreationDate(new Date());
-		
-		Operation oper = new Operation();
-		oper.setProject(proj);
-		
-		Service serv = new Service();
-		serv.setOperation(oper);
-		
-		Task task3 = new Task();
-		task3.setService(serv);
-		task3.setStatus(StaticString.TASK_STATUS_COMPLETED);
-		Task task4 = new Task();
-		task4.setStatus(StaticString.TASK_STATUS_ONGOING);
-		task4.setService(serv);
-		
-		projectRepo.save(proj);
-		operationRepo.save(oper);
-		serviceRepo.save(serv);
-		taskRepo.save(task3);
-		taskRepo.save(task4);
+//		User user2 = new User("wala","wala","wala");
+//		user2.setFirstName("wala");
+//		user2.setLastName("zargouni");
+//		Role admin = new Role("ADMIN");
+//	
+//		roleRepo.save(admin);	
+//		user2.setRole(admin);
+//		
+//		
+//		userRepo.save(user2);
+//		
+//		
+//		Client client = new Client("Ooredoo");
+//		Client client2 = new Client("Orange");
+//		
+//		clientRepo.save(client);
+//		clientRepo.save(client2);
+//		
+//		
+//		
+//		Project proj = new Project();
+//		proj.setName("xD");
+//		proj.setCreationDate(new Date());
+//		
+//		Operation oper = new Operation();
+//		oper.setProject(proj);
+//		
+//		Service serv = new Service();
+//		serv.setOperation(oper);
+//		
+//		Task task3 = new Task();
+//		task3.setService(serv);
+//		task3.setStatus(StaticString.TASK_STATUS_COMPLETED);
+//		Task task4 = new Task();
+//		task4.setStatus(StaticString.TASK_STATUS_ONGOING);
+//		task4.setService(serv);
+//		
+//		projectRepo.save(proj);
+//		operationRepo.save(oper);
+//		serviceRepo.save(serv);
+//		taskRepo.save(task3);
+//		taskRepo.save(task4);
 		
 		
 		//System.out.println("CLient id is: "+clientRepo.findByName("Orange").getName());
 		
 //		System.out.println("Number of tasks for him: "+ userRepo.findAllTasks(userRepo.findOneByUserName("HIM")).size()); 
 
+		
+//		BillOfQuantities boq = new BillOfQuantities();
+//		//boq.setProject(proj);
+//		ServiceTemplate template = new ServiceTemplate("template1","description",1.2f);
+//		ServiceTemplate template2 = new ServiceTemplate("template2","description",2.2f);
+//		serviceTemplateRepo.save(template);
+//		serviceTemplateRepo.save(template2);
+//		
+//		List<ServiceTemplate> templates = new ArrayList<>();
+//		templates.add(template);
+//		templates.add(template2);
+//		BoqRepo.addAllServiceTemplates(boq, templates);
+//		BoqRepo.save(boq);
+//		
+//		ServiceTemplate template3 = new ServiceTemplate("template3","description",1.2f);
+//		serviceTemplateRepo.save(template3);
+//		
+//		BoqRepo.addOneServiceTemplate(boq, template3);
+//		BoqRepo.save(boq);
+//		System.out.println("number of templates: "+BoqRepo.findAllServiceTemplates(boq).size());
 	}
 
 }

@@ -12,7 +12,7 @@ var DatatableChildRemoteDataDemo = function() {
         type: 'remote',
         source: {
           read: {
-            url: 'https://keenthemes.com/metronic/preview/inc/api/datatables/demos/customers.php',
+            url: '/get_services_all_tasks_for_current_project?id=2',
           },
         },
         pageSize: 10, // display 20 records per page
@@ -46,7 +46,7 @@ var DatatableChildRemoteDataDemo = function() {
       // columns definition
       columns: [
         {
-          field: 'RecordID',
+          field: 'id',
           title: '',
           sortable: false,
           width: 20,
@@ -54,57 +54,16 @@ var DatatableChildRemoteDataDemo = function() {
         }, {
           field: 'checkbox',
           title: '',
-          template: '{{RecordID}}',
+          template: '{{id}}',
           sortable: false,
           width: 20,
           textAlign: 'center',
           selector: {class: 'm-checkbox--solid m-checkbox--brand'},
         }, {
-          field: 'FirstName',
-          title: 'First Name',
+          field: 'name',
+          title: 'Service',
           sortable: 'asc',
           // responsive: {hidden: 'md'}
-        }, {
-          field: 'LastName',
-          title: 'Last Name',
-        }, {
-          field: 'Company',
-          title: 'Company',
-        }, {
-          field: 'Email',
-          title: 'Email',
-        }, {
-          field: 'Phone',
-          title: 'Phone',
-        }, {
-          field: 'Status',
-          title: 'Status',
-          // callback function support for column rendering
-          template: function(row) {
-            var status = {
-              1: {'title': 'Pending', 'class': 'm-badge--brand'},
-              2: {'title': 'Delivered', 'class': ' m-badge--metal'},
-              3: {'title': 'Canceled', 'class': ' m-badge--primary'},
-              4: {'title': 'Success', 'class': ' m-badge--success'},
-              5: {'title': 'Info', 'class': ' m-badge--info'},
-              6: {'title': 'Danger', 'class': ' m-badge--danger'},
-              7: {'title': 'Warning', 'class': ' m-badge--warning'},
-            };
-            return '<span class="m-badge ' + status[row.Status].class + ' m-badge--wide">' + status[row.Status].title + '</span>';
-          },
-        }, {
-          field: 'Type',
-          title: 'Type',
-          // callback function support for column rendering
-          template: function(row) {
-            var status = {
-              1: {'title': 'Online', 'state': 'danger'},
-              2: {'title': 'Retail', 'state': 'primary'},
-              3: {'title': 'Direct', 'state': 'accent'},
-            };
-            return '<span class="m-badge m-badge--' + status[row.Type].state + ' m-badge--dot"></span>&nbsp;<span class="m--font-bold m--font-' + status[row.Type].state + '">' +
-                status[row.Type].title + '</span>';
-          },
         }, {
           field: 'Actions',
           width: 110,
@@ -136,12 +95,12 @@ var DatatableChildRemoteDataDemo = function() {
     });
 
     function subTableInit(e) {
-      $('<div/>').attr('id', 'child_data_ajax_' + e.data.RecordID).appendTo(e.detailCell).mDatatable({
+      $('<div/>').attr('id', 'child_data_ajax_' + e.data.id).appendTo(e.detailCell).mDatatable({
         data: {
           type: 'remote',
           source: {
             read: {
-              url: 'inc/api/datatables/demos/orders.php',
+              url: '/get_tasks_by_service?serviceId='+e.data.id,
               headers: {'x-my-custom-header': 'some value', 'x-test-header': 'the value'},
               params: {
                 // custom query params
@@ -183,53 +142,49 @@ var DatatableChildRemoteDataDemo = function() {
             width: 20,
             responsive: {hide: 'xl'},
           }, {
-            field: 'OrderID',
-            title: 'Order ID',
+            field: 'TaskCode',
+            title: 'Code',
             template: function(row) {
-              return '<span>' + row.OrderID + ' - ' + row.ShipCountry + '</span>';
+              return '<span>' + row.TaskId + ' - ' + row.TaskName + '</span>';
             },
           }, {
-            field: 'ShipCountry',
-            title: 'Country',
+            field: 'TaskName',
+            title: 'Task Name',
             width: 100,
           }, {
-            field: 'ShipAddress',
-            title: 'Ship Address',
+            field: 'TaskStartDate',
+            title: 'Start Date',
           }, {
-            field: 'ShipName',
-            title: 'Ship Name',
+            field: 'TaskEndDate',
+            title: 'End Date',
           }, {
-            field: 'TotalPayment',
-            title: 'Payment',
+            field: 'TaskDuration',
+            title: 'Duration',
             type: 'number',
           }, {
-            field: 'Status',
+            field: 'TaskStatus',
             title: 'Status',
             // callback function support for column rendering
             template: function(row) {
               var status = {
-                1: {'title': 'Pending', 'class': 'm-badge--brand'},
-                2: {'title': 'Delivered', 'class': ' m-badge--metal'},
-                3: {'title': 'Canceled', 'class': ' m-badge--primary'},
-                4: {'title': 'Success', 'class': ' m-badge--success'},
-                5: {'title': 'Info', 'class': ' m-badge--info'},
-                6: {'title': 'Danger', 'class': ' m-badge--danger'},
-                7: {'title': 'Warning', 'class': ' m-badge--warning'},
-              };
-              return '<span class="m-badge ' + status[row.Status].class + ' m-badge--wide">' + status[row.Status].title + '</span>';
+                'ONGOING': {'title': 'Pending', 'class': 'm-badge--brand'},
+                'COMPLETED': {'title': 'Success', 'class': ' m-badge--success'},
+                 };
+              return '<span class="m-badge ' + status[row.TaskStatus].class + ' m-badge--wide">' + status[row.TaskStatus].title + '</span>';
             },
           }, {
-            field: 'Type',
-            title: 'Type',
+            field: 'TaskPriority',
+            title: 'Priority',
             // callback function support for column rendering
             template: function(row) {
               var status = {
-                1: {'title': 'Online', 'state': 'danger'},
-                2: {'title': 'Retail', 'state': 'primary'},
-                3: {'title': 'Direct', 'state': 'accent'},
+                'none': {'title': 'Online', 'state': 'danger'},
+                'low': {'title': 'Retail', 'state': 'primary'},
+                'medium': {'title': 'Direct', 'state': 'accent'},
+                'high': {'title': 'Direct', 'state': 'accent'},
               };
-              return '<span class="m-badge m-badge--' + status[row.Type].state + ' m-badge--dot"></span>&nbsp;<span class="m--font-bold m--font-' + status[row.Type].state + '">' +
-                  status[row.Type].title + '</span>';
+              return '<span class="m-badge m-badge--' + status[row.TaskPriority].state + ' m-badge--dot"></span>&nbsp;<span class="m--font-bold m--font-' + status[row.TaskPriority].state + '">' +
+                  status[row.TaskPriority].title + '</span>';
             },
           },],
       });
@@ -245,6 +200,3 @@ var DatatableChildRemoteDataDemo = function() {
   };
 }();
 
-jQuery(document).ready(function() {
-  DatatableChildRemoteDataDemo.init();
-});
