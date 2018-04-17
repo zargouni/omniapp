@@ -23,9 +23,9 @@ import com.omniacom.omniapp.repository.TaskTemplateRepository;
 import com.omniacom.omniapp.service.ServiceTemplateService;
 import com.omniacom.omniapp.validator.JsonResponse;
 import com.omniacom.omniapp.validator.ServiceTemplateValidator;
+import com.omniacom.omniapp.validator.TaskTemplateValidator;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 @RestController
 public class TemplatingController {
@@ -35,6 +35,9 @@ public class TemplatingController {
 	
 	@Autowired
 	private ServiceTemplateValidator serviceTemplateValidator;
+	
+	@Autowired
+	private TaskTemplateValidator taskTemplateValidator;
 	
 	@ModelAttribute
 	public void addAttributes(Model model) {
@@ -53,7 +56,7 @@ public class TemplatingController {
 		JSONArray jsonArray = new JSONArray();
 		List<ServiceTemplate> services = stService.findAllServiceTemplates();
 		for(ServiceTemplate template : services) {
-			jsonArray.add(jsonServiceTemplate(template));
+			jsonArray.add(stService.jsonServiceTemplate(template));
 		}
 		return jsonArray;
 	}
@@ -92,8 +95,9 @@ public class TemplatingController {
 	
 	@Autowired
 	TaskTemplateRepository taskTemplateRepo;
+	
 	@PostMapping("/new-service-template-save-task")
-	public @ResponseBody JsonResponse saveTask(TaskTemplate taskTemplate, @RequestParam("serviceId") long serviceId, BindingResult result)
+	public @ResponseBody JsonResponse saveTask(@ModelAttribute("taskTemplate") @Validated TaskTemplate taskTemplate, @RequestParam("serviceId") long serviceId, BindingResult result)
 			throws IOException {
 
 		JsonResponse response = new JsonResponse();
@@ -111,17 +115,14 @@ public class TemplatingController {
 		return response;
 	}
 	
-	public JSONObject jsonServiceTemplate(ServiceTemplate template) {
-		JSONObject jsonService = new JSONObject()
-				.element("id", template.getId())
-				.element("name", template.getName())
-				.element("description", template.getDescription())
-				.element("price", template.getPrice());
-		return jsonService;
-	}
 	
 	@InitBinder("serviceTemplate")
 	protected void setServiceTemplateValidator(WebDataBinder binder) {
 		binder.addValidators(serviceTemplateValidator);
+	}
+	
+	@InitBinder("taskTemplate")
+	protected void setTaskTemplateValidator(WebDataBinder binder) {
+		binder.addValidators(taskTemplateValidator);
 	}
 }

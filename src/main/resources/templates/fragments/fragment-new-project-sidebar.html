@@ -1,6 +1,6 @@
 <!-- begin::New Project Sidebar -->
-<div th:fragment="new-project-sidebar"
-	 style="background:#f1f1f1" class="m_new_project_sidebar m-new-project-sidebar  m-new-project-sidebar--tabbed m-new-project-sidebar--skin-light">
+<div th:fragment="new-project-sidebar" style="background: #f1f1f1"
+	class="m_new_project_sidebar m-new-project-sidebar  m-new-project-sidebar--tabbed m-new-project-sidebar--skin-light">
 
 	<div class="m-new-project-sidebar__content m--hide">
 		<span id="m_new_project_sidebar_close"
@@ -83,11 +83,11 @@
 
 				<div class="form-group m-form__group row">
 					<div class="col-lg-8">
-						<label for="">Is this project zone sensitive ?</label>
+						<label for="">Do you want to select a BOQ now ?</label>
 					</div>
 					<div class="col-lg-4">
 						<span class="m-switch m-switch--outline m-switch--info"> <label>
-								<input type="checkbox" id="m_switch_project_zone" name="">
+								<input type="checkbox" id="m_switch_project_boq" name="">
 								<span></span>
 						</label>
 						</span>
@@ -96,19 +96,21 @@
 				</div>
 
 
-				<div id="select_zone_content" style="display: none;"
+				<div id="select_boq_content" style="display: none;"
 					class="form-group m-form__group row">
 
-					<div class="col-lg-4">
-						<label>Select Zone :</label>
-					</div>
 					<div class="col-lg-8">
 						<select class="custom-select form-control">
-							<option value="null">Select zone</option>
+							<option value="null">Select BOQ</option>
 							<option value="1">Zone 1</option>
 							<option value="2">Zone 2</option>
 							<option value="3">Zone 3</option>
 						</select>
+					</div>
+					<div class="col-lg-4">
+						<button type="button"
+							class="btn m-btn--square  btn-primary m-btn m-btn--custom"
+							data-toggle="modal" data-target="#m_modal_boq">New BOQ</button>
 					</div>
 				</div>
 				<div class="m-form__group form-group">
@@ -130,11 +132,12 @@
 
 						</div>
 
+						<div class="col m--align-right">
+							<button type="reset"
+								class="btn m-btn--square btn-secondary btn-block">Cancel</button>
+						</div>
 					</div>
-					<div class="col m--align-right">
-						<button type="reset"
-							class="btn m-btn--square btn-secondary btn-block">Cancel</button>
-					</div>
+
 				</div>
 			</div>
 		</form>
@@ -144,6 +147,8 @@
 
 
 	</div>
+
+
 	<iframe width="0" height="0" border="0" name="noTarget" id="noTarget"></iframe>
 
 

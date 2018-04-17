@@ -1,5 +1,85 @@
+function doAddServiceTemplatesToNewBoq( boqId ){
+	$('#service_templates_checkbox_list').find(":checkbox:checked").each(function () {
+		var templateId = $(this).attr('id');
+		$.ajax({
+			type : "POST",
+			url : '/add-service-template-to-boq',
+			data : "id=" + templateId + "&boqId=" + boqId,
+			success : function(response) {
+				// we have the response
+				if (response.status == "FAIL") {
+					toastr.error("Couldn't add template", "Error");
+				} 
+			},
+			error : function(e) {
+				toastr.error("Couldn't add template", "Server Error");
+			}
+		});
+	});
+}
+
+
+function doAddNewBoqAjax(){
+	var name = $('#input_new_boq_name').val();
+	var startDate = $('#input_new_boq_start_date').val();
+	var endDate = $('#input_new_boq_end_date').val();
+	var addedBoqId;
+	
+	$('#boq_name_error').hide('fast');
+	$('#boq_start_date_error').hide('fast');
+	$('#boq_end_date_error').hide('fast');
+
+
+	
+	if ($('#service_templates_checkbox_list :checkbox:checked').length > 0){
+	
+	$.ajax({
+		type : "POST",
+		url : '/add-boq',
+		data : "name=" + name + "&startDate=" + startDate + "&endDate=" + endDate,
+		async : false,
+		success : function(response) {
+			// we have the response
+			if (response.status == "SUCCESS") {
+				toastr.success("BOQ created successfully", "Well done!");
+				addedBoqId = response.result;
+				if(response.result != 'undefined'){
+					doAddServiceTemplatesToNewBoq(addedBoqId);
+					$("#m_modal_boq").modal('hide');
+					$('#input_new_boq_name').val('');
+					$('#input_new_boq_start_date').val('');
+					$('#input_new_boq_end_date').val('');
+					$('#service_templates_checkbox_list :checkbox').prop('checked', false); 
+				}
+			} else {
+				if(response.result == 'boq-exists'){
+					toastr.error("Couldn't create BOQ, a BOQ with this name already exists", "Change BOQ name");
+				}else{
+				toastr.error("Couldn't create BOQ", "Error");
+				}
+				for (i = 0; i < response.result.length; i++) {
+						if (response.result[i].code == "boq.name.empty")
+							$('#boq_name_error').show('slow');
+						if (response.result[i].code == "boq.startDate.empty")
+							$('#boq_start_date_error').show('slow');
+						if (response.result[i].code == "boq.endDate.empty")
+							$('#boq_end_date_error').show('slow');
+						if (response.result[i].code == "noq.date.nomatch")
+							toastr.warning("Date range you mentioned is invalid", "Check date range");
+				}
+			}
+		},
+		error : function(e) {
+			toastr.error("Couldn't add BOQ", "Server Error");
+		}
+	});
+	}else{
+		toastr.warning("Couldn't add BOQ, you have to select at least 1 service", "Select Services");
+	}
+}
+
+
 function doAddProjectAjaxPost() {
-	// get the form values
 	var nameError = $('#project_name_error');
 	var clientError = $('#project_client_error');
 	var countryError = $('#project_country_error');
@@ -21,7 +101,6 @@ function doAddProjectAjaxPost() {
 		data : "name=" + name + "&client=" + client + "&country=" + country
 				+ "&currency=" + currency + "&owner=" + owner,
 		success : function(response) {
-			// we have the response
 			if (response.status == "SUCCESS") {
 				toastr.success("Project Added successfully", "Well done!");
 
@@ -55,7 +134,6 @@ function doAddProjectAjaxPost() {
 }
 
 function doAddOperationAjaxPost() {
-	// get the form values
 	var nameError = $('#operation_name_error');
 	var projectError = $('#operation_project_error');
 	var startDateError = $('#operation_startDate_error');
@@ -64,8 +142,6 @@ function doAddOperationAjaxPost() {
 	var project = $('#select_project_new_operation').val();
 	var startDate = $('#m_datepicker_4_3').val();
 	var endDate = $('#m_datepicker_4_4').val();
-	// var currency = $('#project_currency').val();
-	// var owner = $('#project_owner').val();
 
 	nameError.hide('fast');
 	projectError.hide('fast');
@@ -78,8 +154,6 @@ function doAddOperationAjaxPost() {
 		data : "name=" + name + "&project=" + project + "&startDate="
 				+ startDate + "&endDate=" + endDate,
 		success : function(response) {
-			// we have the response
-
 			if (response.status == "SUCCESS") {
 				toastr.success("Operation Added successfully", "Well done!");
 
@@ -88,9 +162,7 @@ function doAddOperationAjaxPost() {
 				$('#m_datepicker_4_3').val('');
 				$('#m_datepicker_4_4').val('');
 
-				// $('#error').hide('slow');
 			} else {
-				// toastr.error("Couldn't add operation", "Error");
 
 				for (i = 0; i < response.result.length; i++) {
 					console.log(response.result[i].code);
@@ -115,7 +187,6 @@ function doAddOperationAjaxPost() {
 }
 
 function doAddTaskAjaxPost() {
-	// get the form values
 	var nameError = $('#task_name_error');
 	var serviceError = $('#task_service_error');
 	var taskDateError = $('#task_date_error');
@@ -139,7 +210,6 @@ function doAddTaskAjaxPost() {
 		data : "name=" + name + "&service=" + service + "&startDate="
 				+ startDate + "&endDate=" + endDate + "&priority=" + priority,
 		success : function(response) {
-			// we have the response
 			if (response.status == "SUCCESS") {
 				toastr.success("Task added successfully", "Well done!");
 
@@ -148,9 +218,7 @@ function doAddTaskAjaxPost() {
 				$('#m_datepicker_4_2').val('');
 				$('#task_priority').val('');
 
-				// $('#error').hide('slow');
 			} else {
-				// toastr.error("Couldn't add task", "Error");
 
 				for (i = 0; i < response.result.length; i++) {
 
@@ -189,7 +257,6 @@ function projectDynamicContent() {
 	});
 
 	$("#project_feed_toggle").on("click", function() {
-	// alert("id: "+$("#m_dynamic_content_project").attr('id'));
 		$("#m_dynamic_content_project").children().hide();
 		$("#feed-fragment").show();
 
@@ -198,7 +265,6 @@ function projectDynamicContent() {
 	$("#project_tasks_toggle").on("click", function() {
 		$("#m_dynamic_content_project").children().hide();
 		
-		 // DatatableChildRemoteDataDemo.init();
 		$("#tasks-fragment").show();
 		
 		});
@@ -244,7 +310,6 @@ function populateServicesListNewTaskForm() {
 }
 
 function updateSelectServices() {
-	// alert($(this).val());
 	populateServicesListNewTaskForm();
 	$("#select_service_div").show();
 
@@ -355,9 +420,7 @@ function wizardSaveClient() {
 		data : "name=" + name+"&email="+email+"&phone="+phone+"&country="+country+"&address="+address,
 		async : false,
 		success : function(response) {
-			// we have the response
 			if (response.status == "SUCCESS") {
-				// toastr.success("Client saved successfully", "Well done!");
 				result = true;
 
 			}else if(response.status == "FAIL" && response.result == "existing.client"){
@@ -393,9 +456,7 @@ function wizardSaveSite(name,long,lat){
 		data : "name=" + name +"&longitude="+ long +"&latitude="+ lat,
 		async : false,
 		success : function(response) {
-			// we have the response
 			if (response.status == "SUCCESS") {
-				// toastr.success("sites saved successfully", "Well done!");
 				result = true;
 
 			} else {
@@ -434,7 +495,6 @@ function ClientWizardPublish(){
 		url : '/client-wizard-publish',
 		async : false,
 		success : function(response) {
-			// we have the response
 			if(response == true)
 				toastr.success("New Client added successfully", "Well done!");
 				
@@ -548,12 +608,7 @@ $(document).ready(function() {
 	$("#select_project_new_task").change(function() {
 		updateSelectServices();
 	});
-//	
-// function projectTasksAccordion(service_id){
-//		
-//		
-//
-// } ;
+
 	
 	
 	  	

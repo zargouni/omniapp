@@ -27,6 +27,8 @@ public class BillOfQuantities implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	
+	private String name;
+	
 	@CreatedDate
 	private Date creationDate;
 	private Date startDate;
@@ -43,6 +45,14 @@ public class BillOfQuantities implements Serializable {
 
 	}
 	
+	public BillOfQuantities(String name, Date creationDate, Date startDate, Date endDate) {
+		super();
+		this.name = name;
+		this.creationDate = creationDate;
+		this.startDate = startDate;
+		this.endDate = endDate;
+	}
+
 	public BillOfQuantities(Date creationDate, Date startDate, Date endDate) {
 		this.creationDate = creationDate;
 		this.startDate = startDate;
@@ -129,6 +139,20 @@ public class BillOfQuantities implements Serializable {
 	 */
 	public void setServices(List<ServiceTemplate> services) {
 		this.services = services;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	

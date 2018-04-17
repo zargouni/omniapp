@@ -43,11 +43,14 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 
 	@Override
 	public boolean addOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template) {
-		if (boq.getServices() != null) {
+		if (!templateExists(boq, template)) {
+			if (boq.getServices() != null) {
+				return boq.getServices().add(template);
+			}
+			boq.setServices(new ArrayList<>());
 			return boq.getServices().add(template);
 		}
-		boq.setServices(new ArrayList<>());
-		return boq.getServices().add(template);
+		return false;
 
 	}
 
@@ -59,6 +62,25 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 	@Override
 	public boolean removeAllServiceTemplates(BillOfQuantities boq, List<ServiceTemplate> templates) {
 		return boq.getServices().removeAll(templates);
-	} 
+	}
+
+	@Override
+	public boolean templateExists(BillOfQuantities boq, ServiceTemplate template) {
+		Query query = entityManager.createQuery(
+				"SELECT s FROM ServiceTemplate s, BillOfQuantities boq JOIN boq.services services WHERE boq.id = :param AND services.id = :templateId")
+				.setParameter("param", boq.getId()).setParameter("templateId", template.getId());
+		if (query.getResultList().size() != 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public boolean boqExists(String name) {
+		Query query = entityManager.createQuery("SELECT boq FROM BillOfQuantities boq WHERE boq.name = :param")
+				.setParameter("param", name);
+		if(query.getResultList().size() != 0)
+			return true;
+		return false;
+	}
 
 }

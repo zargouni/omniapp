@@ -28,7 +28,7 @@ public class ServiceTemplate implements Serializable {
 	@ManyToMany(mappedBy = "services")
 	private List<BillOfQuantities> boqs;
 	
-	@OneToMany(mappedBy = "serviceTemplate")
+	@OneToMany(mappedBy = "serviceTemplate", orphanRemoval=true)
 	private List<TaskTemplate> tasks;
 	
 	

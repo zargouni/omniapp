@@ -6262,16 +6262,16 @@ var mNewProjectSidebar = function() {
 
 
 var mNewProjectSelectZone = function() {
-    var switchZone = $('#m_switch_project_zone');
+    var switchBoq = $('#m_switch_project_boq');
     var switchZoneWizard = $('#m_switch_project_zone_wizard');
-    var zoneBlock = $('#select_zone_content');
+    var boqBlock = $('#select_boq_content');
     var zoneBlockWizard = $('#select_zone_content_wizard');
     
-    switchZone.change(function() {
+    switchBoq.change(function() {
         if(this.checked) {
-        	zoneBlock.show();        }
+        	boqBlock.show();        }
         else{
-        	zoneBlock.hide();
+        	boqBlock.hide();
         }
     });
     

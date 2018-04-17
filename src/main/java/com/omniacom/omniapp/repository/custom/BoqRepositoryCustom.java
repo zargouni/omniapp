@@ -16,6 +16,10 @@ public interface BoqRepositoryCustom {
 	public boolean removeOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template);
 	
 	public boolean removeAllServiceTemplates(BillOfQuantities boq, List<ServiceTemplate> templates);
+	
+	public boolean templateExists(BillOfQuantities boq, ServiceTemplate template);
+	
+	public boolean boqExists(String name);
 
 
 }

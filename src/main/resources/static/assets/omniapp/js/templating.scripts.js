@@ -1,6 +1,5 @@
 function doAddNewServiceTemplate() {
 
-	// get the form values
 	var nameError = $('#service_template_name_error');
 	var descriptionError = $('#service_template_description_error');
 	var priceError = $('#service_template_price_error');
@@ -19,7 +18,6 @@ function doAddNewServiceTemplate() {
 				data : "name=" + name + "&description=" + description
 						+ "&price=" + price,
 				success : function(response) {
-					// we have the response
 					if (response.status == "SUCCESS") {
 						toastr.success("Template added successfully",
 								"Well done!");
@@ -27,23 +25,27 @@ function doAddNewServiceTemplate() {
 						$('#input_new_service_template_name').val('');
 						$('#input_new_service_template_description').val('');
 						$('#input_new_service_template_price').val('');
+						
+						$('#modal_new_service_template').modal('hide');
+						setTimeout(
+								  function() 
+								  {
+									  location.reload()
+								  }, 2000);
 
-						// $('#error').hide('slow');
+
 					} else {
-						// toastr.error("Couldn't add task", "Error");
 
 						for (i = 0; i < response.result.length; i++) {
 
 							if (response.result[i].code == "service.template.name.empty")
 								nameError.show('slow');
 							if (response.result[i].code == "service.template.description.empty")
-								// serviceError.show('slow');
 								descriptionError.show('slow');
 							if (response.result[i].code == "service.template.price.empty")
-								// taskDateError.show('slow');
+								
 								priceError.show('slow');
-							if (response.result[i].code == "service.template.price.undefined") {
-								priceError.show('slow');
+							if (price != '' && response.result[i].code == "service.template.price.undefined") {
 								toastr.warning("Price must be logic",
 										"Check price");
 							}
@@ -52,7 +54,7 @@ function doAddNewServiceTemplate() {
 
 					}
 					
-					$('#modal_new_service_template').modal('hide');
+					
 				},
 				error : function(e) {
 					toastr.error("Couldn't add template", "Server Error");
@@ -79,13 +81,15 @@ function handleRemoveServiceClick(id) {
 								data : "serviceId=" + serviceId,
 								async : true,
 								success : function(response) {
-									// we have the response
 									if (response.status == "SUCCESS") {
-										// toastr.success("sites saved
-										// successfully", "Well done!");
 										swal('Deleted!',
 												'Template has been deleted.',
 												'success');
+										setTimeout(
+												  function() 
+												  {
+													  location.reload()
+												  }, 2000);
 
 									} else {
 										swal('Fail!', 'Template not deleted.',
@@ -119,19 +123,18 @@ function saveServiceTemplateTask(name, estimationHR, estimationDays, serviceId) 
 				+ serviceId,
 		async : false,
 		success : function(response) {
-			// we have the response
 			if (response.status == "SUCCESS") {
-				// toastr.success("sites saved successfully", "Well done!");
+				$("#add-service-template-tasks").modal('hide');
 				result = true;
 
 			} else {
-				toastr.warning("Please fill all site informations", "Warning");
+				toastr.warning("Please fill all tasks informations", "Warning");
 
 				result = false;
 			}
 		},
 		error : function(e) {
-			toastr.error("Couldn't add sites", "Server Error");
+			toastr.error("Couldn't add task", "Server Error");
 			result = false;
 		}
 	});
@@ -153,12 +156,12 @@ function saveServiceTemplateAddedTasks(serviceId) {
 				
 
 			});
-	$("#add-service-template-tasks").modal('hide');
+	
 	return result;
 }
 
 function toggleModalEditDetails(id) {
-
+//TODO
 	$("#edit-service-template-details").modal();
 }
 
@@ -166,17 +169,14 @@ function toggleModalAddTasks(id) {
 	$('#m_repeater_2').find('[data-repeater-delete]').click();
 	$('#m_repeater_2').find('[data-repeater-create]').click();
 	
-//	$('#m_repeater_2').find('.add-tasks-repeater').attr("name", "repeater_" + id);
 	$('#submit_added_tasks_button').attr("onclick",
 			"saveServiceTemplateAddedTasks(" + id + ")")
-	// $("#edit-service-template-modal-title").html("Edit details "+id);
 	$("#add-service-template-tasks").modal();
 }
 
 
 
 function toggleModalEditTasks(id) {
-
-	// $("#edit-service-template-modal-title").html("Edit details "+id);
+//TODO
 	$("#edit-service-template-tasks").modal();
 }

@@ -21,18 +21,23 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
+import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.entity.Task;
+import com.omniacom.omniapp.service.BoqService;
 import com.omniacom.omniapp.service.ClientService;
 import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
+import com.omniacom.omniapp.service.ServiceTemplateService;
 import com.omniacom.omniapp.service.SiteService;
 import com.omniacom.omniapp.service.TaskService;
 import com.omniacom.omniapp.service.UserService;
+import com.omniacom.omniapp.validator.BoqValidator;
 import com.omniacom.omniapp.validator.ClientValidator;
 import com.omniacom.omniapp.validator.JsonResponse;
 import com.omniacom.omniapp.validator.OperationValidator;
@@ -53,6 +58,9 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private ProjectValidator projectValidator;
+
+	@Autowired
+	private BoqValidator boqValidator;
 
 	@Autowired
 	private OperationValidator operationValidator;
@@ -82,6 +90,12 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	private TaskService taskService;
 
 	@Autowired
+	private ServiceTemplateService stService;
+
+	@Autowired
+	private BoqService boqService;
+
+	@Autowired
 	private ProjectsAPI projectsApi;
 
 	@ModelAttribute
@@ -97,6 +111,8 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		model.addAttribute("client", new Client());
 		model.addAttribute("site", new Site());
 		model.addAttribute("addedClient", this.newClient);
+		model.addAttribute("serviceTemplateList", stService.findAllServiceTemplates());
+		model.addAttribute("boq", new BillOfQuantities());
 
 	}
 
@@ -108,6 +124,48 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 			return "redirect:/zoho";
 
 		return "redirect:/home";
+	}
+
+	@PostMapping("/add-boq")
+	public @ResponseBody JsonResponse addBoq(@ModelAttribute("boq") @Validated BillOfQuantities boq,
+			BindingResult result) throws IOException {
+
+		JsonResponse response = new JsonResponse();
+
+		if (!result.hasErrors()) {
+			if (!boqService.boqExists(boq)) {
+				long addedBoqId = boqService.addBoq(boq).getId();
+				response.setStatus("SUCCESS");
+				response.setResult(addedBoqId);
+			} else {
+				response.setStatus("FAIL");
+				response.setResult("boq-exists");
+
+			}
+
+			// projectsApi.pushProject(project, getSessionUser());
+			// response.setResult(userList);
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+
+	@PostMapping("/add-service-template-to-boq")
+	public @ResponseBody JsonResponse addServiceTemplateToBoq(@RequestParam("id") long templateId,
+			@RequestParam("boqId") long boqId) throws IOException {
+
+		JsonResponse response = new JsonResponse();
+
+		ServiceTemplate template = stService.findOne(templateId);
+		BillOfQuantities boq = boqService.findOne(boqId);
+		if (template != null && boq != null) {
+			if (!boqService.addOneServiceTemplate(boq, template))
+				response.setStatus("FAIL");
+		}
+		return response;
 	}
 
 	@GetMapping("/set-select-owned-projects")
@@ -201,7 +259,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 			if (!clientService.clientExists(client)) {
 				this.newClient = client;
 				response.setStatus("SUCCESS");
-			}else {
+			} else {
 				response.setStatus("FAIL");
 				response.setResult("existing.client");
 			}
@@ -222,10 +280,10 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JSONArray json = JSONArray.fromObject(jsonArray);
 		return json;
 	}
-	
+
 	@GetMapping("/get-added-client-wizard")
 	public @ResponseBody JSONObject getAddedClient() {
-		
+
 		JSONObject json = JSONObject.fromObject(jsonClient(newClient));
 		return json;
 	}
@@ -267,14 +325,11 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JSONObject jsonService = new JSONObject().element("id", service.getId()).element("name", service.getName());
 		return jsonService;
 	}
-	
+
 	public JSONObject jsonClient(Client client) {
-		JSONObject jsonClient = new JSONObject()
-						.element("name", client.getName())
-						.element("email", client.getEmail())
-						.element("phone", client.getPhone())
-						.element("country", client.getCountry())
-						.element("address", client.getAddress());
+		JSONObject jsonClient = new JSONObject().element("name", client.getName()).element("email", client.getEmail())
+				.element("phone", client.getPhone()).element("country", client.getCountry())
+				.element("address", client.getAddress());
 		return jsonClient;
 	}
 
@@ -313,6 +368,11 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	@InitBinder("site")
 	protected void setSiteValidator(WebDataBinder binder) {
 		binder.addValidators(siteValidator);
+	}
+
+	@InitBinder("boq")
+	protected void setBoqValidator(WebDataBinder binder) {
+		binder.addValidators(boqValidator);
 	}
 
 }
