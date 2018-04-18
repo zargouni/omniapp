@@ -221,14 +221,167 @@ function handleRemoveBoqClick(id){
 }
 
 function handleUpdateBoq(id){
-	//TODO
-	console.log("hi"+id);
+	// TODO
+	var name = $('#input_boq_name').val();
+	var startDate = $('#input_boq_start_date').val();
+	var endDate = $('#input_boq_end_date').val();
+	if ($('#service_templates_checkbox_list :checkbox:checked').length > 0){
+	$.ajax({
+		type : "POST",
+		url : '/update-boq',
+		data : "id="+id+"&name="+name+"&startDate="+startDate+"&endDate="+endDate,
+	    success : function(response) {
+			// we have the response
+			if (response.status == "SUCCESS") {
+				toastr.success("BOQ updated successfully", "Well done!");
+				if(response.result != 'undefined'){
+					doUpdateServiceTemplatesToBoq(id);
+					$("#edit-boq-details").modal('hide');
+					$('#input_boq_name').val('');
+					$('#input_boq_start_date').val('');
+					$('#input_boq_end_date').val('');
+					$('#service_templates_boq_checkbox_list :checkbox').prop('checked', false);
+					setTimeout(
+							  function() 
+							  {
+								  location.reload()
+							  }, 2000);
+				}
+			} else {
+				if(response.result == 'boq-exists'){
+					toastr.error("Couldn't create BOQ, a BOQ with this name already exists", "Change BOQ name");
+				}else{
+				toastr.error("Couldn't create BOQ", "Error");
+				}
+				for (i = 0; i < response.result.length; i++) {
+						if (response.result[i].code == "boq.name.empty")
+							$('#new_boq_name_error').show('slow');
+						if (response.result[i].code == "boq.startDate.empty")
+							$('#new_boq_start_date_error').show('slow');
+						if (response.result[i].code == "boq.endDate.empty")
+							$('#new_boq_end_date_error').show('slow');
+						if (response.result[i].code == "boq.date.nomatch")
+							toastr.warning("Date range you mentioned is invalid", "Check date range");
+				}
+				
+			}
+		},
+		error : function(e) {
+			toastr('Error: can\'t get BOQ details ', e);
+		}
+	});	
+	}else{
+		toastr.warning("Couldn't add BOQ, you have to select at least 1 service", "Select Services");
+	}
+	//console.log("hi"+id);
 }
 
 function toggleModalEditDetails(id){
 	populateBoqDetails(id);
 	$('#button_update_boq').attr('onClick','handleUpdateBoq('+id+')');
 	$('#edit-boq-details').modal();
+}
+
+function doAddServiceTemplatesToNewBoq( boqId ){
+	$('#service_templates_new_boq_checkbox_list').find(":checkbox:checked").each(function () {
+		var templateId = $(this).attr('id');
+		$.ajax({
+			type : "POST",
+			url : '/add-service-template-to-boq',
+			data : "id=" + templateId + "&boqId=" + boqId,
+			success : function(response) {
+				// we have the response
+				if (response.status == "FAIL") {
+					toastr.error("Couldn't add template", "Error");
+				} 
+			},
+			error : function(e) {
+				toastr.error("Couldn't add template", "Server Error");
+			}
+		});
+	});
+}
+
+
+function doUpdateServiceTemplatesToBoq( boqId ){
+	$('#service_templates_checkbox_list').find(":checkbox:checked").each(function () {
+		var templateId = $(this).attr('id');
+		$.ajax({
+			type : "POST",
+			url : '/update-boq-service-templates',
+			data : "id=" + templateId + "&boqId=" + boqId,
+			success : function(response) {
+				// we have the response
+				if (response.status == "FAIL") {
+					toastr.error("Couldn't add template", "Error");
+				} 
+			},
+			error : function(e) {
+				toastr.error("Couldn't add template", "Server Error");
+			}
+		});
+	});
+}
+
+function doAddNewBoqAjax(){
+	var name = $('#input_new_boq_name').val();
+	var startDate = $('#input_new_boq_start_date').val();
+	var endDate = $('#input_new_boq_end_date').val();
+	var addedBoqId;
+	
+	$('#new_boq_name_error').hide('fast');
+	$('#new_boq_start_date_error').hide('fast');
+	$('#new_boq_end_date_error').hide('fast');
+
+//console.log("checked elements: "+$('#service_templates_new_boq_checkbox_list :checkbox:checked').length);
+	
+	if ($('#service_templates_new_boq_checkbox_list :checkbox:checked').length > 0){
+	
+	$.ajax({
+		type : "POST",
+		url : '/add-boq',
+		data : "name=" + name + "&startDate=" + startDate + "&endDate=" + endDate,
+		async : false,
+		success : function(response) {
+			// we have the response
+			if (response.status == "SUCCESS") {
+				toastr.success("BOQ created successfully", "Well done!");
+				addedBoqId = response.result;
+				if(response.result != 'undefined'){
+					doAddServiceTemplatesToNewBoq(addedBoqId);
+					populateSelectBoq();
+					$("#m_modal_boq").modal('hide');
+					$('#input_new_boq_name').val('');
+					$('#input_new_boq_start_date').val('');
+					$('#input_new_boq_end_date').val('');
+					$('#service_templates_new_boq_checkbox_list :checkbox').prop('checked', false); 
+				}
+			} else {
+				if(response.result == 'boq-exists'){
+					toastr.error("Couldn't create BOQ, a BOQ with this name already exists", "Change BOQ name");
+				}else{
+				toastr.error("Couldn't create BOQ", "Error");
+				}
+				for (i = 0; i < response.result.length; i++) {
+						if (response.result[i].code == "boq.name.empty")
+							$('#new_boq_name_error').show('slow');
+						if (response.result[i].code == "boq.startDate.empty")
+							$('#new_boq_start_date_error').show('slow');
+						if (response.result[i].code == "boq.endDate.empty")
+							$('#new_boq_end_date_error').show('slow');
+						if (response.result[i].code == "boq.date.nomatch")
+							toastr.warning("Date range you mentioned is invalid", "Check date range");
+				}
+				
+			}
+		},
+		error : function(e) {
+			toastr.error("Couldn't add BOQ", "Server Error");
+		}
+	});
+	}else{
+		toastr.warning("Couldn't add BOQ, you have to select at least 1 service", "Select Services");
+	}
 }
 
 jQuery(document).ready(function () {

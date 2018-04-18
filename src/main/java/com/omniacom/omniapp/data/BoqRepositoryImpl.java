@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.omniacom.omniapp.entity.BillOfQuantities;
+import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.repository.custom.BoqRepositoryCustom;
 
@@ -60,8 +61,8 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 	}
 
 	@Override
-	public boolean removeAllServiceTemplates(BillOfQuantities boq, List<ServiceTemplate> templates) {
-		return boq.getServices().removeAll(templates);
+	public void removeAllServiceTemplates(BillOfQuantities boq) {
+		 boq.getServices().clear();
 	}
 
 	@Override
@@ -82,5 +83,7 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 			return true;
 		return false;
 	}
+
+
 
 }

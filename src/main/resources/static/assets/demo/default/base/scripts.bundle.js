@@ -6269,6 +6269,7 @@ var mNewProjectSelectZone = function() {
     
     switchBoq.change(function() {
         if(this.checked) {
+        	populateSelectBoq();
         	boqBlock.show();        }
         else{
         	boqBlock.hide();

@@ -1,83 +1,32 @@
-function doAddServiceTemplatesToNewBoq( boqId ){
-	$('#service_templates_checkbox_list').find(":checkbox:checked").each(function () {
-		var templateId = $(this).attr('id');
-		$.ajax({
-			type : "POST",
-			url : '/add-service-template-to-boq',
-			data : "id=" + templateId + "&boqId=" + boqId,
-			success : function(response) {
-				// we have the response
-				if (response.status == "FAIL") {
-					toastr.error("Couldn't add template", "Error");
-				} 
-			},
-			error : function(e) {
-				toastr.error("Couldn't add template", "Server Error");
-			}
-		});
-	});
-}
-
-
-function doAddNewBoqAjax(){
-	var name = $('#input_new_boq_name').val();
-	var startDate = $('#input_new_boq_start_date').val();
-	var endDate = $('#input_new_boq_end_date').val();
-	var addedBoqId;
-	
-	$('#boq_name_error').hide('fast');
-	$('#boq_start_date_error').hide('fast');
-	$('#boq_end_date_error').hide('fast');
-
-
-	
-	if ($('#service_templates_checkbox_list :checkbox:checked').length > 0){
-	
+function addProjectToBoq(projectId,boqId){
 	$.ajax({
 		type : "POST",
-		url : '/add-boq',
-		data : "name=" + name + "&startDate=" + startDate + "&endDate=" + endDate,
-		async : false,
+		url : '/add-project-to-boq',
+		data : "projectId=" + projectId + "&boqId=" + boqId,
 		success : function(response) {
-			// we have the response
-			if (response.status == "SUCCESS") {
-				toastr.success("BOQ created successfully", "Well done!");
-				addedBoqId = response.result;
-				if(response.result != 'undefined'){
-					doAddServiceTemplatesToNewBoq(addedBoqId);
-					$("#m_modal_boq").modal('hide');
-					$('#input_new_boq_name').val('');
-					$('#input_new_boq_start_date').val('');
-					$('#input_new_boq_end_date').val('');
-					$('#service_templates_checkbox_list :checkbox').prop('checked', false); 
-				}
-			} else {
-				if(response.result == 'boq-exists'){
-					toastr.error("Couldn't create BOQ, a BOQ with this name already exists", "Change BOQ name");
-				}else{
-				toastr.error("Couldn't create BOQ", "Error");
-				}
-				for (i = 0; i < response.result.length; i++) {
-						if (response.result[i].code == "boq.name.empty")
-							$('#boq_name_error').show('slow');
-						if (response.result[i].code == "boq.startDate.empty")
-							$('#boq_start_date_error').show('slow');
-						if (response.result[i].code == "boq.endDate.empty")
-							$('#boq_end_date_error').show('slow');
-						if (response.result[i].code == "noq.date.nomatch")
-							toastr.warning("Date range you mentioned is invalid", "Check date range");
-				}
+			if (response.status == "FAIL") {
+			
+				//toastr.error("Couldn't add project", "Error");
+				toastr.error("Couldn't add project to BOQ", "Error");
+				//				for (i = 0; i < response.result.length; i++) {
+//
+//					if (response.result[i].code == "project.name.empty")
+//						nameError.show('slow');
+//					if (response.result[i].code == "project.client.empty")
+//						clientError.show('slow');
+//					if (response.result[i].code == "project.country.empty")
+//						countryError.show('slow');
+//					if (response.result[i].code == "project.currency.empty")
+//						currencyError.show('slow');
+//				}
+
 			}
 		},
 		error : function(e) {
-			toastr.error("Couldn't add BOQ", "Server Error");
+			toastr.error("Couldn't add project to BOQ", "Server Error");
 		}
-	});
-	}else{
-		toastr.warning("Couldn't add BOQ, you have to select at least 1 service", "Select Services");
-	}
+	});	
 }
-
 
 function doAddProjectAjaxPost() {
 	var nameError = $('#project_name_error');
@@ -89,6 +38,7 @@ function doAddProjectAjaxPost() {
 	var country = $('#project_country').val();
 	var currency = $('#project_currency').val();
 	var owner = $('#project_owner').val();
+	var boqId = $('#select_boq_new_project').val();
 
 	nameError.hide('fast');
 	clientError.hide('fast');
@@ -103,7 +53,7 @@ function doAddProjectAjaxPost() {
 		success : function(response) {
 			if (response.status == "SUCCESS") {
 				toastr.success("Project Added successfully", "Well done!");
-
+				addProjectToBoq(response.result,boqId);
 				$('#project_name').val('');
 				$('#project_client').val('');
 				$('#project_country').val('');
@@ -361,9 +311,7 @@ function populateSelectOwnedProjects() {
 
 }
 
-function populateSidebarAdd() {
-	populateSelectOwnedProjects();
-}
+
 
 function projectDashboardTaskPieChart() {
 	function drawChart() {
@@ -574,6 +522,55 @@ function populateConfirmationStepWizard(){
 	populateConfirmationSiteDetails();
 }
 
+
+function populateSelectBoq() {
+	$.ajax({
+		type : "GET",
+		url : '/set-select-boq',
+		success : function(response) {
+
+			var html_select_options = "";
+
+			var html_text = "";
+			var selectedOption = "";
+			if (response.length == 1) {
+				html_text += "<option value='" + response[0].id + "'>"
+						+ response[0].name + "</option>";
+				$("#select_project_new_task").html(html_text);
+				$("#select_project_new_operation").html(html_text);
+				updateSelectServices();
+			} else {
+				for (i = 0; i < response.length; i++) {
+					if (i == 0)
+						selectedOption = "selected";
+					else
+						selectedOption = "";
+					html_text += "<option value='" + response[i].id + "' "
+							+ selectedOption + " >" + response[i].name
+							+ "</option>";
+				}
+				//$("#select_project_new_task").html(html_text);
+				$("#select_boq_new_project").html(html_text);
+				
+
+			}
+			$("#select_boq_new_project").selectpicker('refresh');
+
+		},
+		error : function(e) {
+			$("#select_boq_new_project").html(
+					"<option value=''>Nothing selected</option>");
+			
+
+		}
+	});
+
+}
+
+function populateSidebarAdd() {
+	populateSelectOwnedProjects();
+	
+}
 
 function gmapPopoverInit(){
 		

@@ -27,7 +27,7 @@ public class BoqValidator implements Validator{
 		if (boq.getStartDate() != null && boq.getEndDate() != null) {
 
 			if (boq.getStartDate().after(boq.getEndDate()))
-				errors.rejectValue("startDate", "noq.date.nomatch");
+				errors.rejectValue("startDate", "boq.date.nomatch");
 			
 		}
 	}

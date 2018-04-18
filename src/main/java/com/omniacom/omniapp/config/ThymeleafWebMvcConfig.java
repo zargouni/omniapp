@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.format.datetime.DateFormatterRegistrar;
+import org.springframework.format.number.NumberFormatAnnotationFormatterFactory;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.ITemplateEngine;
@@ -14,6 +16,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import com.omniacom.omniapp.converter.ClientConverter;
+import com.omniacom.omniapp.converter.DateConverter;
 import com.omniacom.omniapp.converter.ProjectConverter;
 import com.omniacom.omniapp.converter.ServiceConverter;
 
@@ -52,7 +55,7 @@ public class ThymeleafWebMvcConfig extends WebMvcConfigurerAdapter {
 		registry.addConverter(new ClientConverter());
 		registry.addConverter(new ProjectConverter());
 		registry.addConverter(new ServiceConverter());
-
+		registry.addConverter(new DateConverter());
 
 	}
 

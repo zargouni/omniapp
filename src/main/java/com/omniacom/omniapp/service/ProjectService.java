@@ -30,12 +30,13 @@ public class ProjectService {
 	
 	
 
-	public void addProject(Project project) {
+	public Project addProject(Project project) {
 		project.setCreationDate(new Date());
-		projectRepo.save(project);
+		Project proj = projectRepo.save(project);
 		com.omniacom.omniapp.entity.Service generalService = new com.omniacom.omniapp.entity.Service("General",
 				project);
 		serviceRepo.save(generalService);
+		return proj;
 	}
 
 	public Project findOneById(long id) {

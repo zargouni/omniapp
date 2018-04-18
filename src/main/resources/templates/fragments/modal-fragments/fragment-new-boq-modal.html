@@ -20,7 +20,7 @@
 								<label for="">Boq Name:</label> <input id="input_new_boq_name"
 									type="text" class="form-control m-input "
 									placeholder="Bill Of Quantities Name">
-								<div id="boq_name_error" class="form-control-feedback"
+								<div id="new_boq_name_error" class="form-control-feedback"
 									style="color: red; float: right; display: none;">* name
 									must not be empty</div>
 							</div>
@@ -41,7 +41,7 @@
 
 								</div>
 
-								<div id="boq_start_date_error" class="form-control-feedback"
+								<div id="new_boq_start_date_error" class="form-control-feedback"
 									style="color: red; float: right; display: none;">*
 									required</div>
 							</div>
@@ -58,7 +58,7 @@
 
 								</div>
 
-								<div id="boq_end_date_error" class="form-control-feedback"
+								<div id="new_boq_end_date_error" class="form-control-feedback"
 									style="color: red; float: right; display: none;">*
 									required</div>
 							</div>
@@ -71,7 +71,7 @@
 							Services</h5>
 						<div class="m-form__group form-group">
 
-							<div id="service_templates_checkbox_list"
+							<div id="service_templates_new_boq_checkbox_list"
 								class="m-checkbox-inline">
 								<label th:each="serviceTemplate : ${serviceTemplateList}"
 									class="m-checkbox m-checkbox--success"> <input

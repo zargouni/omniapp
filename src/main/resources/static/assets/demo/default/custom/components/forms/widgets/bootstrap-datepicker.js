@@ -8,6 +8,7 @@ var BootstrapDatepicker = function () {
         $('#m_datepicker_1, #m_datepicker_1_validate').datepicker({
             todayHighlight: true,
             orientation: "bottom left",
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -18,6 +19,7 @@ var BootstrapDatepicker = function () {
         $('#m_datepicker_1_modal').datepicker({
             todayHighlight: true,
             orientation: "bottom left",
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -28,6 +30,7 @@ var BootstrapDatepicker = function () {
         $('#m_datepicker_2, #m_datepicker_2_validate').datepicker({
             todayHighlight: true,
             orientation: "bottom left",
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -38,6 +41,7 @@ var BootstrapDatepicker = function () {
         $('#m_datepicker_2_modal').datepicker({
             todayHighlight: true,
             orientation: "bottom left",
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -49,6 +53,7 @@ var BootstrapDatepicker = function () {
             todayBtn: "linked",
             clearBtn: true,
             todayHighlight: true,
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -60,6 +65,7 @@ var BootstrapDatepicker = function () {
             todayBtn: "linked",
             clearBtn: true,
             todayHighlight: true,
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -70,6 +76,7 @@ var BootstrapDatepicker = function () {
         $('#m_datepicker_4_1').datepicker({
             orientation: "top left",
             todayHighlight: true,
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -79,6 +86,7 @@ var BootstrapDatepicker = function () {
         $('#m_datepicker_4_2').datepicker({
             orientation: "top right",
             todayHighlight: true,
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -88,6 +96,7 @@ var BootstrapDatepicker = function () {
         $('#m_datepicker_4_3').datepicker({
             orientation: "bottom left",
             todayHighlight: true,
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -97,6 +106,7 @@ var BootstrapDatepicker = function () {
         $('#m_datepicker_4_4').datepicker({
             orientation: "bottom right",
             todayHighlight: true,
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -106,6 +116,7 @@ var BootstrapDatepicker = function () {
         // range picker
         $('#m_datepicker_5').datepicker({
             todayHighlight: true,
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -115,6 +126,7 @@ var BootstrapDatepicker = function () {
          // inline picker
         $('#m_datepicker_6').datepicker({
             todayHighlight: true,
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -123,6 +135,7 @@ var BootstrapDatepicker = function () {
         
         $('#input_new_boq_start_date').datepicker({
             todayHighlight: true,
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'
@@ -131,6 +144,25 @@ var BootstrapDatepicker = function () {
         
         $('#input_new_boq_end_date').datepicker({
             todayHighlight: true,
+            format: 'dd/mm/yyyy',
+            templates: {
+                leftArrow: '<i class="la la-angle-left"></i>',
+                rightArrow: '<i class="la la-angle-right"></i>'
+            }
+        });
+        
+        $('#input_boq_start_date').datepicker({
+            todayHighlight: true,
+            format: 'dd/mm/yyyy',
+            templates: {
+                leftArrow: '<i class="la la-angle-left"></i>',
+                rightArrow: '<i class="la la-angle-right"></i>'
+            }
+        });
+        
+        $('#input_boq_end_date').datepicker({
+            todayHighlight: true,
+            format: 'dd/mm/yyyy',
             templates: {
                 leftArrow: '<i class="la la-angle-left"></i>',
                 rightArrow: '<i class="la la-angle-right"></i>'

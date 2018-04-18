@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -133,7 +132,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JsonResponse response = new JsonResponse();
 
 		if (!result.hasErrors()) {
-			if (!boqService.boqExists(boq)) {
+			if (!boqService.boqNameExists(boq.getName())) {
 				long addedBoqId = boqService.addBoq(boq).getId();
 				response.setStatus("SUCCESS");
 				response.setResult(addedBoqId);
@@ -152,6 +151,17 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		return response;
 	}
+	
+	@GetMapping("/set-select-boq")
+	public @ResponseBody JSONArray setSelectBoq() {
+		List<BillOfQuantities> boqs = (List<BillOfQuantities>) boqService.findAllBoqs();
+		List<JSONObject> jsonArray = new ArrayList<JSONObject>();
+		for (BillOfQuantities boq : boqs) {
+			jsonArray.add(boqService.jsonBoq(boq));
+		}
+		JSONArray json = JSONArray.fromObject(jsonArray);
+		return json;
+	}
 
 	@PostMapping("/add-service-template-to-boq")
 	public @ResponseBody JsonResponse addServiceTemplateToBoq(@RequestParam("id") long templateId,
@@ -168,6 +178,24 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		return response;
 	}
 
+	@PostMapping("/add-project-to-boq")
+	public @ResponseBody JsonResponse addProjectToBoq(@RequestParam("projectId") long projectId,
+			@RequestParam("boqId") long boqId) throws IOException {
+
+		JsonResponse response = new JsonResponse();
+
+		Project project = projectService.findOneById(projectId);
+		BillOfQuantities boq = boqService.findOne(boqId);
+		if (project != null && boq != null) {
+			boq.setProject(project);
+			boqService.updateBoq(boq.getId(), boq);
+			response.setStatus("SUCCESS");
+			return response;
+		}
+		response.setStatus("FAIL");
+		return response;
+	}
+	
 	@GetMapping("/set-select-owned-projects")
 	public @ResponseBody JSONArray setSelectOwnedProjects() {
 		List<Project> ownedProjects = (List<Project>) userService.findAllOwnedProjects(userService.getSessionUser());
@@ -198,9 +226,10 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JsonResponse response = new JsonResponse();
 
 		if (!result.hasErrors()) {
-			projectService.addProject(project);
+			Project addedProject = projectService.addProject(project);
 
 			response.setStatus("SUCCESS");
+			response.setResult(addedProject.getId());
 			// projectsApi.pushProject(project, getSessionUser());
 			// response.setResult(userList);
 		} else {
