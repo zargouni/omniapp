@@ -154,7 +154,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	
 	@GetMapping("/set-select-boq")
 	public @ResponseBody JSONArray setSelectBoq() {
-		List<BillOfQuantities> boqs = (List<BillOfQuantities>) boqService.findAllBoqs();
+		List<BillOfQuantities> boqs = (List<BillOfQuantities>) boqService.findAllAvailableValidBoqs();
 		List<JSONObject> jsonArray = new ArrayList<JSONObject>();
 		for (BillOfQuantities boq : boqs) {
 			jsonArray.add(boqService.jsonBoq(boq));
@@ -188,7 +188,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		BillOfQuantities boq = boqService.findOne(boqId);
 		if (project != null && boq != null) {
 			boq.setProject(project);
-			boqService.updateBoq(boq.getId(), boq);
+			boqService.updateBoq(boq.getId());
 			response.setStatus("SUCCESS");
 			return response;
 		}
@@ -218,6 +218,26 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JSONArray json = JSONArray.fromObject(jsonArray);
 		return json;
 	}
+	
+	@GetMapping("/get-service-templates-from-project-boq")
+	public @ResponseBody JSONArray getServiceTemplatesFromProjectBoq(@RequestParam("projectId") long projectId) {
+		Project project = projectService.findOneById(projectId);
+		List<JSONObject> jsonArray = new ArrayList<JSONObject>();
+		
+		if(project != null) {
+			List<BillOfQuantities> boqs = projectService.findAllBoqs(project);
+			if(!boqs.isEmpty()) {
+				for(BillOfQuantities boq : boqs) {
+					for(ServiceTemplate st :  boqService.findAllServiceTemplates(boq)) {
+						jsonArray.add(stService.jsonServiceTemplate(st));
+					}
+				}
+			}
+		}
+		JSONArray json = JSONArray.fromObject(jsonArray);
+		return json;
+	}
+	
 
 	@PostMapping("/add-project")
 	public @ResponseBody JsonResponse addProject(@ModelAttribute("project") @Validated Project project,

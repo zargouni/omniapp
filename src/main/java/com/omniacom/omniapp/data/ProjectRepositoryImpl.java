@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
@@ -80,6 +81,15 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 				.setParameter("param", project);
 		services = (List<Service>) query.getResultList();
 		return services;
+	}
+
+	@Override
+	public List<BillOfQuantities> findAllBoqs(Project project) {
+		List<BillOfQuantities> boqs = null;
+		Query query = entityManager.createQuery("SELECT boq FROM BillOfQuantities boq WHERE boq.project=:param")
+				.setParameter("param", project);
+		boqs = (List<BillOfQuantities>) query.getResultList();
+		return boqs;
 	}
 
 }

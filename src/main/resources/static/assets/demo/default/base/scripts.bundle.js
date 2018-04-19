@@ -6268,8 +6268,9 @@ var mNewProjectSelectZone = function() {
     var zoneBlockWizard = $('#select_zone_content_wizard');
     
     switchBoq.change(function() {
+    	populateSelectBoq();
         if(this.checked) {
-        	populateSelectBoq();
+        	
         	boqBlock.show();        }
         else{
         	boqBlock.hide();

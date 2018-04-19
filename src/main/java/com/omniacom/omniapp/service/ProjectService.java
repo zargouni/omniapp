@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.repository.ProjectRepository;
@@ -72,6 +73,10 @@ public class ProjectService {
 	public Iterable<com.omniacom.omniapp.entity.Service> findAllServices(Project selectedProject) {
 		// TODO Auto-generated method stub
 		return projectRepo.findAllServices(selectedProject);
+	}
+	
+	public List<BillOfQuantities> findAllBoqs(Project project){
+		return projectRepo.findAllBoqs(project);
 	}
 
 	/**

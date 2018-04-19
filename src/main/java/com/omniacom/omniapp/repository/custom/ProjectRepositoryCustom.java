@@ -2,6 +2,7 @@ package com.omniacom.omniapp.repository.custom;
 
 import java.util.List;
 
+import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
@@ -19,4 +20,6 @@ public interface ProjectRepositoryCustom {
 	public List<Task> findAllCompletedTasks(Project project);
 
 	public List<Task> findAllOnGoingTasks(Project project);
+	
+	public List<BillOfQuantities> findAllBoqs(Project project);
 }

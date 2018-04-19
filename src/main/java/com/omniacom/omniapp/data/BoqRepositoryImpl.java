@@ -1,6 +1,7 @@
 package com.omniacom.omniapp.data;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -82,6 +83,19 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 		if(query.getResultList().size() != 0)
 			return true;
 		return false;
+	}
+
+	@Override
+	public List<BillOfQuantities> findAllAvailableValidBoqs() {
+		List<BillOfQuantities> validBoqs = new ArrayList<>();
+		Query query = entityManager.createQuery("SELECT boq FROM BillOfQuantities boq WHERE boq.project = NULL");
+		List<BillOfQuantities> boqs = (List<BillOfQuantities>) query.getResultList();
+		for(BillOfQuantities boq : boqs) {
+			if(boq.getEndDate().after(new Date())) {
+				validBoqs.add(boq);
+			}
+		}
+		return validBoqs;
 	}
 
 

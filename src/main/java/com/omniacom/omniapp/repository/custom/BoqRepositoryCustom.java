@@ -3,7 +3,6 @@ package com.omniacom.omniapp.repository.custom;
 import java.util.List;
 
 import com.omniacom.omniapp.entity.BillOfQuantities;
-import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
 
 public interface BoqRepositoryCustom {
@@ -21,5 +20,8 @@ public interface BoqRepositoryCustom {
 	public boolean templateExists(BillOfQuantities boq, ServiceTemplate template);
 
 	public boolean boqExists(String name);
+	
+	public List<BillOfQuantities> findAllAvailableValidBoqs();
+	
 
 }

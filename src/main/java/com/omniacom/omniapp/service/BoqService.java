@@ -36,7 +36,7 @@ public class BoqService {
 	public boolean boqNameExists(String name) {
 		return boqRepo.boqExists(name);
 	}
-	
+
 	public void removeAllServiceTemplates(BillOfQuantities boq) {
 		boqRepo.removeAllServiceTemplates(boq);
 	}
@@ -73,12 +73,21 @@ public class BoqService {
 		return false;
 	}
 
+	public boolean updateBoq(long boqId) {
+		if (boqRepo.save(boqRepo.findOne(boqId)) != null)
+			return true;
+		return false;
+	}
+
 	public JSONObject jsonBoq(BillOfQuantities boq) {
-		JSONObject jsonBoq = new JSONObject().element("id", boq.getId())
-				.element("name", boq.getName())
-				.element("startDate",new SimpleDateFormat("dd/MM/yyyy").format(boq.getStartDate()) )
+		JSONObject jsonBoq = new JSONObject().element("id", boq.getId()).element("name", boq.getName())
+				.element("startDate", new SimpleDateFormat("dd/MM/yyyy").format(boq.getStartDate()))
 				.element("endDate", new SimpleDateFormat("dd/MM/yyyy").format(boq.getEndDate()))
 				.element("valid", boq.getEndDate().after(new Date()));
 		return jsonBoq;
+	}
+
+	public List<BillOfQuantities> findAllAvailableValidBoqs() {
+		return boqRepo.findAllAvailableValidBoqs();
 	}
 }
