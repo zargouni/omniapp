@@ -24,7 +24,7 @@ public class Service implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String name;
-
+	private String description;
 	@CreatedDate
 	private Date creationDate;
 	private int flag;
@@ -206,6 +206,20 @@ public class Service implements Serializable {
 	 */
 	public void setProject(Project project) {
 		this.project = project;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

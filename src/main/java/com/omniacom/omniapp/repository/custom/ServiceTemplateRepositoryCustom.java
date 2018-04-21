@@ -16,5 +16,6 @@ public interface ServiceTemplateRepositoryCustom {
 	public boolean removeOneTaskTemplate(ServiceTemplate template, TaskTemplate taskTemplate);
 
 	public boolean removeAllTaskTemplates(ServiceTemplate template, List<TaskTemplate> taskTemplates);
+	
 
 }

@@ -28,6 +28,7 @@ import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.entity.Task;
+import com.omniacom.omniapp.entity.TaskTemplate;
 import com.omniacom.omniapp.service.BoqService;
 import com.omniacom.omniapp.service.ClientService;
 import com.omniacom.omniapp.service.OperationService;
@@ -151,7 +152,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		return response;
 	}
-	
+
 	@GetMapping("/set-select-boq")
 	public @ResponseBody JSONArray setSelectBoq() {
 		List<BillOfQuantities> boqs = (List<BillOfQuantities>) boqService.findAllAvailableValidBoqs();
@@ -195,7 +196,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		response.setStatus("FAIL");
 		return response;
 	}
-	
+
 	@GetMapping("/set-select-owned-projects")
 	public @ResponseBody JSONArray setSelectOwnedProjects() {
 		List<Project> ownedProjects = (List<Project>) userService.findAllOwnedProjects(userService.getSessionUser());
@@ -218,17 +219,17 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JSONArray json = JSONArray.fromObject(jsonArray);
 		return json;
 	}
-	
+
 	@GetMapping("/get-service-templates-from-project-boq")
 	public @ResponseBody JSONArray getServiceTemplatesFromProjectBoq(@RequestParam("projectId") long projectId) {
 		Project project = projectService.findOneById(projectId);
 		List<JSONObject> jsonArray = new ArrayList<JSONObject>();
-		
-		if(project != null) {
+
+		if (project != null) {
 			List<BillOfQuantities> boqs = projectService.findAllBoqs(project);
-			if(!boqs.isEmpty()) {
-				for(BillOfQuantities boq : boqs) {
-					for(ServiceTemplate st :  boqService.findAllServiceTemplates(boq)) {
+			if (!boqs.isEmpty()) {
+				for (BillOfQuantities boq : boqs) {
+					for (ServiceTemplate st : boqService.findAllServiceTemplates(boq)) {
 						jsonArray.add(stService.jsonServiceTemplate(st));
 					}
 				}
@@ -237,7 +238,6 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JSONArray json = JSONArray.fromObject(jsonArray);
 		return json;
 	}
-	
 
 	@PostMapping("/add-project")
 	public @ResponseBody JsonResponse addProject(@ModelAttribute("project") @Validated Project project,
@@ -285,8 +285,9 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JsonResponse response = new JsonResponse();
 
 		if (!result.hasErrors()) {
-			operationService.addOperation(operation);
+			Operation addedOperation = operationService.addOperation(operation);
 			response.setStatus("SUCCESS");
+			response.setResult(addedOperation.getId());
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());
@@ -294,6 +295,67 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		return response;
 	}
+
+	@GetMapping("/get-service-template-tasks")
+	public @ResponseBody JsonResponse getServiceTemplateTasks(@RequestParam("templateId") long id) {
+		JsonResponse jsonResponse = new JsonResponse();
+		JSONArray array = new JSONArray();
+		ServiceTemplate service = stService.findOne(id);
+		if (service != null) {
+			List<TaskTemplate> taskTemplates = stService.findAllTaskTemplates(service);
+			for (TaskTemplate task : taskTemplates) {
+				JSONObject jsonTask = new JSONObject()
+						.element("name", task.getName())
+						.element("id", task.getId())
+						.element("estimationDays", task.getEstimationTime())
+						.element("estimationHR", task.getEstimationHR());
+				array.add(jsonTask);
+			}
+			jsonResponse.setStatus("SUCCESS");
+			jsonResponse.setResult(array);
+			return jsonResponse;
+		}
+		jsonResponse.setStatus("FAIL");
+		return jsonResponse;
+	}
+	
+	 @PostMapping("/generate-operation-service-from-template")
+	 public @ResponseBody JsonResponse
+	 generateOperationServiceFromTemplate(@RequestParam("operationId") long
+	 operationId,
+	 @RequestParam("templateId") long templateId){
+	
+	 JsonResponse response = new JsonResponse();
+	 Service addedService = operationService.generateServiceFromTemplate(operationId, templateId);
+	 if( addedService != null) {
+	 response.setStatus("SUCCESS");
+	 response.setResult(addedService.getId());
+	 } else {
+	 response.setStatus("FAIL");
+	 //response.setResult(result.getFieldErrors());
+	 }
+	
+	 return response;
+	 }
+	 
+	 @PostMapping("/generate-service-tasks-from-template")
+	 public @ResponseBody JsonResponse generateServiceTasksFromTemplate(
+			 @RequestParam("serviceId") long serviceId, 
+			 @RequestParam("taskPriority") String taskPriority,
+			 @RequestParam("taskTemplateId") long taskTemplateId){
+	
+	 JsonResponse response = new JsonResponse();
+	 Task addedTask = operationService.generateServiceTaskFromTemplate(serviceId, taskTemplateId,taskPriority);
+	 if( addedTask != null) {
+	 response.setStatus("SUCCESS");
+	 response.setResult(addedTask.getId());
+	 } else {
+	 response.setStatus("FAIL");
+	 //response.setResult(result.getFieldErrors());
+	 }
+	
+	 return response;
+	 }
 
 	List<Site> addedSiteList;
 	private Client newClient;

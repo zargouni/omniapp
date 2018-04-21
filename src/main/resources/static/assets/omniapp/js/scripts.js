@@ -1,3 +1,207 @@
+function saveCheckedServiceTemplatesNewOperation(operationId){
+	var error = "none";
+	$('#service_templates_new_operation_checkbox_list').find(":checkbox:checked").each(function () {
+		//alert("operation id:"+operationId);
+		var serviceTemplateId = $(this).attr('id');
+		var addedServiceId = '';
+		
+		$.ajax({
+			type : "POST",
+			url : '/generate-operation-service-from-template',
+			data : "operationId=" + operationId + "&templateId=" + serviceTemplateId,
+			success : function(response) {
+				if (response.status == "FAIL") {
+					error = "error";
+					toastr.error("Couldn't generate service"+serviceTemplateId, "Error");
+	
+
+				}else{
+					addedServiceId = response.result; 
+					var taskContainer = $('#vertical-nav-content').find("div[name=nav_content_"+serviceTemplateId+"]");
+					taskContainer.find('tr[id*=task_row_]').each(function(){
+						
+						var taskCheckbox = $(this).find('input:checkbox'); 
+						if(taskCheckbox.is(':checked')){
+							//alert($(this).attr('id'));
+							//alert(taskCheckbox.attr('id'));
+							var taskId = taskCheckbox.attr('id');
+							var taskPriority = $(this).find('select[id=task_priority_'+taskId+']').val();
+							$.ajax({
+								type : "POST",
+								url : '/generate-service-tasks-from-template',
+								data : "taskTemplateId=" + taskId + "&taskPriority="+taskPriority+"&serviceId=" + addedServiceId,
+								success : function(response) {
+									if (response.status == "FAIL") {
+										error = "error";
+										toastr.error("Couldn't generate tasks for service"+serviceTemplateId, "Error");
+									}
+				
+								},
+								error : function(e) {
+									toastr.error("Couldn't generate tasks for service"+serviceTemplateId, "Server Error");
+								}
+							});	
+					}
+					
+				});
+					//toastr.success("generation done", "Hallelujah");
+				}
+			},
+			error : function(e) {
+				toastr.error("Couldn't generate service"+serviceTemplateId, "Server Error");
+			}
+		});	
+		
+	//if(addedServiceId != ''){
+			
+		//}
+	});
+	
+	$('#generate_operation_services_modal').modal('hide');
+	
+	if(error == "error"){
+		swal({
+			title : 'Error',
+			text : "generation failed",
+			type : 'error',
+						
+		});
+	}else{
+		swal({
+			title : 'Success',
+			text : "Generation done successfully",
+			type : 'success',
+						
+		});
+	}
+	
+}
+
+function getServiceTemplateTasks(templateId){
+	$.ajax({
+	type : "GET",
+	url : '/get-service-template-tasks',
+	data : "templateId=" + templateId,
+	async: false,
+	success : function(response) {
+		if (response.status == "FAIL") {
+		
+			toastr.error("Couldn't generate tasks", "Error");
+
+
+		}else{
+			$("tbody[name='tbody_"+templateId+"']").html('');
+			for (i = 0; i < response.result.length; i++) {
+				$("tbody[name='tbody_"+templateId+"']").append('<tr id="task_row_'+response.result[i].id+'">'
+									+'<td style="width:5%;">'
+									+'<label class="m-checkbox m-checkbox--solid m-checkbox--success">'
+									+'<input id="'+response.result[i].id+'" name="task_template_checkbox" type="checkbox"><span></span>'
+									+'</label>'
+									+'</td>'
+									+'<td style="width:50%;">'
+									+'<span name="task_template_name" class="m-widget11__title">'+response.result[i].name+'</span>'
+									+'</td>'
+									+'<td style="width:15%;" name="task_template_estimation_hr" ><span style="display:table;margin:0 auto;">'+response.result[i].estimationHR+'</span></td>'
+									+'<td style="width:15%;" name="task_template_estimation_days"><span style="display:table;margin:0 auto;">'+response.result[i].estimationDays+'</span></td>'
+									+'<td style="width:15%;" name="task_template_priority" class="m--align-right m--font-brand">'
+									+'<select class="form-control m-select2" style="width:100%;text-align: center; " id="task_priority_'+response.result[i].id+'" >'
+									+'<option value="0"></option>' 
+									+'<option value="low">Low</option>'
+									   +'<option value="medium">Medium</option>'
+									  +'<option value="high">High</option>'
+									+'</select>'
+									+'</td>'
+							);
+			    
+			      
+				$('select[id*=task_priority_]').select2({
+					placeholder: {
+					    id: '0', // the value of the option
+					    text: 'None'
+					  },
+			        minimumResultsForSearch: Infinity,
+			        width: 'resolve',
+			        templateResult: function formatState (state) {
+				        if (!state.id) { return state.text; }
+				        if(state.element.value === 'low')
+				        	var $state = $('<span style="color:#36A3F7;">' + state.text + '</span>');
+				        if(state.element.value === 'medium')
+				        	var $state = $('<span style="color:#34BFA3;">' + state.text + '</span>');
+				        if(state.element.value === 'high')
+				        	var $state = $('<span style="color:#F4516C;">' + state.text + '</span>');
+				        return $state;
+				      },
+				     templateSelection: function format (state) {
+						        if (state.id == "0") { return '<span style="display:table;margin:-10px auto;font-size: 14px;">'+state.text+'</span>'; }
+						        if(state.text === 'Low')
+						        	var $state = $('<span style="display:table;margin:-10px auto;font-size: 14px;color:#36A3F7;">' + state.text + '</span>');
+						        if(state.text === 'Medium')
+						        	var $state = $('<span style="display:table;margin:-10px auto;font-size: 14px;color:#34BFA3;">' + state.text + '</span>');
+						        if(state.text === 'High')
+						        	var $state = $('<span style="display:table;margin:-10px auto;font-size: 14px;color:#F4516C;">' + state.text + '</span>');
+						        return $state;
+						      },
+					      escapeMarkup: function(m) { return m; }
+					  
+
+			        });
+				
+				$('.select2-selection').css('border','0px')
+				$('.select2-container').children().css('border','0px')
+				$('.select2-selection__arrow').hide();
+			}
+		}
+	},
+	error : function(e) {
+		toastr.error("Couldn't generate tasks", "Server Error");
+	}
+});	
+}
+
+function handleClickCheckboxServiceTemplate(checkboxId){
+	if($("#vertical_nav_section").is(":hidden"))
+		$("#vertical_nav_section").show();
+	var checkbox = $("input:checkbox[id*="+checkboxId+"]");
+	if(checkbox.is(":checked")){
+		$('#vertical-nav-content').find('div[name*=nav_content_]').removeClass('active show');
+		$("li[id="+checkboxId+"]").addClass("active");
+		$("li[id="+checkboxId+"]").show();
+		getServiceTemplateTasks(checkboxId);
+		$("div[name=nav_content_"+checkboxId+"]").addClass("active show");
+		$("li[id="+checkboxId+"]>a").click();
+	}else{
+		$("li[id="+checkboxId+"]").removeClass("active");
+		$("li[id="+checkboxId+"]").hide();
+		$("div[name=nav_content_"+checkboxId+"]").removeClass("active show");
+	}
+
+}
+
+
+//function generateServicesNewOperation(operationId){
+//	$('#service_templates_new_operation_checkbox_list').find(":checkbox:checked").each(function () {
+//		var templateId = $(this).attr('id');
+//		$.ajax({
+//			type : "POST",
+//			url : '/generate-operation-service-from-template',
+//			data : "operationId=" + operationId + "&templateId=" + templateId,
+//			success : function(response) {
+//				if (response.status == "FAIL") {
+//				
+//					toastr.error("Couldn't generate services", "Error");
+//	
+//
+//				}else{
+//					toastr.success("generation done", "Hallelujah");
+//				}
+//			},
+//			error : function(e) {
+//				toastr.error("Couldn't generate services", "Server Error");
+//			}
+//		});	
+//		
+//		});
+//}
 function addProjectToBoq(projectId,boqId){
 	if($("#select_boq_content").is(":visible")){
 	$.ajax({
@@ -176,6 +380,7 @@ function doAddProjectAjaxPost() {
 }
 
 function doAddOperationAjaxPost() {
+
 	var nameError = $('#operation_name_error');
 	var projectError = $('#operation_project_error');
 	var startDateError = $('#operation_startDate_error');
@@ -197,17 +402,41 @@ function doAddOperationAjaxPost() {
 				+ startDate + "&endDate=" + endDate,
 		success : function(response) {
 			if (response.status == "SUCCESS") {
-				toastr.success("Operation Added successfully", "Well done!");
-
+				var addedOperationId = response.result;
+				var parentProjectId = project;
+				//toastr.success("Operation Added successfully", "Well done!");
+				//generateServicesNewOperation(response.result);
 				$('#operation_name').val('');
 				$('#select_project_new_operation').val('');
 				$('#m_datepicker_4_3').val('');
 				$('#m_datepicker_4_4').val('');
+				
+				swal({
+					title : 'Operation added',
+					text : "Do you want to generate its services ?         " +
+							"You can generate services and tasks from predefined templates within a second ",
+					showCancelButton : true,
+					type: 'success',
+					confirmButtonText : 'Yes, do it!'
+				}).then(
+						function(result) {
+							if (result.value) {
+								generateNewOperationServicesFromTemplates(parentProjectId,addedOperationId);
+
+								$('#generate_operation_services_modal').modal('show');
+
+							}
+
+						}
+
+				);
+				$('#m_quick_sidebar_add_close').click();
+
 
 			} else {
 
 				for (i = 0; i < response.result.length; i++) {
-					console.log(response.result[i].code);
+					//console.log(response.result[i].code);
 					if (response.result[i].code == "operation.name.empty")
 						nameError.show('slow');
 					if (response.result[i].code == "operation.project.empty")
@@ -549,8 +778,11 @@ function ClientWizardPublish(){
 	
 }
 
-function populateGenerateOperationServicesCheckboxList(projectId){
+function populateGenerateOperationServicesCheckboxList(projectId,operationId){
 	var html_text = '';
+	var navLinks = '';
+	var navContent = '';
+	
 	$.ajax({
 		type : "GET",
 		url : '/get-service-templates-from-project-boq',
@@ -562,12 +794,52 @@ function populateGenerateOperationServicesCheckboxList(projectId){
 				{
 					html_text += '<label '
 									+ 'class="m-checkbox m-checkbox--success"> <input '
-									+'id="'+response[i].id+'" type="checkbox">'
+									+'id="'+response[i].id+'" onclick="handleClickCheckboxServiceTemplate('+response[i].id+')" type="checkbox">'
 									+response[i].name+' <span></span>'
 									+'</label>';
-				
+					if(i==0){
+						navLinks += '<li id="'+response[i].id+'" style="display:none;" class="nav-item">'
+							+'<a href="#'+response[i].name+'" class="nav-link" data-toggle="tab" role="tab" aria-controls="'+response[i].name+'">'+response[i].name+'</a>'
+							+'</li>';
+		
+					}else{
+						navLinks += '<li id="'+response[i].id+'" style="display:none;" class="nav-item">'
+							+'<a href="#'+response[i].name+'" class="nav-link" data-toggle="tab" role="tab" aria-controls="'+response[i].name+'">'+response[i].name+'</a>'
+							+'</li>';
+					}
+						navContent +='<div name="nav_content_'+response[i].id+'" class="tab-pane fade" id="'+response[i].name+'" role="tabpanel">'
+						+'<div class="m-widget11">'
+						+'<div class="table-responsive">'
+							+'<!--begin::Table-->		'						 
+							+'<table class="table">'
+								+'<!--begin::Thead-->'
+								+'<thead>'
+								+'	<tr>'
+									+'	<td style="width:5%;" class="m-widget11__label">#</td>'
+										+'<td style="width:50%;" class="m-widget11__app">Name</td>'
+										+'<td style="width:15%;" class="m-widget11__sales"><span style="display:table;margin:0 auto;">HR</span></td>'
+										+'<td style="width:15%;" class="m-widget11__price"><span style="display:table;margin:0 auto;">Days</span></td>'
+										+'<td style="width:15%;" class="m-widget11__total"><span style="display:table;margin:0 auto;">Priority</span></td>'
+									+'</tr>'
+								+'</thead>'
+								+'<!--end::Thead-->'
+								+'<!--begin::Tbody-->'
+								+'<tbody name="tbody_'+response[i].id+'">'
+								+'</tbody>'
+								+'<!--end::Tbody-->	'									     
+							+'</table>'
+							+'<!--end::Table-->'
+						+'</div>'
+
+					+'</div>'
+								+'</div>';
+		
+					
+					
 				}
 				$('#service_templates_new_operation_checkbox_list').html(html_text);
+				$('#vertical-nav-links').html(navLinks);
+				$('#vertical-nav-content').html(navContent);
 //			}else{
 //				$('#service_templates_new_operation_checkbox_list').html("no templates for this project boq");
 //			}
@@ -581,9 +853,12 @@ function populateGenerateOperationServicesCheckboxList(projectId){
 	
 }
 
-function generateNewOperationServicesFromTemplates(){
-	var selectedProjectId = $('#select_project_new_operation').val();
-	populateGenerateOperationServicesCheckboxList(selectedProjectId);
+function generateNewOperationServicesFromTemplates(projectId,operationId){
+	//var selectedProjectId = $('#select_project_new_operation').val();
+	$('button[name=save_changes_generate_services_modal]').attr("onClick",'saveCheckedServiceTemplatesNewOperation('+operationId+')');
+	populateGenerateOperationServicesCheckboxList(projectId,operationId);
+	
+
 }
 
 
@@ -726,6 +1001,7 @@ function gmapPopoverInit(){
 
 
 $(document).ready(function() {
+	
 	
 	gmapPopoverInit();
 	

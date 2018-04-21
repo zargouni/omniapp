@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.omniapp.entity.ServiceTemplate;
+import com.omniacom.omniapp.entity.TaskTemplate;
 import com.omniacom.omniapp.repository.ServiceTemplateRepository;
 
 import net.sf.json.JSONObject;
@@ -36,7 +37,19 @@ public class ServiceTemplateService {
 	public ServiceTemplate findOne(long id) {
 		return serviceTemplateRepo.findOne(id);
 	}
+	
+	public List<TaskTemplate> findAllTaskTemplates(ServiceTemplate template){
+		return serviceTemplateRepo.findAllTaskTemplates(template);
+	}
 
+	public com.omniacom.omniapp.entity.Service convertToService(ServiceTemplate template){
+		com.omniacom.omniapp.entity.Service service = new com.omniacom.omniapp.entity.Service();
+		service.setName(template.getName());
+		service.setDescription(template.getDescription());
+		service.setPriceHT(template.getPrice());
+		return service;
+	}
+	
 	public JSONObject jsonServiceTemplate(ServiceTemplate template) {
 		JSONObject jsonService = new JSONObject().element("id", template.getId()).element("name", template.getName())
 				.element("description", template.getDescription()).element("price", template.getPrice());

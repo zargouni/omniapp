@@ -29,7 +29,8 @@ public class Task implements Serializable {
 	private Date startDate;
 	private Date endDate;
 	private Date completedOn;
-	private int estimation;
+	private int estimationTime;
+	private int estimationRH;
 	private long zohoId;
 	
 	@ManyToOne
@@ -43,41 +44,7 @@ public class Task implements Serializable {
 
 	}
 
-	public Task(String name, String priority, String status, Date startDate, Date endDate, Date completedOn,
-			int estimation) {
-		this.name = name;
-		this.priority = priority;
-		this.status = status;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.completedOn = completedOn;
-		this.estimation = estimation;
-	}
-
-	public Task(String name, String priority, String status, Date startDate, Date endDate, Date completedOn,
-			int estimation, long zohoId) {
-		this.name = name;
-		this.priority = priority;
-		this.status = status;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.completedOn = completedOn;
-		this.estimation = estimation;
-		this.zohoId = zohoId;
-	}
-
-	public Task(long id, String name, String priority, String status, Date startDate, Date endDate, Date completedOn,
-			int estimation, long zohoId) {
-		this.id = id;
-		this.name = name;
-		this.priority = priority;
-		this.status = status;
-		this.startDate = startDate;
-		this.endDate = endDate;
-		this.completedOn = completedOn;
-		this.estimation = estimation;
-		this.zohoId = zohoId;
-	}
+	
 	
 	/**
 	 * @return the id
@@ -122,10 +89,10 @@ public class Task implements Serializable {
 		return completedOn;
 	}
 	/**
-	 * @return the estimation
+	 * @return the estimationTime
 	 */
-	public int getEstimation() {
-		return estimation;
+	public int getEstimationTime() {
+		return estimationTime;
 	}
 	/**
 	 * @return the zohoId
@@ -176,10 +143,10 @@ public class Task implements Serializable {
 		this.completedOn = completedOn;
 	}
 	/**
-	 * @param estimation the estimation to set
+	 * @param estimationTime the estimationTime to set
 	 */
-	public void setEstimation(int estimation) {
-		this.estimation = estimation;
+	public void setEstimationTime(int estimation) {
+		this.estimationTime = estimation;
 	}
 	/**
 	 * @param zohoId the zohoId to set
@@ -220,6 +187,24 @@ public class Task implements Serializable {
 	public void addUser(User user) {
 		this.users.add(user);
 		user.getTasks().add(this);
+	}
+
+
+
+	/**
+	 * @return the estimationRH
+	 */
+	public int getEstimationRH() {
+		return estimationRH;
+	}
+
+
+
+	/**
+	 * @param estimationRH the estimationRH to set
+	 */
+	public void setEstimationRH(int estimationRH) {
+		this.estimationRH = estimationRH;
 	}
 	
 
