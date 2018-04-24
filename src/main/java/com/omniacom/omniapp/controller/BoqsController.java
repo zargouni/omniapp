@@ -42,7 +42,7 @@ public class BoqsController {
 		JSONArray jsonArray = new JSONArray();
 		List<BillOfQuantities> boqs = boqService.findAllBoqs();
 		for (BillOfQuantities boq : boqs) {
-			jsonArray.add(boqService.jsonBoq(boq));
+			jsonArray.add(boqService.jsonBoqFormattedDates(boq));
 		}
 		return jsonArray;
 	}

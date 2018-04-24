@@ -9,110 +9,26 @@
 					<div class="col-xl-8 order-2 order-xl-1">
 						<div class="form-group m-form__group row align-items-center">
 							<div class="col-md-4">
-								<div class="m-form__group m-form__group--inline">
-									<div class="m-form__label">
-										<label>Status:</label>
-									</div>
-									<div class="m-form__control">
-										<div
-											class="btn-group bootstrap-select form-control m-bootstrap-select">
-											<button type="button"
-												class="btn dropdown-toggle bs-placeholder btn-default"
-												data-toggle="dropdown" role="button" data-id="m_form_status"
-												title="All" aria-expanded="false">
-												<span class="filter-option pull-left">All</span>&nbsp;<span
-													class="bs-caret"><span class="caret"></span></span>
-											</button>
-											<div class="dropdown-menu open" role="combobox"
-												x-placement="bottom-start"
-												style="max-height: 190.703px; overflow: hidden; min-height: 15px; position: absolute; transform: translate3d(0px, 37px, 0px); top: 0px; left: 0px; will-change: transform;">
-												<ul class="dropdown-menu inner" role="listbox"
-													aria-expanded="false"
-													style="max-height: 176.703px; overflow-y: auto; min-height: 1px;">
-													<li data-original-index="0" class="selected"><a
-														tabindex="0" class="" data-tokens="null" role="option"
-														aria-disabled="false" aria-selected="true"><span
-															class="text">All</span><span
-															class="glyphicon glyphicon-ok check-mark"></span></a></li>
-													<li data-original-index="1"><a tabindex="0" class=""
-														data-tokens="null" role="option" aria-disabled="false"
-														aria-selected="false"><span class="text">Pending</span><span
-															class="glyphicon glyphicon-ok check-mark"></span></a></li>
-													<li data-original-index="2"><a tabindex="0" class=""
-														data-tokens="null" role="option" aria-disabled="false"
-														aria-selected="false"><span class="text">Delivered</span><span
-															class="glyphicon glyphicon-ok check-mark"></span></a></li>
-													<li data-original-index="3"><a tabindex="0" class=""
-														data-tokens="null" role="option" aria-disabled="false"
-														aria-selected="false"><span class="text">Canceled</span><span
-															class="glyphicon glyphicon-ok check-mark"></span></a></li>
-												</ul>
-											</div>
-											<select class="form-control m-bootstrap-select"
-												id="m_form_status" tabindex="-98">
-												<option value="">All</option>
-												<option value="1">Pending</option>
-												<option value="2">Delivered</option>
-												<option value="3">Canceled</option>
-											</select>
-										</div>
-									</div>
+							<div class="m-form__group m-form__group--inline">
+								<div class="m-form__label">
+									<label>Client:</label>
 								</div>
+								<div class="m-form__control">
+									<select class="form-control m-bootstrap-select" id="m_form_client">
+										<option value="">All</option>
+										<option value="Ooredoo">Ooredoo</option>
+										<option value="Orange">Orange</option>
+										<option value="TT">Tunisie Telecom</option>
+									</select>
+								</div>
+							</div>
 								<div class="d-md-none m--margin-bottom-10"></div>
 							</div>
-							<div class="col-md-4">
-								<div class="m-form__group m-form__group--inline">
-									<div class="m-form__label">
-										<label class="m-label m-label--single">Type:</label>
-									</div>
-									<div class="m-form__control">
-										<div
-											class="btn-group bootstrap-select form-control m-bootstrap-select">
-											<button type="button"
-												class="btn dropdown-toggle bs-placeholder btn-default"
-												data-toggle="dropdown" role="button" data-id="m_form_type"
-												title="All">
-												<span class="filter-option pull-left">All</span>&nbsp;<span
-													class="bs-caret"><span class="caret"></span></span>
-											</button>
-											<div class="dropdown-menu open" role="combobox">
-												<ul class="dropdown-menu inner" role="listbox"
-													aria-expanded="false">
-													<li data-original-index="0" class="selected"><a
-														tabindex="0" class="" data-tokens="null" role="option"
-														aria-disabled="false" aria-selected="true"><span
-															class="text">All</span><span
-															class="glyphicon glyphicon-ok check-mark"></span></a></li>
-													<li data-original-index="1"><a tabindex="0" class=""
-														data-tokens="null" role="option" aria-disabled="false"
-														aria-selected="false"><span class="text">Online</span><span
-															class="glyphicon glyphicon-ok check-mark"></span></a></li>
-													<li data-original-index="2"><a tabindex="0" class=""
-														data-tokens="null" role="option" aria-disabled="false"
-														aria-selected="false"><span class="text">Retail</span><span
-															class="glyphicon glyphicon-ok check-mark"></span></a></li>
-													<li data-original-index="3"><a tabindex="0" class=""
-														data-tokens="null" role="option" aria-disabled="false"
-														aria-selected="false"><span class="text">Direct</span><span
-															class="glyphicon glyphicon-ok check-mark"></span></a></li>
-												</ul>
-											</div>
-											<select class="form-control m-bootstrap-select"
-												id="m_form_type" tabindex="-98">
-												<option value="">All</option>
-												<option value="1">Online</option>
-												<option value="2">Retail</option>
-												<option value="3">Direct</option>
-											</select>
-										</div>
-									</div>
-								</div>
-								<div class="d-md-none m--margin-bottom-10"></div>
-							</div>
+							
 							<div class="col-md-4">
 								<div class="m-input-icon m-input-icon--left">
 									<input type="text" class="form-control m-input"
-										placeholder="Search..." id="generalSearch"> <span
+										placeholder="Search..." id="projectSearch"> <span
 										class="m-input-icon__icon m-input-icon__icon--left"> <span><i
 											class="la la-search"></i></span>
 									</span>
@@ -132,70 +48,7 @@
 			<!--end: Search Form -->
 
 			<!--begin: Datatable -->
-			<div
-				class="m_datatable m-datatable m-datatable--default m-datatable--loaded"
-				id="ajax_data" style="">
-				<table class="m-datatable__table"
-					style="display: block; min-height: 300px; overflow-x: auto;">
-					<thead class="m-datatable__head">
-						<tr class="m-datatable__row" style="left: 0px;">
-
-							<th data-field="RecordID"
-								class="m-datatable__cell--center m-datatable__cell m-datatable__cell--sort"><span>#</span></th>
-
-							<th data-field="ProjectName"
-								class="m-datatable__cell m-datatable__cell--sort"
-								data-sort="asc"><span>Name<i class="la la-arrow-up"></i></span></th>
-
-							<th data-field="ProjectClient"
-								class="m-datatable__cell m-datatable__cell--sort"><span>Client</span></th>
-
-							<th data-field="ProjectOwner"
-								class="m-datatable__cell m-datatable__cell--sort"><span>Owner</span></th>
-
-							<th data-field="ProjectCountry"
-								class="m-datatable__cell m-datatable__cell--sort"><span>Country</span></th>
-
-							<th data-field="ProjectCurrency"
-								class="m-datatable__cell m-datatable__cell--sort"><span>Currency</span></th>
-
-							<th data-field="ProjectStatus"
-								class="m-datatable__cell m-datatable__cell--sort"><span>Status</span></th>
-
-
-						</tr>
-					</thead>
-					<tbody class="m-datatable__body" style="">
-						<tr style="left: 0px;" th:each="project : ${allProjects}"
-							class="m-datatable__row">
-							<td class="m_project_details_sidebar_toggle"><a
-								class="m-datatable__toggle-detail" href="#"><i
-									class="fa fa-caret-right"></i></a></td>
-
-							<td data-field="ProjectName" class="m-datatable__cell"><a
-								th:href="@{/project(id=${project.id})}"><span
-									th:text="${project.name}"></span></a></td>
-
-							<td data-field="ProjectClient" class="m-datatable__cell"><span
-								th:text="${project.client.name}">NG - Sapele</span></td>
-
-							<td data-field="ProjectOwner" class="m-datatable__cell"><span
-								th:text="${project.owner.userName}">Sapele</span></td>
-
-							<td data-field="ProjectCountry" class="m-datatable__cell"><span
-								th:text="${project.country}">NGN</span></td>
-
-							<td data-field="ProjectCurrency"
-								class="m-datatable__cell--sorted m-datatable__cell"><span
-								th:text="${project.currency}">1/1/2016</span></td>
-
-							<td data-field="ProjectStatus" class="m-datatable__cell"><span></span></td>
-
-
-						</tr>
-
-					</tbody>
-				</table>
+			<div id="projects_datatable" class="m_datatable">
 
 			</div>
 

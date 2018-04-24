@@ -15,6 +15,8 @@ import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
 
+import net.sf.json.JSONObject;
+
 @Service
 public class ProjectService {
 
@@ -91,6 +93,17 @@ public class ProjectService {
 	 */
 	public void setCurrentProject(Project currentProject) {
 		this.currentProject = currentProject;
+	}
+	
+	public JSONObject jsonProject(Project project) {
+		JSONObject json = new JSONObject()
+				.element("id", project.getId())
+				.element("name", project.getName())
+				.element("client", project.getClient().getName())
+				.element("owner", project.getOwner().getFirstName()+" "+project.getOwner().getLastName())
+				.element("country", project.getCountry())
+				.element("currency", project.getCurrency());
+		return json;
 	}
 
 }

@@ -22,6 +22,8 @@ public class OperationValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "operation.name.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "startDate", "operation.startDate.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "endDate", "operation.endDate.empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "site", "operation.site.empty");
+
 		//ValidationUtils.rejectIfEmptyOrWhitespace(errors, "responsible", "operation.responsible.empty");
 
 		Operation operation = (Operation) target;
@@ -31,6 +33,7 @@ public class OperationValidator implements Validator {
 				errors.rejectValue("startDate", "operation.date.nomatch");
 			
 		}
+		
 		
 	}
 

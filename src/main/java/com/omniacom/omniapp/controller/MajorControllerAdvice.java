@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -152,7 +153,18 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		return response;
 	}
-
+	
+	
+	@GetMapping("/set-selected-project-client-sites")
+	public @ResponseBody JSONArray setSelectOperationSite(@RequestParam("projectId") long projectId) {
+		Project project = projectService.findOneById(projectId);
+		JSONArray sites = new JSONArray();
+		if(project != null) {
+			sites = clientService.findAllSitesJson(project.getClient());
+		}
+		return JSONArray.fromObject(sites);
+	}
+	
 	@GetMapping("/set-select-boq")
 	public @ResponseBody JSONArray setSelectBoq() {
 		List<BillOfQuantities> boqs = (List<BillOfQuantities>) boqService.findAllAvailableValidBoqs();
@@ -282,15 +294,27 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	public @ResponseBody JsonResponse addOperation(@Validated @ModelAttribute("operation") Operation operation,
 			BindingResult result) throws IOException {
 
+		JSONObject jsonResponse = new JSONObject();
 		JsonResponse response = new JsonResponse();
+		List<Object> resultSuccess = new ArrayList<>();
 
 		if (!result.hasErrors()) {
 			Operation addedOperation = operationService.addOperation(operation);
+			resultSuccess.add(addedOperation.getId());
+			resultSuccess.add(projectService.findAllBoqs(operation.getProject()).size());
+			
+//			jsonResponse.element("status", "SUCCESS")
+//						.element("result", addedOperation.getId())
+//						.element("boqListSize", projectService.findAllBoqs(operation.getProject()).size());
 			response.setStatus("SUCCESS");
-			response.setResult(addedOperation.getId());
+			response.setResult(resultSuccess);
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());
+//
+//			jsonResponse.element("status", "FAIL")
+//			.element("result", response);
+			
 		}
 
 		return response;

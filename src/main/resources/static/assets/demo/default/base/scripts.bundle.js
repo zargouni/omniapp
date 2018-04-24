@@ -1296,7 +1296,16 @@ $(document).ready(function() {
 			 * @param sort
 			 * @param column
 			 * @returns {*|Array.<T>|{sort, field}|{asc, desc}}
-			 */			sortCallback: function(data, sort, column) {				var type = column['type'] || 'string';				var format = column['format'] || '';				var field = column['field'];				if (type === 'date' && typeof moment === 'undefined') {					throw new Error('Moment.js is required.');				}				return $(data).sort(function(a, b) {					var aField = a[field];					var bField = b[field];					switch (type) {						case 'date':							var diff = moment(aField, format).diff(moment(bField, format));							if (sort === 'asc') {								return diff > 0 ? 1 : diff < 0 ? -1 : 0;							} else {								return diff < 0 ? 1 : diff > 0 ? -1 : 0;							}							break;						case 'number':							if (isNaN(parseFloat(aField)) && aField != null) {								aField = Number(aField.replace(/[^0-9\.-]+/g, ''));							}							if (isNaN(parseFloat(bField)) && bField != null) {								bField = Number(bField.replace(/[^0-9\.-]+/g, ''));							}							aField = parseFloat(aField);							bField = parseFloat(bField);							if (sort === 'asc') {								return aField > bField ? 1 : aField < bField ? -1 : 0;							} else {								return aField < bField ? 1 : aField > bField ? -1 : 0;							}							break;						case 'string':						default:							if (sort === 'asc') {								return aField > bField ? 1 : aField < bField ? -1 : 0;							} else {								return aField < bField ? 1 : aField > bField ? -1 : 0;							}							break;					}				});			},			/**
+			 */			sortCallback: function(data, sort, column) {				var type = column['type'] || 'string';				var format = column['format'] || '';				var field = column['field'];				if (type === 'date' && typeof moment === 'undefined') {					throw new Error('Moment.js is required.');				}				return $(data).sort(function(a, b) {					var aField = a[field];					var bField = b[field];					switch (type) {						case 'date':							var diff = moment(aField, format).diff(moment(bField, format));							if (sort === 'asc') {								return diff > 0 ? 1 : diff < 0 ? -1 : 0;							} else {								return diff < 0 ? 1 : diff > 0 ? -1 : 0;							}							break;
+							
+						case 'moment':
+							var diff = moment(aField, format).diff(moment(bField, format));
+							if (sort === 'asc') {
+								return diff > 0 ? 1 : diff < 0 ? -1 : 0;
+							} else {
+								return diff < 0 ? 1 : diff > 0 ? -1 : 0;
+							}
+							break;						case 'number':							if (isNaN(parseFloat(aField)) && aField != null) {								aField = Number(aField.replace(/[^0-9\.-]+/g, ''));							}							if (isNaN(parseFloat(bField)) && bField != null) {								bField = Number(bField.replace(/[^0-9\.-]+/g, ''));							}							aField = parseFloat(aField);							bField = parseFloat(bField);							if (sort === 'asc') {								return aField > bField ? 1 : aField < bField ? -1 : 0;							} else {								return aField < bField ? 1 : aField > bField ? -1 : 0;							}							break;						case 'string':						default:							if (sort === 'asc') {								return aField > bField ? 1 : aField < bField ? -1 : 0;							} else {								return aField < bField ? 1 : aField > bField ? -1 : 0;							}							break;					}				});			},			/**
 			 * Custom debug log
 			 * 
 			 * @param text
@@ -6213,7 +6222,7 @@ var mNewProjectSidebar = function() {
     var topbarAsideContent = topbarAside.find('.m-new-project-sidebar__content');
 
     var initForm = function() {
-        var messenger = $('#m_new_project_sidebar_tabs_new_task');  
+    	var messenger = $('#m_new_project_sidebar_tabs_new_task');  
 
           
         
@@ -6228,6 +6237,7 @@ var mNewProjectSidebar = function() {
     }
 
     var initOffcanvas = function() {
+    	
         topbarAside.mOffcanvas({
             class: 'm-new-project-sidebar',
             overlay: true,  

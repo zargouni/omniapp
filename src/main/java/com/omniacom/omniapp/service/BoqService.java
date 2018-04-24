@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,6 +84,14 @@ public class BoqService {
 		JSONObject jsonBoq = new JSONObject().element("id", boq.getId()).element("name", boq.getName())
 				.element("startDate", new SimpleDateFormat("dd/MM/yyyy").format(boq.getStartDate()))
 				.element("endDate", new SimpleDateFormat("dd/MM/yyyy").format(boq.getEndDate()))
+				.element("valid", boq.getEndDate().after(new Date()));
+		return jsonBoq;
+	}
+	
+	public JSONObject jsonBoqFormattedDates(BillOfQuantities boq) {
+		JSONObject jsonBoq = new JSONObject().element("id", boq.getId()).element("name", boq.getName())
+				.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(boq.getStartDate()))
+				.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(boq.getEndDate()))
 				.element("valid", boq.getEndDate().after(new Date()));
 		return jsonBoq;
 	}

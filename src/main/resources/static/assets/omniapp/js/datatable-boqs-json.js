@@ -87,10 +87,15 @@ var DatatableBoqsJsonRemote = function () {
 		    }, {
 				field: "startDate",
 				title: "Start Date",
+				type: 'date',
+				format: 'DD MMMM YYYY',
+				sortable: true,
 				width: 200
 			}, {
 				field: "endDate",
 				title: "Due Date",
+				type: 'date',
+				format: 'DD MMMM YYYY',
 				sortable: true,
 				width: 200,
 				responsive: {visible: 'lg'}
@@ -307,5 +312,7 @@ function doUpdateServiceTemplatesToBoq( boqId ){
 
 
 jQuery(document).ready(function () {
+	//$.fn.dataTable.moment( 'dd MM YYYY' );
 	DatatableBoqsJsonRemote.init();
+	
 });
