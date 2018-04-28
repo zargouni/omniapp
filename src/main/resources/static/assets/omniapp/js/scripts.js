@@ -184,31 +184,6 @@ function handleClickCheckboxServiceTemplate(checkboxId){
 }
 
 
-// function generateServicesNewOperation(operationId){
-// $('#service_templates_new_operation_checkbox_list').find(":checkbox:checked").each(function
-// () {
-// var templateId = $(this).attr('id');
-// $.ajax({
-// type : "POST",
-// url : '/generate-operation-service-from-template',
-// data : "operationId=" + operationId + "&templateId=" + templateId,
-// success : function(response) {
-// if (response.status == "FAIL") {
-//				
-// toastr.error("Couldn't generate services", "Error");
-//	
-//
-// }else{
-// toastr.success("generation done", "Hallelujah");
-// }
-// },
-// error : function(e) {
-// toastr.error("Couldn't generate services", "Server Error");
-// }
-// });
-//		
-// });
-// }
 function addProjectToBoq(projectId,boqId){
 	if($("#select_boq_content").is(":visible")){
 	$.ajax({
@@ -217,21 +192,7 @@ function addProjectToBoq(projectId,boqId){
 		data : "projectId=" + projectId + "&boqId=" + boqId,
 		success : function(response) {
 			if (response.status == "FAIL") {
-			
-				// toastr.error("Couldn't add project", "Error");
 				toastr.error("Couldn't add project to BOQ", "Error");
-				// for (i = 0; i < response.result.length; i++) {
-//
-// if (response.result[i].code == "project.name.empty")
-// nameError.show('slow');
-// if (response.result[i].code == "project.client.empty")
-// clientError.show('slow');
-// if (response.result[i].code == "project.country.empty")
-// countryError.show('slow');
-// if (response.result[i].code == "project.currency.empty")
-// currencyError.show('slow');
-// }
-
 			}
 		},
 		error : function(e) {
@@ -329,11 +290,13 @@ function doAddProjectAjaxPost() {
 	var clientError = $('#project_client_error');
 	var countryError = $('#project_country_error');
 	var currencyError = $('#project_currency_error');
+	var natureError = $('#project_nature_error');
 	var name = $('#project_name').val();
 	var client = $('#project_client').val();
 	var country = $('#project_country').val();
 	var currency = $('#project_currency').val();
 	var owner = $('#project_owner').val();
+	var nature = $('#select_nature_new_project').val();
 	// var boqId = $('#select_boq_new_project').val();
 // console.log("selected val: "+boqId);
 	nameError.hide('fast');
@@ -345,7 +308,7 @@ function doAddProjectAjaxPost() {
 		type : "POST",
 		url : '/add-project',
 		data : "name=" + name + "&client=" + client + "&country=" + country
-				+ "&currency=" + currency + "&owner=" + owner,
+				+ "&currency=" + currency + "&owner=" + owner+"&nature="+nature,
 		success : function(response) {
 			if (response.status == "SUCCESS") {
 				toastr.success("Project Added successfully", "Well done!");
@@ -359,6 +322,7 @@ function doAddProjectAjaxPost() {
 				$('#project_country').val('');
 				$('#project_currency').val('');
 				$('#select_boq_new_project').val('');
+				$('#select_nature_new_project').val('');
 			// $('#select_boq_content').hide('slow');
 				if($("#select_boq_content").is(":visible"))
 					$("#m_switch_project_boq").click();
@@ -377,6 +341,8 @@ function doAddProjectAjaxPost() {
 						countryError.show('slow');
 					if (response.result[i].code == "project.currency.empty")
 						currencyError.show('slow');
+					if (response.result[i].code == "project.nature.empty")
+						natureError.show('slow');
 				}
 
 			}
@@ -397,13 +363,14 @@ function doAddOperationAjaxPost() {
 	var project = $('#select_project_new_operation').val();
 	var startDate = $('#m_datepicker_4_3').val();
 	var endDate = $('#m_datepicker_4_4').val();
-	var site = $('#selected_site_hidden_input').val();
+	var site = $('#select_site_new_operation').val();
 
 	nameError.hide('fast');
 	projectError.hide('fast');
 	startDateError.hide('fast');
 	endDateError.hide('fast');
 
+	
 	$.ajax({
 		type : "POST",
 		url : '/add-operation',
@@ -413,13 +380,11 @@ function doAddOperationAjaxPost() {
 			if (response.status == "SUCCESS") {
 				var addedOperationId = response.result[0];
 				var parentProjectId = project;
-				// generateServicesNewOperation(response.result);
 				$('#operation_name').val('');
 				$('#select_project_new_operation').val('');
 				$('#m_datepicker_4_3').val('');
 				$('#m_datepicker_4_4').val('');
-				$('#selected_site_new_operation').html('None');
-				$('#selected_site_hidden_input').val(' ');
+				
 
 				if(response.result[1] != 0){
 				swal({
@@ -428,7 +393,8 @@ function doAddOperationAjaxPost() {
 							"You can generate services and tasks from predefined templates within a second ",
 					showCancelButton : true,
 					type: 'success',
-					confirmButtonText : 'Yes, do it!'
+					confirmButtonText : 'Yes, do it!',
+					background: '#f1f1f1'
 				}).then(
 						function(result) {
 							if (result.value) {
@@ -441,6 +407,7 @@ function doAddOperationAjaxPost() {
 						}
 
 				);
+				
 				}else{
 					toastr.success("Operation Added successfully", "Well done!");
 				}
@@ -450,7 +417,6 @@ function doAddOperationAjaxPost() {
 			} else {
 				toastr.error("", "Please fill all required fields");
 				for (i = 0; i < response.result.length; i++) {
-					// console.log(response.result[i].code);
 					if (response.result[i].code == "operation.name.empty")
 						nameError.show('slow');
 					if (response.result[i].code == "operation.project.empty")
@@ -462,7 +428,7 @@ function doAddOperationAjaxPost() {
 					if (response.result[i].code == "operation.date.nomatch")
 						toastr.warning("Dates don't match", "Warning");
 					if (response.result[i].code == "operation.site.empty")
-						$('#selected_site_new_operation').html("<span style='color:red;'>None</span>");
+						toastr.warning('Select a site for the operation');
 				}
 
 			}
@@ -512,11 +478,9 @@ function doAddTaskAjaxPost() {
 					if (response.result[i].code == "task.name.empty")
 						nameError.show('slow');
 					if (response.result[i].code == "task.service.empty")
-						// serviceError.show('slow');
 						toastr.warning("you must select a service",
 								"Service required");
 					if (response.result[i].code == "task.date.nomatch")
-						// taskDateError.show('slow');
 						toastr.warning("please select a valid date range",
 								"Dates don't match");
 					if (response.result[i].code == "task.startDate.empty")
@@ -622,10 +586,7 @@ function populateSelectOwnedProjects() {
 				updateSelectServices();
 			} else {
 				for (i = 0; i < response.length; i++) {
-// if (i == 0)
-// selectedOption = "selected";
-// else
-// selectedOption = "";
+
 					html_text += "<option value='" + response[i].id + "'>" + response[i].name
 							+ "</option>";
 				}
@@ -637,11 +598,10 @@ function populateSelectOwnedProjects() {
 
 			$("#select_project_new_task").selectpicker('refresh');
 			
-			// $('#sites_map_container').hide();
 			$("#select_project_new_operation").change(function() {
 				var projectId = $("#select_project_new_operation").val();
 				
-				if(projectId == ''){ 
+				if(projectId == ' '){ 
 					$('#sites_map_container').attr("style","display:none;width:100%; height:50px;position: relative;");
 					$('.sites_map_canvas').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
 				}else{
@@ -668,7 +628,7 @@ function populateSelectOwnedProjects() {
 
 function projectDashboardTaskPieChart() {
 	function drawChart() {
-
+		
 		var data = google.visualization.arrayToDataTable([
 				[ 'Task', 'Status' ], [ 'Open', onGoing ],
 				[ 'Closed', completed ],
@@ -821,7 +781,6 @@ function populateGenerateOperationServicesCheckboxList(projectId,operationId){
 		data : "projectId=" + projectId,
 		success : function(response) {
 
-// if(response.length > 0){
 				for (i = 0; i < response.length; i++)
 				{
 					html_text += '<label '
@@ -872,10 +831,7 @@ function populateGenerateOperationServicesCheckboxList(projectId,operationId){
 				$('#service_templates_new_operation_checkbox_list').html(html_text);
 				$('#vertical-nav-links').html(navLinks);
 				$('#vertical-nav-content').html(navContent);
-// }else{
-// $('#service_templates_new_operation_checkbox_list').html("no templates for
-// this project boq");
-// }
+
 			
 		},
 		error : function(e) {
@@ -887,7 +843,6 @@ function populateGenerateOperationServicesCheckboxList(projectId,operationId){
 }
 
 function generateNewOperationServicesFromTemplates(projectId,operationId){
-	// var selectedProjectId = $('#select_project_new_operation').val();
 	$('button[name=save_changes_generate_services_modal]').attr("onClick",'saveCheckedServiceTemplatesNewOperation('+operationId+')');
 	populateGenerateOperationServicesCheckboxList(projectId,operationId);
 	
@@ -978,14 +933,9 @@ function populateSelectBoq() {
 				$("#select_boq_new_project").html(html_text);
 			} else {
 				for (i = 0; i < response.length; i++) {
-// if (i == 0)
-// selectedOption = "selected";
-// else
-// selectedOption = "";
 					html_text += "<option value='" + response[i].id + "'>" + response[i].name
 							+ "</option>";
 				}
-				// $("#select_project_new_task").html(html_text);
 				$("#select_boq_new_project").html(html_text);
 				
 
@@ -1004,12 +954,43 @@ function populateSelectBoq() {
 
 }
 
+function populateSelectNatureNewProject(){
+	$.ajax({
+		type : "GET",
+		url : '/json-natures',
+	
+		success : function(response) {
+			var arr = [];
+		
+			for (i = 0; i < response.length; i++) {
+
+						arr.push({
+							 id: response[i].name,
+				             text: response[i].name
+					   	});
+
+			}
+			$("#select_nature_new_project").select2({
+			            data: arr,
+			            width: '100%',
+			        });
+				
+			
+		},
+		error : function(e) {
+			alert('Error: natures ' + e);
+		}
+	});
+}
+
+
+
 function populateSidebarAdd() {
 	$('#operation_name_error').hide('fast');
 	$('#operation_project_error').hide('fast');
 	$('#operation_startDate_error').hide('fast');
 	$('#operation_endDate_error').hide('fast');
-	$('#selected_site_new_operation').html("<span>None</span>");
+	
 	populateSelectOwnedProjects();
 	$('#sites_map_container').attr("style","display:none;width:100%; height:50px;position: relative;");
 	$('.sites_map_canvas').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
@@ -1045,7 +1026,7 @@ function gmapPopoverInit(){
 $(document).ready(function() {
 	
 	
-	gmapPopoverInit();
+	
 	
 	$("#select_service_div").hide();
 
@@ -1074,6 +1055,9 @@ $(document).ready(function() {
 		"showMethod" : "fadeIn",
 		"hideMethod" : "fadeOut"
 	};
+	
+
+
 	
 	
 	

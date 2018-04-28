@@ -1,0 +1,140 @@
+<div th:fragment="new-site-modal" class="modal fade show"
+	id="modal_new_site" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalLabel"
+	style="display: none; padding-right: 17px;">
+	<div class="modal-dialog modal-lg " role="document">
+		<div class="modal-content" style="background: #f1f1f1">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">New Site</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+
+			<div class="modal-body">
+				<form class="m-form" target="noTarget">
+					<div class="m-portlet__body">
+						<div class="row">
+										<div class="col-xl-8 offset-lg-2">
+
+											<div class="m-form__section m-form__section--first">
+
+												<div style="margin-top: auto; margin-bottom: auto; text-align: center;">
+													<a href="#" class="btn btn-success btn-lg m-btn m-btn m-btn--icon">
+														<span> <i class="la la-file-excel-o"></i> <span>Import
+																from .xls file</span>
+													</span>
+													</a>
+												</div>
+											</div>
+
+											<h3 class="m-form__heading-title" style="margin-top: auto; margin-bottom: auto; text-align: center; text-size: 24px;">
+												OR</h3>
+										</div>
+										<div class="m-form__section ">
+											<div id="m_repeater_1">
+												<div class="form-group  m-form__group row" id="m_repeater_1">
+													<label class="col-sm-2 col-form-label" style="left: 0;">Sites:</label>
+													<div name="data-repeater" data-repeater-list="sites" class="col-lg-10 data-repeater">
+														<div data-repeater-item="" class="form-group m-form__group row align-items-left new-site-form">
+															<div class="col-md-2">
+																<div class="m-form__group m-form__group--inline">
+<!-- 																	<div class="m-form__label"> -->
+<!-- 																		<label>Name:</label> -->
+<!-- 																	</div> -->
+																	<div class="m-form__control">
+																		<input type="text" class="form-control m-input new-site-form-name" placeholder="Name">
+																	</div>
+																</div>
+																<div class="d-md-none m--margin-bottom-10"></div>
+															</div>
+															<div name="sites[0][latDiv]" id="latDiv" class="col-md-2">
+																<div class="m-form__group m-form__group--inline">
+<!-- 																	<div class="m-form__label"> -->
+<!-- 																		<label class="m-label m-label--single">Lat:</label> -->
+<!-- 																	</div> -->
+																	<div class="m-form__control">
+																		<input name="sites[0][latitude]" id="latitude" type="number" class="form-control m-input new-site-form-latitude" placeholder="Lat">
+																	</div>
+																</div>
+																<div class="d-md-none m--margin-bottom-10"></div>
+															</div>
+															<div name="sites[0][longDiv]" id="longDiv" class="col-md-2 longDiv">
+																<div class="m-form__group m-form__group--inline">
+<!-- 																	<div class="m-form__label"> -->
+<!-- 																		<label class="m-label m-label--single">Long:</label> -->
+<!-- 																	</div> -->
+																	<div class="m-form__control">
+																		<input name="sites[0][longitude]" id="longitude" type="number" class="form-control m-input new-site-form-longitude " placeholder="Long">
+																	</div>
+																</div>
+																<div class="d-md-none m--margin-bottom-10"></div>
+															</div>
+															
+															<div name="sites[0][nature]" id="natureDiv" class="col-md-4 natureDiv">
+																<div class="m-form__group m-form__group--inline">
+<!-- 																	<div class="m-form__label"> -->
+<!-- 																		<label class="m-label m-label--single">Nature:</label> -->
+<!-- 																	</div> -->
+																	<div class="m-form__control">
+																	<select style="width:100%" multiple class="form-control new-site-form-nature">
+																	<option value="0" selected>None</option>
+																	</select>
+																	
+																	</div>
+																</div>
+																<div class="d-md-none m--margin-bottom-10"></div>
+															</div>
+															
+
+
+<!-- 															<button type="button" data-toggle="popover" data-placement="right" class="btn btn-primary m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air -->
+<!-- 																	  toggle_gmap col-md-1"> -->
+<!-- 																<i class="fa flaticon-placeholder-1"></i> -->
+<!-- 															</button> -->
+
+
+
+															<div class="col-md-1">
+																<div data-repeater-delete="" class="btn btn-danger m-btn m-btn--icon m-btn--icon-only m-btn--custom m-btn--pill m-btn--air">
+																	<i class="la la-trash-o"></i>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="m-form__group form-group row">
+													<label class="col-lg-2 col-form-label"></label>
+													<div class="col-lg-4">
+														<div onclick="initFormRepeaterNewSite()" data-repeater-create="" class="btn btn btn-sm btn-brand m-btn m-btn--icon m-btn--pill m-btn--wide">
+															<span> <i class="la la-plus"></i> <span>Add</span>
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+									</div>
+
+
+
+					</div>
+
+
+				</form>
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button id="button_save_sites" class="btn btn-primary">Save
+					changes</button>
+			</div>
+
+
+		</div>
+	</div>
+
+
+</div>

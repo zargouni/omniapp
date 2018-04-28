@@ -6,8 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Client;
+import com.omniacom.omniapp.entity.Nature;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.repository.ClientRepository;
 
@@ -56,13 +56,61 @@ public class ClientService {
 		return json;
 	}
 
+	public Integer findSitesCount(Client client) {
+		return clientRepo.findAllSites(client).size();
+	}
+
+	public JSONArray findAllClientsJson() {
+		JSONArray json = new JSONArray();
+		List<Client> clients = (List<Client>) findAllClients();
+		for (Client client : clients) {
+			json.add(jsonClient(client));
+		}
+		return json;
+	}
+
+	public boolean siteExists(Client client, Site site) {
+		return clientRepo.siteExists(client, site);
+	}
+
 	private JSONObject jsonSite(Site site) {
-		JSONObject jsonSite = new JSONObject()
-				.element("id", site.getId())
-				.element("name", site.getName())
+		String str = "";
+		List<Nature> natures = site.getNatures();
+		if(!natures.isEmpty())
+		for(Nature n : natures) {
+			str += n.getName()+" ";
+		}
+		JSONObject jsonSite = new JSONObject().element("id", site.getId()).element("name", site.getName())
 				.element("latitude", site.getLatitude())
-				.element("longitude", site.getLongitude());
+				.element("longitude", site.getLongitude())
+				.element("natures",str);
 		return jsonSite;
+	}
+
+	public JSONObject jsonClient(Client client) {
+		JSONObject jsonClient = new JSONObject().element("id", client.getId()).element("name", client.getName())
+				.element("email", client.getEmail()).element("address", client.getAddress())
+				.element("country", client.getCountry()).element("phone", client.getPhone())
+				.element("sitesCount", findSitesCount(client));
+		return jsonClient;
+	}
+
+	public Integer projectsCount(Client client) {
+		return clientRepo.findAllProjects(client).size();
+	}
+
+	public Integer moneyCount(Client client) {
+		return clientRepo.findAllProjects(client).size();
+	}
+
+	public JSONArray findAllSitesByNatureJson(Nature nature, Client client) {
+		List<Site> sites = clientRepo.findAllSitesByNature(nature,client);
+		List<JSONObject> jsonArray = new ArrayList<JSONObject>();
+		for (Site site : sites) {
+			jsonArray.add(jsonSite(site));
+		}
+		JSONArray json = JSONArray.fromObject(jsonArray);
+		return json;
 	}
 
 }

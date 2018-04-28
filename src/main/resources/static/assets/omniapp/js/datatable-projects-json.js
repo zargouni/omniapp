@@ -71,13 +71,16 @@ var projectsDatatableRemoteAjax = function() {
           title: 'Project Name',
           // sortable: 'asc', // default sort
           filterable: false, // disable or enable filtering
-          width: 150,
+          width: 400,
           // basic templating support for column rendering,
-         // template: '{{OrderID}} - {{ShipCountry}}',
+          template: function(row) {
+        // callback function support for column rendering
+        	  return '<a href="/project?id='+row.id+'">'+row.name + '</a>';
+          },
         }, {
           field: 'client',
           title: 'Client',
-          width: 150,
+          width: 100,
 //          template: function(row) {
 //            // callback function support for column rendering
 //            return row.ShipCountry + ' - ' + row.ShipCity;
@@ -85,6 +88,7 @@ var projectsDatatableRemoteAjax = function() {
         }, {
           field: 'owner',
           title: 'Owner',
+          width: 200,
         }, {
           field: 'country',
           title: 'Country',
@@ -93,6 +97,7 @@ var projectsDatatableRemoteAjax = function() {
           field: 'currency',
           title: 'Currency',
           type: 'number',
+          width: 100,
         }],
     });
 

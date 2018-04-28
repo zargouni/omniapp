@@ -3,10 +3,10 @@ package com.omniacom.omniapp.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -153,18 +153,17 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		return response;
 	}
-	
-	
-	@GetMapping("/set-selected-project-client-sites")
+
+	@GetMapping("/set-selected-project-client-sites-by-nature")
 	public @ResponseBody JSONArray setSelectOperationSite(@RequestParam("projectId") long projectId) {
 		Project project = projectService.findOneById(projectId);
 		JSONArray sites = new JSONArray();
-		if(project != null) {
-			sites = clientService.findAllSitesJson(project.getClient());
+		if (project != null) {
+			sites = clientService.findAllSitesByNatureJson(project.getNature(),project.getClient());
 		}
-		return JSONArray.fromObject(sites);
+		return sites;
 	}
-	
+
 	@GetMapping("/set-select-boq")
 	public @ResponseBody JSONArray setSelectBoq() {
 		List<BillOfQuantities> boqs = (List<BillOfQuantities>) boqService.findAllAvailableValidBoqs();
@@ -294,7 +293,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	public @ResponseBody JsonResponse addOperation(@Validated @ModelAttribute("operation") Operation operation,
 			BindingResult result) throws IOException {
 
-		JSONObject jsonResponse = new JSONObject();
+		//JSONObject jsonResponse = new JSONObject();
 		JsonResponse response = new JsonResponse();
 		List<Object> resultSuccess = new ArrayList<>();
 
@@ -302,19 +301,20 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 			Operation addedOperation = operationService.addOperation(operation);
 			resultSuccess.add(addedOperation.getId());
 			resultSuccess.add(projectService.findAllBoqs(operation.getProject()).size());
-			
-//			jsonResponse.element("status", "SUCCESS")
-//						.element("result", addedOperation.getId())
-//						.element("boqListSize", projectService.findAllBoqs(operation.getProject()).size());
+
+			// jsonResponse.element("status", "SUCCESS")
+			// .element("result", addedOperation.getId())
+			// .element("boqListSize",
+			// projectService.findAllBoqs(operation.getProject()).size());
 			response.setStatus("SUCCESS");
 			response.setResult(resultSuccess);
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());
-//
-//			jsonResponse.element("status", "FAIL")
-//			.element("result", response);
-			
+			//
+			// jsonResponse.element("status", "FAIL")
+			// .element("result", response);
+
 		}
 
 		return response;
@@ -328,9 +328,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		if (service != null) {
 			List<TaskTemplate> taskTemplates = stService.findAllTaskTemplates(service);
 			for (TaskTemplate task : taskTemplates) {
-				JSONObject jsonTask = new JSONObject()
-						.element("name", task.getName())
-						.element("id", task.getId())
+				JSONObject jsonTask = new JSONObject().element("name", task.getName()).element("id", task.getId())
 						.element("estimationDays", task.getEstimationTime())
 						.element("estimationHR", task.getEstimationHR());
 				array.add(jsonTask);
@@ -342,44 +340,40 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		jsonResponse.setStatus("FAIL");
 		return jsonResponse;
 	}
-	
-	 @PostMapping("/generate-operation-service-from-template")
-	 public @ResponseBody JsonResponse
-	 generateOperationServiceFromTemplate(@RequestParam("operationId") long
-	 operationId,
-	 @RequestParam("templateId") long templateId){
-	
-	 JsonResponse response = new JsonResponse();
-	 Service addedService = operationService.generateServiceFromTemplate(operationId, templateId);
-	 if( addedService != null) {
-	 response.setStatus("SUCCESS");
-	 response.setResult(addedService.getId());
-	 } else {
-	 response.setStatus("FAIL");
-	 //response.setResult(result.getFieldErrors());
-	 }
-	
-	 return response;
-	 }
-	 
-	 @PostMapping("/generate-service-tasks-from-template")
-	 public @ResponseBody JsonResponse generateServiceTasksFromTemplate(
-			 @RequestParam("serviceId") long serviceId, 
-			 @RequestParam("taskPriority") String taskPriority,
-			 @RequestParam("taskTemplateId") long taskTemplateId){
-	
-	 JsonResponse response = new JsonResponse();
-	 Task addedTask = operationService.generateServiceTaskFromTemplate(serviceId, taskTemplateId,taskPriority);
-	 if( addedTask != null) {
-	 response.setStatus("SUCCESS");
-	 response.setResult(addedTask.getId());
-	 } else {
-	 response.setStatus("FAIL");
-	 //response.setResult(result.getFieldErrors());
-	 }
-	
-	 return response;
-	 }
+
+	@PostMapping("/generate-operation-service-from-template")
+	public @ResponseBody JsonResponse generateOperationServiceFromTemplate(
+			@RequestParam("operationId") long operationId, @RequestParam("templateId") long templateId) {
+
+		JsonResponse response = new JsonResponse();
+		Service addedService = operationService.generateServiceFromTemplate(operationId, templateId);
+		if (addedService != null) {
+			response.setStatus("SUCCESS");
+			response.setResult(addedService.getId());
+		} else {
+			response.setStatus("FAIL");
+			// response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+
+	@PostMapping("/generate-service-tasks-from-template")
+	public @ResponseBody JsonResponse generateServiceTasksFromTemplate(@RequestParam("serviceId") long serviceId,
+			@RequestParam("taskPriority") String taskPriority, @RequestParam("taskTemplateId") long taskTemplateId) {
+
+		JsonResponse response = new JsonResponse();
+		Task addedTask = operationService.generateServiceTaskFromTemplate(serviceId, taskTemplateId, taskPriority);
+		if (addedTask != null) {
+			response.setStatus("SUCCESS");
+			response.setResult(addedTask.getId());
+		} else {
+			response.setStatus("FAIL");
+			// response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
 
 	List<Site> addedSiteList;
 	private Client newClient;

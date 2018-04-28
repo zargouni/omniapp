@@ -6224,7 +6224,7 @@ var mNewProjectSidebar = function() {
     var initForm = function() {
     	var messenger = $('#m_new_project_sidebar_tabs_new_task');  
 
-          
+        populateSelectNatureNewProject();  
         
         // reinit on window resize
         mUtil.addResizeHandler(init);

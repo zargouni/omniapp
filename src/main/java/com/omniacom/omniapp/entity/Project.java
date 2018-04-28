@@ -46,6 +46,9 @@ public class Project implements Serializable {
 
 	@ManyToOne
 	private Client client;
+	
+	@ManyToOne
+	private Nature nature;
 
 	@OneToMany(mappedBy = "project")
 	private List<BillOfQuantities> boqs;
@@ -319,6 +322,27 @@ public class Project implements Serializable {
 	 */
 	public void setServices(List<Service> services) {
 		this.services = services;
+	}
+
+	/**
+	 * @return the serialversionuid
+	 */
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	/**
+	 * @return the nature
+	 */
+	public Nature getNature() {
+		return nature;
+	}
+
+	/**
+	 * @param nature the nature to set
+	 */
+	public void setNature(Nature nature) {
+		this.nature = nature;
 	}
 
 }

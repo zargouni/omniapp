@@ -15,8 +15,10 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import com.omniacom.omniapp.converter.ClientConverter;
 import com.omniacom.omniapp.converter.DateConverter;
+import com.omniacom.omniapp.converter.NatureConverter;
 import com.omniacom.omniapp.converter.ProjectConverter;
 import com.omniacom.omniapp.converter.ServiceConverter;
+import com.omniacom.omniapp.converter.SiteConverter;
 
 @Configuration
 @ComponentScan(basePackages = { "com.omniacom.omniapp.controller",
@@ -54,6 +56,8 @@ public class ThymeleafWebMvcConfig extends WebMvcConfigurerAdapter {
 		registry.addConverter(new ProjectConverter());
 		registry.addConverter(new ServiceConverter());
 		registry.addConverter(new DateConverter());
+		registry.addConverter(new NatureConverter());
+		registry.addConverter(new SiteConverter());
 
 	}
 

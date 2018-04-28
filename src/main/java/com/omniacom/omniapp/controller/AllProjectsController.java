@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -21,7 +20,7 @@ public class AllProjectsController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private ProjectService projectService;
 
@@ -34,10 +33,10 @@ public class AllProjectsController {
 	public @ResponseBody JSONArray getAllProjects() {
 		JSONArray jsonArray = new JSONArray();
 		List<Project> projects = userService.findAllContributedProjects(userService.getSessionUser());
-		for(Project p : projects) {
+		for (Project p : projects) {
 			jsonArray.add(projectService.jsonProject(p));
 		}
 		return jsonArray;
 	}
-	
+
 }

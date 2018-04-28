@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -25,6 +27,7 @@ public class Site implements Serializable {
 	private String name;
 	private double longitude;
 	private double latitude;
+	private boolean deleted = false;
 	
 	@ManyToOne
 	private Client client;
@@ -32,7 +35,8 @@ public class Site implements Serializable {
 	@OneToMany(mappedBy = "site")
 	private List<Operation> operations;
 	
-	@ManyToMany(mappedBy = "sites")
+	@ManyToMany
+	@JoinTable(name = "sites_natures", joinColumns = @JoinColumn(name = "site_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "nature_id", referencedColumnName = "id"))
 	private List<Nature> natures;
 	
 	public Site() {
@@ -185,6 +189,20 @@ public class Site implements Serializable {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	/**
+	 * @return the deleted
+	 */
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	/**
+	 * @param deleted the deleted to set
+	 */
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	

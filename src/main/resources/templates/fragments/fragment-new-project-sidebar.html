@@ -100,10 +100,11 @@
 					class="form-group m-form__group row">
 
 					<div class="col-lg-8">
-						<select id="select_boq_new_project" class="form-control m-bootstrap-select m_selectpicker"
-				data-live-search="true" multiple>
-							
-							
+						<select id="select_boq_new_project"
+							class="form-control m-bootstrap-select m_selectpicker"
+							data-live-search="true" multiple>
+
+
 						</select>
 					</div>
 					<div class="col-lg-4">
@@ -113,10 +114,20 @@
 					</div>
 				</div>
 				<div class="m-form__group form-group">
+					<label for="">Nature:</label> <select id="select_nature_new_project"
+						class="form-control select2"
+						data-live-search="true">
+						<option value="" selected>Nothing Selected</option>
+					</select>
+					<div id="project_nature_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">Please
+							select a nature for this project</div>
+				</div>
+				<div class="m-form__group form-group">
 					<label for="">Owner:</label> <select id="project_owner"
 						class="custom-select form-control">
 						<option th:value="${sessionUser.id}"
-							th:text="${sessionUser.userName} " selected="">Me</option>
+							th:text="${sessionUser.userName} " selected>Me</option>
 						<option value="1">Other</option>
 					</select>
 				</div>

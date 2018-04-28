@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.omniacom.omniapp.entity.Client;
+import com.omniacom.omniapp.entity.Nature;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.repository.custom.ClientRepositoryCustom;
@@ -24,7 +25,7 @@ public class ClientRepositoryImpl implements ClientRepositoryCustom {
 	@Override
 	public List<Site> findAllSites(Client client) {
 		List<Site> sites = null;
-		Query query = entityManager.createQuery("SELECT s FROM Site s WHERE s.client.id = :param")
+		Query query = entityManager.createQuery("SELECT s FROM Site s WHERE s.client.id = :param AND s.deleted = false")
 				.setParameter("param", client.getId());
 		sites = (List<Site>) query.getResultList();
 		return sites;
@@ -50,6 +51,26 @@ public class ClientRepositoryImpl implements ClientRepositoryCustom {
 			client = (Client) results.get(0);
 
 		return client;
+	}
+
+	@Override
+	public boolean siteExists(Client client,Site site) {
+		Query query = entityManager.createQuery(
+				"SELECT s FROM Site s WHERE s.name = :param AND client.id = :clientId")
+				.setParameter("param", site.getName()).setParameter("clientId", client.getId());
+		if (query.getResultList().size() != 0)
+			return true;
+		return false;
+	}
+
+	@Override
+	public List<Site> findAllSitesByNature(Nature nature, Client client) {
+		List<Site> sites = null;
+		Query query = entityManager.createQuery("SELECT s FROM Site s JOIN s.natures nature WHERE s.client.id = :param AND nature.id = :natureId AND s.deleted = false")
+				.setParameter("param", client.getId())
+				.setParameter("natureId", nature.getId());
+		sites = (List<Site>) query.getResultList();
+		return sites;
 	}
 
 }

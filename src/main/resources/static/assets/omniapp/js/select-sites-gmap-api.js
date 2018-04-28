@@ -11,12 +11,12 @@ function initializeSitesGmap(projectId) {
 	
 	$.ajax({
 		type : "GET",
-		url : '/set-selected-project-client-sites',
+		url : '/set-selected-project-client-sites-by-nature',
 		async: false,
 		data : 'projectId=' + projectId,
 		success : function(response) {
 
-			//var html_text = "";
+			var selectSiteOptions = "";
 			for (i = 0; i < response.length; i++) {
 				//map.setCenter(0,0);
 				  map.addMarker({
@@ -24,26 +24,44 @@ function initializeSitesGmap(projectId) {
 				        lng: response[i].longitude,
 				        title: response[i].name,
 				        id: response[i].id,
-				        infoWindow: {
-				            content: '<p>'+response[i].name+'</p>'
-				          },
-				       
+				     			       
 				        click: function(e,id,title) {
 				            if (console.log) console.log(e);
 				            
-				            $("#selected_site_new_operation").html($(this).attr('title'));
-				            $('#selected_site_hidden_input').attr('value',$(this).attr('id'));
-				            //alert('You clicked in this marker '+$(this).attr('id'));
+				            for (i in map.markers){
+								// map.removeMarkers();
+					        	map.markers[i].setIcon();
+				
+				            }
+				            $(this).attr('icon','https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/48/Map-Marker-Marker-Outside-Chartreuse.png');
+				            $('#select_site_new_operation').val($(this).attr('id'));
+				            // find('option[value='+$(this).attr('id')+']').attr('selected',true);
+				            $('#select_site_new_operation').selectpicker('refresh');
 				        }
 				    });
-			
+				  selectSiteOptions += '<option data-subtext="'+response[i].natures+'" value="'+response[i].id+'">'+response[i].name+'</option>';
 		        }
 			map.setZoom(5);
 //					$("#sites_map_container").show();
 //					$(".sites_map_canvas").show();
 //					 
+			$('#select_site_new_operation').selectpicker({
+				width: '100%',
 				
-				
+			});
+			$('#select_site_new_operation').html(selectSiteOptions);
+			$('#select_site_new_operation').selectpicker('refresh');
+			$('#select_site_new_operation').on('change',function(){
+				var selectedSite = $('#select_site_new_operation').val();
+				for (i in map.markers){
+					// map.removeMarkers();
+		        	map.markers[i].setIcon();
+
+			        if(map.markers[i].id == selectedSite){
+			        	map.markers[i].setIcon('https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/48/Map-Marker-Marker-Outside-Chartreuse.png');
+			        }
+			    }
+			});
 			
 		},
 		error : function(e) {

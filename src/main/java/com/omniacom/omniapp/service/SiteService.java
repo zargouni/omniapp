@@ -13,12 +13,28 @@ public class SiteService {
 	@Autowired
 	SiteRepository siteRepo;
 	
-	public void addSite(Site site) {
-		siteRepo.save(site);
+	public Site addSite(Site site) {
+		return siteRepo.save(site);
 	}
 	
 	public void addSites(List<Site> siteList) {
 		siteRepo.save(siteList);
 	}
+	
+	public Site findSite(long id) {
+		return siteRepo.findOne(id);
+	}
+
+	public boolean deleteSite(long siteId) {
+		if (siteRepo.exists(siteId)) {
+			Site site = siteRepo.findOne(siteId);
+			site.setDeleted(true);
+			siteRepo.save(site);
+			return true;
+		}
+		return false;
+	}
+	
+	
 
 }
