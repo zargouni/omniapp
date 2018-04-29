@@ -12,4 +12,6 @@ public interface NatureRepositoryCustom {
 	public boolean exists(String name);
 	
 	public Nature findOne(String name);
+	
+	public List<Nature> findAllAvailableNatures();
 }

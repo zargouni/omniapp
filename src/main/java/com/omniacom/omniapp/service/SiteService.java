@@ -5,6 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.omniacom.omniapp.entity.BillOfQuantities;
+import com.omniacom.omniapp.entity.Nature;
+import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.repository.SiteRepository;
 
@@ -34,6 +37,28 @@ public class SiteService {
 		}
 		return false;
 	}
+	
+	public boolean addOneNature(Site site, Nature nature) {
+		return siteRepo.addOneNature(site, nature);
+	}
+	
+	public boolean updateSite(long siteId, Site siteCopy) {
+		Site site = siteRepo.findOne(siteId);
+		 site.getNatures().clear();
+		if (site != null) {
+			if (!site.getName().equals(siteCopy.getName()))
+				site.setName(siteCopy.getName());
+			if (!(site.getLatitude() == siteCopy.getLatitude()))
+				site.setLatitude(siteCopy.getLatitude());
+			if (!(site.getLongitude() == siteCopy.getLongitude()))
+				site.setLongitude(siteCopy.getLongitude());
+			siteRepo.save(site);
+			return true;
+		}
+		return false;
+	}
+	
+	
 	
 	
 

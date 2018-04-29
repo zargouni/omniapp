@@ -30,19 +30,27 @@ public class NatureService {
 	
 	public boolean deleteNature(long natureId) {
 		if (natureRepo.exists(natureId)) {
-			natureRepo.delete(natureId);
+			Nature nature = natureRepo.findOne(natureId);
+			nature.setDeleted(true);
+			natureRepo.save(nature);
 			return true;
 		}
 		return false;
 	}
 	
 	public JSONArray findAllNaturesJson() {
-		List<Nature> natures = (List<Nature>) natureRepo.findAll();
+		List<Nature> natures = (List<Nature>) natureRepo.findAllAvailableNatures();
 		JSONArray json = new JSONArray();
 		for(Nature nature : natures) {
 			json.add(jsonNature(nature));
 		}
 		return json;
+	}
+	
+	public List<Nature> findAllNatures() {
+		return (List<Nature>) natureRepo.findAllAvailableNatures();
+		
+		
 	}
 	
 	public JSONObject jsonNature(Nature nature) {

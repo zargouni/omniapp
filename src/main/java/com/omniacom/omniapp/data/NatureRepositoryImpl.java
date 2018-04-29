@@ -52,4 +52,14 @@ public class NatureRepositoryImpl implements NatureRepositoryCustom {
 		return (Nature) query.getSingleResult();
 	}
 
+	@Override
+	public List<Nature> findAllAvailableNatures() {
+		List<Nature> natures = null;
+		Query query = entityManager
+				.createQuery(
+						"SELECT n FROM Nature n WHERE n.deleted = false");
+		natures = (List<Nature>) query.getResultList();
+		return natures;
+	}
+
 }

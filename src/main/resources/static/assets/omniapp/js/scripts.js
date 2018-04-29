@@ -303,6 +303,7 @@ function doAddProjectAjaxPost() {
 	clientError.hide('fast');
 	countryError.hide('fast');
 	currencyError.hide('fast');
+	natureError.hide('fast');
 
 	$.ajax({
 		type : "POST",
@@ -327,7 +328,6 @@ function doAddProjectAjaxPost() {
 				if($("#select_boq_content").is(":visible"))
 					$("#m_switch_project_boq").click();
 
-				$('#error').hide('slow');
 			} else {
 				toastr.error("Couldn't add project", "Error");
 

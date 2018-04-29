@@ -1,0 +1,57 @@
+<div th:fragment="update-site-modal" class="modal right fade"
+	id="modal_update_site" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalLabel"
+	style="display: none; padding-right: 17px;background:transparent;">
+	<div class="modal-dialog modal-sm " role="document">
+		<div class="modal-content" style="background: #f1f1f1">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Update Site</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="" class="form-control-label">Name:</label> <input
+							type="text" class="form-control" id="update_site_name">
+						<div id="update_site_name_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">name must
+							not be empty</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="form-control-label">Lat:</label>
+						<input type="number" class="form-control" id="update_site_latitude">
+						<div id="update_site_latitude_error"
+							class="form-control-feedback"
+							style="font-size: small;color: red; float: right; display: none;">* required</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="form-control-label">Long:</label>
+						<input type="number" class="form-control" id="update_site_longitude">
+						<div id="update_site_longitude_error"
+							class="form-control-feedback"
+							style="color: red; float: right; display: none;">* required</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="" class="form-control-label">Nature(s):</label><br />
+						<select style="width: 100%;" multiple class="form-control m-select2" id="update_site_nature"></select>
+						
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button id="button_update_site" class="btn btn-primary">Save
+					changes</button>
+			</div>
+
+
+		</div>
+	</div>
+
+
+</div>

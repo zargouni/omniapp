@@ -21,6 +21,7 @@ import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Nature;
 import com.omniacom.omniapp.entity.Project;
+import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.service.ClientService;
 import com.omniacom.omniapp.service.NatureService;
@@ -94,6 +95,46 @@ public class ClientsController {
 			response.setStatus("FAIL_NO_CLIENT");
 		}
 
+		return response;
+	}
+	
+	@GetMapping("/get-site-details")
+	public @ResponseBody JsonResponse getSiteDetails(@RequestParam("siteId") long siteId) {
+		Site site = siteService.findSite(siteId);
+		JsonResponse response = new JsonResponse();
+		if(site != null) {
+			response.setStatus("SUCCESS");
+			JSONObject jsonSite = new JSONObject()
+					.element("id", site.getId())
+					.element("name", site.getName())
+					.element("latitude", site.getLatitude())
+					.element("longitude", site.getLongitude());
+			
+			List<Nature>  allNatures = natureService.findAllNatures();
+			
+			JSONArray arr = new JSONArray();
+			JSONObject jsonNature;
+			
+				for(Nature nature : allNatures) {
+					jsonNature = new JSONObject()
+							.element("id", nature.getId())
+							.element("name", nature.getName());
+					
+					if(site.getNatures().contains(nature))
+						jsonNature.accumulate("selected", true);
+					else
+						jsonNature.accumulate("selected", false);
+					
+					arr.add(jsonNature);	
+				}
+				
+				
+			
+			jsonSite.accumulate("natures", arr);
+			response.setResult(jsonSite);
+		}else {
+			response.setStatus("FAIL");
+		}
 		return response;
 	}
 	
@@ -182,5 +223,46 @@ public class ClientsController {
 	@InitBinder("nature")
 	protected void setNatureValidator(WebDataBinder binder) {
 		binder.addValidators(natureValidator);
+	}
+	
+	@PostMapping("/update-site-natures")
+	public @ResponseBody JsonResponse addServiceTemplateToBoq(@RequestParam("nature") Nature nature,
+			@RequestParam("siteId") long siteId) throws IOException {
+
+		JsonResponse response = new JsonResponse();
+		
+
+		//ServiceTemplate template = stService.findOne(templateId);
+		Site site = siteService.findSite(siteId);
+		
+		if (nature != null && site != null) {
+			if (!siteService.addOneNature(site, nature))
+				response.setStatus("FAIL");
+		}
+		return response;
+	}
+	
+	@PostMapping("/update-site")
+	public @ResponseBody JsonResponse updateSite(@RequestParam("id") long siteId, @Validated Site site,
+			BindingResult result) {
+		JsonResponse response = new JsonResponse();
+
+		if (!result.hasErrors()) {
+			
+				
+				if (siteService.updateSite(siteId, site)) {
+
+					response.setStatus("SUCCESS");
+				} else {
+					response.setStatus("FAIL");
+				}
+			
+
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
 	}
 }

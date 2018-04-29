@@ -23,6 +23,8 @@ public class Nature implements Serializable {
 	private long id;
 	private String name;
 	private String description;
+	private boolean deleted = false;
+	
 
 	@ManyToMany(mappedBy = "natures")
 	private List<Site> sites;
@@ -117,6 +119,20 @@ public class Nature implements Serializable {
 	 */
 	public void setProjects(List<Project> projects) {
 		this.projects = projects;
+	}
+
+	/**
+	 * @return the deleted
+	 */
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	/**
+	 * @param deleted the deleted to set
+	 */
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 }

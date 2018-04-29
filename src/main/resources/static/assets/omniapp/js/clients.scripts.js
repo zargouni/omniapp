@@ -66,7 +66,7 @@ function populateClientsUI(){
 							+'<div style="position:relative;top:3%;right:12%;float:right;"><a onclick="handleRemoveSite('+response[i].id+')" title="Delete Site" class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only">'
 							+'<i class="fa fa-trash-o"></i>'
 							+'</a></div>'
-							+'<div style="position:relative;top:3%;right:13%;float:right;"><a title="Update Site" href="#" class="btn btn-info m-btn m-btn--icon btn-sm m-btn--icon-only">'
+							+'<div style="position:relative;top:3%;right:13%;float:right;"><a onclick="populateModalUpdateSite('+response[i].id+')" title="Update Site" class="btn btn-info m-btn m-btn--icon btn-sm m-btn--icon-only">'
 							+'<i class="fa fa-check-square-o"></i>'
 							+'</a></div>'
 							+'</div>'
@@ -96,7 +96,120 @@ function populateClientsUI(){
 
 	}
 	
-	 
+
+function populateModalUpdateSite(clientId){
+	$('#update_site_nature').html('');
+	var siteId = $('#select_site_client_'+clientId).val();
+	var arr = [];
+	$('#button_update_site').attr("onClick",'handleUpdateSite('+siteId+')');
+	$.ajax({
+		type : "GET",
+		url : '/get-site-details',
+		data: 'siteId='+siteId,
+		async: false,
+		success : function(response) {
+			if(response.status == "SUCCESS"){
+				$('#update_site_name').val(response.result.name);
+				$('#update_site_latitude').val(response.result.latitude);
+				$('#update_site_longitude').val(response.result.longitude);
+				for (i = 0; i < response.result.natures.length; i++){
+					arr.push({
+						 id: response.result.natures[i].name,
+			             text: response.result.natures[i].name,
+			             selected: response.result.natures[i].selected
+				   	});
+				
+				}
+				$('#update_site_nature').select2({
+						data: arr,
+				});
+				$('#modal_update_site').modal('show');
+			}else{
+				toastr("cant get details");
+			}
+		},
+		error : function(e) {
+			alert('Error: site details ' + e);
+		}
+	});
+	
+}
+
+function handleUpdateSite(siteId){
+	var name = $('#update_site_name').val();
+	var lat = $('#update_site_latitude').val();
+	var long = $('#update_site_longitude').val();
+	if ($('#update_site_nature').find(":selected").length != 0){
+	$.ajax({
+		type : "POST",
+		url : '/update-site',
+		data : "id="+siteId+"&name="+name+"&latitude="+lat+"&longitude="+long,
+	    success : function(response) {
+			// we have the response
+			if (response.status == "SUCCESS") {
+				toastr.success("Site updated successfully", "Well done!");
+				if(response.result != 'undefined'){
+					doUpdateSiteNatures(siteId);
+					$("#modal_update_site").modal('hide');
+					$('#update_site_name').val('');
+					$('#update_site_latitude').val('');
+					$('#update_site_longitude').val('');
+					//$('#service_templates_boq_checkbox_list :checkbox').prop('checked', false);
+					setTimeout(
+							  function() 
+							  {
+								  location.reload()
+							  }, 1000);
+				}
+			} else {
+				
+				toastr.error("Couldn't update Site", "Error");
+				
+				for (i = 0; i < response.result.length; i++) {
+						if (response.result[i].code == "site.name.empty")
+							$('#update_site_name_error').show('slow');
+						if (response.result[i].code == "site.latitude.empty")
+							$('#update_site_latitude_error').show('slow');
+						if (response.result[i].code == "site.longitude.empty")
+							$('#update_site_longitude_error').show('slow');
+						
+
+				}
+				
+			}
+		},
+		error : function(e) {
+			toastr('Error: can\'t get Site details ', e);
+		}
+	});	
+	}else{
+		toastr.warning("Couldn't update Site, you have to select at least 1 nature", "Select Nature(s)");
+	}
+	//console.log("hi"+id);
+}
+
+function doUpdateSiteNatures(siteId){
+	$('#update_site_nature').find(":selected").each(function(){
+		var nature = $(this).attr('value');
+		//alert('selected values: '+$(this).attr('value'));
+		$.ajax({
+			type : "POST",
+			url : '/update-site-natures',
+			data : "nature=" + nature + "&siteId=" + siteId,
+			success : function(response) {
+				// we have the response
+				if (response.status == "FAIL") {
+					toastr.error("Couldn't add nature", "Error");
+				} 
+			},
+			error : function(e) {
+				toastr.error("Couldn't add nature", "Server Error");
+			}
+		});
+	});
+		
+	
+}
 
 function populateClientStats(clientId){
 	var html_text;
@@ -300,6 +413,7 @@ function newSiteSaveManualAddedSites(clientId) {
 			});
 	if(result == true){
 		toastr.success('All sites added successfully','Well done!')
+		$("#modal_new_site").modal('hide');
 		setTimeout(function(){
 			location.reload();
 		}, 2000);
