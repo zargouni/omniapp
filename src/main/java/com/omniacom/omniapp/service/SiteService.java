@@ -11,6 +11,8 @@ import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.repository.SiteRepository;
 
+import net.sf.json.JSONObject;
+
 @Service
 public class SiteService {
 	@Autowired
@@ -56,6 +58,14 @@ public class SiteService {
 			return true;
 		}
 		return false;
+	}
+	
+	public JSONObject jsonSite(Site site) {
+		return new JSONObject()
+				.element("name", site.getName())
+				.element("latitude", site.getLatitude())
+				.element("longitude", site.getLongitude())
+				.element("deleted", site.isDeleted());
 	}
 	
 	

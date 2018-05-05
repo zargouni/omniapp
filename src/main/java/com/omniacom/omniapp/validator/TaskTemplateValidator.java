@@ -21,6 +21,7 @@ public class TaskTemplateValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "task.template.name.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "estimationTime", "task.template.estimationTime.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "estimationHR", "task.template.estimationHR.empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "priority", "task.template.priority.empty");
 		
 	}
 

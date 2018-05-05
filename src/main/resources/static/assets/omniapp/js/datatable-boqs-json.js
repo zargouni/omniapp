@@ -246,11 +246,11 @@ function handleUpdateBoq(id){
 					$('#input_boq_start_date').val('');
 					$('#input_boq_end_date').val('');
 					$('#service_templates_boq_checkbox_list :checkbox').prop('checked', false);
-					setTimeout(
-							  function() 
-							  {
-								  location.reload()
-							  }, 2000);
+//					setTimeout(
+//							  function() 
+//							  {
+//								  location.reload()
+//							  }, 2000);
 				}
 			} else {
 				if(response.result == 'boq-exists'){
@@ -297,6 +297,7 @@ function doUpdateServiceTemplatesToBoq( boqId ){
 			type : "POST",
 			url : '/update-boq-service-templates',
 			data : "id=" + templateId + "&boqId=" + boqId,
+			async: false,
 			success : function(response) {
 				// we have the response
 				if (response.status == "FAIL") {

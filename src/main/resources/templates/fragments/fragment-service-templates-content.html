@@ -132,7 +132,8 @@
 							<div class="m-form__group form-group">
 								<label for="">Template name:</label> <input
 									id="input_new_service_template_name" type="text"
-									class="form-control m-input m-input--solid" placeholder="Service template name">
+									class="form-control m-input m-input--solid"
+									placeholder="Service template name">
 								<div id="service_template_name_error"
 									class="form-control-feedback"
 									style="color: red; float: right; display: none;">* name
@@ -141,13 +142,32 @@
 							</div>
 
 							<div class="m-form__group form-group">
-								<label for="">Description:</label> 
-								<textarea placeholder="Description goes here" class="form-control m-input m-input--solid" id="input_new_service_template_description" rows="3"></textarea>
-								
+								<label for="">Description:</label>
+								<textarea placeholder="Description goes here"
+									class="form-control m-input m-input--solid"
+									id="input_new_service_template_description" rows="3"></textarea>
+
 								<div id="service_template_description_error"
 									class="form-control-feedback"
 									style="color: red; float: right; display: none;">*
 									description must not be empty</div>
+
+							</div>
+
+							<div class="m-form__group form-group">
+								<label for="">Category:</label> <select
+									id="input_new_service_template_category"
+									class="form-control m-select2">
+									<option value=" ">None selected</option>
+									<option value="BTS">BTS</option>
+									<option value="CENTER_ROOM">Center Room</option>
+									<option value="OTT">OTT</option>
+									<option value="LOGISTIC">Logistic</option>
+									<option value="OPTIONAL">Optional</option>
+								</select>
+								<div id="service_template_category_error"
+									class="form-control-feedback"
+									style="color: red; float: right; display: none;">*Required</div>
 
 							</div>
 
@@ -167,7 +187,7 @@
 
 
 					</form>
-					
+
 
 				</div>
 
@@ -199,11 +219,60 @@
 					</button>
 				</div>
 
-				<div class="modal-body"></div>
+				<div class="modal-body">
+					<form class="m-form" target="noTarget">
+						<div class="m-portlet__body">
+
+
+
+							<div class="m-form__group form-group">
+								<label for="">Template name:</label> <input id="input_service_template_name" type="text" class="form-control m-input m-input--solid" placeholder="Service template name">
+								<div id="input_service_template_name_error" class="form-control-feedback" style="color: red; float: right; display: none;">* name
+									must not be empty</div>
+
+							</div>
+
+							<div class="m-form__group form-group">
+								<label for="">Description:</label>
+								<textarea placeholder="Description goes here" class="form-control m-input m-input--solid" id="input_service_template_description" rows="3"></textarea>
+
+								<div id="input_service_template_description_error" class="form-control-feedback" style="color: red; float: right; display: none;">*
+									description must not be empty</div>
+
+							</div>
+
+							<div class="m-form__group form-group">
+								<label for="">Category:</label> <select id="input_service_template_category" class="form-control m-select2">
+									<option value=" ">None selected</option>
+									<option value="BTS">BTS</option>
+									<option value="CENTER_ROOM">Center Room</option>
+									<option value="OTT">OTT</option>
+									<option value="LOGISTIC">Logistic</option>
+									<option value="OPTIONAL">Optional</option>
+								</select>
+								<div id="input_service_template_category_error" class="form-control-feedback" style="color: red; float: right; display: none;">*Required</div>
+
+							</div>
+
+							<div class="m-form__group form-group">
+								<label for="">Price:</label> <input id="input_service_template_price" type="number" class="form-control m-input m-input--solid" placeholder="Price">
+								<div id="input_service_template_price_error" class="form-control-feedback" style="color: red; float: right; display: none;">* price
+									must not be empty</div>
+
+							</div>
+
+
+						</div>
+
+
+					</form>
+
+
+				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary">Save changes</button>
+					<button id="button_update_service_template" class="btn btn-primary">Save changes</button>
 				</div>
 
 
@@ -236,9 +305,9 @@
 									class="form-group m-form__group row align-items-center add-tasks-repeater">
 									<div class="col-md-3">
 										<div class="m-form__group m-form__group--inline">
-											<div class="m-form__label">
-												<label>Name:</label>
-											</div>
+<!-- 											<div class="m-form__label"> -->
+<!-- 												<label>Name:</label> -->
+<!-- 											</div> -->
 											<div class="m-form__control">
 												<input type="text"
 													class="form-control m-input new-task-template-name"
@@ -249,10 +318,10 @@
 									</div>
 									<div class="col-md-3">
 										<div class="m-form__group m-form__group--inline">
-											<div class="m-form__label">
-												<label class="m-label m-label--single">Estimation
-													(HR):</label>
-											</div>
+<!-- 											<div class="m-form__label"> -->
+<!-- 												<label class="m-label m-label--single">Estimation -->
+<!-- 													(HR):</label> -->
+<!-- 											</div> -->
 											<div class="m-form__control">
 												<input type="number"
 													class="form-control m-input new-task-template-estimation-hr"
@@ -263,10 +332,10 @@
 									</div>
 									<div class="col-md-3">
 										<div class="m-form__group m-form__group--inline">
-											<div class="m-form__label">
-												<label class="m-label m-label--single">Estimation
-													(Days):</label>
-											</div>
+<!-- 											<div class="m-form__label"> -->
+<!-- 												<label class="m-label m-label--single">Estimation -->
+<!-- 													(Days):</label> -->
+<!-- 											</div> -->
 											<div class="m-form__control">
 												<input type="number"
 													class="form-control m-input new-task-template-estimation-days"
@@ -275,11 +344,33 @@
 										</div>
 										<div class="d-md-none m--margin-bottom-10"></div>
 									</div>
-									<div class="col-md-3">
+
+									<div class="col-md-2">
+										<div class="m-form__group m-form__group--inline">
+<!-- 											<div class="m-form__label"> -->
+<!-- 												<label class="m-label m-label--single">Priority:</label> -->
+<!-- 											</div> -->
+											<div class="m-form__control">
+												<select
+													class="form-control m-select2 new-task-template-priority"
+													style="width: 100%; text-align: center;">
+													<option value="none"></option>
+													<option value="low">Low</option>
+													<option value="medium">Medium</option>
+													<option value="high">High</option>
+												</select>
+											</div>
+										</div>
+										<div class="d-md-none m--margin-bottom-10"></div>
+									</div>
+
+
+
+									<div class="col-md-1">
 										<div data-repeater-delete=""
-											class="btn-sm btn btn-danger m-btn m-btn--icon m-btn--pill">
-											<span> <i class="la la-trash-o"></i> <span>Delete</span>
-											</span>
+											class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only m-btn--pill">
+											<i class="la la-trash-o"></i> 
+											
 										</div>
 									</div>
 								</div>
@@ -288,7 +379,7 @@
 						<div class="m-form__group form-group row">
 							<label class="col-lg-2 col-form-label"></label>
 							<div class="col-lg-4">
-								<div data-repeater-create=""
+								<div onclick="populateTaskTemplatePriorities()" data-repeater-create=""
 									class="btn btn btn-sm btn-brand m-btn m-btn--icon m-btn--pill m-btn--wide">
 									<span> <i class="la la-plus"></i> <span>Another
 											one ?</span>

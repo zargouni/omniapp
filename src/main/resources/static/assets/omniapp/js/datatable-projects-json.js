@@ -118,6 +118,9 @@ var projectsDatatableRemoteAjax = function() {
   };
 }();
 
+
+
+
 jQuery(document).ready(function() {
 	projectsDatatableRemoteAjax.init();
 });

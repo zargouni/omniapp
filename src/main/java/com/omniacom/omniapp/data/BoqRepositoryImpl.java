@@ -45,14 +45,14 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 
 	@Override
 	public boolean addOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template) {
-		if (!templateExists(boq, template)) {
+		//if (!templateExists(boq, template)) {
 			if (boq.getServices() != null) {
 				return boq.getServices().add(template);
 			}
 			boq.setServices(new ArrayList<>());
 			return boq.getServices().add(template);
-		}
-		return false;
+		//}
+		//return false;
 
 	}
 

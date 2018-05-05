@@ -30,6 +30,8 @@ public class Service implements Serializable {
 	private int flag;
 	private float priceHT;
 	private long zohoId;
+	
+	private ServiceCategory category;
 
 	@ManyToOne
 	private Project project;
@@ -220,6 +222,20 @@ public class Service implements Serializable {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * @return the category
+	 */
+	public ServiceCategory getCategory() {
+		return category;
+	}
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(ServiceCategory category) {
+		this.category = category;
 	}
 
 }

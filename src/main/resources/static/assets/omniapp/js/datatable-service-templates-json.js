@@ -74,9 +74,15 @@ var DatatableJsonRemoteDemo = function () {
 				width: 200,
 				
 			}, {
+				field: "category",
+				title: "Category",
+				sortable: true,
+				width: 100,
+				
+			}, {
 				field: "description",
 				title: "Description",
-				width: 500
+				width: 400
 			}, {
 				field: "price",
 				title: "Price",

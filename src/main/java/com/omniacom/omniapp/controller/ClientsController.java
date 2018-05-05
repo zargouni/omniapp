@@ -265,4 +265,50 @@ public class ClientsController {
 
 		return response;
 	}
+	
+	@GetMapping("/get-client-details")
+	public @ResponseBody JSONObject getClientDetails(@RequestParam("id") long clientId) {
+		JSONObject json = new JSONObject();
+		Client client = clientService.findById(clientId);
+		if(client != null) {
+			json = clientService.jsonClient(client);
+		}
+		return json;
+	}
+	
+	@PostMapping("/update-client")
+	public @ResponseBody JsonResponse updateClient(@RequestParam("id") long clientId, @Validated Client updatedClient,
+			BindingResult result) {
+		JsonResponse response = new JsonResponse();
+
+		if (!result.hasErrors()) {
+			if (!clientService.clientExists(updatedClient)) {
+				
+				if (clientService.updateClient(clientId, updatedClient)) {
+
+					response.setStatus("SUCCESS");
+				} else {
+					response.setStatus("FAIL");
+				}
+			} else if (updatedClient.getName().equals(clientService.findById(clientId).getName())) {
+				if (clientService.updateClient(clientId, updatedClient)) {
+
+					response.setStatus("SUCCESS");
+				} else {
+					response.setStatus("FAIL");
+				}
+			} else {
+
+				response.setStatus("FAIL");
+				response.setResult("client-exists");
+
+			}
+
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
 }

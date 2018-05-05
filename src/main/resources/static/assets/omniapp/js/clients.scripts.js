@@ -19,7 +19,7 @@ function populateClientsUI(){
 							+'	<li class="m-portlet__nav-item"><a href="#"'
 							+'		class="m-portlet__nav-link m-portlet__nav-link--icon"><i'
 							+'			class="la la-close"></i></a></li>'
-							+'	<li class="m-portlet__nav-item"><a href="#"'
+							+'	<li class="m-portlet__nav-item"><a onclick="toggleUpdateClientModal('+response[i].id+')"'
 							+'	class="m-portlet__nav-link m-portlet__nav-link--icon"><i'
 							+'		class="la la-refresh"></i></a></li>'
 							+'	</ul>'
@@ -133,6 +133,108 @@ function populateModalUpdateSite(clientId){
 		}
 	});
 	
+}
+
+function toggleUpdateClientModal(clientId){
+	$('#button_update_client').attr('onClick','updateClientDetails('+clientId+')');
+	populateModalUpdateClientDetails(clientId);
+	$('#modal_update_client').modal('show');
+}
+
+function populateModalUpdateClientDetails(clientId){
+	$.ajax({
+		type : "GET",
+		url : '/get-client-details',
+		data : "id="+clientId,
+	    success : function(response) {
+			// we have the response
+			$('#update_client_name').val(response.name);
+			$('#update_client_email').val(response.email);
+			$('#update_client_country').val(response.country);
+			$('#update_client_address').val(response.address);
+			$('#update_client_phone').val(response.phone);
+			
+		},
+		error : function(e) {
+			toastr('Error: can\'t get client details ', e);
+		}
+	});	
+}
+
+function updateClientDetails(clientId){
+	var name = $('#update_client_name').val();
+	var email = $('#update_client_email').val();
+	var country = $('#update_client_country').val();
+	var address = $('#update_client_address').val();
+	var phone = $('#update_client_phone').val();
+	
+	var nameError = $('#update_client_name_error');
+	var emailError = $('#update_client_email_error');
+	var countryError = $('#update_client_country_error');
+	var addressError = $('#update_client_address_error');
+	var phoneError = $('#update_client_phone_error');
+	
+	nameError.hide('fast');
+	emailError.hide('fast');
+	countryError.hide('fast');
+	addressError.hide('fast');
+	phoneError.hide('fast');
+//	if ($('#update_site_nature').find(":selected").length != 0){
+	$.ajax({
+		type : "POST",
+		url : '/update-client',
+		data : "id="+clientId+"&name="+name+"&email="+email+"&country="+country+"&address="+address+"&phone="+phone,
+	    success : function(response) {
+			// we have the response
+			if (response.status == "SUCCESS") {
+				toastr.success("Client updated successfully", "Well done!");
+				if(response.result != 'undefined'){
+					//doUpdateSiteNatures(siteId);
+					$("#modal_update_client").modal('hide');
+					$('#update_client_name').val('');
+					$('#update_client_email').val('');
+					$('#update_client_address').val('');
+					$('#update_client_phone').val('');
+
+					//$('#service_templates_boq_checkbox_list :checkbox').prop('checked', false);
+					setTimeout(
+							  function() 
+							  {
+								  location.reload()
+							  }, 1000);
+				}
+			} else {
+				if(response.result == 'client-exists'){
+					toastr.error("Couldn't update client, a client with this name already exists", "Change Client name");
+				}else{
+					toastr.error("Couldn't update client", "Error");
+				}	
+				
+				for (i = 0; i < response.result.length; i++) {
+						if (response.result[i].code == "client.name.empty")
+							nameError.show('slow');
+						if (response.result[i].code == "client.email.empty")
+							emailError.show('slow');
+						if (response.result[i].code == "client.country.empty")
+							countryError.show('slow');
+						if (response.result[i].code == "client.address.empty")
+							addressError.show('slow');
+						if (response.result[i].code == "client.phone.empty")
+							phoneError.show('slow');
+						
+
+				}
+				
+			}
+		},
+		error : function(e) {
+			toastr('Error: can\'t update client details ', e);
+		}
+	});	
+//	}else{
+//		toastr.warning("Couldn't update Site, you have to select at least 1 nature", "Select Nature(s)");
+//	}
+	//console.log("hi"+id);
 }
 
 function handleUpdateSite(siteId){

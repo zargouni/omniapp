@@ -14,39 +14,65 @@
 
 	<!-- begin:: Page -->
 	<div layout:fragment="content"
-		class="m-grid m-grid--hor m-grid--root m-page">
+		class="m-grid m-grid--hor m-grid--root m-page" >
 		<!-- begin::Body -->
-		<div
-			id="high" class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
+		<div id="high"
+			class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
 
+			<!-- BEGIN: selected project -->
+			<input type="hidden" id="selected_project_id" />
+			<!-- END: selected project -->
 			<!-- BEGIN: Left Aside -->
 			<div
 				data-th-replace="fragments/fragment-left-sidebar-project :: left-sidebar-project"></div>
 			<!-- END: Left Aside -->
-			<div class="m-grid__item m-grid__item--fluid m-wrapper">
+			<div class="m-grid__item m-grid__item--fluid m-wrapper" >
 				<!-- begin::Content -->
 				<div id="m_dynamic_content_project" class="m-content">
-				<div  th:replace="fragments/project-fragments/fragment-dashboard :: fragment-dashboard"></div>
-				<div th:replace="fragments/project-fragments/fragment-feed :: fragment-feed"></div>
-				<div th:replace="fragments/project-fragments/fragment-issues :: fragment-issues"></div>
-				<div th:replace="fragments/project-fragments/fragment-operations :: fragment-operations"></div>
-				<div th:replace="fragments/project-fragments/fragment-tasks :: fragment-tasks"></div>
-				<div  th:replace="fragments/project-fragments/fragment-calendar :: fragment-calendar"></div>
+					<div
+						th:replace="fragments/project-fragments/fragment-dashboard :: fragment-dashboard"></div>
+					<div
+						th:replace="fragments/project-fragments/fragment-feed :: fragment-feed"></div>
+					<div
+						th:replace="fragments/project-fragments/fragment-issues :: fragment-issues"></div>
+					<div
+						th:replace="fragments/project-fragments/fragment-operations :: fragment-operations"></div>
+					<div
+						th:replace="fragments/project-fragments/fragment-tasks :: fragment-tasks"></div>
+					<div
+						th:replace="fragments/project-fragments/fragment-calendar :: fragment-calendar"></div>
+						
+						<div
+						th:replace="fragments/project-fragments/fragment-operation :: fragment-operation"></div>
 				</div>
 				<!-- End::Content -->
 			</div>
 		</div>
 		<!-- end:: Body -->
 
-<script type="text/javascript">
-$(document).ready(function() {
-	gmapPopoverInit();
-});
-</script>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				gmapPopoverInit();
+				let searchParams = new URLSearchParams(window.location.search);
+				let param = searchParams.get('id');
+				$('#selected_project_id').attr('value', param);
+			});
+		</script>
+
+
+		<script type="text/javascript"
+			src="assets/omniapp/js/datatable-operations-json.js">
+			
+		</script>
+		
+		<script type="text/javascript"
+			src="assets/omniapp/js/project.scripts.js">
+			
+		</script>
 	</div>
 	<!-- end:: Page -->
 
-	
+
 </body>
 <!-- end::Body -->
 

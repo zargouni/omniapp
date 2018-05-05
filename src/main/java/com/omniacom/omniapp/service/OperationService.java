@@ -1,19 +1,27 @@
 package com.omniacom.omniapp.service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Operation;
+import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.TaskTemplate;
 import com.omniacom.omniapp.repository.OperationRepository;
+import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
 import com.omniacom.omniapp.repository.TaskRepository;
 import com.omniacom.omniapp.repository.TaskTemplateRepository;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Service
 public class OperationService {
@@ -33,6 +41,18 @@ public class OperationService {
 	@Autowired
 	TaskTemplateRepository taskTemplateRepo;
 
+	@Autowired
+	ProjectRepository projectRepo;
+	
+	@Autowired
+	ServiceService serviceService;
+	
+	@Autowired
+	ProjectService projectService;
+	
+	@Autowired
+	SiteService siteService;
+	
 	public Operation addOperation(Operation operation) {
 		return operationRepo.save(operation);
 	}
@@ -46,34 +66,64 @@ public class OperationService {
 			newService.setOperation(operation);
 			newService.setCreationDate(new Date());
 			returnService = serviceRepo.save(newService);
-			// for(TaskTemplate taskTemplate : stService.findAllTaskTemplates(template)) {
-			// Task task = new Task();
-			// task.setName(taskTemplate.getName());
-			// task.setEstimationTime(taskTemplate.getEstimationTime());
-			// task.setEstimationRH(taskTemplate.getEstimationHR());
-			// task.setStatus(StaticString.TASK_STATUS_ONGOING);
-			// task.setService(newService);
-			// taskRepo.save(task);
-			// }
+			for(TaskTemplate t : template.getTasks()) {
+				Task task = new Task();
+				task.setName(t.getName());
+				task.setPriority(t.getPriority());
+				task.setEstimationRH(t.getEstimationHR());
+				task.setEstimationTime(t.getEstimationTime());
+				task.setStatus(StaticString.TASK_STATUS_ONGOING);
+				task.setService(returnService);
+				taskRepo.save(task);
+			}
+			
 			return returnService;
 		}
 		return returnService;
 	}
-
-	public Task generateServiceTaskFromTemplate(long serviceId, long taskTemplateId, String taskPriority) {
-		com.omniacom.omniapp.entity.Service service = serviceRepo.findOne(serviceId);
-		TaskTemplate taskTemplate = taskTemplateRepo.findOne(taskTemplateId);
-		if (taskTemplate != null && service != null) {
-			Task task = new Task();
-			task.setName(taskTemplate.getName());
-			task.setEstimationTime(taskTemplate.getEstimationTime());
-			task.setEstimationRH(taskTemplate.getEstimationHR());
-			task.setStatus(StaticString.TASK_STATUS_ONGOING);
-			task.setService(service);
-			task.setPriority(taskPriority);
-			return taskRepo.save(task);
+	
+	public JSONArray getAllOperationsJson(long projectId) {
+		Project project = projectRepo.findOne(projectId);
+		JSONArray jsonArray = new JSONArray();
+		List<Operation> operations = projectRepo.findAllOperations(project);
+		for(Operation op : operations) {
+			jsonArray.add(jsonOperationFormattedDates(op));
 		}
-		return null;
+		return jsonArray;
+		
 	}
+	
+	public JSONObject jsonOperationFormattedDates(Operation op) {
+		return new JSONObject()
+				.element("id", op.getId())
+				.element("name", op.getName())
+				.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(op.getStartDate()))
+				.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(op.getEndDate()))
+				.element("status", op.getEndDate().after(new Date()))
+				.element("serviceCount", getOperationServiceCount(op))
+				.element("flag", op.getFlag())
+				.element("project", projectService.jsonProject(op.getProject()))
+				.element("site", siteService.jsonSite(op.getSite()));
+	}
+	
+	public Integer getOperationServiceCount(Operation op) {
+		return operationRepo.findAllServices(op).size();
+	}
+	
+	public JSONArray getOperationServices(long operationId) {
+		JSONArray jsonArray = new JSONArray();
+		Operation op = operationRepo.findOne(operationId);
+		if(op != null)
+		for(com.omniacom.omniapp.entity.Service s : op.getServices()) {
+			jsonArray.add(serviceService.jsonService(s));
+		}
+		return jsonArray;		
+	}
+	
+	public Operation findOne(long operationId) {
+		return operationRepo.findOne(operationId);
+	}
+
+	
 
 }

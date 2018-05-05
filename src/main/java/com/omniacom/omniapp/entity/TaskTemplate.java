@@ -23,6 +23,7 @@ public class TaskTemplate implements Serializable {
 	private String name;
 	private int estimationTime;
 	private int estimationHR;
+	private String priority;
 	
 	@ManyToOne
 	private ServiceTemplate serviceTemplate;
@@ -103,6 +104,20 @@ public class TaskTemplate implements Serializable {
 	 */
 	public void setServiceTemplate(ServiceTemplate serviceTemplate) {
 		this.serviceTemplate = serviceTemplate;
+	}
+
+	/**
+	 * @return the priority
+	 */
+	public String getPriority() {
+		return priority;
+	}
+
+	/**
+	 * @param priority the priority to set
+	 */
+	public void setPriority(String priority) {
+		this.priority = priority;
 	}
 	
 	

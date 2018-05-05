@@ -14,41 +14,8 @@ function saveCheckedServiceTemplatesNewOperation(operationId){
 				if (response.status == "FAIL") {
 					error = "error";
 					toastr.error("Couldn't generate service"+serviceTemplateId, "Error");
-	
-
-				}else{
-					addedServiceId = response.result; 
-					var taskContainer = $('#vertical-nav-content').find("div[name=nav_content_"+serviceTemplateId+"]");
-					taskContainer.find('tr[id*=task_row_]').each(function(){
-						
-						var taskCheckbox = $(this).find('input:checkbox'); 
-						if(taskCheckbox.is(':checked')){
-							// alert($(this).attr('id'));
-							// alert(taskCheckbox.attr('id'));
-							var taskId = taskCheckbox.attr('id');
-							var taskPriority = $(this).find('select[id=task_priority_'+taskId+']').val();
-							$.ajax({
-								type : "POST",
-								url : '/generate-service-tasks-from-template',
-								async: false,
-								data : "taskTemplateId=" + taskId + "&taskPriority="+taskPriority+"&serviceId=" + addedServiceId,
-								success : function(response) {
-									if (response.status == "FAIL") {
-										error = "error";
-										toastr.error("Couldn't generate tasks for service"+serviceTemplateId, "Error");
-									}
-				
-								},
-								error : function(e) {
-									error = "error";
-									toastr.error("Couldn't generate tasks for service"+serviceTemplateId, "Server Error");
-								}
-							});	
-					}
-					
-				});
-					// toastr.success("generation done", "Hallelujah");
 				}
+	
 			},
 			error : function(e) {
 				error = "error";
@@ -56,9 +23,7 @@ function saveCheckedServiceTemplatesNewOperation(operationId){
 			}
 		});	
 		
-	// if(addedServiceId != ''){
-			
-		// }
+	
 	});
 	
 	$('#generate_operation_services_modal').modal('hide');
@@ -81,107 +46,6 @@ function saveCheckedServiceTemplatesNewOperation(operationId){
 	
 }
 
-function getServiceTemplateTasks(templateId){
-	$.ajax({
-	type : "GET",
-	url : '/get-service-template-tasks',
-	data : "templateId=" + templateId,
-	async: false,
-	success : function(response) {
-		if (response.status == "FAIL") {
-		
-			toastr.error("Couldn't generate tasks", "Error");
-
-
-		}else{
-			$("tbody[name='tbody_"+templateId+"']").html('');
-			for (i = 0; i < response.result.length; i++) {
-				$("tbody[name='tbody_"+templateId+"']").append('<tr id="task_row_'+response.result[i].id+'">'
-									+'<td style="width:5%;">'
-									+'<label class="m-checkbox m-checkbox--solid m-checkbox--success">'
-									+'<input id="'+response.result[i].id+'" name="task_template_checkbox" type="checkbox"><span></span>'
-									+'</label>'
-									+'</td>'
-									+'<td style="width:50%;">'
-									+'<span name="task_template_name" class="m-widget11__title">'+response.result[i].name+'</span>'
-									+'</td>'
-									+'<td style="width:15%;" name="task_template_estimation_hr" ><span style="display:table;margin:0 auto;">'+response.result[i].estimationHR+'</span></td>'
-									+'<td style="width:15%;" name="task_template_estimation_days"><span style="display:table;margin:0 auto;">'+response.result[i].estimationDays+'</span></td>'
-									+'<td style="width:15%;" name="task_template_priority" class="m--align-right m--font-brand">'
-									+'<select class="form-control m-select2" style="width:100%;text-align: center; " id="task_priority_'+response.result[i].id+'" >'
-									+'<option value="0"></option>' 
-									+'<option value="low">Low</option>'
-									   +'<option value="medium">Medium</option>'
-									  +'<option value="high">High</option>'
-									+'</select>'
-									+'</td>'
-							);
-			    
-			      
-				$('select[id*=task_priority_]').select2({
-					placeholder: {
-					    id: '0', // the value of the option
-					    text: 'None'
-					  },
-			        minimumResultsForSearch: Infinity,
-			        width: 'resolve',
-			        templateResult: function formatState (state) {
-				        if (!state.id) { return state.text; }
-				        if(state.element.value === 'low')
-				        	var $state = $('<span style="color:#36A3F7;">' + state.text + '</span>');
-				        if(state.element.value === 'medium')
-				        	var $state = $('<span style="color:#34BFA3;">' + state.text + '</span>');
-				        if(state.element.value === 'high')
-				        	var $state = $('<span style="color:#F4516C;">' + state.text + '</span>');
-				        return $state;
-				      },
-				     templateSelection: function format (state) {
-						        if (state.id == "0") { return '<span style="display:table;margin:-10px auto;font-size: 14px;">'+state.text+'</span>'; }
-						        if(state.text === 'Low')
-						        	var $state = $('<span style="display:table;margin:-10px auto;font-size: 14px;color:#36A3F7;">' + state.text + '</span>');
-						        if(state.text === 'Medium')
-						        	var $state = $('<span style="display:table;margin:-10px auto;font-size: 14px;color:#34BFA3;">' + state.text + '</span>');
-						        if(state.text === 'High')
-						        	var $state = $('<span style="display:table;margin:-10px auto;font-size: 14px;color:#F4516C;">' + state.text + '</span>');
-						        return $state;
-						      },
-					      escapeMarkup: function(m) { return m; }
-					  
-
-			        });
-				
-				$('.select2-selection').css('border','0px')
-				$('.select2-container').children().css('border','0px')
-				$('.select2-selection__arrow').hide();
-			}
-		}
-	},
-	error : function(e) {
-		toastr.error("Couldn't generate tasks", "Server Error");
-	}
-});	
-}
-
-function handleClickCheckboxServiceTemplate(checkboxId){
-	if($("#vertical_nav_section").is(":hidden"))
-		$("#vertical_nav_section").show();
-// if($("#vertical-nav").is(":hidden"))
-// $("#vertical-nav").show();
-	var checkbox = $("input:checkbox[id*="+checkboxId+"]");
-	if(checkbox.is(":checked")){
-		$('#vertical-nav-content').find('div[name*=nav_content_]').removeClass('active show');
-		$("li[id="+checkboxId+"]").addClass("active");
-		$("li[id="+checkboxId+"]").show();
-		getServiceTemplateTasks(checkboxId);
-		$("div[name=nav_content_"+checkboxId+"]").addClass("active show");
-		$("li[id="+checkboxId+"]>a").click();
-	}else{
-		$("li[id="+checkboxId+"]").removeClass("active");
-		$("li[id="+checkboxId+"]").hide();
-		$("div[name=nav_content_"+checkboxId+"]").removeClass("active show");
-	}
-
-}
 
 
 function addProjectToBoq(projectId,boqId){
@@ -212,9 +76,6 @@ function doAddNewBoqAjax(){
 	$('#new_boq_start_date_error').hide('fast');
 	$('#new_boq_end_date_error').hide('fast');
 
-// console.log("checked elements: "+$('#service_templates_new_boq_checkbox_list
-// :checkbox:checked').length);
-	
 	if ($('#service_templates_new_boq_checkbox_list :checkbox:checked').length > 0){
 	
 	$.ajax({
@@ -297,8 +158,7 @@ function doAddProjectAjaxPost() {
 	var currency = $('#project_currency').val();
 	var owner = $('#project_owner').val();
 	var nature = $('#select_nature_new_project').val();
-	// var boqId = $('#select_boq_new_project').val();
-// console.log("selected val: "+boqId);
+
 	nameError.hide('fast');
 	clientError.hide('fast');
 	countryError.hide('fast');
@@ -324,7 +184,6 @@ function doAddProjectAjaxPost() {
 				$('#project_currency').val('');
 				$('#select_boq_new_project').val('');
 				$('#select_nature_new_project').val('');
-			// $('#select_boq_content').hide('slow');
 				if($("#select_boq_content").is(":visible"))
 					$("#m_switch_project_boq").click();
 
@@ -522,6 +381,7 @@ function projectDynamicContent() {
 
 	$("#project_operations_toggle").on("click", function() {
 		$("#m_dynamic_content_project").children().hide();
+		DatatableOperationsJsonRemote.init();
 		$("#operations-fragment").show();
 	});
 
@@ -577,7 +437,6 @@ function populateSelectOwnedProjects() {
 			var html_select_options = "";
 
 			var html_text = "<option value=' ' selected>Nothing Selected</option>";
-			// var selectedOption = "";
 			if (response.length == 1) {
 				html_text += "<option value='" + response[0].id + "'>"
 						+ response[0].name + "</option>";
@@ -783,54 +642,82 @@ function populateGenerateOperationServicesCheckboxList(projectId,operationId){
 
 				for (i = 0; i < response.length; i++)
 				{
-					html_text += '<label '
+					html_text = '<label '
 									+ 'class="m-checkbox m-checkbox--success"> <input '
-									+'id="'+response[i].id+'" onclick="handleClickCheckboxServiceTemplate('+response[i].id+')" type="checkbox">'
+									+'id="'+response[i].id+'" type="checkbox">'
 									+response[i].name+' <span></span>'
 									+'</label>';
-					if(i==0){
-						navLinks += '<li id="'+response[i].id+'" style="display:none;" class="nav-item">'
-							+'<a href="#'+response[i].name+'" class="nav-link" data-toggle="tab" role="tab" aria-controls="'+response[i].name+'">'+response[i].name+'</a>'
-							+'</li>';
-		
-					}else{
-						navLinks += '<li id="'+response[i].id+'" style="display:none;" class="nav-item">'
-							+'<a href="#'+response[i].name+'" class="nav-link" data-toggle="tab" role="tab" aria-controls="'+response[i].name+'">'+response[i].name+'</a>'
-							+'</li>';
-					}
-						navContent +='<div name="nav_content_'+response[i].id+'" class="tab-pane fade" id="'+response[i].name+'" role="tabpanel">'
-						+'<div class="m-widget11">'
-						+'<div class="table-responsive">'
-							+'<!--begin::Table-->		'						 
-							+'<table class="table">'
-								+'<!--begin::Thead-->'
-								+'<thead>'
-								+'	<tr>'
-									+'	<td style="width:5%;" class="m-widget11__label">#</td>'
-										+'<td style="width:50%;" class="m-widget11__app">Name</td>'
-										+'<td style="width:15%;" class="m-widget11__sales"><span style="display:table;margin:0 auto;">HR</span></td>'
-										+'<td style="width:15%;" class="m-widget11__price"><span style="display:table;margin:0 auto;">Days</span></td>'
-										+'<td style="width:15%;" class="m-widget11__total"><span style="display:table;margin:0 auto;">Priority</span></td>'
-									+'</tr>'
-								+'</thead>'
-								+'<!--end::Thead-->'
-								+'<!--begin::Tbody-->'
-								+'<tbody name="tbody_'+response[i].id+'">'
-								+'</tbody>'
-								+'<!--end::Tbody-->	'									     
-							+'</table>'
-							+'<!--end::Table-->'
-						+'</div>'
-
-					+'</div>'
-								+'</div>';
+					switch(response[i].category) {
+				    	case "BTS":
+				    		$('#category_bts').append(html_text);
+				    		break;
+				    	case "CENTER_ROOM":
+				    		$('#category_center_room').append(html_text);
+				    		break;
+				    	case "OTT":
+				    		$('#category_ott').append(html_text);
+				    		break;
+				    	case "LOGISTIC":
+				    		$('#category_logistic').append(html_text);
+				    		break;
+				    	case "OPTIONAL":
+				    		$('#category_optional').append(html_text);
+				    		break;
+				    	default:
+				    		break;
+						}
+					
+					
+					
+//					if(i==0){
+//						navLinks += '<li id="'+response[i].id+'" style="display:none;" class="nav-item">'
+//							+'<a href="#'+response[i].name+'" class="nav-link" data-toggle="tab" role="tab" aria-controls="'+response[i].name+'">'+response[i].name+'</a>'
+//							+'</li>';
+//		
+//					}else{
+//						navLinks += '<li id="'+response[i].id+'" style="display:none;" class="nav-item">'
+//							+'<a href="#'+response[i].name+'" class="nav-link" data-toggle="tab" role="tab" aria-controls="'+response[i].name+'">'+response[i].name+'</a>'
+//							+'</li>';
+//					}
+//						navContent +='<div name="nav_content_'+response[i].id+'" class="tab-pane fade" id="'+response[i].name+'" role="tabpanel">'
+//						+'<div class="m-widget11">'
+//						+'<div class="table-responsive">'
+//							+'<!--begin::Table-->		'						 
+//							+'<table class="table">'
+//								+'<!--begin::Thead-->'
+//								+'<thead>'
+//								+'	<tr>'
+//									+'	<td style="width:5%;" class="m-widget11__label">#</td>'
+//										+'<td style="width:50%;" class="m-widget11__app">Name</td>'
+//										+'<td style="width:15%;" class="m-widget11__sales"><span style="display:table;margin:0 auto;">HR</span></td>'
+//										+'<td style="width:15%;" class="m-widget11__price"><span style="display:table;margin:0 auto;">Days</span></td>'
+//										+'<td style="width:15%;" class="m-widget11__total"><span style="display:table;margin:0 auto;">Priority</span></td>'
+//									+'</tr>'
+//								+'</thead>'
+//								+'<!--end::Thead-->'
+//								+'<!--begin::Tbody-->'
+//								+'<tbody name="tbody_'+response[i].id+'">'
+//								+'</tbody>'
+//								+'<!--end::Tbody-->	'									     
+//							+'</table>'
+//							+'<!--end::Table-->'
+//						+'</div>'
+//
+//					+'</div>'
+//								+'</div>';
 		
 					
 					
 				}
-				$('#service_templates_new_operation_checkbox_list').html(html_text);
-				$('#vertical-nav-links').html(navLinks);
-				$('#vertical-nav-content').html(navContent);
+				
+				$("div[id*=category_]").each(function (){
+					//console.log($(this).attr('id'));
+					if($(this).children().length > 0)
+						$(this).parent().show();
+				});
+				//$('#service_templates_new_operation_checkbox_list').html(html_text);
+				// $('#vertical-nav-links').html(navLinks);
+				// $('#vertical-nav-content').html(navContent);
 
 			
 		},

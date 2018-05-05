@@ -26,6 +26,7 @@ import com.omniacom.omniapp.validator.ServiceTemplateValidator;
 import com.omniacom.omniapp.validator.TaskTemplateValidator;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @RestController
 public class TemplatingController {
@@ -107,6 +108,50 @@ public class TemplatingController {
 			taskTemplateRepo.save(taskTemplate);
 
 			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+	
+	@GetMapping("/get-service-template-details")
+	public @ResponseBody JSONObject getServiceTemplateDetails(@RequestParam("id") long templateId) {
+		ServiceTemplate st = stService.findOne(templateId);
+		return stService.jsonServiceTemplate(st);
+	}
+	
+	@PostMapping("/update-service-template-details")
+	public JsonResponse doUpdateServiceTemplateDetails(@RequestParam("id") long templateId
+			, @Validated ServiceTemplate updatedTemplate
+			, BindingResult result) {
+		
+		JsonResponse response = new JsonResponse();
+
+		if (!result.hasErrors()) {
+			if (!stService.serviceNameExists(updatedTemplate.getName())) {
+				
+				if (stService.updateService(templateId, updatedTemplate)) {
+
+					response.setStatus("SUCCESS");
+				} else {
+					response.setStatus("FAIL");
+				}
+			} else if (updatedTemplate.getName().equals(stService.findOne(templateId).getName())) {
+				if (stService.updateService(templateId, updatedTemplate)) {
+
+					response.setStatus("SUCCESS");
+				} else {
+					response.setStatus("FAIL");
+				}
+			} else {
+
+				response.setStatus("FAIL");
+				response.setResult("template-exists");
+
+			}
+
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());

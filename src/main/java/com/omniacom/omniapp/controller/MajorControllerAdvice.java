@@ -26,6 +26,7 @@ import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
+import com.omniacom.omniapp.entity.ServiceCategory;
 import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.entity.Task;
@@ -358,22 +359,6 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		return response;
 	}
 
-	@PostMapping("/generate-service-tasks-from-template")
-	public @ResponseBody JsonResponse generateServiceTasksFromTemplate(@RequestParam("serviceId") long serviceId,
-			@RequestParam("taskPriority") String taskPriority, @RequestParam("taskTemplateId") long taskTemplateId) {
-
-		JsonResponse response = new JsonResponse();
-		Task addedTask = operationService.generateServiceTaskFromTemplate(serviceId, taskTemplateId, taskPriority);
-		if (addedTask != null) {
-			response.setStatus("SUCCESS");
-			response.setResult(addedTask.getId());
-		} else {
-			response.setStatus("FAIL");
-			// response.setResult(result.getFieldErrors());
-		}
-
-		return response;
-	}
 
 	List<Site> addedSiteList;
 	private Client newClient;

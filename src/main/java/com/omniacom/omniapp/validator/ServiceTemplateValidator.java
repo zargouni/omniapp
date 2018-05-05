@@ -22,6 +22,8 @@ public class ServiceTemplateValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "service.template.name.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "service.template.description.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "price", "service.template.price.empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "category", "service.template.category.empty");
+
 		
 		ServiceTemplate template = (ServiceTemplate) target;
 		if(template.getPrice() <= 0)

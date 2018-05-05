@@ -59,4 +59,13 @@ public class ServiceTemplateRepositoryImpl implements ServiceTemplateRepositoryC
 		return template.getTasks().removeAll(taskTemplates);
 	}
 
+	@Override
+	public boolean serviceExists(String name) {
+		Query query = entityManager.createQuery("SELECT st FROM ServiceTemplate st WHERE st.name = :param")
+				.setParameter("param", name);
+		if(query.getResultList().size() != 0)
+			return true;
+		return false;
+	}
+
 }

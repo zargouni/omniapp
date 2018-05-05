@@ -24,6 +24,7 @@ public class ServiceTemplate implements Serializable {
 	private String name;
 	private String description;
 	private float price;
+	private ServiceCategory category;
 	
 	@ManyToMany(mappedBy = "services")
 	private List<BillOfQuantities> boqs;
@@ -122,6 +123,20 @@ public class ServiceTemplate implements Serializable {
 	 */
 	public void setTasks(List<TaskTemplate> tasks) {
 		this.tasks = tasks;
+	}
+
+	/**
+	 * @return the category
+	 */
+	public ServiceCategory getCategory() {
+		return category;
+	}
+
+	/**
+	 * @param category the category to set
+	 */
+	public void setCategory(ServiceCategory category) {
+		this.category = category;
 	}
 	
 	
