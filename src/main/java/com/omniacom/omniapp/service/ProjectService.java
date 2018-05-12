@@ -5,16 +5,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.omniapp.entity.BillOfQuantities;
+import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Service
@@ -38,6 +41,7 @@ public class ProjectService {
 		Project proj = projectRepo.save(project);
 		com.omniacom.omniapp.entity.Service generalService = new com.omniacom.omniapp.entity.Service("General",
 				project);
+		generalService.setCreationDate(new Date());
 		serviceRepo.save(generalService);
 		return proj;
 	}
@@ -54,10 +58,24 @@ public class ProjectService {
 	}
 
 	public Map<com.omniacom.omniapp.entity.Service, List<Task>> getMapServiceTasks(Project project) {
-		Map<com.omniacom.omniapp.entity.Service, List<Task>> map = new HashMap<>();
+		Map<com.omniacom.omniapp.entity.Service, List<Task>> map = new TreeMap<>();
 		for (com.omniacom.omniapp.entity.Service s : projectRepo.findAllServices(project))
-			map.put(s, serviceRepo.findAllTasks(s));
+			map.put(s, serviceService.findAllTasks(s));
 		return map;
+	}
+	
+	public JSONArray getAllOperationsJson(long projectId) {
+		JSONArray array = new JSONArray();
+		Project project = projectRepo.findOne(projectId);
+		if(project != null) {
+			for(Operation op : project.getOperations()) {
+				array.add(new JSONObject()
+						.element("id", op.getId())
+						.element("name", op.getName())
+						);
+			}
+		}
+		return array;
 	}
 
 	public Integer findCompletedTasksCount(Project project) {
@@ -102,7 +120,36 @@ public class ProjectService {
 				.element("client", project.getClient().getName())
 				.element("owner", project.getOwner().getFirstName()+" "+project.getOwner().getLastName())
 				.element("country", project.getCountry())
-				.element("currency", project.getCurrency());
+				.element("currency", project.getCurrency())
+				.element("percentage", getProjectProgress(project));
+		return json;
+	}
+	
+	public String getProjectProgress(Project project) {
+		Integer taskCount = findTaskCount(project);
+		if(taskCount != 0)
+		return (findCompletedTasksCount(project)*100 / taskCount)+"%";
+		return "0%";
+	}
+
+	public JSONObject getProjectTaskStats(long projectId) {
+		JSONObject json = new JSONObject();
+		Project project = projectRepo.findOne(projectId);
+		Integer taskCount = findTaskCount(project);
+		
+		
+		if( taskCount != 0) {
+			json
+			.element("totalTasks", taskCount)
+			.element("ongoing", (findOnGoingTasksCount(project)*100 / taskCount)+"%")
+			.element("completed", (findCompletedTasksCount(project)*100 / taskCount)+"%");
+		}
+		else
+			json
+			.element("totalTasks", taskCount)
+			.element("ongoing", "None")
+			.element("completed", "None");
+			
 		return json;
 	}
 

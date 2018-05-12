@@ -74,6 +74,9 @@ public class OperationService {
 				task.setEstimationTime(t.getEstimationTime());
 				task.setStatus(StaticString.TASK_STATUS_ONGOING);
 				task.setService(returnService);
+				//TODO
+				task.setStartDate(new Date());
+				task.setEndDate(new Date());
 				taskRepo.save(task);
 			}
 			
@@ -119,6 +122,7 @@ public class OperationService {
 		}
 		return jsonArray;		
 	}
+	
 	
 	public Operation findOne(long operationId) {
 		return operationRepo.findOne(operationId);

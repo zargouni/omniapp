@@ -1,13 +1,14 @@
 function initializeSitesGmap(projectId) {
-	//var selectedProjectId = $("#select_project_new_operation").val();
-	
-	
-	var map = new GMaps({
-        div: '.sites_map_canvas',
+		var map = new GMaps({
+        div: '#sites_map_canvas_sidebar',
         lat: 34.7615155,
         lng: 10.6630578,
         
     });
+	if($('#sites_map_container').is(':hidden')){
+		$('#sites_map_canvas_sidebar').attr("style","position: absolute; top: 20%; right: 0; bottom: 0; left: 0;");
+		$('#sites_map_container').attr("style","width:100%; height:250px;position: relative;");
+	}
 	
 	$.ajax({
 		type : "GET",
@@ -16,6 +17,7 @@ function initializeSitesGmap(projectId) {
 		data : 'projectId=' + projectId,
 		success : function(response) {
 
+			
 			var selectSiteOptions = "";
 			for (i = 0; i < response.length; i++) {
 				//map.setCenter(0,0);
@@ -62,6 +64,8 @@ function initializeSitesGmap(projectId) {
 			        }
 			    }
 			});
+			
+			
 			
 		},
 		error : function(e) {

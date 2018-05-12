@@ -1,10 +1,10 @@
-<div id="operations-fragment" style="display:none;" th:fragment="fragment-operations">
+<div id="service-fragment" style="display:none;" th:fragment="fragment-service">
 	<div class="m-portlet m-portlet--mobile">
 		<div class="m-portlet__head">
 			<div class="m-portlet__head-caption">
 				<div class="m-portlet__head-title">
 					<h3 class="m-portlet__head-text">
-						Operations<small>these are all available operations in this project.</small>
+						Service<small>these are all available tasks in this service.</small>
 					</h3>
 				</div>
 			</div>
@@ -74,7 +74,7 @@
 							<div class="col-md-4">
 								<div class="m-input-icon m-input-icon--left">
 									<input type="text" class="form-control m-input m-input--solid"
-										placeholder="Search..." id="generalSearchOperations"> <span
+										placeholder="Search..." id="generalSearchServiceTasks"> <span
 										class="m-input-icon__icon m-input-icon__icon--left"> <span><i
 											class="la la-search"></i></span>
 									</span>
@@ -83,11 +83,11 @@
 						</div>
 					</div>
 					<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-						<a onclick="toggleAddNewOperationSidebar()"
+						<a onclick="toggleAddNewTaskSidebar()"
 							
 							class="btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
 							<span> <i class="la la-cart-plus"></i> <span>New
-									Operation</span>
+									Task</span>
 						</span>
 						</a>
 						<div class="m-separator m-separator--dashed d-xl-none"></div>
@@ -99,13 +99,14 @@
 
 			<!--begin: Datatable -->
 			<div
-				class="m_datatable m-datatable m-datatable--default m-datatable--error m-datatable"
-				id="operations_datatable" style="position: static; zoom: 1;">
+				class="m_datatable m-datatable--default"
+				id="service_tasks_datatable" style="position: static; zoom: 1;">
 			</div>
 			<!--end: Datatable -->
 		</div>
 
 
 	</div>
+	<input id="service_fragment_selected_service_id" type="hidden" />
 
 </div>

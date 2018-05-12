@@ -31,11 +31,7 @@ function doAddNewServiceTemplate() {
 						$('#input_new_service_template_category').val(' ');
 						
 						$('#modal_new_service_template').modal('hide');
-						setTimeout(
-								  function() 
-								  {
-									  location.reload()
-								  }, 1000);
+						$('#service_templates_datatable').mDatatable('reload');
 
 
 					} else {
@@ -90,11 +86,7 @@ function handleRemoveServiceClick(id) {
 										swal('Deleted!',
 												'Template has been deleted.',
 												'success');
-										setTimeout(
-												  function() 
-												  {
-													  location.reload()
-												  }, 2000);
+										$('#service_templates_datatable').mDatatable('reload');
 
 									} else {
 										swal('Fail!', 'Template not deleted.',
@@ -195,11 +187,8 @@ function doUpdateServiceTemplate(id){
 	    		 $('#input_service_template_name').val('');
 	    		 $('#input_service_template_description').val('');
 	    		 $('#input_service_template_price').val('');
-	    		 setTimeout(
-						  function() 
-						  {
-							  location.reload()
-						  }, 1000);
+					$('#service_templates_datatable').mDatatable('reload');
+
 
 	    		 
 	    		
@@ -236,6 +225,7 @@ function toggleModalEditDetails(id) {
 	$('#input_service_template_category').select2({
 		width: "100%"
 	});
+	
 	populateServiceTemplateEditDetailsModal(id);
 	$("#edit-service-template-details").modal();
 }
@@ -297,6 +287,8 @@ function toggleModalEditTasks(id) {
 }
 
 function populateServiceTemplateEditDetailsModal(id){
+	
+
 	$.ajax({
 		type : "GET",
 		url : '/get-service-template-details',

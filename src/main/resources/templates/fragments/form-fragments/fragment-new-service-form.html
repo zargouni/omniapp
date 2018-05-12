@@ -1,0 +1,76 @@
+
+<form class="m-form" th:fragment="new-service-form" target="noTarget">
+	<div class="m-portlet__body">
+		<div class="form-group m-form__group">
+			<label for="">Select project:</label> <select
+				id="select_project_new_service"
+				class="form-control m-bootstrap-select m_selectpicker"
+				data-live-search="true"></select>
+			<div id="service_project_error" class="form-control-feedback"
+				style="color: red; float: right; display: none;">*Required</div>
+		</div>
+		<div class="form-group m-form__group">
+			<label for="">Select operation:</label> <select
+				id="select_operation_new_service"
+				class="form-control m-bootstrap-select m_selectpicker"
+				data-live-search="true"></select>
+			<div id="service_operation_error" class="form-control-feedback"
+				style="color: red; float: right; display: none;">*Required</div>
+		</div>
+		<div class="m-form__group form-group">
+			<label for="">Service name:</label> <input type="text"
+				class="form-control m-input" id="input_new_service_name"
+				placeholder="Service Name">
+			<div id="service_name_error" class="form-control-feedback"
+				style="color: red; float: right; display: none;">*Required</div>
+		</div>
+
+
+
+		<div class="form-group m-form__group row">
+			<div class="col-lg-6">
+				<label for="">Price:</label> <input type="number"
+					class="form-control m-input" id="input_new_service_price"
+					placeholder="Price">
+				<div id="service_price_error" class="form-control-feedback"
+					style="color: red; float: right; display: none;">*Required</div>
+			</div>
+			<div class="col-lg-6">
+				<label for="">Category:</label> <select
+					id="input_new_service_category"
+					class="form-control m-bootstrap-select m_selectpicker">
+					<option value=" ">Nothing selected</option>
+					<option value="BTS">BTS</option>
+					<option value="CENTER_ROOM">Center Room</option>
+					<option value="OTT">OTT</option>
+					<option value="LOGISTIC">Logistic</option>
+					<option value="OPTIONAL">Optional</option>
+				</select>
+				<div id="service_category_error" class="form-control-feedback"
+					style="color: red; float: right; display: none;">*Required</div>
+			</div>
+		</div>
+
+		<div class="m-form__group form-group">
+			<label for="">Flag:</label> <select id="input_service_flag"
+				class="form-control m-bootstrap-select m_selectpicker">
+				<option value="0">Internal</option>
+				<option value="1">External</option>
+			</select>
+		</div>
+
+	</div>
+
+	<div class="m-portlet__foot m-portlet__foot--fit">
+		<div class="m-form__actions m-form__actions--right">
+			<div class="row">
+				<div class="col m--align-left">
+					<button onclick="doAddServiceAjaxPost()" class="btn btn-brand">Add</button>
+				</div>
+				<div class="col m--align-right">
+					<button type="reset" class="btn btn-secondary">Cancel</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>

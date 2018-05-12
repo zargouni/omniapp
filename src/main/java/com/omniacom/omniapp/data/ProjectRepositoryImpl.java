@@ -52,8 +52,8 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 	public List<Task> findAllCompletedTasks(Project project) {
 		List<Task> tasks = null;
 		Query query = entityManager.createQuery(
-				"SELECT t FROM Task t WHERE t.service IN (SELECT s.id FROM Service s WHERE s.operation IN (SELECT op.id FROM Operation op WHERE op.project = :param ))"
-				+ "OR t.service.project = :param "
+				"SELECT t FROM Task t WHERE (t.service IN (SELECT s.id FROM Service s WHERE s.operation IN (SELECT op.id FROM Operation op WHERE op.project = :param ))"
+				+ "OR t.service.project = :param) "
 				+ " AND t.status = :param2")
 				.setParameter("param", project).setParameter("param2", StaticString.TASK_STATUS_COMPLETED);
 		tasks = (List<Task>) query.getResultList();
@@ -65,8 +65,8 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 	public List<Task> findAllOnGoingTasks(Project project) {
 		List<Task> tasks = null;
 		Query query = entityManager.createQuery(
-				"SELECT t FROM Task t WHERE t.service IN (SELECT s.id FROM Service s WHERE s.operation IN (SELECT op.id FROM Operation op WHERE op.project = :param ))"
-				+ "OR t.service.project = :param"
+				"SELECT t FROM Task t WHERE (t.service IN (SELECT s.id FROM Service s WHERE s.operation IN (SELECT op.id FROM Operation op WHERE op.project = :param ))"
+				+ "OR t.service.project = :param )"
 				+ " AND t.status = :param2")
 				.setParameter("param", project).setParameter("param2", StaticString.TASK_STATUS_ONGOING);
 		tasks = (List<Task>) query.getResultList();
@@ -77,7 +77,8 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 	@Override
 	public List<Service> findAllServices(Project project) {
 		List<Service> services = null;
-		Query query = entityManager.createQuery("SELECT s FROM Service s WHERE s.project=:param")
+		Query query = entityManager.createQuery("SELECT s FROM Service s WHERE s.project=:param OR s.operation IN ("
+				+ "SELECT op FROM Operation op WHERE op.project=:param ) ORDER BY s.creationDate")
 				.setParameter("param", project);
 		services = (List<Service>) query.getResultList();
 		return services;

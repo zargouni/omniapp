@@ -26,7 +26,6 @@ import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
-import com.omniacom.omniapp.entity.ServiceCategory;
 import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.entity.Task;
@@ -35,6 +34,7 @@ import com.omniacom.omniapp.service.BoqService;
 import com.omniacom.omniapp.service.ClientService;
 import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
+import com.omniacom.omniapp.service.ServiceService;
 import com.omniacom.omniapp.service.ServiceTemplateService;
 import com.omniacom.omniapp.service.SiteService;
 import com.omniacom.omniapp.service.TaskService;
@@ -44,6 +44,7 @@ import com.omniacom.omniapp.validator.ClientValidator;
 import com.omniacom.omniapp.validator.JsonResponse;
 import com.omniacom.omniapp.validator.OperationValidator;
 import com.omniacom.omniapp.validator.ProjectValidator;
+import com.omniacom.omniapp.validator.ServiceValidator;
 import com.omniacom.omniapp.validator.SiteValidator;
 import com.omniacom.omniapp.validator.TaskValidator;
 import com.omniacom.omniapp.zohoAPI.ProjectsAPI;
@@ -63,6 +64,9 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private BoqValidator boqValidator;
+	
+	@Autowired
+	private ServiceValidator serviceValidator;
 
 	@Autowired
 	private OperationValidator operationValidator;
@@ -96,6 +100,9 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private BoqService boqService;
+	
+	@Autowired
+	private ServiceService serviceService;
 
 	@Autowired
 	private ProjectsAPI projectsApi;
@@ -219,6 +226,11 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JSONArray json = JSONArray.fromObject(jsonArray);
 		return json;
 	}
+	
+	@GetMapping("/get-project-operations")
+	public @ResponseBody JSONArray getProjectOperations(@RequestParam("projectId") long projectId) {
+		return projectService.getAllOperationsJson(projectId);
+	}
 
 	@GetMapping("/set-selected-project-services")
 	public @ResponseBody JSONArray setSelectedProjectServices(@RequestParam("projectId") long projectId) {
@@ -281,6 +293,24 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		if (!result.hasErrors()) {
 			task.setStatus(TASK_STATUS_ONGOING);
 			taskService.addTask(task);
+			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+	
+	@PostMapping("/add-service")
+	public @ResponseBody JsonResponse addService(@Validated Service service, BindingResult result)
+			throws IOException {
+
+		JsonResponse response = new JsonResponse();
+
+		if (!result.hasErrors()) {
+			serviceService.addService(service);
+			
 			response.setStatus("SUCCESS");
 		} else {
 			response.setStatus("FAIL");
@@ -487,6 +517,11 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	@InitBinder("boq")
 	protected void setBoqValidator(WebDataBinder binder) {
 		binder.addValidators(boqValidator);
+	}
+	
+	@InitBinder("service")
+	protected void setServiceValidator(WebDataBinder binder) {
+		binder.addValidators(serviceValidator);
 	}
 
 }

@@ -3,8 +3,11 @@ package com.omniacom.omniapp.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,11 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.omniacom.omniapp.entity.Operation;
+import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
 import com.omniacom.omniapp.service.ServiceService;
+import com.omniacom.omniapp.service.TaskService;
+import com.omniacom.omniapp.validator.JsonResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -27,12 +33,15 @@ public class ProjectController {
 
 	@Autowired
 	private ProjectService projectService;
-	
+
 	@Autowired
 	OperationService operationService;
 
 	@Autowired
 	ServiceService serviceService;
+
+	@Autowired
+	TaskService taskService;
 
 	@GetMapping("/project")
 	public ModelAndView index(Model model) {
@@ -46,7 +55,7 @@ public class ProjectController {
 	public void addAttributes(Model model, @RequestParam("id") long projectId) {
 		// set current project
 		projectService.setCurrentProject(projectService.findOneById(projectId));
-
+		model.addAttribute("selectedProject",projectService.findOneById(projectId));
 		model.addAttribute("taskCount", projectService.findTaskCount(projectService.getCurrentProject()));
 		model.addAttribute("completedTasksCount",
 				projectService.findCompletedTasksCount(projectService.getCurrentProject()));
@@ -57,22 +66,92 @@ public class ProjectController {
 
 	}
 	
+	@GetMapping("/get-project-details")
+	public @ResponseBody JSONObject getprojectDetails(@RequestParam("id") long projectId) {
+		Project project = projectService.findOneById(projectId);
+		return projectService.jsonProject(project);
+	}
+
 	@GetMapping("/json-operations")
 	public @ResponseBody JSONArray getAllOperationsJson(@RequestParam("id") long projectId) {
 		return operationService.getAllOperationsJson(projectId);
 	}
-	
+
 	@GetMapping("/get-operation-services")
 	public @ResponseBody JSONArray getOperationServices(@RequestParam("id") long operationId) {
 		return operationService.getOperationServices(operationId);
 	}
-	
+
 	@GetMapping("/get-operation-details")
 	public @ResponseBody JSONObject getOperationDetails(@RequestParam("id") long operationId) {
 		Operation op = operationService.findOne(operationId);
 		return operationService.jsonOperationFormattedDates(op);
 	}
+	
+	@GetMapping("/get-service-details")
+	public @ResponseBody JSONObject getServiceDetails(@RequestParam("id") long serviceId) {
+		Service service = serviceService.findById(serviceId);
+		return serviceService.jsonService(service);
+	}
 
+	@GetMapping("/json-service-tasks")
+	public @ResponseBody JSONArray getAllServiceTasksJson(@RequestParam("id") long serviceId) {
+		return serviceService.getAllServiceTasksJson(serviceId);
+	}
+
+	@GetMapping("/get-task-details")
+	public @ResponseBody JSONObject getTaskDetails(@RequestParam("id") long taskId) {
+		Task task = taskService.findOne(taskId);
+		if (task != null)
+			return taskService.jsonTask(task);
+		return new JSONObject();
+	}
+	
+	@PostMapping("/update-task")
+	public @ResponseBody JsonResponse doUpdateTask(@RequestParam("id") long taskId, @Validated Task updatedTask,
+			BindingResult result) {
+		JsonResponse response = new JsonResponse();
+
+		if (!result.hasErrors()) {
+			//if (!taskService.boqNameExists(boq.getName())) {
+				
+				if (taskService.updateTask(taskId, updatedTask)) {
+
+					response.setStatus("SUCCESS");
+				} else {
+					response.setStatus("FAIL");
+				}
+		//	} else if (boq.getName().equals(boqService.findOne(boqId).getName())) {
+			//	if (boqService.updateBoq(boqId, boq)) {
+
+			//		response.setStatus("SUCCESS");
+			//	} else {
+				//	response.setStatus("FAIL");
+			//	}
+			//} else {
+
+			//	response.setStatus("FAIL");
+			//	response.setResult("boq-exists");
+
+			//}
+
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+	
+	@GetMapping("/get-project-tasks-stats")
+	public @ResponseBody JSONObject getProjectTasksStats(@RequestParam("id") long projectId) {
+		return projectService.getProjectTaskStats(projectId);
+	}
+	
+	@GetMapping("/get-task-parents")
+	public @ResponseBody JSONObject getTaskParents(@RequestParam("id") long taskId) {
+		return taskService.getTaskParents(taskId);
+	}
 	// @PostMapping("/get_services_all_tasks_for_current_project")
 	// public @ResponseBody JSONArray
 	// getAllTasksGroupedByService(@RequestParam("id") long projectId ) {
@@ -134,35 +213,41 @@ public class ProjectController {
 	// return json;
 	// }
 
-//	@GetMapping("/dashboard")
-//	public ModelAndView dashboard() {
-//		return new ModelAndView("fragments/project-fragments/fragment-dashboard :: fragment-dashboard");
-//	}
-//
-//	@GetMapping("/feed")
-//	public ModelAndView feed() {
-//		return new ModelAndView("fragments/project-fragments/fragment-feed :: fragment-feed");
-//	}
-//
-//	@GetMapping("/operations")
-//	public ModelAndView operations() {
-//		return new ModelAndView("fragments/project-fragments/fragment-operations :: fragment-operations");
-//	}
-//
-//	@GetMapping("/tasks")
-//	public ModelAndView tasks() {
-//		return new ModelAndView("fragments/project-fragments/fragment-tasks :: fragment-tasks");
-//	}
-//
-//	@GetMapping("/issues")
-//	public ModelAndView issues() {
-//		return new ModelAndView("fragments/project-fragments/fragment-issues :: fragment-issues");
-//	}
-//
-//	@GetMapping("/calendar")
-//	public ModelAndView calendar() {
-//		return new ModelAndView("fragments/project-fragments/fragment-calendar :: fragment-calendar");
-//	}
+	// @GetMapping("/dashboard")
+	// public ModelAndView dashboard() {
+	// return new ModelAndView("fragments/project-fragments/fragment-dashboard ::
+	// fragment-dashboard");
+	// }
+	//
+	// @GetMapping("/feed")
+	// public ModelAndView feed() {
+	// return new ModelAndView("fragments/project-fragments/fragment-feed ::
+	// fragment-feed");
+	// }
+	//
+	// @GetMapping("/operations")
+	// public ModelAndView operations() {
+	// return new ModelAndView("fragments/project-fragments/fragment-operations ::
+	// fragment-operations");
+	// }
+	//
+	// @GetMapping("/tasks")
+	// public ModelAndView tasks() {
+	// return new ModelAndView("fragments/project-fragments/fragment-tasks ::
+	// fragment-tasks");
+	// }
+	//
+	// @GetMapping("/issues")
+	// public ModelAndView issues() {
+	// return new ModelAndView("fragments/project-fragments/fragment-issues ::
+	// fragment-issues");
+	// }
+	//
+	// @GetMapping("/calendar")
+	// public ModelAndView calendar() {
+	// return new ModelAndView("fragments/project-fragments/fragment-calendar ::
+	// fragment-calendar");
+	// }
 
 	// @ModelAttribute(name = "currentProject")
 	// public Project getCurrentProject() {

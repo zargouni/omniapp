@@ -1,0 +1,195 @@
+<div id="task-fragment" style="display: none;"
+	th:fragment="fragment-task">
+	<div class="m-portlet m-portlet--success m-portlet--head-solid-bg">
+		<div class="m-portlet__head ">
+			<div class="m-portlet__head-caption--fit">
+				<div class="m-portlet__head-title"
+					style="margin-top: 10px; margin-bottom: 0;">
+					<h3 class="m-portlet__head-text">
+						<span id="portlet_task_name"></span>
+					</h3>
+
+				</div>
+
+				<ul style="margin-bottom: 10px;"
+					class="m-subheader__breadcrumbs m-nav m-nav--inline">
+					<li style="color: #fff;" class="m-nav__item m-nav__item"><span><small>Project
+								: </small><span id="task_fragment_project"></span></span></li>
+					<li style="color: #fff;" class="m-nav__item m-nav__item"><span><small>Operation
+								: </small><span id="task_fragment_operation"></span></span></li>
+					<li style="color: #fff;" class="m-nav__item m-nav__item"><span><small>Service
+								: </small><span id="task_fragment_service"></span></span></li>
+
+
+				</ul>
+			</div>
+
+			<div class="m-portlet__head-tools">
+				<ul class="m-portlet__nav">
+					<li class="m-portlet__nav-item"><a href="#"
+						class="m-portlet__nav-link m-portlet__nav-link--icon"><i
+							class="la la-close"></i></a></li>
+					<li class="m-portlet__nav-item"><a title="Edit Task" href="#"
+						onclick="toggleUpdateModeTask()"
+						class="m-portlet__nav-link m-portlet__nav-link--icon"><i
+							class="la la-refresh"></i></a></li>
+					<li class="m-portlet__nav-item"><a href="#"
+						class="m-portlet__nav-link m-portlet__nav-link--icon"><i
+							class="la la-angle-down"></i></a></li>
+					<li
+						class="m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push"
+						data-dropdown-toggle="hover" aria-expanded="true"><a href="#"
+						class="m-portlet__nav-link m-portlet__nav-link--icon m-dropdown__toggle">
+							<i class="la la-ellipsis-v"></i>
+					</a>
+						<div class="m-dropdown__wrapper">
+							<span
+								class="m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust"
+								style="left: auto; right: 17px;"></span>
+							<div class="m-dropdown__inner">
+								<div class="m-dropdown__body">
+									<div class="m-dropdown__content">
+										<ul class="m-nav">
+											<li class="m-nav__section m-nav__section--first"><span
+												class="m-nav__section-text">Quick Actions</span></li>
+											<li class="m-nav__item"><a href="#" class="m-nav__link">
+													<i class="m-nav__link-icon flaticon-share"></i> <span
+													class="m-nav__link-text">Activity</span>
+											</a></li>
+											<li class="m-nav__item"><a href="#" class="m-nav__link">
+													<i class="m-nav__link-icon flaticon-chat-1"></i> <span
+													class="m-nav__link-text">Messages</span>
+											</a></li>
+											<li class="m-nav__item"><a href="#" class="m-nav__link">
+													<i class="m-nav__link-icon flaticon-info"></i> <span
+													class="m-nav__link-text">FAQ</span>
+											</a></li>
+											<li class="m-nav__item"><a href="#" class="m-nav__link">
+													<i class="m-nav__link-icon flaticon-lifebuoy"></i> <span
+													class="m-nav__link-text">Support</span>
+											</a></li>
+											<li class="m-nav__separator m-nav__separator--fit"></li>
+											<li class="m-nav__item"><a href="#"
+												class="btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm">Cancel</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div></li>
+				</ul>
+			</div>
+		</div>
+		<form id="task_fragment_details"
+			class="m-form m-form--fit m-form--label-align-right "
+			target="noTarget">
+			<div class="m-portlet__body">
+				<div id="task_name_container" style="display: none;"
+					class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Task Name:</label>
+					<div class="col-lg-8">
+						<input type="text" class="form-control m-input"
+							id="task_name_input">
+						<div id="task_fragment_name_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">Please
+							enter a valid task name</div>
+					</div>
+
+				</div>
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Owner(s):</label>
+					<div class="col-lg-8">
+						<select disabled multiple id="task_owner_select"
+							class="form-control m-select2 ">
+
+						</select>
+					</div>
+
+				</div>
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Status:</label>
+					<div class="col-lg-3">
+						<select disabled id="task_status_select"
+							class="form-control m-bootstrap-select m_selectpicker">
+							<option value="ONGOING">Open</option>
+							<option value="COMPLETED">Closed</option>
+						</select>
+					</div>
+					<label class="col-lg-2 col-form-label">Priority:</label>
+					<div class="col-lg-3">
+						<select disabled id="task_priority_select"
+							class="form-control m-bootstrap-select m_selectpicker">
+							<option value="none" selected="">None</option>
+							<option value="low">Low</option>
+							<option value="medium">Medium</option>
+							<option value="high">High</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Start Date:</label>
+					<div class="col-lg-3">
+						<div class="input-group date">
+							<input type="text" class="form-control m-input task_date"
+								readonly="true" placeholder="Start Date"
+								id="task_start_date_select">
+							<div class="input-group-append">
+								<span class="input-group-text"> <i
+									class="la la-calendar-check-o"></i>
+								</span>
+							</div>
+						</div>
+						<div id="task_fragment_startDate_error"
+							class="form-control-feedback"
+							style="color: red; float: right; display: none;">* required</div>
+					</div>
+					<label class="col-lg-2 col-form-label">Due Date:</label>
+					<div class="col-lg-3">
+						<div class="input-group date">
+							<input type="text" class="form-control m-input task_date"
+								readonly="true" placeholder="Due Date" id="task_end_date_select">
+							<div class="input-group-append">
+								<span class="input-group-text"> <i
+									class="la la-calendar-check-o"></i>
+								</span>
+							</div>
+						</div>
+						<div id="task_fragment_endDate_error"
+							class="form-control-feedback"
+							style="color: red; float: right; display: none;">* required</div>
+					</div>
+				</div>
+
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Estimated HR:</label>
+					<div class="col-lg-3">
+						<input type="number" class="form-control m-input"
+							id="task_estimation_hr_input">
+					</div>
+					<label class="col-lg-2 col-form-label">Estimated Days:</label>
+					<div class="col-lg-3">
+						<input type="number" class="form-control m-input"
+							id="task_estimation_days_input">
+					</div>
+				</div>
+			</div>
+			<div id="task_fragment_update_footer"
+				class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-9"></div>
+						<div class="col-lg-3">
+							<button id="task_fragment_do_update" class="btn btn-success">Save
+								Changes</button>
+							<button id="task_fragment_update_cancel"
+								class="btn btn-secondary">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+
+	</div>
+
+</div>

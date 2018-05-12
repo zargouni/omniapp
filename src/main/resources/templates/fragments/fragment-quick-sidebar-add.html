@@ -1,6 +1,7 @@
 <!-- begin::Quick Sidebar -->
 <div data-th-fragment="quick-sidebar-add" id="m_quick_sidebar_add"
-	style="background:#f1f1f1" class="m-quick-sidebar-add m-quick-sidebar-add--tabbed m-quick-sidebar-add--skin-light">
+	style="background: #f1f1f1"
+	class="m-quick-sidebar-add m-quick-sidebar-add--tabbed m-quick-sidebar-add--skin-light">
 
 	<div class="m-quick-sidebar-add__content m--hide">
 		<span id="m_quick_sidebar_add_close"
@@ -9,15 +10,17 @@
 			class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--brand"
 			role="tablist">
 			<li class="nav-item m-tabs__item"><a
+				id="quick_sidebar_new_operation_nav"
 				class="nav-link m-tabs__link active" data-toggle="tab"
 				href="#m_quick_sidebar_add_tabs_new_operation" role="tab">New
 					Operation</a></li>
-			<li class="nav-item m-tabs__item"><a id="quick_sidebar_new_service_nav"
-				class="nav-link m-tabs__link" data-toggle="tab"
-				href="#m_quick_sidebar_add_tabs_new_service" role="tab">New
-					Service</a></li>
-			
-					<li class="nav-item m-tabs__item"><a
+			<li class="nav-item m-tabs__item"><a
+				id="quick_sidebar_new_service_nav" class="nav-link m-tabs__link"
+				data-toggle="tab" href="#m_quick_sidebar_add_tabs_new_service"
+				role="tab">New Service</a></li>
+
+			<li class="nav-item m-tabs__item"><a
+				id="quick_sidebar_new_task_nav"
 				class="nav-link m-tabs__link" data-toggle="tab"
 				href="#m_quick_sidebar_add_tabs_new_task" role="tab">New Task</a></li>
 		</ul>
@@ -38,48 +41,10 @@
 				id="m_quick_sidebar_add_tabs_new_service" role="tabpanel">
 
 				<!--begin::Form New Service-->
-				<form class="m-form">
-					<div class="m-portlet__body">
-						<div class="form-group m-form__group">
-							<label for="">Select project:</label> <select
-								class="custom-select form-control">
-								<option selected="">Open this select menu</option>
-								<option value="1">Project One</option>
-								<option value="2">Two</option>
-								<option value="3">Three</option>
-							</select>
-						</div>
-						<div class="form-group m-form__group">
-							<label for="">Select operation:</label> <select
-								class="custom-select form-control">
-								<option selected="">Open this select menu</option>
-								<option value="1">Operation One</option>
-								<option value="2">Operation Two</option>
-								<option value="3">Operation Three</option>
-							</select>
-						</div>
-						<div class="m-form__group form-group">
-							<label for="">Service name:</label> <input type="text"
-								class="form-control m-input" id="exampleInputEmail1"
-								aria-describedby="emailHelp" placeholder="Service Name">
-						</div>
 
-					</div>
-
-					<div class="m-portlet__foot m-portlet__foot--fit">
-						<div class="m-form__actions m-form__actions--right">
-							<div class="row">
-								<div class="col m--align-left">
-									<button type="reset" class="btn btn-brand">Add</button>
-								</div>
-								<div class="col m--align-right">
-									<button type="reset" class="btn btn-secondary">Cancel</button>
-								</div>
-							</div>
-						</div>
-					</div>
+				<form
+					th:replace="fragments/form-fragments/fragment-new-service-form :: new-service-form">
 				</form>
-
 				<!--end::Form New Service-->
 
 			</div>

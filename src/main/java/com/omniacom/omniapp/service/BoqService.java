@@ -92,7 +92,8 @@ public class BoqService {
 		JSONObject jsonBoq = new JSONObject().element("id", boq.getId()).element("name", boq.getName())
 				.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(boq.getStartDate()))
 				.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(boq.getEndDate()))
-				.element("valid", boq.getEndDate().after(new Date()));
+				.element("valid", boq.getEndDate().after(new Date()))
+				.element("serviceCount", findAllServiceTemplates(boq).size());
 		return jsonBoq;
 	}
 

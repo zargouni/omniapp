@@ -90,16 +90,24 @@ var DatatableBoqsJsonRemote = function () {
 				type: 'date',
 				format: 'DD MMMM YYYY',
 				sortable: true,
-				width: 200
+				width: 150
 			}, {
 				field: "endDate",
 				title: "Due Date",
 				type: 'date',
 				format: 'DD MMMM YYYY',
 				sortable: true,
-				width: 200,
+				width: 150,
 				responsive: {visible: 'lg'}
-			}, {
+			},{
+				field: "serviceCount",
+				title: "Services",
+				type: 'number',
+				sortable: true,
+				width: 100,
+				responsive: {visible: 'lg'}
+			},
+			{
 				field: "Actions",
 				width: 60,
 				title: "Actions",
@@ -198,11 +206,7 @@ function handleRemoveBoqClick(id){
 										swal('Deleted!',
 												'BOQ has been deleted.',
 												'success');
-										setTimeout(
-												  function() 
-												  {
-													  location.reload()
-												  }, 2000);
+										$('#boqs_datatable').mDatatable('reload');
 
 									} else {
 										swal('Fail!', 'BOQ not deleted.',
@@ -246,11 +250,7 @@ function handleUpdateBoq(id){
 					$('#input_boq_start_date').val('');
 					$('#input_boq_end_date').val('');
 					$('#service_templates_boq_checkbox_list :checkbox').prop('checked', false);
-//					setTimeout(
-//							  function() 
-//							  {
-//								  location.reload()
-//							  }, 2000);
+					$('#boqs_datatable').mDatatable('reload');
 				}
 			} else {
 				if(response.result == 'boq-exists'){

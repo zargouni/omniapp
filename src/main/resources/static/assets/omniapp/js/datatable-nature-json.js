@@ -27,7 +27,7 @@ var natureDatatableJson = function () {
 		            },
 		          },
 		        },
-		        pageSize: 4,
+		        pageSize: 3,
 		        serverPaging: false,
 		        serverFiltering: false,
 		        serverSorting: false,
@@ -50,7 +50,7 @@ var natureDatatableJson = function () {
 		          // pagination
 		          pagination: {
 		            // page size select
-		            pageSizeSelect: [10, 20, 30, 50, 100],
+		            pageSizeSelect: [2, 8, 16, 32, 32],
 		          },
 		        },
 		      },
@@ -127,6 +127,3 @@ var natureDatatableJson = function () {
 	};
 }();
 
-//jQuery(document).ready(function () {
-//	
-//});

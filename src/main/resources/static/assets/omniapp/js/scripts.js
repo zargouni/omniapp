@@ -271,6 +271,9 @@ function doAddOperationAjaxPost() {
 					toastr.success("Operation Added successfully", "Well done!");
 				}
 				$('#m_quick_sidebar_add_close').click();
+				if($('#operations_datatable').length){
+					$('#operations_datatable').mDatatable('reload');
+				}
 
 
 			} else {
@@ -329,6 +332,14 @@ function doAddTaskAjaxPost() {
 				$('#m_datepicker_4_1').val('');
 				$('#m_datepicker_4_2').val('');
 				$('#task_priority').val('');
+				$('#select_project_new_task').val(' ');
+				$('#select_project_new_task').selectpicker('refresh');
+				$('#select_service_div').hide();
+				$('#task_priority').val('none');
+				$('#m_quick_sidebar_add_close').click();
+				if($('#service_tasks_datatable').length){
+					$('#service_tasks_datatable').mDatatable('reload');
+				}
 
 			} else {
 
@@ -356,41 +367,127 @@ function doAddTaskAjaxPost() {
 	});
 }
 
+function doAddServiceAjaxPost() {
+	var nameError = $('#service_name_error');
+	var projectError = $('#service_project_error');
+	var operationError = $('#service_operation_error');
+	var priceError = $('#service_price_error');
+	var categoryError = $('#service_category_error');
+	
+	var name = $('#input_new_service_name').val();
+	var project = $('#select_project_new_service').val();
+	var operation = $('#select_operation_new_service').val();
+	var price = $('#input_new_service_price').val();
+	var category = $('#input_new_service_category').val();
+	var flag = $('#input_service_flag').val();
+
+	nameError.hide('fast');
+	projectError.hide('fast');
+	operationError.hide('fast');
+	priceError.hide('fast');
+	categoryError.hide('fast');
+
+	$.ajax({
+		type : "POST",
+		url : '/add-service',
+		data : "name=" + name + "&project=" + project + "&operation="
+				+ operation + "&priceHT=" + price + "&category=" + category+"&flag=" + flag,
+		success : function(response) {
+			if (response.status == "SUCCESS") {
+				toastr.success("Service added successfully", "Well done!");
+
+				$('#input_new_service_name').val('');
+				
+				$('#select_project_new_service').val(' ');
+				$('#select_project_new_service').selectpicker('refresh');
+				 $('#select_operation_new_service').val(' ');
+				 $('#select_operation_new_service').selectpicker('refresh');
+				 $('#input_new_service_price').val('');
+				 $('#input_new_service_category').val(' ');
+				 $('#input_new_service_category').selectpicker('refresh');
+				 $('#input_service_flag').val("0");
+				
+				$('#m_quick_sidebar_add_close').click();
+				if($('#operation_services_widget').length){
+					var operationId = $('#operation_fragment_selected_operation_id').val();
+					 populateServicesTabOperationFragment(operationId);
+				}
+				if($('#operations_datatable').length){
+					//var operationId = $('#operation_fragment_selected_operation_id').val();
+					$('#operations_datatable').mDatatable('reload');
+				}
+				
+				
+
+			} else {
+
+				for (i = 0; i < response.result.length; i++) {
+
+					if (response.result[i].code == "service.name.empty")
+						nameError.show('slow');
+					if (response.result[i].code == "service.project.empty")
+						projectError.show('slow');
+					if (response.result[i].code == "service.operation.empty")
+						operationError.show('slow');
+					if (response.result[i].code == "service.price.empty")
+						priceError.show('slow');
+					if (response.result[i].code == "service.category.empty")
+						categoryError.show('slow');
+					if (response.result[i].code == "service.price.undefined")
+						toastr.warning("please enter a valid price",
+						"Check Price");
+				}
+
+			}
+		},
+		error : function(e) {
+			toastr.error("Couldn't add Service", "Server Error");
+		}
+	});
+}
+
 function projectDynamicContent() {
 	projectDashboardTaskPieChart();
 	$("#dashboard-fragment").show();
+	$('#project_subheader').show();
 
 	$("#project_dashboard_toggle").on("click", function(event) {
+		$('#project_subheader').show();
 		$("#m_dynamic_content_project").children().hide();
 		projectDashboardTaskPieChart();
 		$("#dashboard-fragment").show();
 	});
 
 	$("#project_feed_toggle").on("click", function() {
+		$('#project_subheader').show();
 		$("#m_dynamic_content_project").children().hide();
 		$("#feed-fragment").show();
 
 		});
 
 	$("#project_tasks_toggle").on("click", function() {
+		$('#project_subheader').show();
 		$("#m_dynamic_content_project").children().hide();
-		
+		populateTasksFragmentWidget();
 		$("#tasks-fragment").show();
 		
 		});
 
 	$("#project_operations_toggle").on("click", function() {
+		$('#project_subheader').show();
 		$("#m_dynamic_content_project").children().hide();
 		DatatableOperationsJsonRemote.init();
 		$("#operations-fragment").show();
 	});
 
 	$("#project_issues_toggle").on("click", function() {
+		$('#project_subheader').show();
 		$("#m_dynamic_content_project").children().hide();
 		$("#issues-fragment").show();	
 	});
 
 	$("#project_calendar_toggle").on("click", function() {
+		$('#project_subheader').show();
 		$("#m_dynamic_content_project").children().hide();
 		$("#calendar-fragment").show();
 	});
@@ -404,6 +501,7 @@ function populateServicesListNewTaskForm() {
 		type : "GET",
 		url : '/set-selected-project-services',
 		data : 'projectId=' + selectedProjectId,
+		async: false,
 		success : function(response) {
 
 			var html_text = "";
@@ -413,6 +511,7 @@ function populateServicesListNewTaskForm() {
 
 			}
 			$("#select_service_new_task").html(html_text);
+			$('#select_service_new_task').selectpicker('refresh');
 		},
 		error : function(e) {
 			alert('Error: services ' + e);
@@ -432,6 +531,7 @@ function populateSelectOwnedProjects() {
 	$.ajax({
 		type : "GET",
 		url : '/set-select-owned-projects',
+		async: false,
 		success : function(response) {
 
 			var html_select_options = "";
@@ -441,6 +541,7 @@ function populateSelectOwnedProjects() {
 				html_text += "<option value='" + response[0].id + "'>"
 						+ response[0].name + "</option>";
 				$("#select_project_new_task").html(html_text);
+				$("#select_project_new_service").html(html_text);
 				$("#select_project_new_operation").html(html_text);
 				updateSelectServices();
 			} else {
@@ -451,23 +552,30 @@ function populateSelectOwnedProjects() {
 				}
 				$("#select_project_new_task").html(html_text);
 				$("#select_project_new_operation").html(html_text);
+				$("#select_project_new_service").html(html_text);
 
 			}
 			$("#select_project_new_operation").selectpicker('refresh');
 
 			$("#select_project_new_task").selectpicker('refresh');
+			$("#select_project_new_service").selectpicker('refresh');
 			
-			$("#select_project_new_operation").change(function() {
+			$("#select_project_new_operation").on('change', function() {
 				var projectId = $("#select_project_new_operation").val();
 				
 				if(projectId == ' '){ 
 					$('#sites_map_container').attr("style","display:none;width:100%; height:50px;position: relative;");
-					$('.sites_map_canvas').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
+					$('#sites_map_canvas_sidebar').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
 				}else{
-					$('#sites_map_container').attr("style","width:100%; height:250px;position: relative;");
-					$('.sites_map_canvas').attr("style","position: absolute; top: 20%; right: 0; bottom: 0; left: 0;");
 					initializeSitesGmap(projectId);
-
+				}
+			});
+			
+			$("#select_project_new_service").on('change', function() {
+				var projectId = $("#select_project_new_service").val();
+				
+				if(projectId != ' '){ 
+					populateSelectOperationNewService(projectId);
 				}
 			});
 
@@ -483,6 +591,41 @@ function populateSelectOwnedProjects() {
 
 }
 
+function populateSelectOperationNewService(projectId){
+	$.ajax({
+		type : "GET",
+		url : '/get-project-operations',
+		async: false,
+		data: "projectId="+projectId,
+		success : function(response) {
+			
+			var html_text = "<option value=' ' selected>Nothing Selected</option>";
+			if (response.length == 1) {
+				html_text += "<option value='" + response[0].id + "'>"
+						+ response[0].name + "</option>";
+				$("#select_operation_new_service").html(html_text);
+				} else {
+				for (i = 0; i < response.length; i++) {
+
+					html_text += "<option value='" + response[i].id + "'>" + response[i].name
+							+ "</option>";
+				}
+				$("#select_operation_new_service").html(html_text);
+
+
+			}
+			$("#select_operation_new_service").selectpicker('refresh');
+
+			
+			
+		},
+	error : function(e) {
+		$("#select_operation_new_service").html(
+				"<option value=''>Nothing selected</option>");
+		
+	}
+});
+}
 
 
 function projectDashboardTaskPieChart() {
@@ -880,8 +1023,11 @@ function populateSidebarAdd() {
 	
 	populateSelectOwnedProjects();
 	$('#sites_map_container').attr("style","display:none;width:100%; height:50px;position: relative;");
-	$('.sites_map_canvas').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
-	
+	$('#sites_map_canvas_sidebar').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
+	$('#select_service_div').hide();
+	$('#select_project_new_service').val(' ').change();
+	$('#select_operation_new_service').html('');
+	$('#select_operation_new_service').selectpicker('refresh');
 
 	
 }
@@ -913,7 +1059,7 @@ function gmapPopoverInit(){
 $(document).ready(function() {
 	
 	
-	
+	gmapPopoverInit();
 	
 	$("#select_service_div").hide();
 

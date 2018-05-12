@@ -71,7 +71,7 @@ var projectsDatatableRemoteAjax = function() {
           title: 'Project Name',
           // sortable: 'asc', // default sort
           filterable: false, // disable or enable filtering
-          width: 400,
+          width: 200,
           // basic templating support for column rendering,
           template: function(row) {
         // callback function support for column rendering
@@ -98,7 +98,22 @@ var projectsDatatableRemoteAjax = function() {
           title: 'Currency',
           type: 'number',
           width: 100,
-        }],
+        },{
+            field: 'percentage',
+            title: 'Progress',
+            // sortable: 'asc', // default sort
+            filterable: false, // disable or enable filtering
+            width: 200,
+            // basic templating support for column rendering,
+            template: function(row) {
+          // callback function support for column rendering
+          	  return '<div style="width:200px !important;" class="progress m-progress--sm">'
+          	  +'<div class="progress-bar m--bg-success" role="progressbar" style="width: '+row.percentage+';" aria-valuemin="0" aria-valuemax="100"></div>'
+          	  +'</div>'
+          	  +'<span style="font-weight:600;font-size:12px;float:right;" class="m-widget4__number m--font-info">'+row.percentage+'</span>'
+          	  ;
+            },
+          },],
     });
 
     $('#m_form_client').on('change', function() {
@@ -119,8 +134,3 @@ var projectsDatatableRemoteAjax = function() {
 }();
 
 
-
-
-jQuery(document).ready(function() {
-	projectsDatatableRemoteAjax.init();
-});

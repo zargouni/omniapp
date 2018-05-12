@@ -1,4 +1,6 @@
 function populateClientsUI(){
+	$('#clients_container_even_row').html('');
+	$('#clients_container_odd_row').html('');
 	$.ajax({
 		type : "GET",
 		url : '/get-all-clients-details-json',
@@ -92,7 +94,7 @@ function populateClientsUI(){
 			alert('Error: clients ' + e);
 		}
 	});
-	
+	natureDatatableJson.init();
 
 	}
 	
@@ -197,11 +199,13 @@ function updateClientDetails(clientId){
 					$('#update_client_phone').val('');
 
 					//$('#service_templates_boq_checkbox_list :checkbox').prop('checked', false);
-					setTimeout(
-							  function() 
-							  {
-								  location.reload()
-							  }, 1000);
+//					setTimeout(
+//							  function() 
+//							  {
+//								  location.reload()
+//							  }, 1000);
+					
+					populateClientsUI();
 				}
 			} else {
 				if(response.result == 'client-exists'){
@@ -257,11 +261,7 @@ function handleUpdateSite(siteId){
 					$('#update_site_latitude').val('');
 					$('#update_site_longitude').val('');
 					//$('#service_templates_boq_checkbox_list :checkbox').prop('checked', false);
-					setTimeout(
-							  function() 
-							  {
-								  location.reload()
-							  }, 1000);
+					populateClientsUI();
 				}
 			} else {
 				
@@ -516,9 +516,7 @@ function newSiteSaveManualAddedSites(clientId) {
 	if(result == true){
 		toastr.success('All sites added successfully','Well done!')
 		$("#modal_new_site").modal('hide');
-		setTimeout(function(){
-			location.reload();
-		}, 2000);
+		populateClientsUI();
 	}
 	else{
 		toastr.error('Couldn\'t add some sites','Oops!')
@@ -546,13 +544,14 @@ function doAddNewNature(){
 					$('#new_nature_name').val('');
 					$('#new_nature_description').val('');
 					$("#new-nature-modal").modal('hide');
+					$('#natures_datatable').mDatatable('reload');
 					
-					setTimeout(
-							  function() 
-							  {
-								  location.reload();
-								  
-							  }, 500);
+//					setTimeout(
+//							  function() 
+//							  {
+//								  location.reload();
+//								  
+//							  }, 500);
 					
 					
 				}
@@ -602,11 +601,7 @@ function handleRemoveSite(clientId){
 										swal('Deleted!',
 												'Site has been deleted.',
 												'success');
-										setTimeout(
-												  function() 
-												  {
-													  location.reload()
-												  }, 1000);
+										populateClientsUI();
 										
 									} else {
 										swal('Fail!', 'Site not deleted.',
@@ -650,12 +645,9 @@ function handleRemoveNatureClick(natureId) {
 										swal('Deleted!',
 												'Nature has been deleted.',
 												'success');
-										setTimeout(
-												  function() 
-												  {
-													  location.reload()
-												  }, 500);
-										$('#init_nature_datatable').click();
+										$('#natures_datatable').mDatatable('reload');
+										populateClientsUI();
+										//$('#init_nature_datatable').click();
 										
 									} else {
 										swal('Fail!', 'Nature not deleted.',
@@ -721,8 +713,8 @@ function initFormRepeaterNewSite(){
 }
 
 $(document).ready(function() {
-	$('#init_nature_datatable').on('click',function(){
-		natureDatatableJson.init();
-	});
+//	$('#init_nature_datatable').on('click',function(){
+//		natureDatatableJson.init();
+//	});
 	
 });

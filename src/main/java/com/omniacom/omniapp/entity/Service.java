@@ -14,7 +14,7 @@ import javax.persistence.OneToMany;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
-public class Service implements Serializable {
+public class Service implements Serializable, Comparable<Service> {
 
 	/**
 	 * 
@@ -30,7 +30,7 @@ public class Service implements Serializable {
 	private int flag;
 	private float priceHT;
 	private long zohoId;
-	
+
 	private ServiceCategory category;
 
 	@ManyToOne
@@ -218,7 +218,8 @@ public class Service implements Serializable {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -232,10 +233,21 @@ public class Service implements Serializable {
 	}
 
 	/**
-	 * @param category the category to set
+	 * @param category
+	 *            the category to set
 	 */
 	public void setCategory(ServiceCategory category) {
 		this.category = category;
+	}
+
+	@Override
+	public int compareTo(Service o) {
+		// TODO Auto-generated method stub
+		if (creationDate.before(o.creationDate)) {
+			return -1;
+		} else if (creationDate.after(o.creationDate))
+			return 1;
+		return 0;
 	}
 
 }
