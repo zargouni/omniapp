@@ -6,12 +6,12 @@ function doAddNewServiceTemplate() {
 	var categoryError = $('#service_template_category_error');
 	var name = $('#input_new_service_template_name').val();
 	var description = $('#input_new_service_template_description').val();
-	var price = $('#input_new_service_template_price').val();
+//	var price = $('#input_new_service_template_price').val();
 	var category = $('#input_new_service_template_category').val();
 
 	nameError.hide('fast');
 	descriptionError.hide('fast');
-	priceError.hide('fast');
+	//priceError.hide('fast');
 	categoryError.hide('fast');
 
 	$
@@ -19,7 +19,7 @@ function doAddNewServiceTemplate() {
 				type : "POST",
 				url : '/add-service-template',
 				data : "name=" + name + "&description=" + description
-						+ "&price=" + price+"&category="+category,
+						+"&category="+category,
 				success : function(response) {
 					if (response.status == "SUCCESS") {
 						toastr.success("Template added successfully",
@@ -27,7 +27,7 @@ function doAddNewServiceTemplate() {
 
 						$('#input_new_service_template_name').val('');
 						$('#input_new_service_template_description').val('');
-						$('#input_new_service_template_price').val('');
+						//$('#input_new_service_template_price').val('');
 						$('#input_new_service_template_category').val(' ');
 						
 						$('#modal_new_service_template').modal('hide');
@@ -42,14 +42,14 @@ function doAddNewServiceTemplate() {
 								nameError.show('slow');
 							if (response.result[i].code == "service.template.description.empty")
 								descriptionError.show('slow');
-							if (response.result[i].code == "service.template.price.empty")	
-								priceError.show('slow');
+//							if (response.result[i].code == "service.template.price.empty")	
+//								priceError.show('slow');
 							if (response.result[i].code == "service.template.category.empty")	
 								categoryError.show('slow');
-							if (price != '' && response.result[i].code == "service.template.price.undefined") {
-								toastr.warning("Price must be logic",
-										"Check price");
-							}
+//							if (price != '' && response.result[i].code == "service.template.price.undefined") {
+//								toastr.warning("Price must be logic",
+//										"Check price");
+//							}
 
 						}
 
@@ -162,23 +162,23 @@ function saveServiceTemplateAddedTasks(serviceId) {
 function doUpdateServiceTemplate(id){
 	var name= $('#input_service_template_name').val();
 	var description= $('#input_service_template_description').val();
-	var price= $('#input_service_template_price').val();
+	//var price= $('#input_service_template_price').val();
 	var category= $('#input_service_template_category').val();
 	
 	var nameError = $('#input_service_template_name_error');
 	var descriptionError = $('#input_service_template_description_error');
-	var priceError = $('#input_service_template_price_error');
+	//var priceError = $('#input_service_template_price_error');
 	var categoryError = $('#input_service_template_category_error');
 	
 	nameError.hide('fast');
 	descriptionError.hide('fast');
-	priceError.hide('fast');
+	//priceError.hide('fast');
 	categoryError.hide('fast');
 
 	$.ajax({
 		type : "POST",
 		url : '/update-service-template-details',
-		data : "id="+id+"&name="+name+"&description="+description+"&price="+price+"&category="+category,
+		data : "id="+id+"&name="+name+"&description="+description+"&category="+category,
 	    success : function(response) {
 	    	if(response.status == "SUCCESS"){
 	    		toastr.success("Service updated successfully", "Well done!");
@@ -186,7 +186,7 @@ function doUpdateServiceTemplate(id){
 	    		$('#input_service_template_category').val(' ');
 	    		 $('#input_service_template_name').val('');
 	    		 $('#input_service_template_description').val('');
-	    		 $('#input_service_template_price').val('');
+	    		// $('#input_service_template_price').val('');
 					$('#service_templates_datatable').mDatatable('reload');
 
 
@@ -203,13 +203,13 @@ function doUpdateServiceTemplate(id){
 							nameError.show('slow');
 						if (response.result[i].code == "service.template.description.empty")
 							descriptionError.show('slow');
-						if (response.result[i].code == "service.template.price.empty")
-							priceError.show('slow');
+//						if (response.result[i].code == "service.template.price.empty")
+//							priceError.show('slow');
 						if (response.result[i].code == "service.template.category.empty")
 							categoryError.show('slow');
-						if (response.result[i].code == "service.template.price.undefined")
-							toastr.warning("Price must be logic",
-							"Check price");
+//						if (response.result[i].code == "service.template.price.undefined")
+//							toastr.warning("Price must be logic",
+//							"Check price");
 						}
 	    	}
 	    },

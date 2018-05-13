@@ -23,5 +23,6 @@ public interface BoqRepositoryCustom {
 	
 	public List<BillOfQuantities> findAllAvailableValidBoqs();
 	
+	
 
 }

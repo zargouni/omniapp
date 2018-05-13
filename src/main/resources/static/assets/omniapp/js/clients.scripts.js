@@ -53,22 +53,30 @@ function populateClientsUI(){
 					+'</div>'
 					+'<div class="m-portlet__body">'
 						+'<div class="tab-content">'
-							+'<div class="tab-pane active show" id="m_portlet_tab_'+response[i].id+'_1">'
+							+'<div style="height:100%;" class="tab-pane active show" id="m_portlet_tab_'+response[i].id+'_1">'
 							+populateClientStats(response[i].id)
 							+'</div>'
 							+'<div style="position:relative;width:100%;height:260px;" class="tab-pane" id="m_portlet_tab_'+response[i].id+'_2">'
-							+'<div class="sites_map" id="sites_client_'+response[i].id+'"></div>'
-							+'<div style="position:absolute;top:18%;right:2%;float:right;"><a onclick="populateModalNewSite('+response[i].id+')" title="New Site" data-toggle="modal" data-target="#modal_new_site" class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only">'
+							
+							+'<div class="sites_map" id="sites_client_'+response[i].id+'">'
+							
+							
+							+'</div>'
+							+'<div style="position:relative;top:2%;right:1%;float:right;">'
+				            +'<a title="Fullscreen" href="#"  id="btn-enter-full-screen-'+response[i].id+'" class="btn btn-secondary m-btn m-btn--icon m-btn--icon-only"><i class="fa fa-expand"></i></a>'
+				            +'<a title="Exit Fullscreen" href="#" style="display:none;" id="btn-exit-full-screen-'+response[i].id+'" class="btn btn-secondary m-btn m-btn--icon m-btn--icon-only" ><i class="fa fa-compress"></i></button>'
+				            +'</div>'
+				        	+'<div style="position:relative;top:2%;left:1%;float:left;"><a onclick="populateModalNewSite('+response[i].id+')" title="New Site" data-toggle="modal" data-target="#modal_new_site" class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only">'
 							+'<i class="fa fa-map-marker"></i>'
 							+'</a></div>'
-							+'<div style="position:relative;top:2%;right:10%;float:right;">'
-							+'<select id="select_site_client_'+response[i].id+'" class="form-control m-bootstrap-select m_selectpicker" data-live-search="true" >'
+							+'<div  style="width:25%; position:absolute;top:2%;right:35%;float:right;">'
+							+'<select style="position:absolute;width:100%;" id="select_site_client_'+response[i].id+'" class="form-control m-bootstrap-select m_selectpicker" data-live-search="true" >'
 							+'</select>'
 							+'</div>'
-							+'<div style="position:relative;top:3%;right:12%;float:right;"><a onclick="handleRemoveSite('+response[i].id+')" title="Delete Site" class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only">'
+							+'<div style="position:absolute;top:92%;right:1%;float:right;"><a onclick="handleRemoveSite('+response[i].id+')" title="Delete Site" class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only">'
 							+'<i class="fa fa-trash-o"></i>'
 							+'</a></div>'
-							+'<div style="position:relative;top:3%;right:13%;float:right;"><a onclick="populateModalUpdateSite('+response[i].id+')" title="Update Site" class="btn btn-info m-btn m-btn--icon btn-sm m-btn--icon-only">'
+							+'<div  style="position:absolute;top:92%;left:1%;float:left;"><a onclick="populateModalUpdateSite('+response[i].id+')" title="Update Site" class="btn btn-info m-btn m-btn--icon btn-sm m-btn--icon-only">'
 							+'<i class="fa fa-check-square-o"></i>'
 							+'</a></div>'
 							+'</div>'
@@ -97,6 +105,69 @@ function populateClientsUI(){
 	natureDatatableJson.init();
 
 	}
+
+function HandleMapControls(map,clientId){
+	//var googleMapWidth = $("#m_portlet_tab_1_2").css('width');
+	//var googleMapHeight = $("#m_portlet_tab_1_2").css('height');
+
+	$('#btn-enter-full-screen-'+clientId).click(function() {
+		
+//		if(!(clientId % 2))
+//			$('#clients_container_odd_row').hide();
+//		else
+//			$('#clients_container_even_row').hide();
+//		
+		$('#general-header').hide();
+		
+	    $("#m_portlet_tab_"+clientId+"_2").css({
+	        position: 'fixed',
+	        top: 0,
+	        zIndex: 2,
+	        left: 0,
+	        width: '100%',
+	        height: '100%',
+	        backgroundColor: 'white'
+	    });
+
+	    $("#sites_client_"+clientId).css({
+	        height: '100%'
+	    });
+
+	    google.maps.event.trigger(map, 'resize');
+	    //map.setCenter(newyork);
+
+	    // Gui
+	    $('#btn-enter-full-screen-'+clientId).toggle();
+	    $('#btn-exit-full-screen-'+clientId).toggle();
+
+	    return false;
+	});
+
+	$('#btn-exit-full-screen-'+clientId).click(function() {
+		
+		$('#general-header').show();
+		
+	
+		
+		$("#m_portlet_tab_"+clientId+"_2").css({
+	        position: 'relative',
+	        top: 0,
+	        zIndex: 1,
+	        width: '100%',
+	        height: '260px',
+	        backgroundColor: 'transparent'
+	    });
+
+	    google.maps.event.trigger(map, 'resize');
+	    //map.setCenter(newyork);
+
+	    // Gui
+	    $('#btn-enter-full-screen-'+clientId).toggle();
+	    $('#btn-exit-full-screen-'+clientId).toggle();
+	    return false;
+	});
+	
+}
 	
 
 function populateModalUpdateSite(clientId){
@@ -370,11 +441,13 @@ function populateClientSites(clientId){
         div: map_div,
         lat: 34.7615155,
         lng: 10.6630578,
-        
-      
+        disableDefaultUI: true,
         
     });
+
 	
+	HandleMapControls(map,clientId);
+		
 	var selectSiteOptions = '';
 	$.ajax({
 		type : "GET",
@@ -716,5 +789,7 @@ $(document).ready(function() {
 //	$('#init_nature_datatable').on('click',function(){
 //		natureDatatableJson.init();
 //	});
+	
+	
 	
 });

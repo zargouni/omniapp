@@ -21,13 +21,13 @@ public class ServiceTemplateValidator implements Validator {
 		// TODO Auto-generated method stub
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "service.template.name.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "service.template.description.empty");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "price", "service.template.price.empty");
+//		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "price", "service.template.price.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "category", "service.template.category.empty");
 
 		
 		ServiceTemplate template = (ServiceTemplate) target;
-		if(template.getPrice() <= 0)
-			errors.rejectValue("price", "service.template.price.undefined");
+//		if(template.getPrice() <= 0)
+//			errors.rejectValue("price", "service.template.price.undefined");
 
 
 		

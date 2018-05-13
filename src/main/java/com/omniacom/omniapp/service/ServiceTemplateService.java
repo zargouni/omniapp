@@ -47,14 +47,15 @@ public class ServiceTemplateService {
 		com.omniacom.omniapp.entity.Service service = new com.omniacom.omniapp.entity.Service();
 		service.setName(template.getName());
 		service.setDescription(template.getDescription());
-		service.setPriceHT(template.getPrice());
+//		service.setPriceHT(template.getPrice());
 		service.setCategory(template.getCategory());
 		return service;
 	}
 	
 	public JSONObject jsonServiceTemplate(ServiceTemplate template) {
 		JSONObject jsonService = new JSONObject().element("id", template.getId()).element("name", template.getName())
-				.element("description", template.getDescription()).element("price", template.getPrice())
+				.element("description", template.getDescription())
+//				.element("price", template.getPrice())
 				.element("category", template.getCategory());
 		return jsonService;
 	}
@@ -65,7 +66,7 @@ public class ServiceTemplateService {
 		for (ServiceTemplate template : templates) {
 			jsonService = new JSONObject().element("id", template.getId())
 					.element("name", template.getName()).element("description", template.getDescription())
-					.element("price", template.getPrice())
+//					.element("price", template.getPrice())
 					.element("category", template.getCategory());
 			jsonTemplates.add(jsonService);
 		}
@@ -83,8 +84,8 @@ public class ServiceTemplateService {
 				st.setName(updatedTemplate.getName());
 			if (!st.getDescription().equals(updatedTemplate.getDescription()))
 				st.setDescription(updatedTemplate.getDescription());
-			if (!(st.getPrice() == updatedTemplate.getPrice()))
-				st.setPrice(updatedTemplate.getPrice());
+//			if (!(st.getPrice() == updatedTemplate.getPrice()))
+//				st.setPrice(updatedTemplate.getPrice());
 			if (!(st.getCategory() == updatedTemplate.getCategory()))
 				st.setCategory(updatedTemplate.getCategory());
 			serviceTemplateRepo.save(st);

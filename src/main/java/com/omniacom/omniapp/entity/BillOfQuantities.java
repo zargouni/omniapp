@@ -1,6 +1,7 @@
 package com.omniacom.omniapp.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,10 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedDate;
 
@@ -37,9 +36,10 @@ public class BillOfQuantities implements Serializable {
 	@ManyToOne
 	private Project project;
 	
-	@ManyToMany
-	@JoinTable(name = "BOQ_SERVICES", joinColumns = @JoinColumn(name = "boq_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "service_id", referencedColumnName = "id"))
-	private List<ServiceTemplate> services;
+	//@JoinTable(name = "BOQ_SERVICES", joinColumns = @JoinColumn(name = "boq_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "service_id", referencedColumnName = "id"))
+
+	@OneToMany(mappedBy="boq")
+	private List<BoqService> boqServices;
 	
 	public BillOfQuantities() {
 
@@ -120,12 +120,6 @@ public class BillOfQuantities implements Serializable {
 		return project;
 	}
 
-	/**
-	 * @return the services
-	 */
-	public List<ServiceTemplate> getServices() {
-		return services;
-	}
 
 	/**
 	 * @param project the project to set
@@ -137,9 +131,6 @@ public class BillOfQuantities implements Serializable {
 	/**
 	 * @param services the services to set
 	 */
-	public void setServices(List<ServiceTemplate> services) {
-		this.services = services;
-	}
 
 	/**
 	 * @return the name
@@ -153,6 +144,39 @@ public class BillOfQuantities implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return the boqService
+	 */
+	public List<BoqService> getBoqServices() {
+		return boqServices;
+	}
+
+	/**
+	 * @param boqService the boqService to set
+	 */
+	public void setBoqServices(List<BoqService> boqServices) {
+		this.boqServices = boqServices;
+	}
+	
+	public void assignBoqServicesToThisBoq(List<BoqService> boqServices) {
+		this.setBoqServices(boqServices);
+		for(BoqService boqService : boqServices) {
+			boqService.setBoq(this);
+		}
+	}
+	
+	public void assignBoqServiceToThisBoq(BoqService boqService) {
+		if(this.getBoqServices() != null)
+			this.getBoqServices().add(boqService);
+		else {
+			List<BoqService> boqServices = new ArrayList<BoqService>(); 
+			boqServices.add(boqService);
+			this.setBoqServices(boqServices);
+		}
+		boqService.setBoq(this);
+		
 	}
 	
 	

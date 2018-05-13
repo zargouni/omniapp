@@ -4,6 +4,7 @@ function initializeSitesGmap(projectId) {
         lat: 34.7615155,
         lng: 10.6630578,
         
+        
     });
 	if($('#sites_map_container').is(':hidden')){
 		$('#sites_map_canvas_sidebar').attr("style","position: absolute; top: 20%; right: 0; bottom: 0; left: 0;");
