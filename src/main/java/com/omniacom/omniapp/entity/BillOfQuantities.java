@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.CreatedDate;
 
@@ -33,7 +34,7 @@ public class BillOfQuantities implements Serializable {
 	private Date startDate;
 	private Date endDate;
 	
-	@ManyToOne
+	@OneToOne
 	private Project project;
 	
 	//@JoinTable(name = "BOQ_SERVICES", joinColumns = @JoinColumn(name = "boq_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "service_id", referencedColumnName = "id"))

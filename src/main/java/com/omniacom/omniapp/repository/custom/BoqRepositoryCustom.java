@@ -11,7 +11,7 @@ public interface BoqRepositoryCustom {
 
 	public boolean addAllServiceTemplates(BillOfQuantities boq, List<ServiceTemplate> templates);
 
-	public boolean addOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template);
+	public boolean addOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template,float price);
 
 	public boolean removeOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template);
 
@@ -22,6 +22,8 @@ public interface BoqRepositoryCustom {
 	public boolean boqExists(String name);
 	
 	public List<BillOfQuantities> findAllAvailableValidBoqs();
+	
+	public float findServicePriceBoq(BillOfQuantities boq, ServiceTemplate template);
 	
 	
 

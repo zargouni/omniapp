@@ -1,14 +1,12 @@
 package com.omniacom.omniapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,17 +16,18 @@ import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Task;
+import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
 import com.omniacom.omniapp.service.ServiceService;
 import com.omniacom.omniapp.service.TaskService;
+import com.omniacom.omniapp.service.UserService;
 import com.omniacom.omniapp.validator.JsonResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @RestController
-@RequestMapping(params = "id")
 public class ProjectController {
 
 	@Autowired
@@ -42,6 +41,9 @@ public class ProjectController {
 
 	@Autowired
 	TaskService taskService;
+	
+	@Autowired
+	UserService userService;
 
 	@GetMapping("/project")
 	public ModelAndView index(Model model) {
@@ -66,11 +68,18 @@ public class ProjectController {
 
 	}
 	
+	@GetMapping("/get-project-operations-status")
+	public @ResponseBody JSONArray getProjectOperationsStatus(@RequestParam("id") Project project) {
+		return projectService.getProjectOperationsStatus(project);
+	}
+	
 	@GetMapping("/get-project-details")
 	public @ResponseBody JSONObject getprojectDetails(@RequestParam("id") long projectId) {
 		Project project = projectService.findOneById(projectId);
 		return projectService.jsonProject(project);
 	}
+	
+	
 
 	@GetMapping("/json-operations")
 	public @ResponseBody JSONArray getAllOperationsJson(@RequestParam("id") long projectId) {
@@ -257,7 +266,29 @@ public class ProjectController {
 	// public void setCurrentProject(Project currentProject) {
 	// this.currentProject = currentProject;
 	// }
+	
+	@GetMapping("/get-all-users-in-task-details-json")
+	public @ResponseBody JSONArray getAllUsersForTask(@RequestParam("id") long taskId) {
+		return taskService.findAllUsersForTask(taskId);
+	}
 
+	@PostMapping("/update-task-owners")
+	public @ResponseBody JsonResponse addUserToTask(@RequestParam("id") long taskId,
+			@RequestParam("userId") long userId) {
+
+		JsonResponse response = new JsonResponse();
+		
+
+		//ServiceTemplate template = stService.findOne(templateId);
+		//Site site = siteService.findSite(siteId);
+		User user = userService.findById(userId);
+		Task task = taskService.findOne(taskId);
+		if (task != null && user != null) {
+			if (!taskService.addOneOwner(task, user))
+				response.setStatus("FAIL");
+		}
+		return response;
+	}
 	public JSONObject jsonTask(Task task) {
 		JSONObject jsonTask = new JSONObject().element("TaskId", task.getId()).element("TaskName", task.getName())
 				.element("TaskStartDate", task.getStartDate().toString())

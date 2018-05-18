@@ -1,5 +1,6 @@
 package com.omniacom.omniapp.data;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -73,6 +74,18 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 
 		return tasks;
 	}
+	
+	@Override
+	public List<Task> findAllTasks(Project project) {
+		List<Task> tasks = null;
+		Query query = entityManager.createQuery(
+				"SELECT t FROM Task t WHERE (t.service IN (SELECT s.id FROM Service s WHERE s.operation IN (SELECT op.id FROM Operation op WHERE op.project = :param ))"
+				+ "OR t.service.project = :param)")
+				.setParameter("param", project);
+		tasks = (List<Task>) query.getResultList();
+
+		return tasks;
+	}
 
 	@Override
 	public List<Service> findAllServices(Project project) {
@@ -91,6 +104,27 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 				.setParameter("param", project);
 		boqs = (List<BillOfQuantities>) query.getResultList();
 		return boqs;
+	}
+	
+	@Override
+	public Integer findProjectUnassignedTasksCount(Project project) {
+		Query query = entityManager.createQuery("SELECT t FROM Task t WHERE ( t.service "
+				+ "IN (SELECT s FROM Service s WHERE s.operation IN (SELECT op FROM Operation op WHERE op.project.id = :param) )"
+				+ "OR t.service.project.id = :param)"
+				+ "AND size(t.users) = 0")
+				.setParameter("param", project.getId());
+		return query.getResultList().size();
+	}
+
+	@Override
+	public Integer findProjectOverdueTasksCount(Project project) {
+		Integer i = 0;
+		List<Task> tasks = findAllTasks(project);
+		for(Task t : tasks) {
+			if(t.getEndDate().before(new Date()))
+				i++;
+		}
+		return i;
 	}
 
 }

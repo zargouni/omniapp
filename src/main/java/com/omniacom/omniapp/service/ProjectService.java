@@ -32,6 +32,9 @@ public class ProjectService {
 	@Autowired
 	ServiceService serviceService;
 	
+	@Autowired
+	OperationService operationService;
+	
 	private Project currentProject;
 	
 	
@@ -121,8 +124,19 @@ public class ProjectService {
 				.element("owner", project.getOwner().getFirstName()+" "+project.getOwner().getLastName())
 				.element("country", project.getCountry())
 				.element("currency", project.getCurrency())
-				.element("percentage", getProjectProgress(project));
+				.element("percentage", getProjectProgress(project))
+				.element("unassignedTasksCount", getProjectUnassignedTasksCount(project))
+				.element("overdueTasksCount", getProjectOverdueTasksCount(project))
+				.element("tasksCount", findTaskCount(project));
 		return json;
+	}
+	
+	public Integer getProjectUnassignedTasksCount(Project project) {
+		return projectRepo.findProjectUnassignedTasksCount(project);		
+	}
+	
+	public Integer getProjectOverdueTasksCount(Project project) {
+		return projectRepo.findProjectOverdueTasksCount(project);		
 	}
 	
 	public String getProjectProgress(Project project) {
@@ -151,6 +165,26 @@ public class ProjectService {
 			.element("completed", "None");
 			
 		return json;
+	}
+
+	public Project save(Project project) {
+		return projectRepo.save(project);
+		
+	}
+
+	public JSONArray getProjectOperationsStatus(Project project) {
+		JSONArray array = new JSONArray();
+		List<Operation> operations = projectRepo.findAllOperations(project);
+		for(Operation op : operations) {
+			array.add(new JSONObject()
+					.element("operationId", op.getId())
+					.element("operationName", op.getName())
+					.element("siteName", op.getSite().getName())
+					.element("latitude", op.getSite().getLatitude())
+					.element("longitude", op.getSite().getLongitude())
+					.element("status", operationService.getOperationStatus(op)));
+		}
+		return array;
 	}
 
 }

@@ -17,6 +17,7 @@ import com.omniacom.omniapp.entity.BoqService;
 import com.omniacom.omniapp.entity.BoqServiceId;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
+import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.BoqServiceRepository;
 import com.omniacom.omniapp.repository.custom.BoqRepositoryCustom;
 
@@ -56,8 +57,9 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 	}
 
 	@Override
-	public boolean addOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template) {
+	public boolean addOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template,float price) {
 		BoqService boqService = new BoqService();
+		boqService.getBoqServiceId().setPrice(price);
 		boq.assignBoqServiceToThisBoq(boqService);
 		template.assignBoqServiceToThisTemplate(boqService);
 		if (boqStRepo.save(boqService) != null)
@@ -116,6 +118,20 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 			}
 		}
 		return validBoqs;
+	}
+
+	@Override
+	public float findServicePriceBoq(BillOfQuantities boq, ServiceTemplate template) {
+		Float price = null;
+		Query query = entityManager.createQuery(
+				"SELECT porteuse.boqServiceId.price FROM BoqService porteuse WHERE porteuse.boq.id = :param AND porteuse.template.id = :param2")
+				.setParameter("param", boq.getId())
+				.setParameter("param2", template.getId());
+		List<Float> results = (List<Float>) query.getResultList();
+		if (!results.isEmpty())
+			// ignores multiple results
+			price = (Float) results.get(0);
+		return price;
 	}
 
 }

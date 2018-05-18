@@ -18,8 +18,14 @@ public interface ProjectRepositoryCustom {
 	public List<User> findContributingUsers(Project project);
 	
 	public List<Task> findAllCompletedTasks(Project project);
+	
+	public List<Task> findAllTasks(Project project);
 
 	public List<Task> findAllOnGoingTasks(Project project);
 	
 	public List<BillOfQuantities> findAllBoqs(Project project);
+	
+	public Integer findProjectUnassignedTasksCount(Project project);
+	
+	public Integer findProjectOverdueTasksCount(Project project);
 }

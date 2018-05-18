@@ -177,11 +177,21 @@
 									class="m-checkbox m-checkbox--success"> <input
 									th:id="${serviceTemplate.id}" type="checkbox"
 									th:text="${serviceTemplate.name}"> <span></span>
+									<input type="hidden" th:id="|service_name_${serviceTemplate.id}|" th:value="${serviceTemplate.name}">
+									<input type="hidden" th:id="|service_price_hidden_${serviceTemplate.id}|" value="" />
 								</label>
 
 							</div>
 							<span class="m-form__help">These are all the service
 								templates available</span>
+						</div>
+						
+						<div class="m-form__group form-group">
+
+							<div id="selected_service_templates_edit_boq">
+								
+							</div>
+							
 						</div>
 
 

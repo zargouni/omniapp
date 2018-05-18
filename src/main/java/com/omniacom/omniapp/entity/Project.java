@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -50,8 +51,8 @@ public class Project implements Serializable {
 	@ManyToOne
 	private Nature nature;
 
-	@OneToMany(mappedBy = "project")
-	private List<BillOfQuantities> boqs;
+	@OneToOne
+	private BillOfQuantities boq;
 
 	@ManyToMany
 	@JoinTable(name = "USER_PROJECTS", joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
@@ -272,12 +273,7 @@ public class Project implements Serializable {
 		return client;
 	}
 
-	/**
-	 * @return the boqs
-	 */
-	public List<BillOfQuantities> getBoqs() {
-		return boqs;
-	}
+	
 
 	/**
 	 * @param client
@@ -287,13 +283,6 @@ public class Project implements Serializable {
 		this.client = client;
 	}
 
-	/**
-	 * @param boqs
-	 *            the boqs to set
-	 */
-	public void setBoqs(List<BillOfQuantities> boqs) {
-		this.boqs = boqs;
-	}
 	
 	public void addUser(User user) {
 		this.workingUsersList.add(user);
@@ -343,6 +332,20 @@ public class Project implements Serializable {
 	 */
 	public void setNature(Nature nature) {
 		this.nature = nature;
+	}
+
+	/**
+	 * @return the boq
+	 */
+	public BillOfQuantities getBoq() {
+		return boq;
+	}
+
+	/**
+	 * @param boq the boq to set
+	 */
+	public void setBoq(BillOfQuantities boq) {
+		this.boq = boq;
 	}
 
 }

@@ -26,8 +26,8 @@ public class BoqService {
 		return boqRepo.save(boq);
 	}
 
-	public boolean addOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template) {
-		return boqRepo.addOneServiceTemplate(boq, template);
+	public boolean addOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template,float price) {
+		return boqRepo.addOneServiceTemplate(boq, template,price);
 	}
 
 	public BillOfQuantities findOne(long id) {

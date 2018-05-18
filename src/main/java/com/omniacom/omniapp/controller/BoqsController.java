@@ -50,8 +50,8 @@ public class BoqsController {
 	@GetMapping("/get-boq-details")
 	public @ResponseBody JSONObject getBoqDetails(@RequestParam("id") long id) {
 		BillOfQuantities boq = boqService.findOne(id);
-		return boqService.jsonBoq(boq).element("services",
-				stService.jsonServiceTemplates(boqService.findAllServiceTemplates(boq)));
+		return boqService.jsonBoq(boq)
+				.element("services", stService.jsonServiceTemplatesWithPrices(boq,boqService.findAllServiceTemplates(boq)));
 	}
 
 	@PostMapping("/delete-boq")
@@ -105,14 +105,14 @@ public class BoqsController {
 	
 	@PostMapping("/update-boq-service-templates")
 	public @ResponseBody JsonResponse addServiceTemplateToBoq(@RequestParam("id") long templateId,
-			@RequestParam("boqId") long boqId) throws IOException {
-
+			@RequestParam("boqId") long boqId, @RequestParam("price") String priceString) throws IOException {
+		float priceHT = Float.valueOf(priceString);
 		JsonResponse response = new JsonResponse();
 
 		ServiceTemplate template = stService.findOne(templateId);
 		BillOfQuantities boq = boqService.findOne(boqId);
 		if (template != null && boq != null) {
-			if (!boqService.addOneServiceTemplate(boq, template))
+			if (!boqService.addOneServiceTemplate(boq, template,priceHT))
 				response.setStatus("FAIL");
 		}
 		return response;

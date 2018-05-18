@@ -8,4 +8,7 @@ import com.omniacom.omniapp.entity.User;
 public interface TaskRepositoryCustom {
 
 	public List<User> findAllUsers(Task task);
+
+	boolean addOneOwner(Task task, User user);
+
 }

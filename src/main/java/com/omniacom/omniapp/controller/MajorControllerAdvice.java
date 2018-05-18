@@ -30,6 +30,7 @@ import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.TaskTemplate;
+import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.service.BoqService;
 import com.omniacom.omniapp.service.ClientService;
 import com.omniacom.omniapp.service.OperationService;
@@ -127,6 +128,17 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	// private List<Service> selectedProjectServices;
 
+	@GetMapping("/get-all-users-json")
+	public @ResponseBody JSONArray getAllUsers() {
+		return userService.findAllUsers();
+	}
+	
+	@GetMapping("/get-all-users-json-details")
+	public @ResponseBody JSONArray getAllUsersDetailsJson() {
+		return userService.findAllUsersDetails();
+	}
+	
+	
 	@GetMapping("/")
 	public String index(Model model) {
 		if (userService.getSessionUser().getZohoToken() == null)
@@ -185,14 +197,14 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@PostMapping("/add-service-template-to-boq")
 	public @ResponseBody JsonResponse addServiceTemplateToBoq(@RequestParam("id") long templateId,
-			@RequestParam("boqId") long boqId) throws IOException {
-
+			@RequestParam("boqId") long boqId, @RequestParam("price") String price) throws IOException {
+		float priceHT = Float.valueOf(price);
 		JsonResponse response = new JsonResponse();
 
 		ServiceTemplate template = stService.findOne(templateId);
 		BillOfQuantities boq = boqService.findOne(boqId);
 		if (template != null && boq != null) {
-			if (!boqService.addOneServiceTemplate(boq, template))
+			if (!boqService.addOneServiceTemplate(boq, template,priceHT))
 				response.setStatus("FAIL");
 		}
 		return response;
@@ -209,6 +221,8 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		if (project != null && boq != null) {
 			boq.setProject(project);
 			boqService.updateBoq(boq.getId());
+			project.setBoq(boq);
+			projectService.save(project);
 			response.setStatus("SUCCESS");
 			return response;
 		}
@@ -292,13 +306,28 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		if (!result.hasErrors()) {
 			task.setStatus(TASK_STATUS_ONGOING);
-			taskService.addTask(task);
+			response.setResult(taskService.addTask(task).getId());
 			response.setStatus("SUCCESS");
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());
 		}
 
+		return response;
+	}
+	
+	@PostMapping("/add-task-owner")
+	public @ResponseBody JsonResponse addUserToTask(@RequestParam("id") long taskId,
+			@RequestParam("userId") long userId) {
+
+		JsonResponse response = new JsonResponse();
+		
+		User user = userService.findById(userId);
+		Task task = taskService.findOne(taskId);
+		if (task != null && user != null) {
+			if (!taskService.addOneOwner(task, user))
+				response.setStatus("FAIL");
+		}
 		return response;
 	}
 	
@@ -322,29 +351,31 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@PostMapping("/add-operation")
 	public @ResponseBody JsonResponse addOperation(@Validated @ModelAttribute("operation") Operation operation,
+			@RequestParam("responsible") String responsibleUserName,  
 			BindingResult result) throws IOException {
 
-		//JSONObject jsonResponse = new JSONObject();
 		JsonResponse response = new JsonResponse();
 		List<Object> resultSuccess = new ArrayList<>();
-
+		Operation addedOperation = null;
+		User responsible = userService.findByUserName(responsibleUserName);
 		if (!result.hasErrors()) {
-			Operation addedOperation = operationService.addOperation(operation);
-			resultSuccess.add(addedOperation.getId());
-			resultSuccess.add(projectService.findAllBoqs(operation.getProject()).size());
+			if(responsible != null) {
+				operation.setResponsible(responsible);
+				addedOperation = operationService.addOperation(operation);
+				resultSuccess.add(addedOperation.getId());
+				resultSuccess.add(projectService.findAllBoqs(operation.getProject()).size());
 
-			// jsonResponse.element("status", "SUCCESS")
-			// .element("result", addedOperation.getId())
-			// .element("boqListSize",
-			// projectService.findAllBoqs(operation.getProject()).size());
+			
 			response.setStatus("SUCCESS");
 			response.setResult(resultSuccess);
+			}else {
+				response.setStatus("FAIL");
+				response.setResult("INVALIDUSER");
+			}
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());
-			//
-			// jsonResponse.element("status", "FAIL")
-			// .element("result", response);
+			
 
 		}
 

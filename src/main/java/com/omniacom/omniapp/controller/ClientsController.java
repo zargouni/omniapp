@@ -17,11 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Nature;
-import com.omniacom.omniapp.entity.Project;
-import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.service.ClientService;
 import com.omniacom.omniapp.service.NatureService;
@@ -226,7 +223,7 @@ public class ClientsController {
 	}
 	
 	@PostMapping("/update-site-natures")
-	public @ResponseBody JsonResponse addServiceTemplateToBoq(@RequestParam("nature") Nature nature,
+	public @ResponseBody JsonResponse addNatureToSite(@RequestParam("nature") Nature nature,
 			@RequestParam("siteId") long siteId) throws IOException {
 
 		JsonResponse response = new JsonResponse();

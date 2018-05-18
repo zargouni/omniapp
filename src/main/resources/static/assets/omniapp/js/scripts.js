@@ -124,15 +124,22 @@ function doAddNewBoqAjax(){
 	}else{
 		toastr.warning("Couldn't add BOQ, you have to select at least 1 service", "Select Services");
 	}
+// $('#service_templates_new_boq_checkbox_list').find(":checkbox:checked").each(function
+// () {
+// console.log('selected '+$(this).attr('id')+' price
+// '+$('#service_price_'+$(this).attr('id')).val());
+//		
+// });
 }
 
 function doAddServiceTemplatesToNewBoq( boqId ){
 	$('#service_templates_new_boq_checkbox_list').find(":checkbox:checked").each(function () {
 		var templateId = $(this).attr('id');
+		var price = $('#service_price_hidden_'+templateId).val();
 		$.ajax({
 			type : "POST",
 			url : '/add-service-template-to-boq',
-			data : "id=" + templateId + "&boqId=" + boqId,
+			data : "id=" + templateId + "&boqId=" + boqId +"&price="+price,
 			success : function(response) {
 				// we have the response
 				if (response.status == "FAIL") {
@@ -145,6 +152,95 @@ function doAddServiceTemplatesToNewBoq( boqId ){
 		});
 	});
 }
+
+function populateCheckboxPopovers(){
+	$('#service_templates_new_boq_checkbox_list').find(":checkbox").each(function () {
+		var serviceId = $(this).attr('id');
+		var serviceName = $('#service_name_'+serviceId).val();
+		
+		$(this).popover({
+			placement: 'top',
+			trigger: 'manual',
+			skin: 'dark',
+			html: true,
+			template: '<div class="popover" style="width: 100px !important;" role="tooltip"><div class="arrow"></div><h3 style="color:#fff;background-color:#36a3f7;" class="popover-header"></h3><div class="popover-body"></div></div>',
+			content: '<input type="number" placeholde="Price" class="form-control m-input m-input--solid" id="service_price_'+serviceId+'"/>'
+			+'<a style="margin: auto;" href="#" id="service_price_save_btn_'+serviceId+'" class="btn btn-info m-btn">'
+									+'<span>Save</span>'
+								+'</a>',
+			
+			title: "Price "+serviceId,
+		
+		});	
+		
+		$(this).on('change', function(){
+			
+			var that = $(this);
+			$(document).off('focusin.modal');
+			// $(this).popover('show');
+			$(this).popover().focus();
+			if($(this).is(':checked')){
+				$(this).popover('show');
+				$(':checkbox').not(this).popover('hide');
+				$(':checkbox').not(this).parent().addClass('m-checkbox--disabled');
+				$('#input_new_boq_name').attr('disabled',true);
+				$('#input_new_boq_start_date').attr('disabled',true);
+				$('#input_new_boq_end_date').attr('disabled',true);
+				
+				$(':checkbox').not(this).attr('disabled',true);
+				$(this).popover().on('focusout',function() {
+					var price = $("#service_price_hidden"+serviceId).val(); 
+					if( price == '' ||  price <= 0){
+						toastr.warning("hey","price_"+serviceId);
+						$(this).popover().focus();
+					}
+// else{
+// $('#service_price_hidden_'+$(this).attr('id')).val($("#service_price_"+serviceId).val());
+// $(':checkbox').not(this).parent().removeClass('m-checkbox--disabled');
+// $(':checkbox').not(this).attr('disabled',false);
+// $(this).popover('hide');
+// }
+//						
+				});
+				
+				$('#service_price_save_btn_'+serviceId).on('click',function(){
+					var price = $("#service_price_"+serviceId).val(); 
+					if( price.length == 0 ||  price <= 0){
+						toastr.warning("hey","price_"+serviceId);
+						// $(this).popover().focus();
+					}else{
+						$('#service_price_hidden_'+that.attr('id')).val($("#service_price_"+serviceId).val());
+						$(':checkbox').not(that).parent().removeClass('m-checkbox--disabled');
+						$(':checkbox').not(that).attr('disabled',false);
+						$('#input_new_boq_name').attr('disabled',false);
+						$('#input_new_boq_start_date').attr('disabled',false);
+						$('#input_new_boq_end_date').attr('disabled',false);
+						that.popover('hide');
+						
+						$('#selected_service_templates').append('<span onclick="removeThisServiceFromSelectedServices('+serviceId+')" title="Remove this" id="selected_service_'+serviceId+'" style="font-size:15px;" class="btn btn-secondary btn-sm m-btn m-btn--custom m-btn--label-primary">'
+								  +serviceName+' <span style="font-weight:400;font-size:14px;color:#34bfa3;" class="badge badge-light">'+$("#service_price_hidden_"+that.attr("id")).val()+'</span>'
+								  +'</span>');
+					}
+				});
+				
+			}
+			if($(this).is(':unchecked')){
+				$(this).popover('hide');
+				$('#selected_service_'+serviceId).remove();
+				$(':checkbox').not(this).parent().removeClass('m-checkbox--disabled');
+				$(':checkbox').not(this).attr('disabled',false);
+			}
+		});
+		
+
+	});
+}
+
+function removeThisServiceFromSelectedServices(serviceId){
+	$('#service_templates_new_boq_checkbox_list').find(":checkbox[id*="+serviceId+"]").prop('checked',false);
+	$('#selected_service_'+serviceId).remove();
+}
+
 
 function doAddProjectAjaxPost() {
 	var nameError = $('#project_name_error');
@@ -223,6 +319,7 @@ function doAddOperationAjaxPost() {
 	var startDate = $('#m_datepicker_4_3').val();
 	var endDate = $('#m_datepicker_4_4').val();
 	var site = $('#select_site_new_operation').val();
+	var responsible = $('#operation_responsible').val();
 
 	nameError.hide('fast');
 	projectError.hide('fast');
@@ -234,7 +331,7 @@ function doAddOperationAjaxPost() {
 		type : "POST",
 		url : '/add-operation',
 		data : "name=" + name + "&site="+site+"&project=" + project + "&startDate="
-				+ startDate + "&endDate=" + endDate,
+				+ startDate + "&endDate=" + endDate+"&responsible="+responsible,
 		success : function(response) {
 			if (response.status == "SUCCESS") {
 				var addedOperationId = response.result[0];
@@ -277,20 +374,25 @@ function doAddOperationAjaxPost() {
 
 
 			} else {
-				toastr.error("", "Please fill all required fields");
-				for (i = 0; i < response.result.length; i++) {
-					if (response.result[i].code == "operation.name.empty")
-						nameError.show('slow');
-					if (response.result[i].code == "operation.project.empty")
-						projectError.show('slow');
-					if (response.result[i].code == "operation.startDate.empty")
-						startDateError.show('slow');
-					if (response.result[i].code == "operation.endDate.empty")
-						endDateError.show('slow');
-					if (response.result[i].code == "operation.date.nomatch")
-						toastr.warning("Dates don't match", "Warning");
-					if (response.result[i].code == "operation.site.empty")
-						toastr.warning('Select a site for the operation');
+				if(response.result == "INVALIDUSER"){
+					toastr.error('Invalid responsible');
+					
+				}else{
+					toastr.error("", "Please fill all required fields");
+					for (i = 0; i < response.result.length; i++) {
+						if (response.result[i].code == "operation.name.empty")
+							nameError.show('slow');
+						if (response.result[i].code == "operation.project.empty")
+							projectError.show('slow');
+						if (response.result[i].code == "operation.startDate.empty")
+							startDateError.show('slow');
+						if (response.result[i].code == "operation.endDate.empty")
+							endDateError.show('slow');
+						if (response.result[i].code == "operation.date.nomatch")
+							toastr.warning("Dates don't match", "Warning");
+						if (response.result[i].code == "operation.site.empty")
+							toastr.warning('Select a site for the operation');
+					}
 				}
 
 			}
@@ -327,7 +429,7 @@ function doAddTaskAjaxPost() {
 		success : function(response) {
 			if (response.status == "SUCCESS") {
 				toastr.success("Task added successfully", "Well done!");
-
+				doAddTaskOwners(response.result);
 				$('#task_name').val('');
 				$('#m_datepicker_4_1').val('');
 				$('#m_datepicker_4_2').val('');
@@ -365,6 +467,53 @@ function doAddTaskAjaxPost() {
 			toastr.error("Couldn't add task", "Server Error");
 		}
 	});
+}
+
+function doAddTaskOwners(taskId){
+	$('#select_owners_new_task').find(":selected").each(function(){
+		var user = $(this).attr('value');
+		//alert('selected values: '+$(this).attr('value'));
+		//alert('task: '+taskId);
+		$.ajax({
+			type : "POST",
+			url : '/add-task-owner',
+			data : "id=" + taskId + "&userId=" + user,
+			success : function(response) {
+				// we have the response
+				if (response.status == "FAIL") {
+					toastr.error("Couldn't add owner", "Error");
+				} 
+			},
+			error : function(e) {
+				console.log("error: "+e);
+				toastr.error("Couldn't add owner", "Server Error");
+			}
+		});
+	});
+		
+	
+}
+
+function populateNewTaskOwnerSelect(){
+	
+	$.ajax({
+		type : "GET",
+		url : '/get-all-users-json-details',
+		async: false,
+		success : function(response) {
+			var html_text = '';
+			for (i = 0; i < response.length; i++) {
+				html_text += '<option value="'+response[i].id+'">'+response[i].firstName+' '+response[i].lastName+'</option>';
+				
+			}
+			$('#select_owners_new_task').html(html_text);
+			$('#select_owners_new_task').selectpicker('refresh');
+		},
+		error : function(e) {
+			alert('Error: can"t get users ' + e);
+		}
+	});
+	
 }
 
 function doAddServiceAjaxPost() {
@@ -413,7 +562,8 @@ function doAddServiceAjaxPost() {
 					 populateServicesTabOperationFragment(operationId);
 				}
 				if($('#operations_datatable').length){
-					//var operationId = $('#operation_fragment_selected_operation_id').val();
+					// var operationId =
+					// $('#operation_fragment_selected_operation_id').val();
 					$('#operations_datatable').mDatatable('reload');
 				}
 				
@@ -446,53 +596,6 @@ function doAddServiceAjaxPost() {
 	});
 }
 
-function projectDynamicContent() {
-	projectDashboardTaskPieChart();
-	$("#dashboard-fragment").show();
-	$('#project_subheader').show();
-
-	$("#project_dashboard_toggle").on("click", function(event) {
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		projectDashboardTaskPieChart();
-		$("#dashboard-fragment").show();
-	});
-
-	$("#project_feed_toggle").on("click", function() {
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		$("#feed-fragment").show();
-
-		});
-
-	$("#project_tasks_toggle").on("click", function() {
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		populateTasksFragmentWidget();
-		$("#tasks-fragment").show();
-		
-		});
-
-	$("#project_operations_toggle").on("click", function() {
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		DatatableOperationsJsonRemote.init();
-		$("#operations-fragment").show();
-	});
-
-	$("#project_issues_toggle").on("click", function() {
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		$("#issues-fragment").show();	
-	});
-
-	$("#project_calendar_toggle").on("click", function() {
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		$("#calendar-fragment").show();
-	});
-
-}
 
 function populateServicesListNewTaskForm() {
 	var selectedProjectId = $("#select_project_new_task").val();
@@ -812,53 +915,61 @@ function populateGenerateOperationServicesCheckboxList(projectId,operationId){
 					
 					
 					
-//					if(i==0){
-//						navLinks += '<li id="'+response[i].id+'" style="display:none;" class="nav-item">'
-//							+'<a href="#'+response[i].name+'" class="nav-link" data-toggle="tab" role="tab" aria-controls="'+response[i].name+'">'+response[i].name+'</a>'
-//							+'</li>';
+// if(i==0){
+// navLinks += '<li id="'+response[i].id+'" style="display:none;"
+// class="nav-item">'
+// +'<a href="#'+response[i].name+'" class="nav-link" data-toggle="tab"
+// role="tab" aria-controls="'+response[i].name+'">'+response[i].name+'</a>'
+// +'</li>';
 //		
-//					}else{
-//						navLinks += '<li id="'+response[i].id+'" style="display:none;" class="nav-item">'
-//							+'<a href="#'+response[i].name+'" class="nav-link" data-toggle="tab" role="tab" aria-controls="'+response[i].name+'">'+response[i].name+'</a>'
-//							+'</li>';
-//					}
-//						navContent +='<div name="nav_content_'+response[i].id+'" class="tab-pane fade" id="'+response[i].name+'" role="tabpanel">'
-//						+'<div class="m-widget11">'
-//						+'<div class="table-responsive">'
-//							+'<!--begin::Table-->		'						 
-//							+'<table class="table">'
-//								+'<!--begin::Thead-->'
-//								+'<thead>'
-//								+'	<tr>'
-//									+'	<td style="width:5%;" class="m-widget11__label">#</td>'
-//										+'<td style="width:50%;" class="m-widget11__app">Name</td>'
-//										+'<td style="width:15%;" class="m-widget11__sales"><span style="display:table;margin:0 auto;">HR</span></td>'
-//										+'<td style="width:15%;" class="m-widget11__price"><span style="display:table;margin:0 auto;">Days</span></td>'
-//										+'<td style="width:15%;" class="m-widget11__total"><span style="display:table;margin:0 auto;">Priority</span></td>'
-//									+'</tr>'
-//								+'</thead>'
-//								+'<!--end::Thead-->'
-//								+'<!--begin::Tbody-->'
-//								+'<tbody name="tbody_'+response[i].id+'">'
-//								+'</tbody>'
-//								+'<!--end::Tbody-->	'									     
-//							+'</table>'
-//							+'<!--end::Table-->'
-//						+'</div>'
+// }else{
+// navLinks += '<li id="'+response[i].id+'" style="display:none;"
+// class="nav-item">'
+// +'<a href="#'+response[i].name+'" class="nav-link" data-toggle="tab"
+// role="tab" aria-controls="'+response[i].name+'">'+response[i].name+'</a>'
+// +'</li>';
+// }
+// navContent +='<div name="nav_content_'+response[i].id+'" class="tab-pane
+// fade" id="'+response[i].name+'" role="tabpanel">'
+// +'<div class="m-widget11">'
+// +'<div class="table-responsive">'
+// +'<!--begin::Table--> '
+// +'<table class="table">'
+// +'<!--begin::Thead-->'
+// +'<thead>'
+// +' <tr>'
+// +' <td style="width:5%;" class="m-widget11__label">#</td>'
+// +'<td style="width:50%;" class="m-widget11__app">Name</td>'
+// +'<td style="width:15%;" class="m-widget11__sales"><span
+// style="display:table;margin:0 auto;">HR</span></td>'
+// +'<td style="width:15%;" class="m-widget11__price"><span
+// style="display:table;margin:0 auto;">Days</span></td>'
+// +'<td style="width:15%;" class="m-widget11__total"><span
+// style="display:table;margin:0 auto;">Priority</span></td>'
+// +'</tr>'
+// +'</thead>'
+// +'<!--end::Thead-->'
+// +'<!--begin::Tbody-->'
+// +'<tbody name="tbody_'+response[i].id+'">'
+// +'</tbody>'
+// +'<!--end::Tbody--> '
+// +'</table>'
+// +'<!--end::Table-->'
+// +'</div>'
 //
-//					+'</div>'
-//								+'</div>';
+// +'</div>'
+// +'</div>';
 		
 					
 					
 				}
 				
 				$("div[id*=category_]").each(function (){
-					//console.log($(this).attr('id'));
+					// console.log($(this).attr('id'));
 					if($(this).children().length > 0)
 						$(this).parent().show();
 				});
-				//$('#service_templates_new_operation_checkbox_list').html(html_text);
+				// $('#service_templates_new_operation_checkbox_list').html(html_text);
 				// $('#vertical-nav-links').html(navLinks);
 				// $('#vertical-nav-content').html(navContent);
 
@@ -1021,7 +1132,11 @@ function populateSidebarAdd() {
 	$('#operation_startDate_error').hide('fast');
 	$('#operation_endDate_error').hide('fast');
 	
+	populateNewTaskOwnerSelect();
+	
 	populateSelectOwnedProjects();
+	
+	populateOperationResponsibleTypeAhead();
 	$('#sites_map_container').attr("style","display:none;width:100%; height:50px;position: relative;");
 	$('#sites_map_canvas_sidebar').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
 	$('#select_service_div').hide();
@@ -1030,6 +1145,21 @@ function populateSidebarAdd() {
 	$('#select_operation_new_service').selectpicker('refresh');
 
 	
+}
+
+function populateOperationResponsibleTypeAhead() {
+	
+		
+    var users = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: './get-all-users-json'
+    });
+
+    $('#operation_responsible').typeahead(null, {
+        name: 'users',
+        source: users
+    });
 }
 
 function gmapPopoverInit(){
@@ -1070,7 +1200,7 @@ $(document).ready(function() {
 	
 	
 	  	
-	projectDynamicContent();
+	
 	toastr.options = {
 		"closeButton" : true,
 		"debug" : false,

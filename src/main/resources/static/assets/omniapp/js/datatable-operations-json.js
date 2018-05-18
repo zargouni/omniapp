@@ -73,7 +73,7 @@ var DatatableOperationsJsonRemote = function () {
 				sortable: true,
 				width: 200,
 				template: function(row) {
-					return '<a onclick="toggleOperationFragment('+ row.id +')">'+row.name + '</a>';
+					return '<a href="#" onclick="toggleOperationFragment('+ row.id +')">'+row.name + '</a>';
 				}
 			}, {
 		        field: 'status',
@@ -92,7 +92,11 @@ var DatatableOperationsJsonRemote = function () {
 				type: 'date',
 				format: 'DD MMMM YYYY',
 				sortable: true,
-				width: 100
+				width: 100,
+				responsive: {visible: 'lg'},
+				template: function(row){
+					return '<span style="font-weight:400;font-size:14px;color: #716aca;">'+row.startDate+'</span>'
+				}
 			}, {
 				field: "endDate",
 				title: "Due Date",
@@ -100,14 +104,30 @@ var DatatableOperationsJsonRemote = function () {
 				format: 'DD MMMM YYYY',
 				sortable: true,
 				width: 100,
-				responsive: {visible: 'lg'}
+				responsive: {visible: 'lg'},
+				template: function(row){
+					return '<span style="font-weight:400;font-size:14px;color: #716aca;">'+row.endDate+'</span>'
+				}
 			}, {
+				field: "price",
+				title: "Total Price",
+				type: 'number',
+				sortable: true,
+				width: 100,
+				responsive: {visible: 'lg'},
+				template: function(row){
+					return '<span style="font-weight:600;font-size:14px;color: #f4516c;">'+row.price+' '+row.currency+'</span>';
+				}
+			},{
 				field: "serviceCount",
 				title: "Services",
 				type: 'number',
 				sortable: true,
 				width: 100,
-				responsive: {visible: 'lg'}
+				responsive: {visible: 'lg'},
+				template: function(row){
+					return '<span style="font-weight:600;font-size:14px;color: #36a3f7;">'+row.serviceCount+'</span>'
+				}
 			}
 //			, {
 //				field: "Actions",

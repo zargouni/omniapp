@@ -20,54 +20,50 @@ public class ServiceService {
 
 	@Autowired
 	ServiceRepository serviceRepo;
-	
+
 	@Autowired
 	TaskService taskService;
-	
-	public com.omniacom.omniapp.entity.Service findById(long id){
+
+	public com.omniacom.omniapp.entity.Service findById(long id) {
 		return serviceRepo.findOne(id);
 	}
-	
+
 	public com.omniacom.omniapp.entity.Service addService(com.omniacom.omniapp.entity.Service service) {
 		service.setCreationDate(new Date());
 		return serviceRepo.save(service);
 	}
-	
-	public List<Task> findAllTasks(com.omniacom.omniapp.entity.Service service){
+
+	public List<Task> findAllTasks(com.omniacom.omniapp.entity.Service service) {
 		return serviceRepo.findAllTasks(service);
 	}
-	
-	
-	
+
 	public String getServicePercentageComplete(com.omniacom.omniapp.entity.Service service) {
 		List<Task> tasks = serviceRepo.findAllTasks(service);
 		Integer complete = 0;
-		for(Task t : tasks) {
-			if(t.getStatus().equals(StaticString.TASK_STATUS_COMPLETED))
+		for (Task t : tasks) {
+			if (t.getStatus().equals(StaticString.TASK_STATUS_COMPLETED))
 				complete++;
 		}
-		if(complete != 0)
-		return (complete*100/tasks.size()+"%");
+		if (complete != 0)
+			return (complete * 100 / tasks.size() + "%");
 		return "0%";
 	}
-	
+
 	public JSONObject jsonService(com.omniacom.omniapp.entity.Service service) {
-		return new JSONObject()
-					.element("id", service.getId())
-					.element("name", service.getName())
-					.element("category", service.getCategory())
-					.element("description", service.getDescription())
-					.element("price", service.getPriceHT())
-					.element("creationDate", new SimpleDateFormat("dd MM YYYY", Locale.ENGLISH).format(service.getCreationDate()))
-					.element("taskCount", serviceRepo.findAllTasks(service).size())
-					.element("percentage", getServicePercentageComplete(service));
+		return new JSONObject().element("id", service.getId()).element("name", service.getName())
+				.element("category", service.getCategory()).element("description", service.getDescription())
+				.element("price", service.getPriceHT())
+				.element("creationDate",
+						new SimpleDateFormat("dd MM YYYY", Locale.ENGLISH).format(service.getCreationDate()))
+				.element("taskCount", serviceRepo.findAllTasks(service).size())
+				.element("percentage", getServicePercentageComplete(service));
 	}
 
 	public JSONArray getAllServiceTasksJson(long serviceId) {
 		JSONArray array = new JSONArray();
 		com.omniacom.omniapp.entity.Service service = serviceRepo.findOne(serviceId);
-		if(service != null && service.getTasks().size() >0) {
-			for(Task t : service.getTasks()) {
+		if (service != null && service.getTasks().size() > 0) {
+			for (Task t : service.getTasks()) {
 				array.add(taskService.jsonTaskFormattedDates(t));
 			}
 		}

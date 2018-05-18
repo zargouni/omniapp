@@ -69,7 +69,11 @@ function populateClientsUI(){
 				        	+'<div style="position:relative;top:2%;left:1%;float:left;"><a onclick="populateModalNewSite('+response[i].id+')" title="New Site" data-toggle="modal" data-target="#modal_new_site" class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only">'
 							+'<i class="fa fa-map-marker"></i>'
 							+'</a></div>'
-							+'<div  style="width:25%; position:absolute;top:2%;right:35%;float:right;">'
+							+'<div  style="width:17%; position:absolute;top:2%;left:27%;float:left;">'
+							+'<select data-style="btn-info" style="position:absolute;width:100%;" id="site_nature_filter_client_'+response[i].id+'" class="form-control m-bootstrap-select m_selectpicker" data-live-search="true" >'
+							+'</select>'
+							+'</div>'
+							+'<div  style="width:25%; position:absolute;top:2%;right:30%;float:right;">'
 							+'<select style="position:absolute;width:100%;" id="select_site_client_'+response[i].id+'" class="form-control m-bootstrap-select m_selectpicker" data-live-search="true" >'
 							+'</select>'
 							+'</div>'
@@ -103,6 +107,7 @@ function populateClientsUI(){
 		}
 	});
 	natureDatatableJson.init();
+	populateNatureFilter();
 
 	}
 
@@ -462,6 +467,7 @@ function populateClientSites(clientId){
 				        lng: response[i].longitude,
 				        title: response[i].name,
 				        id: response[i].id,
+				        natures: response[i].natures,
 				       
 				        click: function(e,id,title) {
 				       	  
@@ -504,6 +510,23 @@ function populateClientSites(clientId){
 			alert('Error: services ' + e);
 		}
 	});
+	
+	$('#site_nature_filter_client_'+clientId).on('change',function(){
+		filterMarkersByNature(map,$(this).val())
+	});
+	
+	
+}
+
+function filterMarkersByNature(map,nature){
+	    for (i = 0; i < map.markers.length; i++) {
+	        if (map.markers[i].natures.match(nature) || nature.length === 0) {
+	        	map.markers[i].setVisible(true);
+	        }
+	        else {
+	        	map.markers[i].setVisible(false);
+	        }
+	    }
 }
 
 function populateClientDetails(client){
@@ -743,6 +766,27 @@ function handleRemoveNatureClick(natureId) {
 
 }
 
+function populateNatureFilter(){
+	$.ajax({
+		type : "GET",
+		url : '/json-natures',
+		success : function(response) {
+			var html_text = '<option value="">All Sites</option>';
+			for (i = 0; i < response.length; i++) {
+				html_text += '<option value="'+response[i].name+'">'+response[i].name+'</option>';
+			}
+			
+			
+			$('select[id*=site_nature_filter_client_]').each(function(){
+				$(this).html(html_text);
+				$(this).selectpicker('refresh');
+			});
+		},
+		error : function(e) {
+			alert('Error: natures ' + e);
+		}
+	});
+}
 function populateNatureListNewSite() {
 	$.ajax({
 		type : "GET",
@@ -750,13 +794,14 @@ function populateNatureListNewSite() {
 		success : function(response) {
 			var arr = [];
 			for (i = 0; i < response.length; i++) {
-					
 						arr.push({
 							 id: response[i].name,
 				             text: response[i].name
 					   	});
 
 			}
+			
+			
 			$(".new-site-form-nature").each(function(){
 				if($(this).val() == "0" || $(this).val() == null || $(this).val() == '' ){
 					$(this).html('');

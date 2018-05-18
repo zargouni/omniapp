@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.TaskTemplate;
+import com.omniacom.omniapp.repository.BoqRepository;
 import com.omniacom.omniapp.repository.ServiceTemplateRepository;
 
 import net.sf.json.JSONObject;
@@ -18,6 +19,9 @@ public class ServiceTemplateService {
 
 	@Autowired
 	ServiceTemplateRepository serviceTemplateRepo;
+	
+	@Autowired
+	BoqRepository boqRepo;
 
 	public ServiceTemplate addServiceTemplate(ServiceTemplate template) {
 		return serviceTemplateRepo.save(template);
@@ -66,7 +70,20 @@ public class ServiceTemplateService {
 		for (ServiceTemplate template : templates) {
 			jsonService = new JSONObject().element("id", template.getId())
 					.element("name", template.getName()).element("description", template.getDescription())
-//					.element("price", template.getPrice())
+					//.element("price", boqRe)
+					.element("category", template.getCategory());
+			jsonTemplates.add(jsonService);
+		}
+		return jsonTemplates;
+	}
+	
+	public List<JSONObject> jsonServiceTemplatesWithPrices(BillOfQuantities boq, List<ServiceTemplate> templates) {
+		List<JSONObject> jsonTemplates = new ArrayList<>();
+		JSONObject jsonService = null;
+		for (ServiceTemplate template : templates) {
+			jsonService = new JSONObject().element("id", template.getId())
+					.element("name", template.getName()).element("description", template.getDescription())
+					.element("price", boqRepo.findServicePriceBoq(boq, template))
 					.element("category", template.getCategory());
 			jsonTemplates.add(jsonService);
 		}

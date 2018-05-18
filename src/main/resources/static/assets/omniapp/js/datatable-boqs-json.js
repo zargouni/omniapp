@@ -160,6 +160,7 @@ var DatatableBoqsJsonRemote = function () {
 
 
 function populateBoqDetails(id){
+	$('#selected_service_templates_edit_boq').html("");
 	$('#service_templates_checkbox_list').find(":checkbox").prop('checked',false);
 	$.ajax({
 		type : "GET",
@@ -174,6 +175,11 @@ function populateBoqDetails(id){
 				$('#service_templates_checkbox_list')
 				.find(":checkbox[id='"+response.services[i].id+"']")
 				.prop("checked", true);
+				
+				$('#service_price_hidden_'+response.services[i].id).val(response.services[i].price);
+				$('#selected_service_templates_edit_boq').append('<span onclick="removeThisServiceFromSelectedServicesEditBoq('+response.services[i].id+')" title="Remove this" id="selected_service_'+response.services[i].id+'" style="font-size:15px;" class="btn btn-secondary btn-sm m-btn m-btn--custom m-btn--label-primary">'
+						  +response.services[i].name+' <span style="font-weight:400;font-size:14px;color:#34bfa3;" class="badge badge-light">'+response.services[i].price+'</span>'
+						  +'</span>');
 					
 			}			
 		},
@@ -182,6 +188,95 @@ function populateBoqDetails(id){
 		}
 	});	
 }
+
+function removeThisServiceFromSelectedServicesEditBoq(serviceId){
+	$('#service_templates_checkbox_list').find(":checkbox[id*="+serviceId+"]").prop('checked',false);
+	$('#selected_service_'+serviceId).remove();
+}
+
+function populateCheckboxPopoversEditBoq(){
+	$('#service_templates_checkbox_list').find(":checkbox").each(function () {
+		var serviceId = $(this).attr('id');
+		var serviceName = $('#service_name_'+serviceId).val();
+		
+		$(this).popover({
+			placement: 'top',
+			trigger: 'manual',
+			skin: 'dark',
+			html: true,
+			template: '<div class="popover" style="width: 100px !important;" role="tooltip"><div class="arrow"></div><h3 style="color:#fff;background-color:#36a3f7;" class="popover-header"></h3><div class="popover-body"></div></div>',
+			content: '<input type="number" placeholder="Price" class="form-control m-input m-input--solid" id="service_price_'+serviceId+'"/>'
+			+'<a style="margin: auto;" href="#" id="service_price_save_btn_'+serviceId+'" class="btn btn-info m-btn">'
+									+'<span>Save</span>'
+								+'</a>',
+			
+			title: "Price "+serviceId,
+		
+		});	
+		
+		$(this).on('change', function(){
+			
+			var that = $(this);
+			$(document).off('focusin.modal');
+			//$(this).popover('show');
+			$(this).popover().focus();
+			if($(this).is(':checked')){
+				$(this).popover('show');
+				$(':checkbox').not(this).popover('hide');
+				$(':checkbox').not(this).parent().addClass('m-checkbox--disabled');
+				$('#input_boq_name').attr('disabled',true);
+				$('#input_boq_start_date').attr('disabled',true);
+				$('#input_boq_end_date').attr('disabled',true);
+				
+				$(':checkbox').not(this).attr('disabled',true);
+				$(this).popover().on('focusout',function() {
+					var price = $("#service_price_hidden"+serviceId).val(); 
+					if( price == '' ||  price <= 0){
+						toastr.warning("hey","price_"+serviceId);
+						$(this).popover().focus();
+					}
+//					else{
+//						$('#service_price_hidden_'+$(this).attr('id')).val($("#service_price_"+serviceId).val());
+//						$(':checkbox').not(this).parent().removeClass('m-checkbox--disabled');
+//						$(':checkbox').not(this).attr('disabled',false);
+//						$(this).popover('hide');
+//					}
+//						
+				});
+				
+				$('#service_price_save_btn_'+serviceId).on('click',function(){
+					var price = $("#service_price_"+serviceId).val(); 
+					if( price.length == 0 ||  price <= 0){
+						toastr.warning("hey","price_"+serviceId);
+						//$(this).popover().focus();
+					}else{
+						$('#service_price_hidden_'+that.attr('id')).val($("#service_price_"+serviceId).val());
+						$(':checkbox').not(that).parent().removeClass('m-checkbox--disabled');
+						$(':checkbox').not(that).attr('disabled',false);
+						$('#input_boq_name').attr('disabled',false);
+						$('#input_boq_start_date').attr('disabled',false);
+						$('#input_boq_end_date').attr('disabled',false);
+						that.popover('hide');
+						
+						$('#selected_service_templates_edit_boq').append('<span onclick="removeThisServiceFromSelectedServicesEditBoq('+serviceId+')" title="Remove this" id="selected_service_'+serviceId+'" style="font-size:15px;" class="btn btn-secondary btn-sm m-btn m-btn--custom m-btn--label-primary">'
+								  +serviceName+' <span style="font-weight:400;font-size:14px;color:#34bfa3;" class="badge badge-light">'+$("#service_price_hidden_"+that.attr("id")).val()+'</span>'
+								  +'</span>');
+					}
+				});
+				
+			}
+			if($(this).is(':unchecked')){
+				$(this).popover('hide');
+				$('#selected_service_'+serviceId).remove();
+				$(':checkbox').not(this).parent().removeClass('m-checkbox--disabled');
+				$(':checkbox').not(this).attr('disabled',false);
+			}
+		});
+		
+
+	});
+}
+
 
 function handleRemoveBoqClick(id){
 	var boqId = $("#btn-remove-boq-" + id).attr('id').substring(15);
@@ -283,6 +378,7 @@ function handleUpdateBoq(id){
 
 function toggleModalEditDetails(id){
 	populateBoqDetails(id);
+	populateCheckboxPopoversEditBoq();
 	$('#button_update_boq').attr('onClick','handleUpdateBoq('+id+')');
 	$('#edit-boq-details').modal();
 }
@@ -293,10 +389,11 @@ function toggleModalEditDetails(id){
 function doUpdateServiceTemplatesToBoq( boqId ){
 	$('#service_templates_checkbox_list').find(":checkbox:checked").each(function () {
 		var templateId = $(this).attr('id');
+		var price = $('#service_price_hidden_'+templateId).val();
 		$.ajax({
 			type : "POST",
 			url : '/update-boq-service-templates',
-			data : "id=" + templateId + "&boqId=" + boqId,
+			data : "id=" + templateId + "&boqId=" + boqId+"&price="+price,
 			async: false,
 			success : function(response) {
 				// we have the response

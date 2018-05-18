@@ -1,6 +1,7 @@
 package com.omniacom.omniapp.service;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -14,6 +15,7 @@ import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.TaskTemplate;
+import com.omniacom.omniapp.repository.BoqRepository;
 import com.omniacom.omniapp.repository.OperationRepository;
 import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
@@ -45,6 +47,9 @@ public class OperationService {
 	ProjectRepository projectRepo;
 	
 	@Autowired
+	BoqRepository boqRepo;
+	
+	@Autowired
 	ServiceService serviceService;
 	
 	@Autowired
@@ -64,6 +69,7 @@ public class OperationService {
 		if (operation != null && template != null) {
 			com.omniacom.omniapp.entity.Service newService = stService.convertToService(template);
 			newService.setOperation(operation);
+			newService.setPriceHT(boqRepo.findServicePriceBoq(operation.getProject().getBoq(), template));
 			newService.setCreationDate(new Date());
 			returnService = serviceRepo.save(newService);
 			for(TaskTemplate t : template.getTasks()) {
@@ -106,9 +112,20 @@ public class OperationService {
 				.element("serviceCount", getOperationServiceCount(op))
 				.element("flag", op.getFlag())
 				.element("project", projectService.jsonProject(op.getProject()))
-				.element("site", siteService.jsonSite(op.getSite()));
+				.element("site", siteService.jsonSite(op.getSite()))
+				.element("price", getOperationPrice(op))
+				.element("currency", op.getProject().getCurrency());
 	}
 	
+	public float getOperationPrice(Operation operation) {
+		List<com.omniacom.omniapp.entity.Service> services = operationRepo.findAllServices(operation);
+		float price = 0;
+		if(services.size() > 0)
+			for(com.omniacom.omniapp.entity.Service service : services) {
+				price += service.getPriceHT();
+			}
+		return price;
+	}
 	public Integer getOperationServiceCount(Operation op) {
 		return operationRepo.findAllServices(op).size();
 	}
@@ -126,6 +143,19 @@ public class OperationService {
 	
 	public Operation findOne(long operationId) {
 		return operationRepo.findOne(operationId);
+	}
+
+	public String getOperationStatus(Operation op) {
+		boolean open = false;
+		List<com.omniacom.omniapp.entity.Service> services = op.getServices();
+		for(com.omniacom.omniapp.entity.Service service : services) {
+			if(!serviceService.getServicePercentageComplete(service).equals("100%"))
+				open = true;
+		}
+		
+		if(open == true)
+			return "open";
+		return "closed";
 	}
 
 	
