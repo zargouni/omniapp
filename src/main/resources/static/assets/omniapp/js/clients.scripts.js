@@ -112,15 +112,15 @@ function populateClientsUI(){
 	}
 
 function HandleMapControls(map,clientId){
-	//var googleMapWidth = $("#m_portlet_tab_1_2").css('width');
-	//var googleMapHeight = $("#m_portlet_tab_1_2").css('height');
+	// var googleMapWidth = $("#m_portlet_tab_1_2").css('width');
+	// var googleMapHeight = $("#m_portlet_tab_1_2").css('height');
 
 	$('#btn-enter-full-screen-'+clientId).click(function() {
 		
-//		if(!(clientId % 2))
-//			$('#clients_container_odd_row').hide();
-//		else
-//			$('#clients_container_even_row').hide();
+// if(!(clientId % 2))
+// $('#clients_container_odd_row').hide();
+// else
+// $('#clients_container_even_row').hide();
 //		
 		$('#general-header').hide();
 		
@@ -139,7 +139,7 @@ function HandleMapControls(map,clientId){
 	    });
 
 	    google.maps.event.trigger(map, 'resize');
-	    //map.setCenter(newyork);
+	    // map.setCenter(newyork);
 
 	    // Gui
 	    $('#btn-enter-full-screen-'+clientId).toggle();
@@ -164,7 +164,7 @@ function HandleMapControls(map,clientId){
 	    });
 
 	    google.maps.event.trigger(map, 'resize');
-	    //map.setCenter(newyork);
+	    // map.setCenter(newyork);
 
 	    // Gui
 	    $('#btn-enter-full-screen-'+clientId).toggle();
@@ -257,7 +257,7 @@ function updateClientDetails(clientId){
 	countryError.hide('fast');
 	addressError.hide('fast');
 	phoneError.hide('fast');
-//	if ($('#update_site_nature').find(":selected").length != 0){
+// if ($('#update_site_nature').find(":selected").length != 0){
 	$.ajax({
 		type : "POST",
 		url : '/update-client',
@@ -267,19 +267,20 @@ function updateClientDetails(clientId){
 			if (response.status == "SUCCESS") {
 				toastr.success("Client updated successfully", "Well done!");
 				if(response.result != 'undefined'){
-					//doUpdateSiteNatures(siteId);
+					// doUpdateSiteNatures(siteId);
 					$("#modal_update_client").modal('hide');
 					$('#update_client_name').val('');
 					$('#update_client_email').val('');
 					$('#update_client_address').val('');
 					$('#update_client_phone').val('');
 
-					//$('#service_templates_boq_checkbox_list :checkbox').prop('checked', false);
-//					setTimeout(
-//							  function() 
-//							  {
-//								  location.reload()
-//							  }, 1000);
+					// $('#service_templates_boq_checkbox_list
+					// :checkbox').prop('checked', false);
+// setTimeout(
+// function()
+// {
+// location.reload()
+// }, 1000);
 					
 					populateClientsUI();
 				}
@@ -311,10 +312,11 @@ function updateClientDetails(clientId){
 			toastr('Error: can\'t update client details ', e);
 		}
 	});	
-//	}else{
-//		toastr.warning("Couldn't update Site, you have to select at least 1 nature", "Select Nature(s)");
-//	}
-	//console.log("hi"+id);
+// }else{
+// toastr.warning("Couldn't update Site, you have to select at least 1 nature",
+// "Select Nature(s)");
+// }
+	// console.log("hi"+id);
 }
 
 function handleUpdateSite(siteId){
@@ -336,7 +338,8 @@ function handleUpdateSite(siteId){
 					$('#update_site_name').val('');
 					$('#update_site_latitude').val('');
 					$('#update_site_longitude').val('');
-					//$('#service_templates_boq_checkbox_list :checkbox').prop('checked', false);
+					// $('#service_templates_boq_checkbox_list
+					// :checkbox').prop('checked', false);
 					populateClientsUI();
 				}
 			} else {
@@ -363,13 +366,13 @@ function handleUpdateSite(siteId){
 	}else{
 		toastr.warning("Couldn't update Site, you have to select at least 1 nature", "Select Nature(s)");
 	}
-	//console.log("hi"+id);
+	// console.log("hi"+id);
 }
 
 function doUpdateSiteNatures(siteId){
 	$('#update_site_nature').find(":selected").each(function(){
 		var nature = $(this).attr('value');
-		//alert('selected values: '+$(this).attr('value'));
+		// alert('selected values: '+$(this).attr('value'));
 		$.ajax({
 			type : "POST",
 			url : '/update-site-natures',
@@ -642,12 +645,12 @@ function doAddNewNature(){
 					$("#new-nature-modal").modal('hide');
 					$('#natures_datatable').mDatatable('reload');
 					
-//					setTimeout(
-//							  function() 
-//							  {
-//								  location.reload();
+// setTimeout(
+// function()
+// {
+// location.reload();
 //								  
-//							  }, 500);
+// }, 500);
 					
 					
 				}
@@ -743,7 +746,7 @@ function handleRemoveNatureClick(natureId) {
 												'success');
 										$('#natures_datatable').mDatatable('reload');
 										populateClientsUI();
-										//$('#init_nature_datatable').click();
+										// $('#init_nature_datatable').click();
 										
 									} else {
 										swal('Fail!', 'Nature not deleted.',
@@ -824,16 +827,44 @@ function populateNatureListNewSite() {
 function populateModalNewSite(clientId){
 	$('#button_save_sites').attr('onClick', 'newSiteSaveManualAddedSites('+clientId+')');
 	populateNatureListNewSite();
-}
+	
+	 
+	 var myDropzone = new Dropzone("#xls-dropzone-site", { // Make the whole body a
+			// dropzone
+		 paramName: "excelfile",
+		 url: "/process-excel-sites", // Set the url
+		 autoQueue: true, // Make sure the files aren't queued until manuall
+		 previewsContainer: false,
+		 acceptedFiles: ".xlsx, .xls",
+		 success: function (file, response) {
+		      
+		      if(response.status == "SUCCESS"){
+		    	  toastr.success("Added "+response.result+" sites","Well Done");
+		    	  $('#modal_new_site').modal('hide');
+		    	  populateClientsUI();
+		      }
+		      else
+		    	  toastr.error("You are trying to add already existing sites","Existing Sites")
+		 }
+	 });
+	 
+	 myDropzone.on("sending", function(file, xhr, formData) {
+		  // Show the total progress bar when upload starts
+			 formData.append('id',clientId);
+		 // document.querySelector("#total-progress").style.opacity = "1";
+		  // And disable the start button
+		  //file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+		});
+	}
 
 function initFormRepeaterNewSite(){
 	populateNatureListNewSite();
 }
 
 $(document).ready(function() {
-//	$('#init_nature_datatable').on('click',function(){
-//		natureDatatableJson.init();
-//	});
+// $('#init_nature_datatable').on('click',function(){
+// natureDatatableJson.init();
+// });
 	
 	
 	

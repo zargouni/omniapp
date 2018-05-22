@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,9 +18,11 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.omniacom.StaticString;
@@ -65,7 +70,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private BoqValidator boqValidator;
-	
+
 	@Autowired
 	private ServiceValidator serviceValidator;
 
@@ -101,7 +106,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private BoqService boqService;
-	
+
 	@Autowired
 	private ServiceService serviceService;
 
@@ -132,13 +137,12 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	public @ResponseBody JSONArray getAllUsers() {
 		return userService.findAllUsers();
 	}
-	
+
 	@GetMapping("/get-all-users-json-details")
 	public @ResponseBody JSONArray getAllUsersDetailsJson() {
 		return userService.findAllUsersDetails();
 	}
-	
-	
+
 	@GetMapping("/")
 	public String index(Model model) {
 		if (userService.getSessionUser().getZohoToken() == null)
@@ -179,7 +183,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		Project project = projectService.findOneById(projectId);
 		JSONArray sites = new JSONArray();
 		if (project != null) {
-			sites = clientService.findAllSitesByNatureJson(project.getNature(),project.getClient());
+			sites = clientService.findAllSitesByNatureJson(project.getNature(), project.getClient());
 		}
 		return sites;
 	}
@@ -204,7 +208,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		ServiceTemplate template = stService.findOne(templateId);
 		BillOfQuantities boq = boqService.findOne(boqId);
 		if (template != null && boq != null) {
-			if (!boqService.addOneServiceTemplate(boq, template,priceHT))
+			if (!boqService.addOneServiceTemplate(boq, template, priceHT))
 				response.setStatus("FAIL");
 		}
 		return response;
@@ -240,7 +244,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JSONArray json = JSONArray.fromObject(jsonArray);
 		return json;
 	}
-	
+
 	@GetMapping("/get-project-operations")
 	public @ResponseBody JSONArray getProjectOperations(@RequestParam("projectId") long projectId) {
 		return projectService.getAllOperationsJson(projectId);
@@ -315,13 +319,13 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		return response;
 	}
-	
+
 	@PostMapping("/add-task-owner")
 	public @ResponseBody JsonResponse addUserToTask(@RequestParam("id") long taskId,
 			@RequestParam("userId") long userId) {
 
 		JsonResponse response = new JsonResponse();
-		
+
 		User user = userService.findById(userId);
 		Task task = taskService.findOne(taskId);
 		if (task != null && user != null) {
@@ -330,16 +334,15 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		}
 		return response;
 	}
-	
+
 	@PostMapping("/add-service")
-	public @ResponseBody JsonResponse addService(@Validated Service service, BindingResult result)
-			throws IOException {
+	public @ResponseBody JsonResponse addService(@Validated Service service, BindingResult result) throws IOException {
 
 		JsonResponse response = new JsonResponse();
 
 		if (!result.hasErrors()) {
 			serviceService.addService(service);
-			
+
 			response.setStatus("SUCCESS");
 		} else {
 			response.setStatus("FAIL");
@@ -351,31 +354,28 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@PostMapping("/add-operation")
 	public @ResponseBody JsonResponse addOperation(@Validated @ModelAttribute("operation") Operation operation,
-			@RequestParam("responsible") String responsibleUserName,  
-			BindingResult result) throws IOException {
+			@RequestParam("responsible") String responsibleUserName, BindingResult result) throws IOException {
 
 		JsonResponse response = new JsonResponse();
 		List<Object> resultSuccess = new ArrayList<>();
 		Operation addedOperation = null;
 		User responsible = userService.findByUserName(responsibleUserName);
 		if (!result.hasErrors()) {
-			if(responsible != null) {
+			if (responsible != null) {
 				operation.setResponsible(responsible);
 				addedOperation = operationService.addOperation(operation);
 				resultSuccess.add(addedOperation.getId());
 				resultSuccess.add(projectService.findAllBoqs(operation.getProject()).size());
 
-			
-			response.setStatus("SUCCESS");
-			response.setResult(resultSuccess);
-			}else {
+				response.setStatus("SUCCESS");
+				response.setResult(resultSuccess);
+			} else {
 				response.setStatus("FAIL");
 				response.setResult("INVALIDUSER");
 			}
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());
-			
 
 		}
 
@@ -419,7 +419,6 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		return response;
 	}
-
 
 	List<Site> addedSiteList;
 	private Client newClient;
@@ -495,6 +494,52 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		return true;
 	}
 
+	@PostMapping("/process-excel-sites")
+	public @ResponseBody JsonResponse processExcel(@RequestParam("id") long clientId,
+			@RequestParam("excelfile") MultipartFile excelfile) {
+		JsonResponse response = new JsonResponse();
+		try {
+			List<Site> sites = new ArrayList<>();
+			int i = 0;
+			int addedSites = 0;
+			// Creates a workbook object from the uploaded excelfile
+			HSSFWorkbook workbook = new HSSFWorkbook(excelfile.getInputStream());
+			// Creates a worksheet object representing the first sheet
+			HSSFSheet worksheet = workbook.getSheetAt(0);
+			// Reads the data in excel file until last row is encountered
+			while (i <= worksheet.getLastRowNum()) {
+				// Creates an object for the UserInfo Model
+				Site site = new Site();
+				// Creates an object representing a single row in excel
+				HSSFRow row = worksheet.getRow(i++);
+				// Sets the Read data to the model class
+				site.setName(row.getCell(0).getStringCellValue());
+				site.setLatitude(row.getCell(1).getNumericCellValue());
+				site.setLongitude(row.getCell(2).getNumericCellValue());
+				site.setClient(clientService.findById(clientId));
+				// persist data into database in here
+				if (!clientService.siteExists(clientService.findById(clientId), site)) {
+					sites.add(site);
+					addedSites++;
+				}
+			}
+
+			siteService.addSites(sites);
+			workbook.close();
+			if (addedSites > 0) {
+				response.setStatus("SUCCESS");
+				response.setResult(addedSites);
+			} else
+				response.setStatus("FAIL");
+
+			// model.addAttribute("lstUser", lstUser);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+
 	// Convert objects to json format
 	public JSONObject jsonService(Service service) {
 		JSONObject jsonService = new JSONObject().element("id", service.getId()).element("name", service.getName());
@@ -549,7 +594,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	protected void setBoqValidator(WebDataBinder binder) {
 		binder.addValidators(boqValidator);
 	}
-	
+
 	@InitBinder("service")
 	protected void setServiceValidator(WebDataBinder binder) {
 		binder.addValidators(serviceValidator);
