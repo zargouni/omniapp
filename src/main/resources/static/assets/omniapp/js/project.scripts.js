@@ -16,17 +16,96 @@ function populateProjectDetails() {
 	});
 }
 
+function filterMarkersByOperationStatus(map,status){
+    for (i = 0; i < map.markers.length; i++) {
+        if (map.markers[i].status.match(status) || status.length === 0) {
+        	map.markers[i].setVisible(true);
+        }
+        else {
+        	map.markers[i].setVisible(false);
+        }
+    }
+}
+
+function handleDashboardMapControls(map){
+	//var googleMapWidth = $("#m_portlet_tab_1_2").css('width');
+	//var googleMapHeight = $("#m_portlet_tab_1_2").css('height');
+
+	$('#btn-enter-full-screen-dashboard-map').click(function() {
+		
+//		if(!(clientId % 2))
+//			$('#clients_container_odd_row').hide();
+//		else
+//			$('#clients_container_even_row').hide();
+//		
+		$('#general-header').hide();
+		
+	    $('#dashboard_map').parent().css({
+	        position: 'fixed',
+	        top: 0,
+	        zIndex: 2,
+	        left: 0,
+	        width: '100%',
+	        height: '100%',
+	        backgroundColor: 'white'
+	    });
+
+	    $('#dashboard_map').css({
+	        height: '100%'
+	    });
+
+	    google.maps.event.trigger(map, 'resize');
+	    //map.setCenter(newyork);
+
+	    // Gui
+	    $('#btn-enter-full-screen-dashboard-map').toggle();
+	    $('#btn-exit-full-screen-dashboard-map').toggle();
+
+	    return false;
+	});
+
+	$('#btn-exit-full-screen-dashboard-map').click(function() {
+		
+		$('#general-header').show();
+		
+	
+		
+		 $('#dashboard_map').parent().css({
+	        position: 'relative',
+	        top: 0,
+	        zIndex: 1,
+	        width: '100%',
+	        height: '500px',
+	        backgroundColor: 'transparent'
+	    });
+
+	    google.maps.event.trigger(map, 'resize');
+	    //map.setCenter(newyork);
+
+	    // Gui
+	    $('#btn-enter-full-screen-dashboard-map').toggle();
+	    $('#btn-exit-full-screen-dashboard-map').toggle();
+	    return false;
+	});
+}
+
 function populateDashboardMap() {
 	var projectId = $('#selected_project_id').val();
 	var map_div = "#dashboard_map";
+	
+	$('#operation_status_filter').on('change',function(){
+		filterMarkersByOperationStatus(map,$(this).val())
+	});
 
 	var map = new GMaps({
 		div : map_div,
 		lat : 34.7615155,
 		lng : 10.6630578,
-		scrollwheel : true,
-		disableDefaultUI : false,
+		disableDefaultUI: true,
+		
 	});
+	
+	handleDashboardMapControls(map);
 
 	$
 			.ajax({
@@ -52,20 +131,15 @@ function populateDashboardMap() {
 									+ response[i].status,
 							id : response[i].operationId,
 							status : response[i].status,
-							icon : icons[response[i].status].icon
+							icon : icons[response[i].status].icon,
 
-						// click: function(e,id,title) {
-						//				       	  
-						// if (console.log) console.log(e);
-						// for (i in map.markers){
-						// map.markers[i].setIcon();
-						//					
-						// }
-						// $(this).attr('icon','https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/48/Map-Marker-Marker-Outside-Chartreuse.png');
-						// $('#select_site_client_'+clientId).val($(this).attr('id'));
-						// $('#select_site_client_'+clientId).selectpicker('refresh');
-						//								
-						// }
+						 click: function(e,id) {
+							 console.log("id: "+$(this).attr('id'));
+							 
+							 toggleOperationFragment($(this).attr('id'));
+							 
+														
+						 }
 						});
 
 					}
@@ -85,8 +159,10 @@ function toggleOperationFragment(operationId) {
 	var coordinates = populateOperationSiteMap(operationId);
 	// console.log("lat: "+coordinates[0]);
 	// console.log("long: "+coordinates[1]);
-
-	$("#operations-fragment").hide();
+	if($("#operations-fragment").is(':visible'))
+		$("#operations-fragment").hide();
+	if($("#dashboard-fragment").is(':visible'))
+		$("#dashboard-fragment").hide();
 	populateServicesTabOperationFragment(operationId);
 	populateOperationDetails(operationId);
 	$("#operation-fragment").show();
@@ -320,6 +396,7 @@ function populateTaskFragmentDetails(taskId) {
 	$('#task_end_date_select').datepicker({
 		format : 'dd/mm/yyyy'
 	});
+	
 
 	$.ajax({
 		type : "GET",
@@ -327,6 +404,7 @@ function populateTaskFragmentDetails(taskId) {
 		data : 'id=' + taskId,
 		async : false,
 		success : function(response) {
+			var html_text = "";
 			$('#portlet_task_name').html(response.name);
 			$('#task_name_input').val(response.name);
 			$('#task_status_select').val(response.status);
@@ -338,12 +416,72 @@ function populateTaskFragmentDetails(taskId) {
 			$('#task_estimation_hr_input').val(response.estimationHR);
 			$('#task_estimation_days_input').val(response.estimationTime);
 			toggleReadOnlyModeTask();
+			for(i=0 ; i < response.files.length ; i++){
+				html_text += '<div><div class="row">'
+				+'<div class="col-md-8"><i class="fa fa-file-text"></i><a target="self" href="/download-attachment?id='+response.files[i].id+'"> '
+				+response.files[i].name+'</a>'
+				+'<span><p><small>size: '+parseInt(response.files[i].size/1024) +' KB</small>'
+				+'<small> Added on: '+response.files[i].creationDate+'</small></p></span>'
+				+'</div>'
+				+'<div class="col-md-4"><a href="#" onclick="handleDeleteAttachment('+response.files[i].id+')" class="btn btn-danger m-btn m-btn--icon m-btn--icon-only m-btn--pill">'
+				+'<i class="la la-close"></i>'
+				+'</a>'
+				+'</div>'
+				+'</div>'
+				
+				+'</div>';
+			}
+			$('#attachments_div').html(html_text);
 
 		},
 		error : function(e) {
 			alert('Error: Task ' + e);
 		}
 	});
+}
+
+function handleDeleteAttachment(fileId){
+	swal({
+		title : 'Are you sure?',
+		text : "You won't be able to revert this!",
+		type : 'warning',
+		showCancelButton : true,
+		confirmButtonText : 'Yes, delete it!'
+	}).then(
+			function(result) {
+				if (result.value) {
+					$
+							.ajax({
+								type : "POST",
+								url : '/delete-attachment',
+								data : "id=" + fileId,
+								async : true,
+								success : function(response) {
+									if (response.status == "SUCCESS") {
+										swal('Deleted!',
+												'Attachment has been deleted.',
+												'success');
+										populateTaskFragmentDetails($('#selected_task_id').val());
+										
+									} else {
+										swal('Fail!', 'Attachment not deleted.',
+												'error');
+									}
+
+								},
+								error : function(e) {
+									toastr.error("Couldn't delete Attachment",
+											"Server Error");
+									result = false;
+								}
+							});
+
+				}
+
+			}
+
+	);
+	
 }
 
 function populateTaskParents(taskId) {
@@ -372,6 +510,8 @@ function toggleTaskFragment(taskId) {
 	if ($('#tasks-fragment').is(':visible'))
 		$('#tasks-fragment').hide();
 	populateTaskFragmentDetails(taskId);
+	
+	$('#selected_task_id').val(taskId);
 
 	$('#task-fragment').show();
 	$('#task_fragment_update_cancel').attr('onClick',
@@ -583,6 +723,74 @@ function projectDynamicContent() {
 }
 
 $(document).ready(function() {
+	
+	
 	populateProjectDetails();
 	projectDynamicContent();
+	
+	// bootstrap dropzone
+	// Get the template HTML and remove it from the doumenthe template HTML and
+	// remove it from the doument
+	var previewNode = document.querySelector("#template");
+	previewNode.id = "";
+	var previewTemplate = previewNode.parentNode.innerHTML;
+	previewNode.parentNode.removeChild(previewNode);
+
+	var myDropzone = new Dropzone("#task-fragment", { // Make the whole body a
+														// dropzone
+	  url: "/upload", // Set the url
+	  thumbnailWidth: 80,
+	  thumbnailHeight: 80,
+	  parallelUploads: 20,
+	  previewTemplate: previewTemplate,
+	  autoQueue: false, // Make sure the files aren't queued until manually
+						// added
+	  previewsContainer: "#previews", // Define the container to display the
+										// previews
+	  clickable: ".fileinput-button", // Define the element that should be
+										// used as click trigger to select
+										// files.
+	  acceptedFiles: "image/*,application/pdf, .doc, .docx, .xls",
+	});
+
+	myDropzone.on("addedfile", function(file) {
+		if($('#previews').is(':hidden'))
+		$('#previews').show();
+	  // Hookup the start button
+	  file.previewElement.querySelector(".start").onclick = function() { myDropzone.enqueueFile(file); };
+	});
+
+	// Update the total progress bar
+	myDropzone.on("totaluploadprogress", function(progress) {
+	  document.querySelector("#total-progress .progress-bar").style.width = progress + "%";
+	});
+
+	myDropzone.on("sending", function(file, xhr, formData) {
+	  // Show the total progress bar when upload starts
+		 formData.append('id',$('#selected_task_id').val());
+	  document.querySelector("#total-progress").style.opacity = "1";
+	  // And disable the start button
+	  file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+	});
+
+	// Hide the total progress bar when nothing's uploading anymore
+	myDropzone.on("queuecomplete", function(progress) {
+	  document.querySelector("#total-progress").style.opacity = "0";
+	  toastr.success("Attachment uploaded successfully","Well Done")
+	  $('#previews').hide('slow');
+	  populateTaskFragmentDetails($('#selected_task_id').val());
+	});
+
+	// Setup the buttons for all transfers
+	// The "add files" button doesn't need to be setup because the config
+	// `clickable` has already been specified.
+	document.querySelector("#actions .start").onclick = function() {
+	  myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+	};
+	document.querySelector("#actions .cancel").onclick = function() {
+	  myDropzone.removeAllFiles(true);
+	};
+	// end bootstrap dropzone
+	
+	
 });

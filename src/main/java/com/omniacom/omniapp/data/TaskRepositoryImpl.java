@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.omniacom.omniapp.entity.Task;
+import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.custom.TaskRepositoryCustom;
 
@@ -40,6 +41,17 @@ public class TaskRepositoryImpl implements TaskRepositoryCustom {
 			task.getService().getProject().getWorkingUsersList().add(user);
 		}
 		return task.getUsers().add(user);
+	}
+
+	@Override
+	public List<UploadedFile> findAllFiles(Task task) {
+		List<UploadedFile> files = null;
+		Query query = entityManager
+				.createQuery(
+				"SELECT f FROM UploadedFile f WHERE f.task.id = :param")
+				.setParameter("param", task.getId());
+		files = (List<UploadedFile>) query.getResultList();
+		return files;
 	}
 
 }

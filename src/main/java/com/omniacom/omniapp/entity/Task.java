@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Task implements Serializable {
@@ -39,6 +40,9 @@ public class Task implements Serializable {
 	@ManyToMany
 	@JoinTable(name = "USER_TASK", joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> users = new ArrayList<User>();
+	
+	@OneToMany(mappedBy="task")
+	private List<UploadedFile> attachments;
 	
 	public Task() {
 
@@ -205,6 +209,24 @@ public class Task implements Serializable {
 	 */
 	public void setEstimationRH(int estimationRH) {
 		this.estimationRH = estimationRH;
+	}
+
+
+
+	/**
+	 * @return the attachments
+	 */
+	public List<UploadedFile> getAttachments() {
+		return attachments;
+	}
+
+
+
+	/**
+	 * @param attachments the attachments to set
+	 */
+	public void setAttachments(List<UploadedFile> attachments) {
+		this.attachments = attachments;
 	}
 	
 

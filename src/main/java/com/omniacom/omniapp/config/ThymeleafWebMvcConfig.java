@@ -1,9 +1,12 @@
 package com.omniacom.omniapp.config;
 
+
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.ITemplateEngine;
@@ -39,6 +42,7 @@ public class ThymeleafWebMvcConfig extends WebMvcConfigurerAdapter {
 		// templateEngine.addDialect(new LayoutDialect());
 		return templateEngine;
 	}
+	
 
 	private ITemplateResolver templateResolver() {
 		SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();

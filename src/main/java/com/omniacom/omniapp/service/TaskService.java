@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.omniapp.entity.Task;
+import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.TaskRepository;
 import com.omniacom.omniapp.repository.UserRepository;
@@ -27,6 +28,7 @@ public class TaskService {
 	
 	@Autowired
 	UserService userService;
+	
 
 	public Task addTask(Task task) {
 		return taskRepo.save(task);
@@ -65,7 +67,8 @@ public class TaskService {
 				.element("startDate", new SimpleDateFormat("dd/MM/yyyy").format(task.getStartDate()))
 				.element("endDate", new SimpleDateFormat("dd/MM/yyyy").format(task.getEndDate()))
 				.element("estimationHR", task.getEstimationRH()).element("estimationTime", task.getEstimationTime())
-				.element("priority", task.getPriority()).element("status", task.getStatus());
+				.element("priority", task.getPriority()).element("status", task.getStatus())
+				.element("files", findAllFiles(task));
 	}
 
 	public JSONObject jsonTaskFormattedDates(Task task) {
@@ -105,4 +108,22 @@ public class TaskService {
 		}
 		return array;
 	}
+	
+	public JSONArray findAllFiles(Task task) {
+		JSONArray array = new JSONArray();
+		List<UploadedFile> files = taskRepo.findAllFiles(task);
+		for(UploadedFile file : files) {
+			if(!file.isDeleted())
+			array.add(new JSONObject()
+					.element("name", file.getName())
+					.element("id", file.getId())
+					.element("location", file.getLocation())
+					.element("type", file.getType())
+					.element("size", file.getSize())
+					.element("creationDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(file.getCreationDate())));
+		}
+		return array;
+	}
+
+	
 }

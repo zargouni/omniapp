@@ -64,7 +64,7 @@ function populateClientsUI(){
 							+'</div>'
 							+'<div style="position:relative;top:2%;right:1%;float:right;">'
 				            +'<a title="Fullscreen" href="#"  id="btn-enter-full-screen-'+response[i].id+'" class="btn btn-secondary m-btn m-btn--icon m-btn--icon-only"><i class="fa fa-expand"></i></a>'
-				            +'<a title="Exit Fullscreen" href="#" style="display:none;" id="btn-exit-full-screen-'+response[i].id+'" class="btn btn-secondary m-btn m-btn--icon m-btn--icon-only" ><i class="fa fa-compress"></i></button>'
+				            +'<a title="Exit Fullscreen" href="#" style="display:none;" id="btn-exit-full-screen-'+response[i].id+'" class="btn btn-secondary m-btn m-btn--icon m-btn--icon-only" ><i class="fa fa-compress"></i></a>'
 				            +'</div>'
 				        	+'<div style="position:relative;top:2%;left:1%;float:left;"><a onclick="populateModalNewSite('+response[i].id+')" title="New Site" data-toggle="modal" data-target="#modal_new_site" class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only">'
 							+'<i class="fa fa-map-marker"></i>'

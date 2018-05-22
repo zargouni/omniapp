@@ -1,7 +1,22 @@
 package com.omniacom.omniapp.controller;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
+import java.util.Date;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,17 +25,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Task;
+import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
+import com.omniacom.omniapp.repository.UploadedFileRepository;
 import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
 import com.omniacom.omniapp.service.ServiceService;
 import com.omniacom.omniapp.service.TaskService;
+import com.omniacom.omniapp.service.UploadedFileService;
 import com.omniacom.omniapp.service.UserService;
 import com.omniacom.omniapp.validator.JsonResponse;
 
@@ -41,9 +60,12 @@ public class ProjectController {
 
 	@Autowired
 	TaskService taskService;
-	
+
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	UploadedFileService fileService;
 
 	@GetMapping("/project")
 	public ModelAndView index(Model model) {
@@ -57,7 +79,7 @@ public class ProjectController {
 	public void addAttributes(Model model, @RequestParam("id") long projectId) {
 		// set current project
 		projectService.setCurrentProject(projectService.findOneById(projectId));
-		model.addAttribute("selectedProject",projectService.findOneById(projectId));
+		model.addAttribute("selectedProject", projectService.findOneById(projectId));
 		model.addAttribute("taskCount", projectService.findTaskCount(projectService.getCurrentProject()));
 		model.addAttribute("completedTasksCount",
 				projectService.findCompletedTasksCount(projectService.getCurrentProject()));
@@ -67,19 +89,17 @@ public class ProjectController {
 		model.addAttribute("ServiceTasksMap", projectService.getMapServiceTasks(projectService.getCurrentProject()));
 
 	}
-	
+
 	@GetMapping("/get-project-operations-status")
 	public @ResponseBody JSONArray getProjectOperationsStatus(@RequestParam("id") Project project) {
 		return projectService.getProjectOperationsStatus(project);
 	}
-	
+
 	@GetMapping("/get-project-details")
 	public @ResponseBody JSONObject getprojectDetails(@RequestParam("id") long projectId) {
 		Project project = projectService.findOneById(projectId);
 		return projectService.jsonProject(project);
 	}
-	
-	
 
 	@GetMapping("/json-operations")
 	public @ResponseBody JSONArray getAllOperationsJson(@RequestParam("id") long projectId) {
@@ -96,7 +116,7 @@ public class ProjectController {
 		Operation op = operationService.findOne(operationId);
 		return operationService.jsonOperationFormattedDates(op);
 	}
-	
+
 	@GetMapping("/get-service-details")
 	public @ResponseBody JSONObject getServiceDetails(@RequestParam("id") long serviceId) {
 		Service service = serviceService.findById(serviceId);
@@ -115,34 +135,34 @@ public class ProjectController {
 			return taskService.jsonTask(task);
 		return new JSONObject();
 	}
-	
+
 	@PostMapping("/update-task")
 	public @ResponseBody JsonResponse doUpdateTask(@RequestParam("id") long taskId, @Validated Task updatedTask,
 			BindingResult result) {
 		JsonResponse response = new JsonResponse();
 
 		if (!result.hasErrors()) {
-			//if (!taskService.boqNameExists(boq.getName())) {
-				
-				if (taskService.updateTask(taskId, updatedTask)) {
+			// if (!taskService.boqNameExists(boq.getName())) {
 
-					response.setStatus("SUCCESS");
-				} else {
-					response.setStatus("FAIL");
-				}
-		//	} else if (boq.getName().equals(boqService.findOne(boqId).getName())) {
-			//	if (boqService.updateBoq(boqId, boq)) {
+			if (taskService.updateTask(taskId, updatedTask)) {
 
-			//		response.setStatus("SUCCESS");
-			//	} else {
-				//	response.setStatus("FAIL");
-			//	}
-			//} else {
+				response.setStatus("SUCCESS");
+			} else {
+				response.setStatus("FAIL");
+			}
+			// } else if (boq.getName().equals(boqService.findOne(boqId).getName())) {
+			// if (boqService.updateBoq(boqId, boq)) {
 
-			//	response.setStatus("FAIL");
-			//	response.setResult("boq-exists");
+			// response.setStatus("SUCCESS");
+			// } else {
+			// response.setStatus("FAIL");
+			// }
+			// } else {
 
-			//}
+			// response.setStatus("FAIL");
+			// response.setResult("boq-exists");
+
+			// }
 
 		} else {
 			response.setStatus("FAIL");
@@ -151,12 +171,12 @@ public class ProjectController {
 
 		return response;
 	}
-	
+
 	@GetMapping("/get-project-tasks-stats")
 	public @ResponseBody JSONObject getProjectTasksStats(@RequestParam("id") long projectId) {
 		return projectService.getProjectTaskStats(projectId);
 	}
-	
+
 	@GetMapping("/get-task-parents")
 	public @ResponseBody JSONObject getTaskParents(@RequestParam("id") long taskId) {
 		return taskService.getTaskParents(taskId);
@@ -266,7 +286,7 @@ public class ProjectController {
 	// public void setCurrentProject(Project currentProject) {
 	// this.currentProject = currentProject;
 	// }
-	
+
 	@GetMapping("/get-all-users-in-task-details-json")
 	public @ResponseBody JSONArray getAllUsersForTask(@RequestParam("id") long taskId) {
 		return taskService.findAllUsersForTask(taskId);
@@ -277,10 +297,9 @@ public class ProjectController {
 			@RequestParam("userId") long userId) {
 
 		JsonResponse response = new JsonResponse();
-		
 
-		//ServiceTemplate template = stService.findOne(templateId);
-		//Site site = siteService.findSite(siteId);
+		// ServiceTemplate template = stService.findOne(templateId);
+		// Site site = siteService.findSite(siteId);
 		User user = userService.findById(userId);
 		Task task = taskService.findOne(taskId);
 		if (task != null && user != null) {
@@ -289,6 +308,94 @@ public class ProjectController {
 		}
 		return response;
 	}
+
+	@PostMapping(value = "/upload")
+	public ResponseEntity handleFileUpload(@RequestParam("id") long id, @RequestParam("file") MultipartFile[] files) {
+		boolean success = true;
+		UploadedFile dbFile = new UploadedFile();
+		for (int i = 0; i < files.length; i++) {
+			try {
+				fileService.saveFileToLocalDisk(files[i]);
+				dbFile.setName(files[i].getOriginalFilename());
+				dbFile.setSize(files[i].getSize());
+				dbFile.setType(files[i].getContentType());
+				dbFile.setCreationDate(new Date());
+				dbFile.setLocation(fileService.getDestinationLocation());
+				dbFile.setTask(taskService.findOne(id));
+				
+				fileService.saveFileToDatabase(dbFile);
+
+			} catch (IOException e) {
+				success = false;
+			}
+		}
+		if (success)
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("All Files uploaded");
+
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all files were not uploaded");
+
+	}
+	
+	@Autowired
+	UploadedFileRepository fileRepo;
+	
+	@GetMapping("/download-attachment")
+	public void handleFileDownload(HttpServletResponse response, @RequestParam("id") long id) throws IOException {
+		File file = null;
+		UploadedFile dbFile = fileRepo.findOne(id);
+		if(dbFile != null) {
+			file = new File(dbFile.getLocation()+""+dbFile.getName());
+		}else{
+            String errorMessage = "Sorry. The file you are looking for does not exist";
+            System.out.println(errorMessage);
+            OutputStream outputStream = response.getOutputStream();
+            outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
+            outputStream.close();
+            return;
+        }
+         
+        String mimeType= URLConnection.guessContentTypeFromName(file.getName());
+        if(mimeType==null){
+            System.out.println("mimetype is not detectable, will take default");
+            mimeType = "application/octet-stream";
+        }
+         
+        System.out.println("mimetype : "+mimeType);
+         
+        response.setContentType(mimeType);
+         
+        /* "Content-Disposition : inline" will show viewable types [like images/text/pdf/anything viewable by browser] right on browser 
+            while others(zip e.g) will be directly downloaded [may provide save as popup, based on your browser setting.]*/
+        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() +"\""));
+ 
+         
+        /* "Content-Disposition : attachment" will be directly download, may provide save as popup, based on your browser setting*/
+        //response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
+         
+        response.setContentLength((int)file.length());
+ 
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+ 
+        //Copy bytes from source to destination(outputstream in this example), closes both streams.
+        FileCopyUtils.copy(inputStream, response.getOutputStream());
+    }
+	
+	@PostMapping("/delete-attachment")
+	public @ResponseBody JsonResponse deleteFile(@RequestParam("id") long fileId ) {
+		JsonResponse response = new JsonResponse();
+
+		if (fileService.deleteFile(fileId)) {
+			
+			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
+			//response.setResult(result.getFieldErrors());
+		}
+		return response;
+	}
+
+
+
 	public JSONObject jsonTask(Task task) {
 		JSONObject jsonTask = new JSONObject().element("TaskId", task.getId()).element("TaskName", task.getName())
 				.element("TaskStartDate", task.getStartDate().toString())

@@ -655,10 +655,12 @@ function populateSelectOwnedProjects() {
 				}
 				$("#select_project_new_task").html(html_text);
 				$("#select_project_new_operation").html(html_text);
+				$("#select_project_edit_operation").html(html_text);
 				$("#select_project_new_service").html(html_text);
 
 			}
 			$("#select_project_new_operation").selectpicker('refresh');
+			$("#select_project_edit_operation").selectpicker('refresh');
 
 			$("#select_project_new_task").selectpicker('refresh');
 			$("#select_project_new_service").selectpicker('refresh');
