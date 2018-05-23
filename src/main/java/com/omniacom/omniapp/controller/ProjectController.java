@@ -28,12 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
+import com.omniacom.omniapp.repository.CommentRepository;
 import com.omniacom.omniapp.repository.UploadedFileRepository;
 import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
@@ -115,6 +117,11 @@ public class ProjectController {
 	public @ResponseBody JSONObject getOperationDetails(@RequestParam("id") long operationId) {
 		Operation op = operationService.findOne(operationId);
 		return operationService.jsonOperationFormattedDates(op);
+	}
+	
+	@GetMapping("/get-operation-comments")
+	public @ResponseBody JSONArray getOperationComments(@RequestParam("id") long operationId) {
+		return operationService.getOperationComments(operationId);
 	}
 
 	@GetMapping("/get-service-details")
@@ -305,6 +312,29 @@ public class ProjectController {
 		if (task != null && user != null) {
 			if (!taskService.addOneOwner(task, user))
 				response.setStatus("FAIL");
+		}
+		return response;
+	}
+	
+	@Autowired
+	CommentRepository commentRepo;
+	
+	@PostMapping("/do-post-comment")
+	public JsonResponse doPostComment(@RequestParam("id") long operationId,@RequestParam("content") String content) {
+		JsonResponse response = new JsonResponse();
+		if(content.length() != 0 && operationService.findOne(operationId) != null) {
+			Comment comment = new Comment();
+			comment.setContent(content);
+			comment.setOperation(operationService.findOne(operationId));
+			comment.setDate(new Date());
+			comment.setUser(userService.getSessionUser());
+			if(commentRepo.save(comment) != null) {
+				response.setStatus("SUCCESS");
+			}else {
+				response.setStatus("FAIL");
+			}
+		}else {
+			response.setStatus("NOCONTENT");
 		}
 		return response;
 	}

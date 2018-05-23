@@ -8,6 +8,7 @@ import java.util.Locale;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
@@ -56,6 +57,8 @@ public class TaskService {
 				task.setEstimationRH(taskCopy.getEstimationRH());
 			if (!(task.getEstimationTime() == taskCopy.getEstimationTime()))
 				task.setEstimationTime(taskCopy.getEstimationTime());
+			if(task.getStatus().equals(StaticString.TASK_STATUS_COMPLETED))
+				task.setCompletedOn(new Date());
 			taskRepo.save(task);
 			return true;
 		}

@@ -134,9 +134,11 @@ function populateDashboardMap() {
 							icon : icons[response[i].status].icon,
 
 						 click: function(e,id) {
-							 console.log("id: "+$(this).attr('id'));
+							 //console.log("id: "+$(this).attr('id'));
 							 
 							 toggleOperationFragment($(this).attr('id'));
+							if($('#general-header').is(':hidden'))
+								$('#general-header').show();
 							 
 														
 						 }
@@ -165,6 +167,7 @@ function toggleOperationFragment(operationId) {
 		$("#dashboard-fragment").hide();
 	populateServicesTabOperationFragment(operationId);
 	populateOperationDetails(operationId);
+	populateOperationComments(operationId);
 	$("#operation-fragment").show();
 
 	$('#operation_map').hide('fast');
@@ -200,6 +203,75 @@ function toggleOperationFragment(operationId) {
 	$('#operation_map').show('fast');
 }
 
+function populateOperationComments(operationId){
+	$('#operation_comments_wrapper').html("");
+	$.ajax({
+		type : "GET",
+		url : '/get-operation-comments',
+		data : 'id=' + operationId,
+		async : false,
+		success : function(response) {
+			var html_text = "";
+			for(var i=0;i<response.length;i++){
+				html_text += getCommentUI(response[i]);
+			}
+			
+			$('#operation_comments_wrapper').html(html_text);
+		},
+		error : function(e) {
+			alert('Error: operation site ' + e);
+		}
+	});
+}
+
+function getCommentUI(comment){
+	return '<div class="m-widget3">'
+	+'<div class="m-widget3__item">'
+	+	'<div class="m-widget3__header">'
+	+		'<div class="m-widget3__user-img">'
+	+			'<img class="m-widget3__img"'
+	+			'	src="assets/app/media/img/users/user-icon.png" alt="">'
+	+		'</div>'
+	+		'<div class="m-widget3__info">'
+	+			'<span class="m-widget3__username">' + comment.user + '</span><br>'
+	+			'<span class="m-widget3__time">' + comment.date + '</span>'
+	+		'</div>'
+	
+	+	'</div>'
+	+	'<div class="m-widget3__body">'
+	+		'<p style="color: white;" class="m-widget3__text">'
+	+ 			comment.content
+	+		'</p>'
+	+	'</div>'
+	+'</div>'
++'</div>';
+}
+
+function doPostComment(){
+	var comment = $('#comment_content').val();
+	var operationId = $('#operation_fragment_selected_operation_id').val();
+	$.ajax({
+		type : "POST",
+		url : '/do-post-comment',
+		data : 'id=' + operationId+"&content="+comment,
+		async : false,
+		success : function(response) {
+			if(response.status == "FAIL")
+				toastr.error("Couldn't post comment","Error");
+			else if(response.status == "NOCONTENT")
+				toastr.error("A comment cannot be empty","Hey !");
+			else{
+				$('#comment_content').val("");
+				populateOperationComments(operationId);
+			}
+		},
+		error : function(e) {
+			alert('Error: comment operation ' + e);
+		}
+	});
+
+}
+
 function populateOperationSiteMap(operationId) {
 
 	var coordinates = [];
@@ -228,9 +300,8 @@ function populateOperationDetails(operationId) {
 		url : '/get-operation-details',
 		data : 'id=' + operationId,
 		success : function(response) {
-			$("#operation_fragment_header_name").html(
-					response.name + ' <span style="color:#1a1a1a;">in '
-							+ response.site.name + '</span>');
+			$("#operation_fragment_header_name").html(response.name + ' <span style="color:#F4516C;"><small>in '
+							+ response.site.name + '</small></span>');
 			$('#operation_project_nav_link').attr('href',
 					'/project?id=' + response.project.id);
 			$('#operation_project_nav_text').html(response.project.name)

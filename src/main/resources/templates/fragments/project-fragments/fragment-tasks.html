@@ -171,9 +171,11 @@
 											<tr>
 												<th>#</th>
 												<th width="30%">Task</th>
+												<th style="text-align: center">Owner(s)</th>
 												<th style="text-align: center">Status</th>
 												<th style="text-align: center">Start Date</th>
 												<th style="text-align: center">Due Date</th>
+												<th style="text-align: center">Completed On</th>
 												<th style="text-align: center">Priority</th>
 											</tr>
 										</thead>
@@ -184,6 +186,12 @@
 													th:onclick="'javascript:toggleTaskFragment(' + ${task.id} + ')'"
 													th:text="${task.name}">task name</a></td>
 
+												<td style="text-align: center">
+												<span th:if="${task.users.empty}">Unassigned</span>
+												<span th:each="user : ${task.users}" th:text="|${user.firstName} ${user.lastName} |">
+												</span>
+												</td>
+													
 												<td style="text-align: center"
 													th:if="${task.status == 'ONGOING'}"><span
 													class="m-badge m-badge--danger m-badge--wide">Open</span></td>
@@ -192,10 +200,15 @@
 													class="m-badge m-badge--success m-badge--wide">Closed</span>
 												</td>
 
-												<td style="text-align: center" th:text="${task.startDate}">start
+												<td style="text-align: center" th:text="${#dates.format(task.startDate, 'dd-MM-yyyy')}">start
 													date</td>
-												<td style="text-align: center" th:text="${task.endDate}">end
+												<td style="text-align: center" th:text="${#dates.format(task.endDate, 'dd-MM-yyyy')}">end
 													date</td>
+													
+													<td style="text-align: center" th:if="${task.completedOn != null}" th:text="${#dates.format(task.completedOn, 'dd-MM-yyyy')}">completed
+													date</td>
+													
+													<td style="text-align: center" th:if="${task.completedOn == null}">None</td>
 
 												<td style="text-align: center"
 													th:if="${task.priority == 'none'}"><span

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
@@ -156,6 +157,24 @@ public class OperationService {
 		if(open == true)
 			return "open";
 		return "closed";
+	}
+
+	public JSONArray getOperationComments(long operationId) {
+		JSONArray array = new JSONArray();
+		Operation operation = operationRepo.findOne(operationId);
+		if(!operation.getComments().isEmpty())
+		for(Comment c : operation.getComments()) {
+			array.add(jsonComment(c));
+		}
+		return array;
+	}
+	
+	public JSONObject jsonComment(Comment c) {
+		return new JSONObject()
+				.element("id", c.getId())
+				.element("user", c.getUser().getFirstName() +" "+ c.getUser().getLastName())
+				.element("date", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(c.getDate()))
+				.element("content", c.getContent());
 	}
 
 	
