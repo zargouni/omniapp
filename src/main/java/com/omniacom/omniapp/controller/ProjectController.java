@@ -8,7 +8,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
 import java.util.Date;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -90,6 +93,11 @@ public class ProjectController {
 		model.addAttribute("allServices", projectService.findAllServices(projectService.getCurrentProject()));
 		model.addAttribute("ServiceTasksMap", projectService.getMapServiceTasks(projectService.getCurrentProject()));
 
+	}
+	
+	@GetMapping("/get-project-feed")
+	public @ResponseBody Map<LocalDate,JSONArray> getProjectFeed(@RequestParam("id") Project project){
+		return projectService.getProjectFeed(project);
 	}
 
 	@GetMapping("/get-project-operations-status")

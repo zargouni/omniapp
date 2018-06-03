@@ -27,6 +27,7 @@ public class Operation implements Serializable {
 	private String name;
 	private Date startDate;
 	private Date endDate;
+	private Date creationDate;
 	private int flag;
 	private long zohoId;
 	
@@ -252,6 +253,20 @@ public class Operation implements Serializable {
 	public void addUser(User user) {
 		this.workingUsersList.add(user);
 		user.getContributedOperationList().add(this);
+	}
+
+	/**
+	 * @return the creationDate
+	 */
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	/**
+	 * @param creationDate the creationDate to set
+	 */
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 	
 	

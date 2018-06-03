@@ -33,8 +33,8 @@ public class Project implements Serializable {
 	private String name;
 
 	@Column(nullable = false, updatable = false)
-	@Temporal(TemporalType.DATE)
-	@CreatedDate
+//	@Temporal(TemporalType.DATE)
+//	@CreatedDate
 	private Date creationDate;
 	private String description;
 	private String currency;

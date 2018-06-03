@@ -1,6 +1,7 @@
 package com.omniacom.omniapp.service;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -60,6 +61,7 @@ public class OperationService {
 	SiteService siteService;
 	
 	public Operation addOperation(Operation operation) {
+		operation.setCreationDate(new Date());
 		return operationRepo.save(operation);
 	}
 
@@ -115,7 +117,9 @@ public class OperationService {
 				.element("project", projectService.jsonProject(op.getProject()))
 				.element("site", siteService.jsonSite(op.getSite()))
 				.element("price", getOperationPrice(op))
-				.element("currency", op.getProject().getCurrency());
+				.element("currency", op.getProject().getCurrency())
+				.element("creationDate",new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(op.getCreationDate()))
+				.element("creationTime", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(op.getCreationDate()));
 	}
 	
 	public float getOperationPrice(Operation operation) {

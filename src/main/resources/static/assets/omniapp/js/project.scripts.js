@@ -1,3 +1,123 @@
+function populateProjectFeed(){
+	var projectId = $('#selected_project_id').val();
+	var feedWrapper = $(".m-timeline-1__items");
+	feedWrapper.html("");
+	$.ajax({
+		type : "GET",
+		url : '/get-project-feed',
+		data : 'id=' + projectId,
+		async : false,
+		success : function(response) {
+			var i = 0;
+			$.each(response, function(date, val) {
+				
+				var dateWrapper = "";
+				var alignContent = "";
+				var contentWrapper = "";
+				var firstItem = "";
+				var formattedDate = moment(date).format("DD MMMM YYYY");
+				if(i == 0){
+					firstItem = "m-timeline-1__item--first";
+				}
+				if(i % 2 == 0){
+					alignContent = "right";
+				}else{
+					alignContent = "left";
+				}
+				
+//				var detailedActivityWrapper = '<div class="m-timeline-1__item-title">My ToDo</div>'
+//										+'<div class="m-list-badge m--margin-top-15">'
+//										+'<div class="m-list-badge__label m--font-success">12:00</div>'
+//											+'<div class="m-list-badge__items">'
+//											+'<a href="#" class="m-list-badge__item">Hiking</a> <a href="#"'
+//													+' class="m-list-badge__item">Lunch</a> '
+//													+'<a href="#"'
+//													+' class="m-list-badge__item">Meet John</a>'
+//													+'	</div>'
+//										+'</div>';
+//	
+
+				
+				
+				
+				dateWrapper = '<div class="m-timeline-1__item m-timeline-1__item--'+alignContent+' '+firstItem+'">'
+					+'<div class="m-timeline-1__item-circle">'
+					+'	<i class="fa fa-genderless m--font-success"></i>'
+					+'</div>'
+					+'<div class="m-timeline-1__item-arrow"></div>'
+					+'<span style="z-index:1;margin-top:2%;" class="m-timeline-1__item-time m-badge m-badge--warning m-badge--wide ">'+formattedDate+'</span>'
+					+'<div id="content_'+date+'" class="m-timeline-1__item-content">'
+					+'</div>'
+					+'</div>';
+				feedWrapper.append(dateWrapper);
+				 
+					  
+					  for (var j = 0; j < val.length; j++) {
+						  var content = "";
+						  content = getDetailedActivityUI(val[j],val[j].type,val[j].activityType)
+						 
+						  
+						  
+						  contentWrapper += content;
+						  
+					  }
+					  $("#content_"+date).append(contentWrapper);
+					  
+					  i++;
+				});
+		},
+		error : function(e) {
+			alert('Error: project feed ' + e);
+		}
+	});
+}
+
+function getParentSpan(parent){
+	if(parent != "none")
+		return ' in <span style="color:#f4516c;">'+parent.name+'</span>';
+	return null;
+}
+function getDetailedActivityUI(object,objectType,activityType){
+	var content = ""; 
+	if(objectType == "service"){
+		if(activityType=="closed")
+		content = '<div class="m-list-badge m--margin-top-15">'
+			+'<div class="m-list-badge__label m--font-metal">'+object.closedDate+'</div>'
+				+'<div class="m-list-badge__items">'
+				+'<span class="m-list-badge__item">service <span style="color:#34bfa3;">'+object.name+'</span> is closed</span> '
+						+'	</div>'
+			+'</div>';
+		if(activityType=="creation"){
+			var parentSpan = "";
+			if(getParentSpan(object.parent) != null){
+				parentSpan = getParentSpan(object.parent);
+			}
+			
+			
+			content = '<div class="m-list-badge m--margin-top-15">'
+				+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
+					+'<div class="m-list-badge__items">'
+					+'<span class="m-list-badge__item">PM created service <span style="color:#34bfa3;">'+object.name+'</span>'
+					+parentSpan+'</span> '
+							+'	</div>'
+				+'</div>';
+		}
+	}
+	
+	if(objectType == "operation"){
+		content = '<div class="m-list-badge m--margin-top-15">'
+			+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
+				+'<div class="m-list-badge__items">'
+				+'<span class="m-list-badge__item">PM created operation <span style="color:#f4516c;">'+object.name+'</span></span> '
+						+'	</div>'
+			+'</div>';
+		
+	}
+	return content;
+	
+	//moment(activity.creationDate).format("hh:mm")
+}
+
 function populateProjectDetails() {
 	var projectId = $('#selected_project_id').val();
 	$.ajax({
@@ -758,6 +878,7 @@ function projectDynamicContent() {
 	});
 
 	$("#project_feed_toggle").on("click", function() {
+		populateProjectFeed();
 		$('#project_subheader').show();
 		$("#m_dynamic_content_project").children().hide();
 		$("#feed-fragment").show();

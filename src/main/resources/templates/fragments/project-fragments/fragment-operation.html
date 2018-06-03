@@ -49,8 +49,7 @@
 			</div>
 			<div class="col-xl-1">
 				<div class="d-flex align-items-center">
-					<a
-						style="z-index: 1; position: absolute;"
+					<a style="z-index: 1; position: absolute;"
 						class="btn btn-danger m-btn m-btn--icon"> <span> <i
 							class="flaticon-coins"></i> <span id="operation_price">Secondary</span>
 					</span>
@@ -175,28 +174,36 @@
 
 							</div>
 						</div>
-						
+
 					</div>
 
-					<div class="m-portlet__body" style="max-height:350px;overflow: hidden;">
+					<div class="m-portlet__body"
+						style="max-height: 350px; overflow: hidden;">
 
-						<div style="margin-right: -50px;
-  padding-right: 50px;max-height:100%;overflow-y:scroll;" id="operation_comments_wrapper" >
-							</div>
-
-						<div style="position: absolute; top: 80%;">
-							<div style="width: 100%;" class="form-group m-form__group">
+						<div
+							style="width: 100%; position: absolute; top: 80%;">
+							<div style="position:relative; width: 80%;" class="form-group m-form__group">
 
 								<div class="input-group">
-									<input id="comment_content" type="text" class="form-control"
+									<input id="comment_content" type="text"
+										class="form-control m-input m-input--square"
 										placeholder="Comment ...">
 									<div class="input-group-append">
-										<button class="btn btn-secondary" type="button"
-											onclick="doPostComment()">Post</button>
+										<button
+											class="btn btn-warning m-btn m-btn--icon btn-lg m-btn--icon-only"
+											type="button" onclick="doPostComment()">
+											<i class="fa fa-send-o"></i>
+										</button>
 									</div>
 								</div>
 							</div>
 						</div>
+
+						<div
+							style="margin-right: -50px; padding-right: 50px; max-height: 100%; overflow-y: scroll;"
+							id="operation_comments_wrapper"></div>
+
+
 					</div>
 
 				</div>

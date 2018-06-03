@@ -24,11 +24,7 @@
 				class="nav-link m-tabs__link" data-toggle="tab"
 				href="#m_quick_sidebar_add_tabs_new_task" role="tab">New Task</a></li>
 				
-				<li style="display:none;" class="nav-item m-tabs__item"><a
-				id="quick_sidebar_edit_operation_nav"
-				class="nav-link m-tabs__link active" data-toggle="tab"
-				href="#m_quick_sidebar_add_tabs_edit_operation" role="tab">Edit
-					Operation</a></li>
+				
 		</ul>
 		<div id="quick_sidebar_add_tabs_content" class="tab-content">
 			<div class="tab-pane m-scrollable"
@@ -67,17 +63,7 @@
 
 			</div>
 			
-			<div style="display:none;" class="tab-pane active m-scrollable"
-				id="m_quick_sidebar_add_tabs_edit_operation" role="tabpanel">
-
-				<!--begin::Form New Operation-->
-				<form
-					th:replace="fragments/form-fragments/fragment-edit-operation-form :: edit-operation-form">
-				</form>
-
-				<!--end::Form New Operation-->
-
-			</div>
+			
 		</div>
 	</div>
 </div>

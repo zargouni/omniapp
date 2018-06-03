@@ -101,7 +101,19 @@ var DatatableServiceTasksJsonRemote = function () {
 				sortable: true,
 				width: 100,
 				responsive: {visible: 'lg'}
-			}, {
+			},{
+				field: "completedOn",
+				title: "Completed On",
+				type: 'date',
+				format: 'DD MMMM YYYY',
+				sortable: true,
+				width: 100,
+				template: function(row) {
+			           if(row.completedOn != null)
+			        	   return row.completedOn;
+			           return 'None';
+			         },
+			},{
 				field: "priority",
 				title: "Priority",
 				sortable: true,

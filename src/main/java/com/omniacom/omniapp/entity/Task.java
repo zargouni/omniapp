@@ -29,6 +29,7 @@ public class Task implements Serializable {
 	private String status;
 	private Date startDate;
 	private Date endDate;
+	private Date creationDate;
 	private Date completedOn;
 	private int estimationTime;
 	private int estimationRH;
@@ -227,6 +228,24 @@ public class Task implements Serializable {
 	 */
 	public void setAttachments(List<UploadedFile> attachments) {
 		this.attachments = attachments;
+	}
+
+
+
+	/**
+	 * @return the creationDate
+	 */
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+
+
+	/**
+	 * @param creationDate the creationDate to set
+	 */
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 	
 

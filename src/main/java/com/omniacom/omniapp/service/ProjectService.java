@@ -1,8 +1,10 @@
 package com.omniacom.omniapp.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -31,13 +33,11 @@ public class ProjectService {
 
 	@Autowired
 	ServiceService serviceService;
-	
+
 	@Autowired
 	OperationService operationService;
-	
+
 	private Project currentProject;
-	
-	
 
 	public Project addProject(Project project) {
 		project.setCreationDate(new Date());
@@ -66,16 +66,13 @@ public class ProjectService {
 			map.put(s, serviceService.findAllTasks(s));
 		return map;
 	}
-	
+
 	public JSONArray getAllOperationsJson(long projectId) {
 		JSONArray array = new JSONArray();
 		Project project = projectRepo.findOne(projectId);
-		if(project != null) {
-			for(Operation op : project.getOperations()) {
-				array.add(new JSONObject()
-						.element("id", op.getId())
-						.element("name", op.getName())
-						);
+		if (project != null) {
+			for (Operation op : project.getOperations()) {
+				array.add(new JSONObject().element("id", op.getId()).element("name", op.getName()));
 			}
 		}
 		return array;
@@ -97,8 +94,8 @@ public class ProjectService {
 		// TODO Auto-generated method stub
 		return projectRepo.findAllServices(selectedProject);
 	}
-	
-	public List<BillOfQuantities> findAllBoqs(Project project){
+
+	public List<BillOfQuantities> findAllBoqs(Project project) {
 		return projectRepo.findAllBoqs(project);
 	}
 
@@ -110,39 +107,37 @@ public class ProjectService {
 	}
 
 	/**
-	 * @param currentProject the currentProject to set
+	 * @param currentProject
+	 *            the currentProject to set
 	 */
 	public void setCurrentProject(Project currentProject) {
 		this.currentProject = currentProject;
 	}
-	
+
 	public JSONObject jsonProject(Project project) {
-		JSONObject json = new JSONObject()
-				.element("id", project.getId())
-				.element("name", project.getName())
+		JSONObject json = new JSONObject().element("id", project.getId()).element("name", project.getName())
 				.element("client", project.getClient().getName())
-				.element("owner", project.getOwner().getFirstName()+" "+project.getOwner().getLastName())
-				.element("country", project.getCountry())
-				.element("currency", project.getCurrency())
+				.element("owner", project.getOwner().getFirstName() + " " + project.getOwner().getLastName())
+				.element("country", project.getCountry()).element("currency", project.getCurrency())
 				.element("percentage", getProjectProgress(project))
 				.element("unassignedTasksCount", getProjectUnassignedTasksCount(project))
 				.element("overdueTasksCount", getProjectOverdueTasksCount(project))
 				.element("tasksCount", findTaskCount(project));
 		return json;
 	}
-	
+
 	public Integer getProjectUnassignedTasksCount(Project project) {
-		return projectRepo.findProjectUnassignedTasksCount(project);		
+		return projectRepo.findProjectUnassignedTasksCount(project);
 	}
-	
+
 	public Integer getProjectOverdueTasksCount(Project project) {
-		return projectRepo.findProjectOverdueTasksCount(project);		
+		return projectRepo.findProjectOverdueTasksCount(project);
 	}
-	
+
 	public String getProjectProgress(Project project) {
 		Integer taskCount = findTaskCount(project);
-		if(taskCount != 0)
-		return (findCompletedTasksCount(project)*100 / taskCount)+"%";
+		if (taskCount != 0)
+			return (findCompletedTasksCount(project) * 100 / taskCount) + "%";
 		return "0%";
 	}
 
@@ -150,41 +145,86 @@ public class ProjectService {
 		JSONObject json = new JSONObject();
 		Project project = projectRepo.findOne(projectId);
 		Integer taskCount = findTaskCount(project);
-		
-		
-		if( taskCount != 0) {
-			json
-			.element("totalTasks", taskCount)
-			.element("ongoing", (findOnGoingTasksCount(project)*100 / taskCount)+"%")
-			.element("completed", (findCompletedTasksCount(project)*100 / taskCount)+"%");
-		}
-		else
-			json
-			.element("totalTasks", taskCount)
-			.element("ongoing", "None")
-			.element("completed", "None");
-			
+
+		if (taskCount != 0) {
+			json.element("totalTasks", taskCount)
+					.element("ongoing", (findOnGoingTasksCount(project) * 100 / taskCount) + "%")
+					.element("completed", (findCompletedTasksCount(project) * 100 / taskCount) + "%");
+		} else
+			json.element("totalTasks", taskCount).element("ongoing", "None").element("completed", "None");
+
 		return json;
 	}
 
 	public Project save(Project project) {
 		return projectRepo.save(project);
-		
+
 	}
 
 	public JSONArray getProjectOperationsStatus(Project project) {
 		JSONArray array = new JSONArray();
 		List<Operation> operations = projectRepo.findAllOperations(project);
-		for(Operation op : operations) {
-			array.add(new JSONObject()
-					.element("operationId", op.getId())
-					.element("operationName", op.getName())
-					.element("siteName", op.getSite().getName())
-					.element("latitude", op.getSite().getLatitude())
+		for (Operation op : operations) {
+			array.add(new JSONObject().element("operationId", op.getId()).element("operationName", op.getName())
+					.element("siteName", op.getSite().getName()).element("latitude", op.getSite().getLatitude())
 					.element("longitude", op.getSite().getLongitude())
 					.element("status", operationService.getOperationStatus(op)));
 		}
 		return array;
+	}
+
+	public Map<LocalDate, JSONArray> getProjectFeed(Project project) {
+		TreeMap<LocalDate, JSONArray> feed = new TreeMap<LocalDate, JSONArray>();
+		LocalDate currentDate = LocalDate.now();
+		LocalDate startDate = project.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		JSONArray json = null;
+		for (LocalDate date = startDate; date.isBefore(currentDate) || date.isEqual(currentDate) ; date = date.plusDays(1)) {
+			// Populate operation activities into map
+			for (Operation op : project.getOperations()) {
+				if (op.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+					if (feed.containsKey(date))
+						feed.get(date)
+								.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation"));
+					else {
+						json = new JSONArray();
+						json.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation"));
+						feed.put(date, json);
+					}
+				}
+
+			}
+
+			// Populate service activities into map
+			for (com.omniacom.omniapp.entity.Service service : findAllServices(project)) {
+				if (service.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+					if (feed.containsKey(date))
+						feed.get(date).add(serviceService.jsonService(service).accumulate("type", "service")
+								.accumulate("activityType", "creation"));
+					else {
+						json = new JSONArray();
+						json.add(serviceService.jsonService(service).accumulate("type", "service")
+								.accumulate("activityType", "creation"));
+						feed.put(date, json);
+					}
+				}
+				if(serviceService.getServiceClosedDate(service) != null)
+					if (serviceService.getServiceClosedDate(service).toInstant().atZone(ZoneId.systemDefault())
+							.toLocalDate().equals(date)) {
+						if (feed.containsKey(date))
+							feed.get(date).add(serviceService.jsonService(service).accumulate("type", "service")
+									.accumulate("activityType", "closed"));
+						else {
+							json = new JSONArray();
+							json.add(serviceService.jsonService(service).accumulate("type", "service")
+									.accumulate("activityType", "closed"));
+							feed.put(date, json);
+						}
+					}
+
+			}
+
+		}
+		return (Map<LocalDate, JSONArray>) feed.descendingMap();
 	}
 
 }

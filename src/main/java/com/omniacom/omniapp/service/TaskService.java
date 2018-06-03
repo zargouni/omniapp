@@ -32,6 +32,7 @@ public class TaskService {
 	
 
 	public Task addTask(Task task) {
+		task.setCreationDate(new Date());
 		return taskRepo.save(task);
 	}
 
@@ -75,11 +76,16 @@ public class TaskService {
 	}
 
 	public JSONObject jsonTaskFormattedDates(Task task) {
-		return new JSONObject().element("id", task.getId()).element("name", task.getName())
+		JSONObject json = new JSONObject().element("id", task.getId()).element("name", task.getName())
 				.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(new Date()))
 				.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(new Date()))
 				.element("estimationHR", task.getEstimationRH()).element("estimationTime", task.getEstimationTime())
 				.element("priority", task.getPriority()).element("status", task.getStatus());
+		if(task.getCompletedOn() != null)
+			json.accumulate("completedOn", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(task.getCompletedOn()));
+		else
+			json.accumulate("completedOn", "Not yet");
+		return json ;
 	}
 
 	public JSONObject getTaskParents(long taskId) {

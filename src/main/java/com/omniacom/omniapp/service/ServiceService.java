@@ -1,6 +1,7 @@
 package com.omniacom.omniapp.service;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +24,9 @@ public class ServiceService {
 
 	@Autowired
 	TaskService taskService;
+	
+	@Autowired
+	OperationService operationService;
 
 	public com.omniacom.omniapp.entity.Service findById(long id) {
 		return serviceRepo.findOne(id);
@@ -50,13 +54,28 @@ public class ServiceService {
 	}
 
 	public JSONObject jsonService(com.omniacom.omniapp.entity.Service service) {
-		return new JSONObject().element("id", service.getId()).element("name", service.getName())
+		JSONObject jsonService = new JSONObject().element("id", service.getId()).element("name", service.getName())
 				.element("category", service.getCategory()).element("description", service.getDescription())
 				.element("price", service.getPriceHT())
 				.element("creationDate",
-						new SimpleDateFormat("dd MM YYYY", Locale.ENGLISH).format(service.getCreationDate()))
-				.element("taskCount", serviceRepo.findAllTasks(service).size())
+						//new SimpleDateFormat("dd MM YYYY", Locale.ENGLISH).format(service.getCreationDate()))
+						service.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
+				.element("creationTime", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(service.getCreationDate()))
+				
+						.element("taskCount", serviceRepo.findAllTasks(service).size())
 				.element("percentage", getServicePercentageComplete(service));
+		if(getServiceClosedDate(service)!=null)
+			jsonService.accumulate("closedDate", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(getServiceClosedDate(service)));
+		else
+			jsonService.accumulate("closedDate", "open");
+		
+		if(service.getOperation() != null)
+			jsonService.accumulate("parent", operationService.jsonOperationFormattedDates(service.getOperation()));
+		else
+			jsonService.accumulate("parent", "none");
+
+		return jsonService;
+		
 	}
 
 	public JSONArray getAllServiceTasksJson(long serviceId) {
@@ -69,4 +88,12 @@ public class ServiceService {
 		}
 		return array;
 	}
+
+	public Date getServiceClosedDate(com.omniacom.omniapp.entity.Service service) {
+		if(getServicePercentageComplete(service).equals("100%"))
+			return serviceRepo.getServiceClosedDate(service);
+		return null;
+		
+	}
+
 }

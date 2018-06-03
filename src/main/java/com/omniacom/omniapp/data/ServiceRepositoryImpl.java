@@ -1,5 +1,6 @@
 package com.omniacom.omniapp.data;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -14,14 +15,23 @@ public class ServiceRepositoryImpl implements ServiceRepositoryCustom {
 
 	@PersistenceContext
 	EntityManager entityManager;
-	
+
 	@Override
 	public List<Task> findAllTasks(Service service) {
 		List<Task> tasks = null;
-		Query query = entityManager.createQuery("SELECT t FROM Task t WHERE t.service=:param")
-				.setParameter("param", service);
+		Query query = entityManager.createQuery("SELECT t FROM Task t WHERE t.service=:param").setParameter("param",
+				service);
 		tasks = (List<Task>) query.getResultList();
 		return tasks;
+	}
+
+	public Date getServiceClosedDate(Service service) {
+		Query query = entityManager.createQuery("SELECT MAX(t.completedOn) FROM Task t WHERE t.completedOn!=null")
+				;
+		List<Date> dates = (List<Date>) query.getResultList();
+		if (!dates.isEmpty())
+			return dates.get(0);
+		return null;
 	}
 
 }
