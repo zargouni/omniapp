@@ -2,6 +2,7 @@ function populateProjectFeed(){
 	var projectId = $('#selected_project_id').val();
 	var feedWrapper = $(".m-timeline-1__items");
 	feedWrapper.html("");
+	
 	$.ajax({
 		type : "GET",
 		url : '/get-project-feed',
@@ -37,7 +38,6 @@ function populateProjectFeed(){
 //										+'</div>';
 //	
 
-				
 				
 				
 				dateWrapper = '<div class="m-timeline-1__item m-timeline-1__item--'+alignContent+' '+firstItem+'">'
@@ -116,6 +116,38 @@ function getDetailedActivityUI(object,objectType,activityType){
 	return content;
 	
 	//moment(activity.creationDate).format("hh:mm")
+}
+
+function refreshProjectFeed(){
+	var projectId = $('#selected_project_id').val();
+	$.ajax({
+		type : "GET",
+		url : '/refresh-project-feed',
+		data : 'id=' + projectId,
+		async : false,
+		success : function(response) {
+			if(response.status == "REFRESH"){
+				$('#loader-wrapper').show();
+				setTimeout(function(){
+					$(".m-timeline-1__items").html("");
+					populateProjectFeed();
+			        $('#loader-wrapper').hide();
+			       
+			    },2100);
+				
+				
+				
+				
+					
+			}else{
+				toastr.info("Nothing to add, Feed is up to date");
+			}
+		},
+		error : function(e) {
+			alert('Error: refresh project feed ' + e);
+		}
+	});
+	
 }
 
 function populateProjectDetails() {

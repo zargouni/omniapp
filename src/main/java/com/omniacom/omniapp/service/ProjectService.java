@@ -36,6 +36,8 @@ public class ProjectService {
 
 	@Autowired
 	OperationService operationService;
+	
+	
 
 	private Project currentProject;
 
@@ -174,6 +176,7 @@ public class ProjectService {
 	}
 
 	public Map<LocalDate, JSONArray> getProjectFeed(Project project) {
+		
 		TreeMap<LocalDate, JSONArray> feed = new TreeMap<LocalDate, JSONArray>();
 		LocalDate currentDate = LocalDate.now();
 		LocalDate startDate = project.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -225,6 +228,57 @@ public class ProjectService {
 
 		}
 		return (Map<LocalDate, JSONArray>) feed.descendingMap();
+	}
+	
+public Map<LocalDate, List<Date>> getRawProjectFeed(Project project) {
+		
+		TreeMap<LocalDate, List<Date>> feed = new TreeMap<LocalDate, List<Date>>();
+		LocalDate currentDate = LocalDate.now();
+		LocalDate startDate = project.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		List<Date> list = null;
+		for (LocalDate date = startDate; date.isBefore(currentDate) || date.isEqual(currentDate) ; date = date.plusDays(1)) {
+			// Populate operation activities into map
+			for (Operation op : project.getOperations()) {
+				if (op.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+					if (feed.containsKey(date))
+						feed.get(date)
+								.add(op.getCreationDate());
+					else {
+						list = new ArrayList<Date>();
+						list.add(op.getCreationDate());
+						feed.put(date, list);
+					}
+				}
+
+			}
+
+			// Populate service activities into map
+			for (com.omniacom.omniapp.entity.Service service : findAllServices(project)) {
+				if (service.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+					if (feed.containsKey(date))
+						feed.get(date).add(service.getCreationDate());
+					else {
+						list = new ArrayList<Date>();
+						list.add(service.getCreationDate());
+						feed.put(date, list);
+					}
+				}
+				if(serviceService.getServiceClosedDate(service) != null)
+					if (serviceService.getServiceClosedDate(service).toInstant().atZone(ZoneId.systemDefault())
+							.toLocalDate().equals(date)) {
+						if (feed.containsKey(date))
+							feed.get(date).add(service.getCreationDate());
+						else {
+							list = new ArrayList<Date>();
+							list.add(service.getCreationDate());
+							feed.put(date, list);
+						}
+					}
+
+			}
+
+		}
+		return (Map<LocalDate, List<Date>>) feed.descendingMap();
 	}
 
 }

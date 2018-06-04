@@ -45,7 +45,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		List<Project> projects = null;
 		Query query = entityManager
 				.createQuery(
-				"SELECT p FROM Project p, User u LEFT OUTER JOIN u.contributedProjectList project WHERE u.id = :param AND project.id = p.id")
+				"SELECT p FROM Project p, User u JOIN u.contributedProjectList project WHERE u.id = :param AND project.id = p.id")
 				.setParameter("param", user.getId());
 		projects = (List<Project>) query.getResultList();
 		projects.addAll(findOwnedProjects(user));

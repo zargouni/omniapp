@@ -8,10 +8,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -68,9 +74,11 @@ public class ProjectController {
 
 	@Autowired
 	UserService userService;
-	
+
 	@Autowired
 	UploadedFileService fileService;
+
+	private Date lastRefreshDateTime;
 
 	@GetMapping("/project")
 	public ModelAndView index(Model model) {
@@ -94,10 +102,30 @@ public class ProjectController {
 		model.addAttribute("ServiceTasksMap", projectService.getMapServiceTasks(projectService.getCurrentProject()));
 
 	}
-	
+
 	@GetMapping("/get-project-feed")
-	public @ResponseBody Map<LocalDate,JSONArray> getProjectFeed(@RequestParam("id") Project project){
+	public @ResponseBody Map<LocalDate, JSONArray> getProjectFeed(@RequestParam("id") Project project) {
+		lastRefreshDateTime = new Date();
 		return projectService.getProjectFeed(project);
+	}
+
+	@GetMapping("/refresh-project-feed")
+	public @ResponseBody JsonResponse refreshProjectFeed(@RequestParam("id") Project project) {
+		JsonResponse response = new JsonResponse();
+		LocalDate latestDateInFeed = (LocalDate) projectService.getProjectFeed(project).keySet().toArray()[0];
+		Set<Date> latestActivities = new TreeSet<>(projectService.getRawProjectFeed(project).get(latestDateInFeed));
+		
+		Date latestActivity = (Date) latestActivities.toArray()[latestActivities.size() - 1];
+		
+		if (lastRefreshDateTime != null) {
+			if (lastRefreshDateTime.before(latestActivity)) {
+				response.setStatus("REFRESH");
+			} else {
+				response.setStatus("NOREFRESH");
+			}
+		}
+
+		return response;
 	}
 
 	@GetMapping("/get-project-operations-status")
@@ -126,7 +154,7 @@ public class ProjectController {
 		Operation op = operationService.findOne(operationId);
 		return operationService.jsonOperationFormattedDates(op);
 	}
-	
+
 	@GetMapping("/get-operation-comments")
 	public @ResponseBody JSONArray getOperationComments(@RequestParam("id") long operationId) {
 		return operationService.getOperationComments(operationId);
@@ -323,25 +351,25 @@ public class ProjectController {
 		}
 		return response;
 	}
-	
+
 	@Autowired
 	CommentRepository commentRepo;
-	
+
 	@PostMapping("/do-post-comment")
-	public JsonResponse doPostComment(@RequestParam("id") long operationId,@RequestParam("content") String content) {
+	public JsonResponse doPostComment(@RequestParam("id") long operationId, @RequestParam("content") String content) {
 		JsonResponse response = new JsonResponse();
-		if(content.length() != 0 && operationService.findOne(operationId) != null) {
+		if (content.length() != 0 && operationService.findOne(operationId) != null) {
 			Comment comment = new Comment();
 			comment.setContent(content);
 			comment.setOperation(operationService.findOne(operationId));
 			comment.setDate(new Date());
 			comment.setUser(userService.getSessionUser());
-			if(commentRepo.save(comment) != null) {
+			if (commentRepo.save(comment) != null) {
 				response.setStatus("SUCCESS");
-			}else {
+			} else {
 				response.setStatus("FAIL");
 			}
-		}else {
+		} else {
 			response.setStatus("NOCONTENT");
 		}
 		return response;
@@ -360,7 +388,7 @@ public class ProjectController {
 				dbFile.setCreationDate(new Date());
 				dbFile.setLocation(fileService.getDestinationLocation());
 				dbFile.setTask(taskService.findOne(id));
-				
+
 				fileService.saveFileToDatabase(dbFile);
 
 			} catch (IOException e) {
@@ -373,66 +401,72 @@ public class ProjectController {
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all files were not uploaded");
 
 	}
-	
+
 	@Autowired
 	UploadedFileRepository fileRepo;
-	
+
 	@GetMapping("/download-attachment")
 	public void handleFileDownload(HttpServletResponse response, @RequestParam("id") long id) throws IOException {
 		File file = null;
 		UploadedFile dbFile = fileRepo.findOne(id);
-		if(dbFile != null) {
-			file = new File(dbFile.getLocation()+""+dbFile.getName());
-		}else{
-            String errorMessage = "Sorry. The file you are looking for does not exist";
-            System.out.println(errorMessage);
-            OutputStream outputStream = response.getOutputStream();
-            outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
-            outputStream.close();
-            return;
-        }
-         
-        String mimeType= URLConnection.guessContentTypeFromName(file.getName());
-        if(mimeType==null){
-            System.out.println("mimetype is not detectable, will take default");
-            mimeType = "application/octet-stream";
-        }
-         
-        System.out.println("mimetype : "+mimeType);
-         
-        response.setContentType(mimeType);
-         
-        /* "Content-Disposition : inline" will show viewable types [like images/text/pdf/anything viewable by browser] right on browser 
-            while others(zip e.g) will be directly downloaded [may provide save as popup, based on your browser setting.]*/
-        response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() +"\""));
- 
-         
-        /* "Content-Disposition : attachment" will be directly download, may provide save as popup, based on your browser setting*/
-        //response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getName()));
-         
-        response.setContentLength((int)file.length());
- 
-        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
- 
-        //Copy bytes from source to destination(outputstream in this example), closes both streams.
-        FileCopyUtils.copy(inputStream, response.getOutputStream());
-    }
-	
+		if (dbFile != null) {
+			file = new File(dbFile.getLocation() + "" + dbFile.getName());
+		} else {
+			String errorMessage = "Sorry. The file you are looking for does not exist";
+			System.out.println(errorMessage);
+			OutputStream outputStream = response.getOutputStream();
+			outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
+			outputStream.close();
+			return;
+		}
+
+		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+		if (mimeType == null) {
+			System.out.println("mimetype is not detectable, will take default");
+			mimeType = "application/octet-stream";
+		}
+
+		System.out.println("mimetype : " + mimeType);
+
+		response.setContentType(mimeType);
+
+		/*
+		 * "Content-Disposition : inline" will show viewable types [like
+		 * images/text/pdf/anything viewable by browser] right on browser while
+		 * others(zip e.g) will be directly downloaded [may provide save as popup, based
+		 * on your browser setting.]
+		 */
+		response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+
+		/*
+		 * "Content-Disposition : attachment" will be directly download, may provide
+		 * save as popup, based on your browser setting
+		 */
+		// response.setHeader("Content-Disposition", String.format("attachment;
+		// filename=\"%s\"", file.getName()));
+
+		response.setContentLength((int) file.length());
+
+		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+
+		// Copy bytes from source to destination(outputstream in this example), closes
+		// both streams.
+		FileCopyUtils.copy(inputStream, response.getOutputStream());
+	}
+
 	@PostMapping("/delete-attachment")
-	public @ResponseBody JsonResponse deleteFile(@RequestParam("id") long fileId ) {
+	public @ResponseBody JsonResponse deleteFile(@RequestParam("id") long fileId) {
 		JsonResponse response = new JsonResponse();
 
 		if (fileService.deleteFile(fileId)) {
-			
+
 			response.setStatus("SUCCESS");
 		} else {
 			response.setStatus("FAIL");
-			//response.setResult(result.getFieldErrors());
+			// response.setResult(result.getFieldErrors());
 		}
 		return response;
 	}
-
-
 
 	public JSONObject jsonTask(Task task) {
 		JSONObject jsonTask = new JSONObject().element("TaskId", task.getId()).element("TaskName", task.getName())

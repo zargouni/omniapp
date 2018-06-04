@@ -66,7 +66,8 @@ public class UserService implements UserDetailsService {
 	}
 
 	public List<Project> findAllContributedProjects(User user) {
-		return userRepo.findContributedProjects(user);
+		//return userRepo.findContributedProjects(user);
+		return user.getContributedProjectList();
 	}
 
 	public User findByUserName(String userName) {
