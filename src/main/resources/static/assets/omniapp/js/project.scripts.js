@@ -10,6 +10,7 @@ function populateProjectFeed(){
 		async : false,
 		success : function(response) {
 			var i = 0;
+			 var operations = [];
 			$.each(response, function(date, val) {
 				
 				var dateWrapper = "";
@@ -41,16 +42,18 @@ function populateProjectFeed(){
 				
 				
 				dateWrapper = '<div class="m-timeline-1__item m-timeline-1__item--'+alignContent+' '+firstItem+'">'
-					+'<div class="m-timeline-1__item-circle">'
-					+'	<i class="fa fa-genderless m--font-success"></i>'
+					+'<div style="background:#36a3f7; " class="m-timeline-1__item-circle">'
+					+'	<i class="fa fa-circle m--font-light"></i>'
 					+'</div>'
 					+'<div class="m-timeline-1__item-arrow"></div>'
-					+'<span style="z-index:1;margin-top:2%;" class="m-timeline-1__item-time m-badge m-badge--warning m-badge--wide ">'+formattedDate+'</span>'
+					+'<span style="z-index:1;margin-top:2%;color:#fff;" class="m-timeline-1__item-time m-badge m-badge--info m-badge--wide">'+formattedDate+'</span>'
 					+'<div id="content_'+date+'" class="m-timeline-1__item-content">'
+					
 					+'</div>'
 					+'</div>';
 				feedWrapper.append(dateWrapper);
 				 
+				
 					  
 					  for (var j = 0; j < val.length; j++) {
 						  var content = "";
@@ -59,12 +62,34 @@ function populateProjectFeed(){
 						  
 						  
 						  contentWrapper += content;
+						  if(val[j].type == "operation"){
+							  operations.push(val[j]);
+						  }
+						  
 						  
 					  }
 					  $("#content_"+date).append(contentWrapper);
 					  
+					 
+					  
 					  i++;
+					  
+					  
+					  
+					  
 				});
+			
+			 for (var cpt = 0; cpt < operations.length; cpt++){
+				  var object = operations[cpt];
+				 // console.log("object name is: "+object.name);
+				  //setTimeout(function (){
+					  //console.log("second object name is: "+object.name);
+					 // getFeedMapUI(object);
+					  while(getFeedMapUI(object) == false){
+						  getFeedMapUI(object);
+					  }
+				  //},2000);
+			  }
 		},
 		error : function(e) {
 			alert('Error: project feed ' + e);
@@ -81,12 +106,15 @@ function getDetailedActivityUI(object,objectType,activityType){
 	var content = ""; 
 	if(objectType == "service"){
 		if(activityType=="closed")
-		content = '<div class="m-list-badge m--margin-top-15">'
+		
+			content = '<div class="m-list-badge m--margin-top-15">'
 			+'<div class="m-list-badge__label m--font-metal">'+object.closedDate+'</div>'
 				+'<div class="m-list-badge__items">'
-				+'<span class="m-list-badge__item">service <span style="color:#34bfa3;">'+object.name+'</span> is closed</span> '
+				+'<span style="background:#ddffcc;" class="m-list-badge__item">service <span style="color:#34bfa3;">'+object.name+'</span> is closed</span> '
 						+'	</div>'
 			+'</div>';
+		
+		
 		if(activityType=="creation"){
 			var parentSpan = "";
 			if(getParentSpan(object.parent) != null){
@@ -97,7 +125,7 @@ function getDetailedActivityUI(object,objectType,activityType){
 			content = '<div class="m-list-badge m--margin-top-15">'
 				+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
 					+'<div class="m-list-badge__items">'
-					+'<span class="m-list-badge__item">PM created service <span style="color:#34bfa3;">'+object.name+'</span>'
+					+'<span style="background:#e6f2ff;" class="m-list-badge__item">PM created service <span style="color:#34bfa3;">'+object.name+'</span>'
 					+parentSpan+'</span> '
 							+'	</div>'
 				+'</div>';
@@ -105,17 +133,105 @@ function getDetailedActivityUI(object,objectType,activityType){
 	}
 	
 	if(objectType == "operation"){
-		content = '<div class="m-list-badge m--margin-top-15">'
+		
+		content = '<div style="width:100%;" class="m-list-badge m--margin-top-15">'
+			
+			+'<table style="width:100%;border-collapse: separate;border-spacing: 0 5px;" >'
+			+'<tr>'
+			+'<td>'
+			
 			+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
-				+'<div class="m-list-badge__items">'
-				+'<span class="m-list-badge__item">PM created operation <span style="color:#f4516c;">'+object.name+'</span></span> '
-						+'	</div>'
+			
+			+'</td>'
+			+'<td>'
+			
+			+'<div style="position:relative;width:100%;" class="m-list-badge__items">'
+			+'<span style="background:#f2e6ff;" class="m-list-badge__item">PM created operation <span style="color:#f4516c;">'+object.name+'</span>'
+			+' in site <span style="color:#36a3f7;">'+object.site.name+'</span>'
+			+'</span> '
+			+'	</div>'
+			
+			+'</td>'
+			+'</tr>'
+			+'<tr>'
+			+'<td>'
+			+'</td>'
+			+'<td>'
+			
++'<div style="position:relative;float:right;width:100%;height:120px;" >'
+			
+			
+			+'<div class="sites_map boxshadow" style="width:100% !important;height:120px  !important;border-radius:10px;border:2px #000; " id="'+object.id+'"></div>'
+			
+			//+'</div>'
+			
+			+'</div>'
+			
+			+'</td>'
+			+'</tr>'
+			+'</table>'
+			
+			
+			
+			
+			
+			
+			
+		
+			
 			+'</div>';
+		
+		
 		
 	}
 	return content;
+}
+
+function getFeedMapUI(object){
+	if($('#'+object.id).length){
+		
+	var map_div = "#"+object.id;
+	$('#'+object.id).hide();
+	var map = new GMaps({
+        div: map_div,
+        lat: 34.7615155,
+        lng: 10.6630578,
+        scrollwheel : false,
+        disableDefaultUI: true,
+        fullscreenControl: true,
+        zoomControl: true,
+        
+    });
 	
-	//moment(activity.creationDate).format("hh:mm")
+	map.addMarker({
+        lat: object.site.latitude,
+        lng: object.site.longitude,
+        title: object.site.name,
+        id: object.site.id,
+        icon : "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/48/Map-Marker-Flag--Right-Pink.png",
+        natures: object.site.natures,
+       
+        click: function(e,id,title) {
+       	  
+
+				
+        }
+    });
+	
+//	map.drawOverlay({
+//		  lat: object.site.latitude,
+//		  lng: object.site.longitude,
+//		  content: ' <div class="overlay">'+object.site.name+'</div>',
+//		});
+	map.setZoom(4);
+	map.refresh();
+	
+	
+	$('#'+object.id).show();
+	return true;
+	}
+	
+	return false;
 }
 
 function refreshProjectFeed(){
@@ -161,6 +277,7 @@ function populateProjectDetails() {
 			$('#unassigned_tasks').html(response.unassignedTasksCount);
 			$('#overdue_tasks').html(response.overdueTasksCount);
 			$('#tasks_count').html(response.tasksCount)
+			$('#project_creation_date').html(response.creationDate);
 		},
 		error : function(e) {
 			alert('Error: project details ' + e);

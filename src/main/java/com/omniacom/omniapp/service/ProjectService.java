@@ -1,14 +1,22 @@
 package com.omniacom.omniapp.service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -124,7 +132,8 @@ public class ProjectService {
 				.element("percentage", getProjectProgress(project))
 				.element("unassignedTasksCount", getProjectUnassignedTasksCount(project))
 				.element("overdueTasksCount", getProjectOverdueTasksCount(project))
-				.element("tasksCount", findTaskCount(project));
+				.element("tasksCount", findTaskCount(project))
+				.element("creationDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(project.getCreationDate()));
 		return json;
 	}
 
@@ -176,7 +185,8 @@ public class ProjectService {
 	}
 
 	public Map<LocalDate, JSONArray> getProjectFeed(Project project) {
-		
+		//JSONArray json = new JSONArray();
+		//Set<Object> activities = null;
 		TreeMap<LocalDate, JSONArray> feed = new TreeMap<LocalDate, JSONArray>();
 		LocalDate currentDate = LocalDate.now();
 		LocalDate startDate = project.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -185,12 +195,16 @@ public class ProjectService {
 			// Populate operation activities into map
 			for (Operation op : project.getOperations()) {
 				if (op.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
-					if (feed.containsKey(date))
+					if (feed.containsKey(date)) {
 						feed.get(date)
 								.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation"));
-					else {
+						feed.get(date).sort(getFeedDatesComparator());
+					}else {
 						json = new JSONArray();
+						//activities = new TreeSet<>(getFeedDatesComparator());
+						//activities.add(op);
 						json.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation"));
+						json.sort(getFeedDatesComparator());
 						feed.put(date, json);
 					}
 				}
@@ -200,26 +214,33 @@ public class ProjectService {
 			// Populate service activities into map
 			for (com.omniacom.omniapp.entity.Service service : findAllServices(project)) {
 				if (service.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
-					if (feed.containsKey(date))
+					if (feed.containsKey(date)) {
 						feed.get(date).add(serviceService.jsonService(service).accumulate("type", "service")
 								.accumulate("activityType", "creation"));
-					else {
+						feed.get(date).sort(getFeedDatesComparator());
+					}else {
 						json = new JSONArray();
 						json.add(serviceService.jsonService(service).accumulate("type", "service")
 								.accumulate("activityType", "creation"));
+						json.sort(getFeedDatesComparator());
 						feed.put(date, json);
 					}
 				}
 				if(serviceService.getServiceClosedDate(service) != null)
 					if (serviceService.getServiceClosedDate(service).toInstant().atZone(ZoneId.systemDefault())
 							.toLocalDate().equals(date)) {
-						if (feed.containsKey(date))
+						if (feed.containsKey(date)) {
 							feed.get(date).add(serviceService.jsonService(service).accumulate("type", "service")
 									.accumulate("activityType", "closed"));
+							feed.get(date).sort(getFeedDatesComparator());
+						}
+						
+						
 						else {
 							json = new JSONArray();
 							json.add(serviceService.jsonService(service).accumulate("type", "service")
 									.accumulate("activityType", "closed"));
+							json.sort(getFeedDatesComparator());
 							feed.put(date, json);
 						}
 					}
@@ -229,6 +250,22 @@ public class ProjectService {
 		}
 		return (Map<LocalDate, JSONArray>) feed.descendingMap();
 	}
+	
+private Comparator<JSONObject> getFeedDatesComparator(){
+	return new Comparator<JSONObject>() {
+
+		@Override
+		public int compare(JSONObject o1, JSONObject o2) {
+			LocalDateTime o1Time = LocalDate.now().atTime(LocalTime.parse((String) o1.get("creationTime")));
+			LocalDateTime o2Time = LocalDate.now().atTime(LocalTime.parse((String) o2.get("creationTime")));
+
+			if(o1Time.isBefore(o2Time))
+				return 0;
+			return -1;
+		}
+		 };
+
+}
 	
 public Map<LocalDate, List<Date>> getRawProjectFeed(Project project) {
 		
