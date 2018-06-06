@@ -243,11 +243,11 @@ function refreshProjectFeed(){
 		async : false,
 		success : function(response) {
 			if(response.status == "REFRESH"){
-				$('#loader-wrapper').show();
+				$('.loader-wrapper').show();
 				setTimeout(function(){
 					$(".m-timeline-1__items").html("");
 					populateProjectFeed();
-			        $('#loader-wrapper').hide();
+			        $('.loader-wrapper').hide();
 			       
 			    },2100);
 				
@@ -263,6 +263,151 @@ function refreshProjectFeed(){
 			alert('Error: refresh project feed ' + e);
 		}
 	});
+	
+}
+
+function populateProjectCalendar(){
+	
+	            var todayDate = moment().startOf('day');
+	            var YM = todayDate.format('YYYY-MM');
+	            var YESTERDAY = todayDate.clone().subtract(1, 'day').format('YYYY-MM-DD');
+	            var TODAY = todayDate.format('YYYY-MM-DD');
+	            var TOMORROW = todayDate.clone().add(1, 'day').format('YYYY-MM-DD');
+	            $('.loader-wrapper').show();
+				
+	            //var eventss = getCalendarEvents();
+	            
+	            
+	            $('#project_calendar').fullCalendar( 'removeEvents');
+	            
+	            
+	          //  $('#project_calendar').fullCalendar( 'addEventSource', getCalendarEvents() );
+	            
+	            setTimeout(function(){
+					//$(".m-timeline-1__items").html("");
+	            	
+	            	$('#project_calendar').fullCalendar({
+		                header: {
+		                    left: 'prev,next today',
+		                    center: 'title',
+		                    right: 'month,agendaWeek,agendaDay,listWeek'
+		                },
+		                editable: true,
+		                eventLimit: true, // allow "more" link when too many events
+		                navLinks: true,
+		                
+		                businessHours: {
+		                	  // days of week. an array of zero-based day of week integers (0=Sunday)
+		                	  dow: [ 1, 2, 3, 4, 5 ], // Monday - Thursday
+
+		                	  start: '8:00', // a start time (10am in this example)
+		                	  end: '18:00', // an end time (6pm in this example)
+		                	},
+		              // events: eventss,
+
+		                eventRender: function(event, element) {
+		                    if (element.hasClass('fc-day-grid-event')) {
+		                        element.data('content', event.description);
+		                        element.data('placement', 'top');
+		                        mApp.initPopover(element); 
+		                    } else if (element.hasClass('fc-time-grid-event')) {
+		                        element.find('.fc-title').append('<div class="fc-description">' + event.description + '</div>'); 
+		                    } else if (element.find('.fc-list-item-title').lenght !== 0) {
+		                        element.find('.fc-list-item-title').append('<div class="fc-description">' + event.description + '</div>'); 
+		                    }
+		                },
+		                
+		                eventClick: function(calEvent, jsEvent, view) {
+
+		                	if(calEvent.type == "operation"){
+		                    //alert('Operation: ' + calEvent.title);
+		                	$("#calendar-fragment").hide();
+		                	toggleOperationFragment(calEvent.id);
+		                	}
+		                	else{
+
+			                	$("#calendar-fragment").hide();
+			                	toggleServiceFragment(calEvent.id);
+		                	}
+		                		//alert('Service: ' + calEvent.title);
+		                    // change the border color just for fun
+		                    //$(this).css('border-color', 'red');
+
+		                  }
+		            });
+	            	
+					getCalendarEvents();
+			        $('.loader-wrapper').hide();
+			       
+			    },500);
+	
+}
+
+function getCalendarEvents(){
+	var projectId = $('#selected_project_id').val();
+	var events = [];
+	$.ajax({
+		type : "GET",
+		url : '/get-project-calendar-events',
+		data : 'id=' + projectId,
+		async : false,
+		success : function(response) {
+//			if(response.status == "REFRESH"){
+//				$('#loader-wrapper').show();
+//				setTimeout(function(){
+//					$(".m-timeline-1__items").html("");
+//					populateProjectFeed();
+//			        $('#loader-wrapper').hide();
+//			       
+//			    },2100);
+//				
+//				
+//				
+//				
+//					
+//			}else{
+//				toastr.info("Nothing to add, Feed is up to date");
+//			}
+			for(var i = 0 ; i < response.length ; i++){
+				var event;
+				if(response[i].type == "operation")
+				var event={
+						type: "operation",
+						id:	response[i].id ,
+						title: response[i].name,
+						start:  response[i].startDate,
+						end: response[i].endDate,
+						className: "m-fc-event--danger m-fc-event--solid-warning",
+						description: 'Operation "'+response[i].name+'" due date.',
+							 };
+				else
+					var event={
+						type: "service",
+						id:	response[i].id ,
+						title: response[i].name,
+						start:  response[i].startDate,
+						end: response[i].endDate,
+						description: 'Service "'+response[i].name+'" due date.',
+						className: "m-fc-event--success m-fc-event--solid-success"
+							 };
+				events.push(event);
+			}
+			
+		},
+		error : function(e) {
+			alert('Error: refresh project feed ' + e);
+		}
+	});
+	
+	for(var j = 0 ; j< events.length; j++){
+		//console.log("events:"+i +" "+ events[j].title+" startDate: "+moment(events[j].startDate)+" endDate: "+moment(events[j].endDate));
+		$('#project_calendar').fullCalendar('renderEvent', events[j],true);
+	}
+	//console.log("events:"+events.length);
+	$("#project_calendar").fullCalendar('rerenderEvents');
+    
+	return events;
+	
 	
 }
 
@@ -1058,6 +1203,9 @@ function projectDynamicContent() {
 	$("#project_calendar_toggle").on("click", function() {
 		$('#project_subheader').show();
 		$("#m_dynamic_content_project").children().hide();
+		
+		populateProjectCalendar();
+		
 		$("#calendar-fragment").show();
 	});
 

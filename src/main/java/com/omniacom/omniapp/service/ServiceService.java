@@ -2,9 +2,13 @@ package com.omniacom.omniapp.service;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,6 +98,38 @@ public class ServiceService {
 			return serviceRepo.getServiceClosedDate(service);
 		return null;
 		
+	}
+	
+	public Date getServiceDates(com.omniacom.omniapp.entity.Service service) {
+		List<Task> tasks = findAllTasks(service);
+		List<Date> dateList = new ArrayList<Date>();
+		if(!tasks.isEmpty()) {
+		for(Task t : tasks) {
+			dateList.add(t.getEndDate());
+			//dateList.add(t.getEndDate());
+		}
+		dateList.sort(new Comparator<Date>() {
+
+			@Override
+			public int compare(Date o1, Date o2) {
+				// TODO Auto-generated method stub
+				if(o1.before(o2))
+					return -1;
+				return 0;
+			}
+		});
+		
+		//dateList = new ArrayList<Date>(dates);
+		//Date startDate = (Date) dates.toArray()[0];
+		//Date endDate = (Date) dates.toArray()[dates.size()-1];
+		//dateList.add((Date) dates.toArray()[0]);
+		//dateList.add((Date) dates.toArray()[dates.size()-1]);
+		return dateList.get(0);
+		}
+		
+		
+
+		return service.getCreationDate();
 	}
 
 }

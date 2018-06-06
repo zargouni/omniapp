@@ -26,6 +26,7 @@ import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
+import com.omniacom.omniapp.validator.JsonResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -317,5 +318,42 @@ public Map<LocalDate, List<Date>> getRawProjectFeed(Project project) {
 		}
 		return (Map<LocalDate, List<Date>>) feed.descendingMap();
 	}
+
+public JSONArray getProjectEvents(Project project) {
+	// TODO Auto-generated method stub
+	JSONArray events = new JSONArray();
+	List<com.omniacom.omniapp.entity.Service> services = (List<com.omniacom.omniapp.entity.Service>) findAllServices(project);
+	List<Operation> operations = project.getOperations();
+	for(Operation op: operations) {
+		Date startDate = op.getStartDate();
+		Date endDate = op.getEndDate();
+	//System.out.println("startDate: "+startDate);
+	//System.out.println("endDate: "+endDate);
+		events.add(new JSONObject()
+				.element("id", op.getId())
+				.element("type", "operation")
+				.element("name", op.getName())
+				.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(endDate))
+				.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(endDate.getDay()+1)));
+		
+	}
+	
+	for(com.omniacom.omniapp.entity.Service service: services) {
+		JSONObject json = new JSONObject()
+				.element("id", service.getId())
+		.element("type", "service")
+		.element("name", service.getName());
+		//if(serviceService.getServiceDates(service).size() != 0) {
+		json.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(serviceService.getServiceDates(service)));
+		json.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(serviceService.getServiceDates(service).getDay()+1));
+//		}else {
+//			json.element("startDate", new Date());
+//			json.element("endDate", new Date());
+//		}
+		events.add(json);
+		
+	}
+	return events;
+}
 
 }

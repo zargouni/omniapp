@@ -315,8 +315,8 @@
 
 /* loader refresh feed */
 
-#loader-wrapper {
-    position: absolute;
+.loader-wrapper {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -396,7 +396,7 @@
         }
     }
     
-    .no-js #loader-wrapper {
+    .no-js .loader-wrapper {
     display: none;
 }
 .no-js h1 {

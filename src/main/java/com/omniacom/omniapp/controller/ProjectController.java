@@ -132,6 +132,11 @@ public class ProjectController {
 	public @ResponseBody JSONArray getProjectOperationsStatus(@RequestParam("id") Project project) {
 		return projectService.getProjectOperationsStatus(project);
 	}
+	
+	@GetMapping("/get-project-calendar-events")
+	public @ResponseBody JSONArray getProjectCalendarEvents(@RequestParam("id") Project project) {
+		return projectService.getProjectEvents(project);
+	}
 
 	@GetMapping("/get-project-details")
 	public @ResponseBody JSONObject getprojectDetails(@RequestParam("id") long projectId) {

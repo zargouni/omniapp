@@ -557,7 +557,7 @@ function doAddServiceAjaxPost() {
 				 $('#input_service_flag').val("0");
 				
 				$('#m_quick_sidebar_add_close').click();
-				if($('#operation_services_widget').length){
+				if($('#operation-fragment').is(':visible')){
 					var operationId = $('#operation_fragment_selected_operation_id').val();
 					 populateServicesTabOperationFragment(operationId);
 				}
