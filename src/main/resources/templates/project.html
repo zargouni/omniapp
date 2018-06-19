@@ -23,6 +23,7 @@
 			</div>
 			<!-- BEGIN: selected project -->
 			<input type="hidden" id="selected_project_id" />
+			<input type="hidden" id="session_user_id" />
 			<!-- END: selected project -->
 			<!-- BEGIN: Left Aside -->
 			<div
@@ -83,12 +84,23 @@
 		</div>
 		<!-- end:: Body -->
 
-		<script type="text/javascript">
+		<script th:inline="javascript" type="text/javascript">
 			$(document).ready(function() {
 				gmapPopoverInit();
 				let searchParams = new URLSearchParams(window.location.search);
 				let param = searchParams.get('id');
 				$('#selected_project_id').attr('value', param);
+				/*<![CDATA[*/
+			   
+
+			    var sessionUserId = /*[[${sessionUser.id}]]*/ '0';
+			   
+			    $('#session_user_id').attr('value', sessionUserId);
+
+			   
+			/*]]>*/
+			
+				
 			});
 		</script>
 

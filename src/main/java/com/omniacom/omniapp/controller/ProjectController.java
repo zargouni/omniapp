@@ -38,6 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.omniacom.omniapp.entity.Comment;
+import com.omniacom.omniapp.entity.Notification;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
@@ -46,6 +47,7 @@ import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.CommentRepository;
 import com.omniacom.omniapp.repository.UploadedFileRepository;
+import com.omniacom.omniapp.service.NotificationService;
 import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
 import com.omniacom.omniapp.service.ServiceService;
@@ -327,7 +329,6 @@ public class ProjectController {
 	// }
 
 	// @ModelAttribute(name = "currentProject")
-	// public Project getCurrentProject() {
 	// return currentProject;
 	// }
 	//
@@ -340,6 +341,9 @@ public class ProjectController {
 		return taskService.findAllUsersForTask(taskId);
 	}
 
+	@Autowired
+	NotificationService notificationService;
+	
 	@PostMapping("/update-task-owners")
 	public @ResponseBody JsonResponse addUserToTask(@RequestParam("id") long taskId,
 			@RequestParam("userId") long userId) {
@@ -353,6 +357,10 @@ public class ProjectController {
 		if (task != null && user != null) {
 			if (!taskService.addOneOwner(task, user))
 				response.setStatus("FAIL");
+			else {
+				Notification notification = notificationService.createNotificationObject("u got a new task "+task.getName(), user);
+				notificationService.save(notification);
+			}
 		}
 		return response;
 	}
@@ -410,7 +418,7 @@ public class ProjectController {
 	@Autowired
 	UploadedFileRepository fileRepo;
 
-	@GetMapping("/download-attachment")
+	@GetMapping("/attachment")
 	public void handleFileDownload(HttpServletResponse response, @RequestParam("id") long id) throws IOException {
 		File file = null;
 		UploadedFile dbFile = fileRepo.findOne(id);

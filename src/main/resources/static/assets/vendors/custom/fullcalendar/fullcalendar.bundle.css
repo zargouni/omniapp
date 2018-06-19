@@ -521,7 +521,8 @@ tr:first-child > td > .fc-day-grid-event {
 .fc-day-grid-event .fc-content {
   /* force events to be one-line tall */
   white-space: nowrap;
-  overflow: hidden; }
+  overflow: hidden;
+  text-overflow: ellipsis; }
 
 .fc-day-grid-event .fc-time {
   font-weight: bold; }

@@ -82,7 +82,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-xl-4 order-1 order-xl-2 m--align-right">
+					<div th:if="${sessionUser.id == selectedProject.owner.id}" class="col-xl-4 order-1 order-xl-2 m--align-right">
 						<a onclick="toggleAddNewTaskSidebar()"
 							
 							class="btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">

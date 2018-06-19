@@ -5,18 +5,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +22,6 @@ import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
-import com.omniacom.omniapp.validator.JsonResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -45,8 +40,6 @@ public class ProjectService {
 
 	@Autowired
 	OperationService operationService;
-	
-	
 
 	private Project currentProject;
 
@@ -133,8 +126,8 @@ public class ProjectService {
 				.element("percentage", getProjectProgress(project))
 				.element("unassignedTasksCount", getProjectUnassignedTasksCount(project))
 				.element("overdueTasksCount", getProjectOverdueTasksCount(project))
-				.element("tasksCount", findTaskCount(project))
-				.element("creationDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(project.getCreationDate()));
+				.element("tasksCount", findTaskCount(project)).element("creationDate",
+						new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(project.getCreationDate()));
 		return json;
 	}
 
@@ -186,13 +179,14 @@ public class ProjectService {
 	}
 
 	public Map<LocalDate, JSONArray> getProjectFeed(Project project) {
-		//JSONArray json = new JSONArray();
-		//Set<Object> activities = null;
+		// JSONArray json = new JSONArray();
+		// Set<Object> activities = null;
 		TreeMap<LocalDate, JSONArray> feed = new TreeMap<LocalDate, JSONArray>();
 		LocalDate currentDate = LocalDate.now();
 		LocalDate startDate = project.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		JSONArray json = null;
-		for (LocalDate date = startDate; date.isBefore(currentDate) || date.isEqual(currentDate) ; date = date.plusDays(1)) {
+		for (LocalDate date = startDate; date.isBefore(currentDate)
+				|| date.isEqual(currentDate); date = date.plusDays(1)) {
 			// Populate operation activities into map
 			for (Operation op : project.getOperations()) {
 				if (op.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
@@ -200,10 +194,10 @@ public class ProjectService {
 						feed.get(date)
 								.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation"));
 						feed.get(date).sort(getFeedDatesComparator());
-					}else {
+					} else {
 						json = new JSONArray();
-						//activities = new TreeSet<>(getFeedDatesComparator());
-						//activities.add(op);
+						// activities = new TreeSet<>(getFeedDatesComparator());
+						// activities.add(op);
 						json.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation"));
 						json.sort(getFeedDatesComparator());
 						feed.put(date, json);
@@ -219,7 +213,7 @@ public class ProjectService {
 						feed.get(date).add(serviceService.jsonService(service).accumulate("type", "service")
 								.accumulate("activityType", "creation"));
 						feed.get(date).sort(getFeedDatesComparator());
-					}else {
+					} else {
 						json = new JSONArray();
 						json.add(serviceService.jsonService(service).accumulate("type", "service")
 								.accumulate("activityType", "creation"));
@@ -227,7 +221,7 @@ public class ProjectService {
 						feed.put(date, json);
 					}
 				}
-				if(serviceService.getServiceClosedDate(service) != null)
+				if (serviceService.getServiceClosedDate(service) != null)
 					if (serviceService.getServiceClosedDate(service).toInstant().atZone(ZoneId.systemDefault())
 							.toLocalDate().equals(date)) {
 						if (feed.containsKey(date)) {
@@ -235,8 +229,7 @@ public class ProjectService {
 									.accumulate("activityType", "closed"));
 							feed.get(date).sort(getFeedDatesComparator());
 						}
-						
-						
+
 						else {
 							json = new JSONArray();
 							json.add(serviceService.jsonService(service).accumulate("type", "service")
@@ -251,36 +244,36 @@ public class ProjectService {
 		}
 		return (Map<LocalDate, JSONArray>) feed.descendingMap();
 	}
-	
-private Comparator<JSONObject> getFeedDatesComparator(){
-	return new Comparator<JSONObject>() {
 
-		@Override
-		public int compare(JSONObject o1, JSONObject o2) {
-			LocalDateTime o1Time = LocalDate.now().atTime(LocalTime.parse((String) o1.get("creationTime")));
-			LocalDateTime o2Time = LocalDate.now().atTime(LocalTime.parse((String) o2.get("creationTime")));
+	private Comparator<JSONObject> getFeedDatesComparator() {
+		return new Comparator<JSONObject>() {
 
-			if(o1Time.isBefore(o2Time))
-				return 0;
-			return -1;
-		}
-		 };
+			@Override
+			public int compare(JSONObject o1, JSONObject o2) {
+				LocalDateTime o1Time = LocalDate.now().atTime(LocalTime.parse((String) o1.get("creationTime")));
+				LocalDateTime o2Time = LocalDate.now().atTime(LocalTime.parse((String) o2.get("creationTime")));
 
-}
-	
-public Map<LocalDate, List<Date>> getRawProjectFeed(Project project) {
-		
+				if (o1Time.isBefore(o2Time))
+					return 0;
+				return -1;
+			}
+		};
+
+	}
+
+	public Map<LocalDate, List<Date>> getRawProjectFeed(Project project) {
+
 		TreeMap<LocalDate, List<Date>> feed = new TreeMap<LocalDate, List<Date>>();
 		LocalDate currentDate = LocalDate.now();
 		LocalDate startDate = project.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		List<Date> list = null;
-		for (LocalDate date = startDate; date.isBefore(currentDate) || date.isEqual(currentDate) ; date = date.plusDays(1)) {
+		for (LocalDate date = startDate; date.isBefore(currentDate)
+				|| date.isEqual(currentDate); date = date.plusDays(1)) {
 			// Populate operation activities into map
 			for (Operation op : project.getOperations()) {
 				if (op.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
 					if (feed.containsKey(date))
-						feed.get(date)
-								.add(op.getCreationDate());
+						feed.get(date).add(op.getCreationDate());
 					else {
 						list = new ArrayList<Date>();
 						list.add(op.getCreationDate());
@@ -301,7 +294,7 @@ public Map<LocalDate, List<Date>> getRawProjectFeed(Project project) {
 						feed.put(date, list);
 					}
 				}
-				if(serviceService.getServiceClosedDate(service) != null)
+				if (serviceService.getServiceClosedDate(service) != null)
 					if (serviceService.getServiceClosedDate(service).toInstant().atZone(ZoneId.systemDefault())
 							.toLocalDate().equals(date)) {
 						if (feed.containsKey(date))
@@ -319,41 +312,50 @@ public Map<LocalDate, List<Date>> getRawProjectFeed(Project project) {
 		return (Map<LocalDate, List<Date>>) feed.descendingMap();
 	}
 
-public JSONArray getProjectEvents(Project project) {
-	// TODO Auto-generated method stub
-	JSONArray events = new JSONArray();
-	List<com.omniacom.omniapp.entity.Service> services = (List<com.omniacom.omniapp.entity.Service>) findAllServices(project);
-	List<Operation> operations = project.getOperations();
-	for(Operation op: operations) {
-		Date startDate = op.getStartDate();
-		Date endDate = op.getEndDate();
-	//System.out.println("startDate: "+startDate);
-	//System.out.println("endDate: "+endDate);
-		events.add(new JSONObject()
-				.element("id", op.getId())
-				.element("type", "operation")
-				.element("name", op.getName())
-				.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(endDate))
-				.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(endDate.getDay()+1)));
-		
+	public JSONArray getProjectEvents(Project project) {
+		// TODO Auto-generated method stub
+		JSONArray events = new JSONArray();
+		List<com.omniacom.omniapp.entity.Service> services = (List<com.omniacom.omniapp.entity.Service>) findAllServices(
+				project);
+		List<Operation> operations = project.getOperations();
+		for (Operation op : operations) {
+			Date startDate = op.getStartDate();
+			Date endDate = op.getEndDate();
+			// System.out.println("startDate: "+startDate);
+			// System.out.println("endDate: "+endDate);
+			events.add(new JSONObject().element("id", op.getId()).element("type", "operation")
+					.element("name", op.getName())
+					.element("startDate", new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH).format(endDate))
+					.element("endDate",
+							new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH).format(endDate.getDay() + 1)));
+
+		}
+
+		for (com.omniacom.omniapp.entity.Service service : services) {
+			JSONObject json = new JSONObject().element("id", service.getId()).element("type", "service").element("name",
+					service.getName());
+			// if(serviceService.getServiceDates(service).size() != 0) {
+			json.element("startDate", new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH)
+					.format(serviceService.getServiceDates(service)));
+			json.element("endDate", new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH)
+					.format(serviceService.getServiceDates(service).getDay() + 1));
+			// }else {
+			// json.element("startDate", new Date());
+			// json.element("endDate", new Date());
+			// }
+			events.add(json);
+
+		}
+		return events;
 	}
-	
-	for(com.omniacom.omniapp.entity.Service service: services) {
-		JSONObject json = new JSONObject()
-				.element("id", service.getId())
-		.element("type", "service")
-		.element("name", service.getName());
-		//if(serviceService.getServiceDates(service).size() != 0) {
-		json.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(serviceService.getServiceDates(service)));
-		json.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(serviceService.getServiceDates(service).getDay()+1));
-//		}else {
-//			json.element("startDate", new Date());
-//			json.element("endDate", new Date());
-//		}
-		events.add(json);
-		
+
+	public List<Project> getUnsyncProjects() {
+		// TODO Auto-generated method stub
+		return projectRepo.getUnsyncProjects();
 	}
-	return events;
-}
+
+	public List<Operation> findAllUnsyncedOperations(Project project) {
+		return projectRepo.findAllUnsyncedOperations(project);
+	}
 
 }

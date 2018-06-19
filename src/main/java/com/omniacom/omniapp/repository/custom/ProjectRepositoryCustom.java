@@ -28,4 +28,8 @@ public interface ProjectRepositoryCustom {
 	public Integer findProjectUnassignedTasksCount(Project project);
 	
 	public Integer findProjectOverdueTasksCount(Project project);
+	
+	public List<Project> getUnsyncProjects();
+	
+	public List<Operation> findAllUnsyncedOperations(Project project);
 }

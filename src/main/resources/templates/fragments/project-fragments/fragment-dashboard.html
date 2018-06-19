@@ -75,8 +75,9 @@
 				</div>
 			</div>
 			<div class="m-portlet__head-tools">
-				<span style="background-color: #6FBA33;" class="m-badge"></span><small>
-					Open</small> <span style="margin-left: 1%; background-color: #F7544C;"
+				<span id="open_operations" style="font-weight:500;color: white;background-color: #6FBA33;" class="m-badge"></span><small>
+					Open</small> 
+					<span id="closed_operations" style="font-weight:500;color: white;margin-left: 1%; background-color: #F7544C;"
 					class="m-badge"></span><small> Closed</small>
 			</div>
 
@@ -90,7 +91,7 @@
 					id="operation_status_filter"
 					class="form-control m-bootstrap-select m_selectpicker"
 					data-live-search="true" data-placeholder="Status Filter">
-					<option value="">All</option>
+					<option value="">Show All</option>
 					<option value="open">Open</option>
 					<option value="closed">Closed</option>
 				</select>

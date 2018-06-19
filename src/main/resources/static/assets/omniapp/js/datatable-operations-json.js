@@ -81,10 +81,11 @@ var DatatableOperationsJsonRemote = function () {
 		        width: 100,
 		        template: function(row) {
 		           var status = {
-		              true: {'title': 'Upcoming', 'class': 'm-badge--success'},
-		              false: {'title': 'Overdue', 'class': ' m-badge--danger'},
+		              "Open": {'title': 'Open', 'class': 'm-badge--info'},
+		              "Overdue": {'title': 'Overdue', 'class': ' m-badge--danger'},
+		              "Closed": {'title': 'Closed', 'class': ' m-badge--success'},
 		           };
-		           return '<span class="m-badge ' + status[row.status].class + ' m-badge--wide">' + status[row.status].title + '</span>';
+		           return '<span style="margin: 0 auto;" class="m-badge ' + status[row.status].class + ' m-badge--wide">' + status[row.status].title + '</span>';
 		         },
 		    } ,{
 				field: "startDate",

@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Client;
+import com.omniacom.omniapp.entity.Notification;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
@@ -38,6 +39,7 @@ import com.omniacom.omniapp.entity.TaskTemplate;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.service.BoqService;
 import com.omniacom.omniapp.service.ClientService;
+import com.omniacom.omniapp.service.NotificationService;
 import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
 import com.omniacom.omniapp.service.ServiceService;
@@ -112,6 +114,9 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private ProjectsAPI projectsApi;
+	
+	@Autowired
+	private NotificationService notificationService;
 
 	@ModelAttribute
 	public void addAtributes(Model model) {
@@ -128,6 +133,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		model.addAttribute("addedClient", this.newClient);
 		model.addAttribute("serviceTemplateList", stService.findAllServiceTemplates());
 		model.addAttribute("boq", new BillOfQuantities());
+		model.addAttribute("notifications", notificationService.findByUser(userService.getSessionUser(),10));
 
 	}
 
@@ -493,6 +499,16 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		addedSiteList.clear();
 		return true;
 	}
+	@PostMapping("/mark-old-notifications-as-read")
+	public @ResponseBody boolean readNotifications() {
+		List<Notification> notifications = notificationService.findAllByUser(userService.getSessionUser());
+		for(Notification notif : notifications) {
+			notif.setRead(true);
+			notificationService.save(notif);
+		}
+		return true;
+	}
+	
 
 	@PostMapping("/process-excel-sites")
 	public @ResponseBody JsonResponse processExcel(@RequestParam("id") long clientId,
@@ -563,6 +579,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 				.element("latitude", site.getLatitude());
 		return jsonSite;
 	}
+	
 
 	// Set validators
 	@InitBinder("project")

@@ -1,3 +1,15 @@
+function handleNotificationToggle(){
+	$.ajax({
+		type : "POST",
+		url : '/mark-old-notifications-as-read',
+		async: false,
+		
+		error : function(e) {
+			toastr.error("Couldn't update notifications status", "Server Error");
+		}
+	});	
+}
+
 function saveCheckedServiceTemplatesNewOperation(operationId){
 	var error = "none";
 	$('#service_templates_new_operation_checkbox_list').find(":checkbox:checked").each(function () {

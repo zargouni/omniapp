@@ -290,11 +290,14 @@ function populateProjectCalendar(){
 		                header: {
 		                    left: 'prev,next today',
 		                    center: 'title',
-		                    right: 'month,agendaWeek,agendaDay,listWeek'
+		                    right: 'listWeek,month,agendaWeek,agendaDay'
+		                   
 		                },
+		                defaultView: 'listWeek',
 		                editable: true,
 		                eventLimit: true, // allow "more" link when too many events
 		                navLinks: true,
+		                editable: false,
 		                
 		                businessHours: {
 		                	  // days of week. an array of zero-based day of week integers (0=Sunday)
@@ -307,9 +310,11 @@ function populateProjectCalendar(){
 
 		                eventRender: function(event, element) {
 		                    if (element.hasClass('fc-day-grid-event')) {
-		                        element.data('content', event.description);
+		                    	element.data('content', event.description);
 		                        element.data('placement', 'top');
 		                        mApp.initPopover(element); 
+		                        element.css("background",event.color);
+		                      //  element.find('.fc-time').html('<i class="fa fa-'+event.icon+'">' + event.description + '</i>'); 
 		                    } else if (element.hasClass('fc-time-grid-event')) {
 		                        element.find('.fc-title').append('<div class="fc-description">' + event.description + '</div>'); 
 		                    } else if (element.find('.fc-list-item-title').lenght !== 0) {
@@ -374,21 +379,23 @@ function getCalendarEvents(){
 				var event={
 						type: "operation",
 						id:	response[i].id ,
-						title: response[i].name,
+						title: response[i].name ,
 						start:  response[i].startDate,
 						end: response[i].endDate,
-						className: "m-fc-event--danger m-fc-event--solid-warning",
+						color: "#bd80ff",
+						className: "m-fc-event--light m-fc-event--solid-light",
 						description: 'Operation "'+response[i].name+'" due date.',
 							 };
 				else
 					var event={
 						type: "service",
 						id:	response[i].id ,
-						title: response[i].name,
+						title: response[i].name ,
 						start:  response[i].startDate,
 						end: response[i].endDate,
+						color: "#80bdff",
 						description: 'Service "'+response[i].name+'" due date.',
-						className: "m-fc-event--success m-fc-event--solid-success"
+						className: "m-fc-event--light m-fc-event--solid-light"
 							 };
 				events.push(event);
 			}
@@ -506,7 +513,8 @@ function handleDashboardMapControls(map){
 function populateDashboardMap() {
 	var projectId = $('#selected_project_id').val();
 	var map_div = "#dashboard_map";
-	
+	var open = 0;
+	var closed = 0;
 	$('#operation_status_filter').on('change',function(){
 		filterMarkersByOperationStatus(map,$(this).val())
 	});
@@ -537,6 +545,12 @@ function populateDashboardMap() {
 						}
 					};
 					for (i = 0; i < response.length; i++) {
+						
+						if(response[i].status == "open")
+							open++;
+						else if(response[i].status == "closed")
+							closed++;
+						
 						map.addMarker({
 							lat : response[i].latitude,
 							lng : response[i].longitude,
@@ -559,6 +573,8 @@ function populateDashboardMap() {
 						});
 
 					}
+					$('#open_operations').html(open);
+					$('#closed_operations').html(closed);
 					map.setZoom(6);
 					map.refresh();
 				},
@@ -844,7 +860,8 @@ function toggleAddNewTaskSidebar() {
 }
 
 function populateTaskOwnerSelect(taskId) {
-
+	$('.attachments_block').hide();
+	//console.log("session user id: "+$('#session_user_id').val());
 	$.ajax({
 		type : "GET",
 		url : '/get-all-users-in-task-details-json',
@@ -853,6 +870,8 @@ function populateTaskOwnerSelect(taskId) {
 		success : function(response) {
 			var html_text = '';
 			for (i = 0; i < response.length; i++) {
+				//console.log("user "+response[i].id);
+				//console.log("task "+taskId);
 				if (response[i].selected == true)
 					html_text += '<option selected value="' + response[i].id
 							+ '">' + response[i].firstName + ' '
@@ -861,10 +880,22 @@ function populateTaskOwnerSelect(taskId) {
 					html_text += '<option value="' + response[i].id + '">'
 							+ response[i].firstName + ' '
 							+ response[i].lastName + '</option>';
+				
+				//show attachments add block if user appears in owners list
+				if(response[i].id == $('#session_user_id').val() && response[i].selected == true)
+					$('.attachments_block').show();
+				
+				if(response[i].id == $('#session_user_id').val() && response[i].selected == true)
+					$('.delete_attachment').show();
+				
+				if(response[i].id == $('#session_user_id').val() && response[i].selected == true)
+					$('#task_actions').show();
+				
+				
 
 			}
 			$('#task_owner_select').html(html_text);
-			// $('#task_owner_select').selectpicker('refresh');
+			$('#task_owner_select').selectpicker('refresh');
 		},
 		error : function(e) {
 			alert('Error: can"t get users ' + e);
@@ -873,8 +904,8 @@ function populateTaskOwnerSelect(taskId) {
 
 }
 function populateTaskFragmentDetails(taskId) {
-	populateTaskParents(taskId);
-	populateTaskOwnerSelect(taskId);
+	
+	
 	$('#task_start_date_select').datepicker({
 		format : 'dd/mm/yyyy'
 	});
@@ -903,12 +934,12 @@ function populateTaskFragmentDetails(taskId) {
 			toggleReadOnlyModeTask();
 			for(i=0 ; i < response.files.length ; i++){
 				html_text += '<div><div class="row">'
-				+'<div class="col-md-8"><i class="fa fa-file-text"></i><a target="self" href="/download-attachment?id='+response.files[i].id+'"> '
+				+'<div class="col-md-8"><i class="fa fa-file-text"></i><a target="self" href="/attachment?id='+response.files[i].id+'"> '
 				+response.files[i].name+'</a>'
 				+'<span><p><small>size: '+parseInt(response.files[i].size/1024) +' KB</small>'
 				+'<small> Added on: '+response.files[i].creationDate+'</small></p></span>'
 				+'</div>'
-				+'<div class="col-md-4"><a href="#" onclick="handleDeleteAttachment('+response.files[i].id+')" class="btn btn-danger m-btn m-btn--icon m-btn--icon-only m-btn--pill">'
+				+'<div style="display:none;" class="delete_attachment" class="col-md-4"><a href="#" onclick="handleDeleteAttachment('+response.files[i].id+')" class="btn btn-danger m-btn m-btn--icon m-btn--icon-only m-btn--pill">'
 				+'<i class="la la-close"></i>'
 				+'</a>'
 				+'</div>'
@@ -923,6 +954,10 @@ function populateTaskFragmentDetails(taskId) {
 			alert('Error: Task ' + e);
 		}
 	});
+	
+	populateTaskParents(taskId);
+	populateTaskOwnerSelect(taskId);
+	
 }
 
 function handleDeleteAttachment(fileId){
@@ -1158,7 +1193,7 @@ function setSelectedService(serviceId) {
 }
 
 function projectDynamicContent() {
-	projectDashboardTaskPieChart();
+	//projectDashboardTaskPieChart();
 	populateDashboardMap();
 	$("#dashboard-fragment").show();
 	$('#project_subheader').show();
@@ -1167,7 +1202,7 @@ function projectDynamicContent() {
 		$('#project_subheader').show();
 		populateDashboardMap();
 		$("#m_dynamic_content_project").children().hide();
-		projectDashboardTaskPieChart();
+		//projectDashboardTaskPieChart();
 		$("#dashboard-fragment").show();
 	});
 

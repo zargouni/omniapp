@@ -121,10 +121,29 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 		Integer i = 0;
 		List<Task> tasks = findAllTasks(project);
 		for(Task t : tasks) {
-			if(t.getEndDate().before(new Date()))
+			if(t.getEndDate().before(new Date()) && t.getStatus().equals(StaticString.TASK_STATUS_ONGOING))
 				i++;
 		}
 		return i;
+	}
+
+	@Override
+	public List<Project> getUnsyncProjects() {
+		List<Project> projects = null;
+		Query query = entityManager.createQuery(
+				"SELECT p FROM Project p WHERE p.zohoId = 0");
+		projects = (List<Project>) query.getResultList();
+		return projects;
+	}
+
+	@Override
+	public List<Operation> findAllUnsyncedOperations(Project project) {
+		List<Operation> operations = null;
+		Query query = entityManager.createQuery(
+				"SELECT op FROM Operation op WHERE op.project.id = :param AND op.zohoId = 0")
+				.setParameter("param", project.getId());
+		operations = (List<Operation>) query.getResultList();
+		return operations;
 	}
 
 }

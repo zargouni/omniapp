@@ -74,11 +74,13 @@ public class UsersAPI {
 			
 			PortalsAPI portalsAPI = new PortalsAPI(getUserAuthToken(user));
 			List<Portal> portals = null;
+			
 			try {
 				portals = portalsAPI.getPortals();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}	
+			//System.out.println("portal id: "+portals.get(0).getIdString());
 			return portals.get(0).getIdString();
 		}
 

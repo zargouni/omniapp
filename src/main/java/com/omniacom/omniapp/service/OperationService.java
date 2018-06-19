@@ -106,12 +106,12 @@ public class OperationService {
 	}
 	
 	public JSONObject jsonOperationFormattedDates(Operation op) {
-		return new JSONObject()
+		JSONObject json = new JSONObject()
 				.element("id", op.getId())
 				.element("name", op.getName())
 				.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(op.getStartDate()))
 				.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(op.getEndDate()))
-				.element("status", op.getEndDate().after(new Date()))
+				
 				.element("serviceCount", getOperationServiceCount(op))
 				.element("flag", op.getFlag())
 				.element("project", projectService.jsonProject(op.getProject()))
@@ -120,6 +120,21 @@ public class OperationService {
 				.element("currency", op.getProject().getCurrency())
 				.element("creationDate",new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(op.getCreationDate()))
 				.element("creationTime", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(op.getCreationDate()));
+		if(op.getEndDate().before(new Date())) {
+			if(getOperationStatus(op).equals("open"))
+				json.accumulate("status", "Overdue");
+			else
+				json.accumulate("status", "Closed");
+		}else {
+			if(getOperationStatus(op).equals("closed"))
+				json.accumulate("status", "Closed");
+			if(getOperationStatus(op).equals("open"))
+				json.accumulate("status", "Open");
+		}
+			
+		
+		
+		return json;
 	}
 	
 	public float getOperationPrice(Operation operation) {
@@ -162,6 +177,7 @@ public class OperationService {
 			return "open";
 		return "closed";
 	}
+	
 
 	public JSONArray getOperationComments(long operationId) {
 		JSONArray array = new JSONArray();

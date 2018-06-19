@@ -84,7 +84,7 @@
 									href="#m_tabs_6_3" role="tab" aria-selected="false"> <i
 										class="la la-bell-o"></i>Logs
 								</a></li>
-								<li style="margin: auto; margin-right: 0; float: right;"><button
+								<li th:if="${sessionUser.id == selectedProject.owner.id}" style="margin: auto; margin-right: 0; float: right;"><button
 										class="btn btn-primary btn-sm operation_add_new_service">Add
 										new service</button></li>
 							</ul>
