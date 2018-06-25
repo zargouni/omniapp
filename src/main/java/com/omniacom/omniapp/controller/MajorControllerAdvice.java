@@ -37,6 +37,7 @@ import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.TaskTemplate;
 import com.omniacom.omniapp.entity.User;
+import com.omniacom.omniapp.repository.BoqServiceRepository;
 import com.omniacom.omniapp.service.BoqService;
 import com.omniacom.omniapp.service.ClientService;
 import com.omniacom.omniapp.service.NotificationService;
@@ -117,6 +118,9 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	
 	@Autowired
 	private NotificationService notificationService;
+	
+	@Autowired
+	private BoqServiceRepository bsRepo;
 
 	@ModelAttribute
 	public void addAtributes(Model model) {
@@ -134,6 +138,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		model.addAttribute("serviceTemplateList", stService.findAllServiceTemplates());
 		model.addAttribute("boq", new BillOfQuantities());
 		model.addAttribute("notifications", notificationService.findByUser(userService.getSessionUser(),10));
+		model.addAttribute("unseenNotifications", notificationService.findAllUnseenByUser(userService.getSessionUser()));
 
 	}
 
@@ -278,7 +283,8 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 			if (!boqs.isEmpty()) {
 				for (BillOfQuantities boq : boqs) {
 					for (ServiceTemplate st : boqService.findAllServiceTemplates(boq)) {
-						jsonArray.add(stService.jsonServiceTemplate(st));
+						float price = bsRepo.findByBoqAndTemplate(boq.getId(),st.getId()).getBoqServiceId().getPrice();
+						jsonArray.add(stService.jsonServiceTemplate(st).accumulate("price", price));
 					}
 				}
 			}
@@ -337,6 +343,9 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		if (task != null && user != null) {
 			if (!taskService.addOneOwner(task, user))
 				response.setStatus("FAIL");
+			else {
+				
+			}
 		}
 		return response;
 	}

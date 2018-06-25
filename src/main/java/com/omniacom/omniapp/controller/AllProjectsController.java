@@ -17,7 +17,7 @@ public class AllProjectsController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping("/projects")
+	@GetMapping("/all-projects")
 	public ModelAndView index(Model model) {
 		return new ModelAndView("projects");
 	}

@@ -27,9 +27,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public User findOneByUserName(String userName) {
 		User user = null;
-		Query query = entityManager
-				.createQuery("SELECT u FROM User u WHERE userName=:param")
-				.setParameter("param",userName);
+		Query query = entityManager.createQuery("SELECT u FROM User u WHERE userName=:param").setParameter("param",
+				userName);
 		List<User> results = (List<User>) query.getResultList();
 		if (!results.isEmpty())
 			// ignores multiple results
@@ -38,14 +37,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return user;
 	}
 
-	
-
 	@Override
 	public List<Project> findContributedProjects(User user) {
 		List<Project> projects = null;
-		Query query = entityManager
-				.createQuery(
+		Query query = entityManager.createQuery(
 				"SELECT p FROM Project p, User u JOIN u.contributedProjectList project WHERE u.id = :param AND project.id = p.id")
+
 				.setParameter("param", user.getId());
 		projects = (List<Project>) query.getResultList();
 		projects.addAll(findOwnedProjects(user));
@@ -55,9 +52,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public List<Project> findOwnedProjects(User user) {
 		List<Project> projects = null;
-		Query query = entityManager
-				.createQuery("SELECT p FROM Project p WHERE p.owner.id=:param")
-				.setParameter("param",
+		Query query = entityManager.createQuery("SELECT p FROM Project p WHERE p.owner.id=:param").setParameter("param",
 				user.getId());
 		projects = (List<Project>) query.getResultList();
 		return projects;
@@ -76,48 +71,46 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public List<Operation> findContributedOperations(User user) {
 		List<Operation> operations = null;
-		Query query = entityManager
-				.createQuery(
+		Query query = entityManager.createQuery(
 				"SELECT o FROM Operation o, User u JOIN u.contributedOperationList operation WHERE u.id = :param AND operation.id = o.id")
 				.setParameter("param", user.getId());
 		operations = (List<Operation>) query.getResultList();
 		return operations;
 	}
-	
+
 	public List<Comment> findAllComments(User user) {
 		List<Comment> comments = null;
-		Query query = entityManager
-				.createQuery("SELECT c FROM Comment c WHERE c.user.id = :param")
+		Query query = entityManager.createQuery("SELECT c FROM Comment c WHERE c.user.id = :param")
 				.setParameter("param", user.getId());
 		comments = (List<Comment>) query.getResultList();
 		return comments;
 	}
 
-
-
 	@Override
 	public List<Task> findCompletedTasks(User user) {
 		List<Task> tasks = null;
-		Query query = entityManager
-				.createQuery("SELECT t FROM Task t, User u JOIN u.tasks task WHERE u.id = :param AND task.id = t.id AND task.status = :param1")
-				.setParameter("param", user.getId())
-				.setParameter("param1", StaticString.TASK_STATUS_COMPLETED);
+		Query query = entityManager.createQuery(
+				"SELECT t FROM Task t, User u JOIN u.tasks task WHERE u.id = :param AND task.id = t.id AND task.status = :param1")
+				.setParameter("param", user.getId()).setParameter("param1", StaticString.TASK_STATUS_COMPLETED);
 		tasks = (List<Task>) query.getResultList();
 		return tasks;
 	}
-
-
 
 	@Override
 	public List<Task> findOnGoingTasks(User user) {
 		List<Task> tasks = null;
-		Query query = entityManager
-				.createQuery("SELECT t FROM Task t, User u JOIN u.tasks task WHERE u.id = :param AND task.id = t.id AND task.status = :param1")
-				.setParameter("param", user.getId())
-				.setParameter("param1", StaticString.TASK_STATUS_ONGOING);
+		Query query = entityManager.createQuery(
+				"SELECT t FROM Task t, User u JOIN u.tasks task WHERE u.id = :param AND task.id = t.id AND task.status = :param1")
+				.setParameter("param", user.getId()).setParameter("param1", StaticString.TASK_STATUS_ONGOING);
 		tasks = (List<Task>) query.getResultList();
 		return tasks;
 	}
-	
+
+	@Override
+	public boolean addContributingUserToProject(User user, Project project) {
+		if (!user.getContributedProjectList().contains(project))
+			return user.getContributedProjectList().add(project);
+		return false;
+	}
 
 }

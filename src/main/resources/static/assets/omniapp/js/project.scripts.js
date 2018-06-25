@@ -27,16 +27,17 @@ function populateProjectFeed(){
 					alignContent = "left";
 				}
 				
-//				var detailedActivityWrapper = '<div class="m-timeline-1__item-title">My ToDo</div>'
-//										+'<div class="m-list-badge m--margin-top-15">'
-//										+'<div class="m-list-badge__label m--font-success">12:00</div>'
-//											+'<div class="m-list-badge__items">'
-//											+'<a href="#" class="m-list-badge__item">Hiking</a> <a href="#"'
-//													+' class="m-list-badge__item">Lunch</a> '
-//													+'<a href="#"'
-//													+' class="m-list-badge__item">Meet John</a>'
-//													+'	</div>'
-//										+'</div>';
+// var detailedActivityWrapper = '<div class="m-timeline-1__item-title">My
+// ToDo</div>'
+// +'<div class="m-list-badge m--margin-top-15">'
+// +'<div class="m-list-badge__label m--font-success">12:00</div>'
+// +'<div class="m-list-badge__items">'
+// +'<a href="#" class="m-list-badge__item">Hiking</a> <a href="#"'
+// +' class="m-list-badge__item">Lunch</a> '
+// +'<a href="#"'
+// +' class="m-list-badge__item">Meet John</a>'
+// +' </div>'
+// +'</div>';
 //	
 
 				
@@ -82,13 +83,13 @@ function populateProjectFeed(){
 			 for (var cpt = 0; cpt < operations.length; cpt++){
 				  var object = operations[cpt];
 				 // console.log("object name is: "+object.name);
-				  //setTimeout(function (){
-					  //console.log("second object name is: "+object.name);
+				  // setTimeout(function (){
+					  // console.log("second object name is: "+object.name);
 					 // getFeedMapUI(object);
 					  while(getFeedMapUI(object) == false){
 						  getFeedMapUI(object);
 					  }
-				  //},2000);
+				  // },2000);
 			  }
 		},
 		error : function(e) {
@@ -163,7 +164,7 @@ function getDetailedActivityUI(object,objectType,activityType){
 			
 			+'<div class="sites_map boxshadow" style="width:100% !important;height:120px  !important;border-radius:10px;border:2px #000; " id="'+object.id+'"></div>'
 			
-			//+'</div>'
+			// +'</div>'
 			
 			+'</div>'
 			
@@ -218,11 +219,11 @@ function getFeedMapUI(object){
         }
     });
 	
-//	map.drawOverlay({
-//		  lat: object.site.latitude,
-//		  lng: object.site.longitude,
-//		  content: ' <div class="overlay">'+object.site.name+'</div>',
-//		});
+// map.drawOverlay({
+// lat: object.site.latitude,
+// lng: object.site.longitude,
+// content: ' <div class="overlay">'+object.site.name+'</div>',
+// });
 	map.setZoom(4);
 	map.refresh();
 	
@@ -275,16 +276,17 @@ function populateProjectCalendar(){
 	            var TOMORROW = todayDate.clone().add(1, 'day').format('YYYY-MM-DD');
 	            $('.loader-wrapper').show();
 				
-	            //var eventss = getCalendarEvents();
+	            // var eventss = getCalendarEvents();
 	            
 	            
 	            $('#project_calendar').fullCalendar( 'removeEvents');
 	            
 	            
-	          //  $('#project_calendar').fullCalendar( 'addEventSource', getCalendarEvents() );
+	          // $('#project_calendar').fullCalendar( 'addEventSource',
+				// getCalendarEvents() );
 	            
 	            setTimeout(function(){
-					//$(".m-timeline-1__items").html("");
+					// $(".m-timeline-1__items").html("");
 	            	
 	            	$('#project_calendar').fullCalendar({
 		                header: {
@@ -295,15 +297,18 @@ function populateProjectCalendar(){
 		                },
 		                defaultView: 'listWeek',
 		                editable: true,
-		                eventLimit: true, // allow "more" link when too many events
+		                eventLimit: true, // allow "more" link when too many
+											// events
 		                navLinks: true,
 		                editable: false,
 		                
 		                businessHours: {
-		                	  // days of week. an array of zero-based day of week integers (0=Sunday)
+		                	  // days of week. an array of zero-based day of
+								// week integers (0=Sunday)
 		                	  dow: [ 1, 2, 3, 4, 5 ], // Monday - Thursday
 
-		                	  start: '8:00', // a start time (10am in this example)
+		                	  start: '8:00', // a start time (10am in this
+												// example)
 		                	  end: '18:00', // an end time (6pm in this example)
 		                	},
 		              // events: eventss,
@@ -314,7 +319,9 @@ function populateProjectCalendar(){
 		                        element.data('placement', 'top');
 		                        mApp.initPopover(element); 
 		                        element.css("background",event.color);
-		                      //  element.find('.fc-time').html('<i class="fa fa-'+event.icon+'">' + event.description + '</i>'); 
+		                      // element.find('.fc-time').html('<i class="fa
+								// fa-'+event.icon+'">' + event.description +
+								// '</i>');
 		                    } else if (element.hasClass('fc-time-grid-event')) {
 		                        element.find('.fc-title').append('<div class="fc-description">' + event.description + '</div>'); 
 		                    } else if (element.find('.fc-list-item-title').lenght !== 0) {
@@ -325,7 +332,7 @@ function populateProjectCalendar(){
 		                eventClick: function(calEvent, jsEvent, view) {
 
 		                	if(calEvent.type == "operation"){
-		                    //alert('Operation: ' + calEvent.title);
+		                    // alert('Operation: ' + calEvent.title);
 		                	$("#calendar-fragment").hide();
 		                	toggleOperationFragment(calEvent.id);
 		                	}
@@ -334,9 +341,9 @@ function populateProjectCalendar(){
 			                	$("#calendar-fragment").hide();
 			                	toggleServiceFragment(calEvent.id);
 		                	}
-		                		//alert('Service: ' + calEvent.title);
+		                		// alert('Service: ' + calEvent.title);
 		                    // change the border color just for fun
-		                    //$(this).css('border-color', 'red');
+		                    // $(this).css('border-color', 'red');
 
 		                  }
 		            });
@@ -357,22 +364,22 @@ function getCalendarEvents(){
 		data : 'id=' + projectId,
 		async : false,
 		success : function(response) {
-//			if(response.status == "REFRESH"){
-//				$('#loader-wrapper').show();
-//				setTimeout(function(){
-//					$(".m-timeline-1__items").html("");
-//					populateProjectFeed();
-//			        $('#loader-wrapper').hide();
+// if(response.status == "REFRESH"){
+// $('#loader-wrapper').show();
+// setTimeout(function(){
+// $(".m-timeline-1__items").html("");
+// populateProjectFeed();
+// $('#loader-wrapper').hide();
 //			       
-//			    },2100);
+// },2100);
 //				
 //				
 //				
 //				
 //					
-//			}else{
-//				toastr.info("Nothing to add, Feed is up to date");
-//			}
+// }else{
+// toastr.info("Nothing to add, Feed is up to date");
+// }
 			for(var i = 0 ; i < response.length ; i++){
 				var event;
 				if(response[i].type == "operation")
@@ -407,10 +414,12 @@ function getCalendarEvents(){
 	});
 	
 	for(var j = 0 ; j< events.length; j++){
-		//console.log("events:"+i +" "+ events[j].title+" startDate: "+moment(events[j].startDate)+" endDate: "+moment(events[j].endDate));
+		// console.log("events:"+i +" "+ events[j].title+" startDate:
+		// "+moment(events[j].startDate)+" endDate:
+		// "+moment(events[j].endDate));
 		$('#project_calendar').fullCalendar('renderEvent', events[j],true);
 	}
-	//console.log("events:"+events.length);
+	// console.log("events:"+events.length);
 	$("#project_calendar").fullCalendar('rerenderEvents');
     
 	return events;
@@ -449,15 +458,15 @@ function filterMarkersByOperationStatus(map,status){
 }
 
 function handleDashboardMapControls(map){
-	//var googleMapWidth = $("#m_portlet_tab_1_2").css('width');
-	//var googleMapHeight = $("#m_portlet_tab_1_2").css('height');
+	// var googleMapWidth = $("#m_portlet_tab_1_2").css('width');
+	// var googleMapHeight = $("#m_portlet_tab_1_2").css('height');
 
 	$('#btn-enter-full-screen-dashboard-map').click(function() {
 		
-//		if(!(clientId % 2))
-//			$('#clients_container_odd_row').hide();
-//		else
-//			$('#clients_container_even_row').hide();
+// if(!(clientId % 2))
+// $('#clients_container_odd_row').hide();
+// else
+// $('#clients_container_even_row').hide();
 //		
 		$('#general-header').hide();
 		
@@ -476,7 +485,7 @@ function handleDashboardMapControls(map){
 	    });
 
 	    google.maps.event.trigger(map, 'resize');
-	    //map.setCenter(newyork);
+	    // map.setCenter(newyork);
 
 	    // Gui
 	    $('#btn-enter-full-screen-dashboard-map').toggle();
@@ -501,7 +510,7 @@ function handleDashboardMapControls(map){
 	    });
 
 	    google.maps.event.trigger(map, 'resize');
-	    //map.setCenter(newyork);
+	    // map.setCenter(newyork);
 
 	    // Gui
 	    $('#btn-enter-full-screen-dashboard-map').toggle();
@@ -562,7 +571,7 @@ function populateDashboardMap() {
 							icon : icons[response[i].status].icon,
 
 						 click: function(e,id) {
-							 //console.log("id: "+$(this).attr('id'));
+							 // console.log("id: "+$(this).attr('id'));
 							 
 							 toggleOperationFragment($(this).attr('id'));
 							if($('#general-header').is(':hidden'))
@@ -595,6 +604,7 @@ function toggleOperationFragment(operationId) {
 		$("#operations-fragment").hide();
 	if($("#dashboard-fragment").is(':visible'))
 		$("#dashboard-fragment").hide();
+	$("#m_dynamic_content_project").children().hide();
 	populateServicesTabOperationFragment(operationId);
 	populateOperationDetails(operationId);
 	populateOperationComments(operationId);
@@ -789,16 +799,18 @@ function populateServicesTabOperationFragment(operationId) {
 					} else {
 						var html_text = "";
 						for (i = 0; i < response.length; i++) {
-							html_text += '<div class="m-widget4__item">'
+							html_text += '<div style="cursor:pointer;" class="m-widget4__item" onclick="toggleServiceFragment('
+								+ response[i].id
+								+ ')">'
 									+ '<div class="m-widget4__ext">'
 									+ '<span class="m-widget4__icon m--font-brand"> <i'
 									+ ' class="flaticon-more"></i>'
 									+ '</span>'
 									+ '</div>'
 									+ '<div class="m-widget4__info">'
-									+ '<a href="#" onclick="toggleServiceFragment('
-									+ response[i].id
-									+ ')">'
+									//+ '<a href="#" onclick="toggleServiceFragment('
+									//+ response[i].id
+									//+ ')">'
 									+ '<span class="m-widget4__text">'
 									+ response[i].name
 									+ ' <span class="m-widget4__number m--font-info"> ('
@@ -806,9 +818,9 @@ function populateServicesTabOperationFragment(operationId) {
 									+ ') </span>'
 									+ '</span>'
 									+ '<span style="font-size:11px;">created on: <span style="color: #36a3f7;">'
-									+ response[i].creationDate
+									+ response[i].formattedCreationDate
 									+ '</span></span>'
-									+ '</a>'
+									//+ '</a>'
 									+ '</div>'
 									+ '<div class="m-widget4__ext">'
 									+ '<div style="width:200px !important;" class="progress m-progress--sm">'
@@ -861,7 +873,7 @@ function toggleAddNewTaskSidebar() {
 
 function populateTaskOwnerSelect(taskId) {
 	$('.attachments_block').hide();
-	//console.log("session user id: "+$('#session_user_id').val());
+	// console.log("session user id: "+$('#session_user_id').val());
 	$.ajax({
 		type : "GET",
 		url : '/get-all-users-in-task-details-json',
@@ -870,8 +882,8 @@ function populateTaskOwnerSelect(taskId) {
 		success : function(response) {
 			var html_text = '';
 			for (i = 0; i < response.length; i++) {
-				//console.log("user "+response[i].id);
-				//console.log("task "+taskId);
+				// console.log("user "+response[i].id);
+				// console.log("task "+taskId);
 				if (response[i].selected == true)
 					html_text += '<option selected value="' + response[i].id
 							+ '">' + response[i].firstName + ' '
@@ -881,17 +893,17 @@ function populateTaskOwnerSelect(taskId) {
 							+ response[i].firstName + ' '
 							+ response[i].lastName + '</option>';
 				
-				//show attachments add block if user appears in owners list
-				if(response[i].id == $('#session_user_id').val() && response[i].selected == true)
+				if(response[i].id == $('#session_user_id').val() && response[i].selected == true
+						|| $('#session_user_id').val() == $('#project_manager_id').val()){
+					// show attachments actions block if user appears in owners
+					// list or user is PM
 					$('.attachments_block').show();
-				
-				if(response[i].id == $('#session_user_id').val() && response[i].selected == true)
 					$('.delete_attachment').show();
-				
-				if(response[i].id == $('#session_user_id').val() && response[i].selected == true)
+					
+					// show actions block if user appears in owners list or user
+					// is PM
 					$('#task_actions').show();
-				
-				
+				}
 
 			}
 			$('#task_owner_select').html(html_text);
@@ -1003,6 +1015,26 @@ function handleDeleteAttachment(fileId){
 	);
 	
 }
+
+function externalTaskLoad() {
+	$("#m_dynamic_content_project").children().hide();
+	var WindowLocation = window.location.hash;
+    
+    	var taskId = WindowLocation.substr(WindowLocation.lastIndexOf("=")+1);
+    	toggleTaskFragment(taskId);
+    
+}
+
+function externalOperationLoad() {
+	$("#m_dynamic_content_project").children().hide();
+	var WindowLocation = window.location.hash;
+    
+    	var operationId = WindowLocation.substr(WindowLocation.lastIndexOf("=")+1);
+    	toggleOperationFragment(operationId);
+    
+}
+
+
 
 function populateTaskParents(taskId) {
 	// var serviceId = $('#service_fragment_selected_service_id').val();
@@ -1193,7 +1225,7 @@ function setSelectedService(serviceId) {
 }
 
 function projectDynamicContent() {
-	//projectDashboardTaskPieChart();
+	// projectDashboardTaskPieChart();
 	populateDashboardMap();
 	$("#dashboard-fragment").show();
 	$('#project_subheader').show();
@@ -1202,7 +1234,7 @@ function projectDynamicContent() {
 		$('#project_subheader').show();
 		populateDashboardMap();
 		$("#m_dynamic_content_project").children().hide();
-		//projectDashboardTaskPieChart();
+		// projectDashboardTaskPieChart();
 		$("#dashboard-fragment").show();
 	});
 
@@ -1251,6 +1283,8 @@ $(document).ready(function() {
 	
 	populateProjectDetails();
 	projectDynamicContent();
+
+   
 	
 	// bootstrap dropzone
 	// Get the template HTML and remove it from the doumenthe template HTML and

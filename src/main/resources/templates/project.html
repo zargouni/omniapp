@@ -23,8 +23,16 @@
 			</div>
 			<!-- BEGIN: selected project -->
 			<input type="hidden" id="selected_project_id" />
-			<input type="hidden" id="session_user_id" />
 			<!-- END: selected project -->
+			
+			<!-- BEGIN: session user id -->
+			<input type="hidden" id="session_user_id" />
+			<!-- END: session user id -->
+			
+			<!-- BEGIN: project manager id -->
+			<input type="hidden" id="project_manager_id" />
+			<!-- END: project manager id -->
+			
 			<!-- BEGIN: Left Aside -->
 			<div
 				data-th-replace="fragments/fragment-left-sidebar-project :: left-sidebar-project"></div>
@@ -96,6 +104,10 @@
 			    var sessionUserId = /*[[${sessionUser.id}]]*/ '0';
 			   
 			    $('#session_user_id').attr('value', sessionUserId);
+			    
+			    var managerId = /*[[${selectedProject.owner.id}]]*/ '0';
+				   
+			    $('#project_manager_id').attr('value', managerId);
 
 			   
 			/*]]>*/

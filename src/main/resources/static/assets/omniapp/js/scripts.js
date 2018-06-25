@@ -1,13 +1,29 @@
-function handleNotificationToggle(){
+function handleNotificationClick(taskId){
 	$.ajax({
-		type : "POST",
-		url : '/mark-old-notifications-as-read',
-		async: false,
-		
+		type : "GET",
+		url : '/get-task-parents',
+		data : 'id=' + taskId,
+		async : false,
+		success : function(response) {
+			window.location.href = '/project?id='+response.project_id+'#task='+taskId;
+		},
 		error : function(e) {
-			toastr.error("Couldn't update notifications status", "Server Error");
+			alert('Error: notification click ' + e);
 		}
-	});	
+	});
+}
+
+function handleNotificationToggle(){
+	 $.ajax({
+			type : "POST",
+			url : '/mark-old-notifications-as-read',
+			async: true,
+			
+			error : function(e) {
+				toastr.error("Couldn't update notifications status", "Server Error");
+			}
+		});	
+
 }
 
 function saveCheckedServiceTemplatesNewOperation(operationId){
@@ -35,7 +51,7 @@ function saveCheckedServiceTemplatesNewOperation(operationId){
 			}
 		});	
 		
-	
+		
 	});
 	
 	$('#generate_operation_services_modal').modal('hide');
@@ -43,7 +59,7 @@ function saveCheckedServiceTemplatesNewOperation(operationId){
 	if(error === "error"){
 		swal({
 			title : 'Error',
-			text : "generation failed",
+			text : "Generation failed for some or all templates",
 			type : 'error',
 						
 		});
@@ -53,7 +69,16 @@ function saveCheckedServiceTemplatesNewOperation(operationId){
 			text : "Generation done successfully",
 			type : 'success',
 						
-		});
+		}).then(
+				function(){
+					if(window.location.pathname.indexOf('/project') != 0)
+						redirectToAddedOperation(operationId);
+					else
+						toggleOperationFragment(operationId);
+					
+				}
+
+		);;
 	}
 	
 }
@@ -320,6 +345,21 @@ function doAddProjectAjaxPost() {
 	});
 }
 
+function redirectToAddedOperation(operationId){
+	$.ajax({
+		type : "GET",
+		url : '/get-operation-details',
+		data : 'id=' + operationId,
+		async : false,
+		success : function(response) {
+			window.location.href = '/project?id='+response.project.id+'#operation='+operationId;
+		},
+		error : function(e) {
+			alert('Error: Redirecting to created operation ' + e);
+		}
+	});
+}
+
 function doAddOperationAjaxPost() {
 
 	var nameError = $('#operation_name_error');
@@ -370,6 +410,12 @@ function doAddOperationAjaxPost() {
 
 								$('#generate_operation_services_modal').modal('show');
 
+							}else{
+								if(window.location.pathname.indexOf('/project') != 0)
+									redirectToAddedOperation(addedOperationId);
+								else
+									toggleOperationFragment(addedOperationId);
+								
 							}
 
 						}
@@ -378,6 +424,13 @@ function doAddOperationAjaxPost() {
 				
 				}else{
 					toastr.success("Operation Added successfully", "Well done!");
+					  setTimeout(function (){
+						  if(window.location.pathname.indexOf('/project') != 0)
+								redirectToAddedOperation(addedOperationId);
+							else
+								toggleOperationFragment(addedOperationId);
+				   },2000);
+					
 				}
 				$('#m_quick_sidebar_add_close').click();
 				if($('#operations_datatable').length){
@@ -484,8 +537,8 @@ function doAddTaskAjaxPost() {
 function doAddTaskOwners(taskId){
 	$('#select_owners_new_task').find(":selected").each(function(){
 		var user = $(this).attr('value');
-		//alert('selected values: '+$(this).attr('value'));
-		//alert('task: '+taskId);
+		// alert('selected values: '+$(this).attr('value'));
+		// alert('task: '+taskId);
 		$.ajax({
 			type : "POST",
 			url : '/add-task-owner',
@@ -902,11 +955,16 @@ function populateGenerateOperationServicesCheckboxList(projectId,operationId){
 
 				for (i = 0; i < response.length; i++)
 				{
+					
 					html_text = '<label '
-									+ 'class="m-checkbox m-checkbox--success"> <input '
-									+'id="'+response[i].id+'" type="checkbox">'
-									+response[i].name+' <span></span>'
+									+ 'class="btn btn-secondary btn-sm m-btn m-btn--custom m-btn--label-primary">'
+									+response[i].name +'<span style="font-weight:400;font-size:14px;color:#34bfa3;" class="badge badge-light">'+response[i].price+'</span>'
+									+'<input '
+									+'id="'+response[i].id+'" type="checkbox" class="badgebox">'
+									+'<span class="badge">&check;</span>'
+									
 									+'</label>';
+									//+'<span class="badge badge-success">'+response[i].price+'</span>';
 					switch(response[i].category) {
 				    	case "BTS":
 				    		$('#category_bts').append(html_text);
@@ -1211,6 +1269,16 @@ $(document).ready(function() {
 		updateSelectServices();
 	});
 
+	 if (window.location.hash.indexOf('#task=') == 0){
+			externalTaskLoad();
+			
+	 }
+	 
+	 if (window.location.hash.indexOf('#operation=') == 0){
+			externalOperationLoad();
+			
+	 }
+	    
 	
 	
 	  	

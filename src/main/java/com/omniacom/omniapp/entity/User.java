@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -43,7 +45,8 @@ public class User implements Serializable {
 	@OneToMany(mappedBy = "owner")
 	private List<Project> ownedProjects = new ArrayList<Project>();
 	
-	@ManyToMany(mappedBy = "workingUsersList")
+	@ManyToMany
+	@JoinTable(name = "USER_PROJECTS", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"))
 	private List<Project> contributedProjectList = new ArrayList<Project>();
 
 	@OneToMany(mappedBy = "responsible")
@@ -57,6 +60,9 @@ public class User implements Serializable {
 
 	@OneToMany(mappedBy = "user")
 	private List<Comment> comments = new ArrayList<Comment>();
+	
+	@OneToMany(mappedBy="user")
+	private List<Notification> notifications;
 
 	public User() {
 
@@ -332,6 +338,20 @@ public class User implements Serializable {
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	/**
+	 * @return the notifications
+	 */
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+	/**
+	 * @param notifications the notifications to set
+	 */
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
 	}
 
 }

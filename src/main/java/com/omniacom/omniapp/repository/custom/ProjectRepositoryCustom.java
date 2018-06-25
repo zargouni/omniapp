@@ -32,4 +32,5 @@ public interface ProjectRepositoryCustom {
 	public List<Project> getUnsyncProjects();
 	
 	public List<Operation> findAllUnsyncedOperations(Project project);
+	
 }

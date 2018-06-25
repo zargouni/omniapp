@@ -2,12 +2,17 @@ package com.omniacom.omniapp.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
+
+import org.ocpsoft.prettytime.PrettyTime;
 
 
 @Entity
@@ -29,14 +34,27 @@ public class Notification implements Serializable{
 	private boolean isRead;
 	
 	@ManyToOne
+	private Task task;
+	
+	@ManyToOne
 	private User user;
 	
-	public Notification(){}
+	@Transient
+	private String createdAtPretty; 
 	
-	public Notification(String message,Date createdAt,User user){
+	@Transient
+	private PrettyTime prettyTime = new PrettyTime(Locale.ENGLISH);
+	
+	
+	public Notification(){
+		
+	}
+	
+	public Notification(String message,Date createdAt,User user,Task task){
 		this.message = message;
 		this.createdAt = createdAt;
 		this.user = user;
+		this.task = task;
 		this.isRead = false;
 	}
 
@@ -73,12 +91,54 @@ public class Notification implements Serializable{
 		this.user = user;
 	}
 	
-	public boolean isRead() {
+	public boolean getIsRead() {
 		return isRead;
 	}
 
 	public void setRead(boolean isRead) {
 		this.isRead = isRead;
+	}
+
+	/**
+	 * @return the task
+	 */
+	public Task getTask() {
+		return task;
+	}
+
+	/**
+	 * @param task the task to set
+	 */
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	/**
+	 * @return the createdAtPretty
+	 */
+	public String getCreatedAtPretty() {
+		return this.prettyTime.format(this.createdAt);
+	}
+
+	/**
+	 * @return the prettyTime
+	 */
+	public PrettyTime getPrettyTime() {
+		return prettyTime;
+	}
+
+	/**
+	 * @param createdAtPretty the createdAtPretty to set
+	 */
+	public void setCreatedAtPretty(String createdAtPretty) {
+		this.createdAtPretty = createdAtPretty;
+	}
+
+	/**
+	 * @param prettyTime the prettyTime to set
+	 */
+	public void setPrettyTime(PrettyTime prettyTime) {
+		this.prettyTime = prettyTime;
 	}
 
 }

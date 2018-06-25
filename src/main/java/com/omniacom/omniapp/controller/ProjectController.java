@@ -116,9 +116,9 @@ public class ProjectController {
 		JsonResponse response = new JsonResponse();
 		LocalDate latestDateInFeed = (LocalDate) projectService.getProjectFeed(project).keySet().toArray()[0];
 		Set<Date> latestActivities = new TreeSet<>(projectService.getRawProjectFeed(project).get(latestDateInFeed));
-		
+
 		Date latestActivity = (Date) latestActivities.toArray()[latestActivities.size() - 1];
-		
+
 		if (lastRefreshDateTime != null) {
 			if (lastRefreshDateTime.before(latestActivity)) {
 				response.setStatus("REFRESH");
@@ -134,7 +134,7 @@ public class ProjectController {
 	public @ResponseBody JSONArray getProjectOperationsStatus(@RequestParam("id") Project project) {
 		return projectService.getProjectOperationsStatus(project);
 	}
-	
+
 	@GetMapping("/get-project-calendar-events")
 	public @ResponseBody JSONArray getProjectCalendarEvents(@RequestParam("id") Project project) {
 		return projectService.getProjectEvents(project);
@@ -186,6 +186,8 @@ public class ProjectController {
 		return new JSONObject();
 	}
 
+	private List<User> taskUsers = null;
+
 	@PostMapping("/update-task")
 	public @ResponseBody JsonResponse doUpdateTask(@RequestParam("id") long taskId, @Validated Task updatedTask,
 			BindingResult result) {
@@ -193,7 +195,7 @@ public class ProjectController {
 
 		if (!result.hasErrors()) {
 			// if (!taskService.boqNameExists(boq.getName())) {
-
+			taskUsers = taskService.findOne(taskId).getUsers();
 			if (taskService.updateTask(taskId, updatedTask)) {
 
 				response.setStatus("SUCCESS");
@@ -343,7 +345,7 @@ public class ProjectController {
 
 	@Autowired
 	NotificationService notificationService;
-	
+
 	@PostMapping("/update-task-owners")
 	public @ResponseBody JsonResponse addUserToTask(@RequestParam("id") long taskId,
 			@RequestParam("userId") long userId) {
@@ -358,8 +360,17 @@ public class ProjectController {
 			if (!taskService.addOneOwner(task, user))
 				response.setStatus("FAIL");
 			else {
-				Notification notification = notificationService.createNotificationObject("u got a new task "+task.getName(), user);
-				notificationService.save(notification);
+				// Send notification to added users
+				if (!taskUsers.contains(user)) {
+					notificationService.sendNotification(user, task);
+				}
+				
+				// Add contributing user to task's project
+				if (task.getService().getOperation() != null)
+					userService.addContributingUserToProject(user, task.getService().getOperation().getProject());
+				else
+					userService.addContributingUserToProject(user, task.getService().getProject());
+
 			}
 		}
 		return response;

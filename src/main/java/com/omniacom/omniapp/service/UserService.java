@@ -66,8 +66,8 @@ public class UserService implements UserDetailsService {
 	}
 
 	public List<Project> findAllContributedProjects(User user) {
-		//return userRepo.findContributedProjects(user);
-		return user.getContributedProjectList();
+		return userRepo.findContributedProjects(user);
+		//return user.getContributedProjectList();
 	}
 
 	public User findByUserName(String userName) {
@@ -120,5 +120,9 @@ public class UserService implements UserDetailsService {
 		}
 		return jsonArray;
 	}
+	
+	 public boolean addContributingUserToProject(User user,Project project) {
+		 return userRepo.addContributingUserToProject(user, project);
+	 }
 
 }

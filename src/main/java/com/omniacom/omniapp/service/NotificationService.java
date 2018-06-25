@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.omniapp.entity.Notification;
+import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.NotificationRepository;
 
@@ -71,9 +72,18 @@ public class NotificationService {
 			return null;
 		}
 	}
+	
+	public List<Notification> findAllUnseenByUser(User user){
+		try{
+			return notificationRepository.unseenUserNotifications(user.getId());
+		}catch (Exception e) {
+			logger.error("Exception occur while fetch Notification by User ",e);
+			return null;
+		}
+	}
 
-	public Notification createNotificationObject(String message,User user){
-		return new Notification(message,new Date(),user);
+	public Notification createNotificationObject(String message,User user,Task task){
+		return new Notification(message,new Date(),user,task);
 	}
 
 	public Notification findByUserAndNotificationId(User user,Long notificationId){
@@ -83,6 +93,15 @@ public class NotificationService {
 			logger.error("Exception occur while fetch Notification by User and Notification Id ",e);
 			return null;
 		}
+	}
+	
+	public boolean sendNotification(User user, Task task) {
+		if(notificationRepository.findByUserAndTask(user.getId(), task.getId()) == null) {
+			Notification notification = this.createNotificationObject("You have a new task " + task.getName(), user,task);
+			this.save(notification);
+			return true;
+		}
+		return false;
 	}
 
 }

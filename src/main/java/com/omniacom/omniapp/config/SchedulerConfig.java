@@ -26,52 +26,52 @@ import com.omniacom.omniapp.zohoAPI.SyncZohoPortal;
 @Configuration
 public class SchedulerConfig {
 
-    private static final Logger LOG = LoggerFactory.getLogger(SchedulerConfig.class);
-
-    @Bean
-    public JobFactory jobFactory(ApplicationContext applicationContext) {
-        AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
-        jobFactory.setApplicationContext(applicationContext);
-        return jobFactory;
-    }
-
-    @Bean
-    public SchedulerFactoryBean schedulerFactoryBean(JobFactory jobFactory, Trigger simpleJobTrigger)
-            throws IOException {
-        SchedulerFactoryBean factory = new SchedulerFactoryBean();
-        factory.setJobFactory(jobFactory);
-        factory.setQuartzProperties(quartzProperties());
-        factory.setTriggers(simpleJobTrigger);
-        LOG.info("starting jobs....");
-        return factory;
-    }
-
-    @Bean
-    public SimpleTriggerFactoryBean simpleJobTrigger(@Qualifier("simpleJobDetail") JobDetail jobDetail,
-            @Value("${simplejob.frequency}") long frequency) {
-        LOG.info("simpleJobTrigger");
-
-        SimpleTriggerFactoryBean factoryBean = new SimpleTriggerFactoryBean();
-        factoryBean.setJobDetail(jobDetail);
-        factoryBean.setStartDelay(0L);
-        factoryBean.setRepeatInterval(frequency);
-        factoryBean.setRepeatCount(SimpleTrigger.REPEAT_INDEFINITELY);
-        return factoryBean;
-    }
-
-    @Bean
-    public Properties quartzProperties() throws IOException {
-        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
-        propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
-        propertiesFactoryBean.afterPropertiesSet();
-        return propertiesFactoryBean.getObject();
-    }
-
-    @Bean
-    public JobDetailFactoryBean simpleJobDetail() {
-        JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
-        factoryBean.setJobClass(SyncZohoPortal.class);
-        factoryBean.setDurability(true);
-        return factoryBean;
-    }
+//    private static final Logger LOG = LoggerFactory.getLogger(SchedulerConfig.class);
+//
+//    @Bean
+//    public JobFactory jobFactory(ApplicationContext applicationContext) {
+//        AutowiringSpringBeanJobFactory jobFactory = new AutowiringSpringBeanJobFactory();
+//        jobFactory.setApplicationContext(applicationContext);
+//        return jobFactory;
+//    }
+//
+//    @Bean
+//    public SchedulerFactoryBean schedulerFactoryBean(JobFactory jobFactory, Trigger simpleJobTrigger)
+//            throws IOException {
+//        SchedulerFactoryBean factory = new SchedulerFactoryBean();
+//        factory.setJobFactory(jobFactory);
+//        factory.setQuartzProperties(quartzProperties());
+//        factory.setTriggers(simpleJobTrigger);
+//        LOG.info("starting jobs....");
+//        return factory;
+//    }
+//
+//    @Bean
+//    public SimpleTriggerFactoryBean simpleJobTrigger(@Qualifier("simpleJobDetail") JobDetail jobDetail,
+//            @Value("${simplejob.frequency}") long frequency) {
+//        LOG.info("simpleJobTrigger");
+//
+//        SimpleTriggerFactoryBean factoryBean = new SimpleTriggerFactoryBean();
+//        factoryBean.setJobDetail(jobDetail);
+//        factoryBean.setStartDelay(0L);
+//        factoryBean.setRepeatInterval(frequency);
+//        factoryBean.setRepeatCount(SimpleTrigger.REPEAT_INDEFINITELY);
+//        return factoryBean;
+//    }
+//
+//    @Bean
+//    public Properties quartzProperties() throws IOException {
+//        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
+//        propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
+//        propertiesFactoryBean.afterPropertiesSet();
+//        return propertiesFactoryBean.getObject();
+//    }
+//
+//    @Bean
+//    public JobDetailFactoryBean simpleJobDetail() {
+//        JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
+//        factoryBean.setJobClass(SyncZohoPortal.class);
+//        factoryBean.setDurability(true);
+//        return factoryBean;
+//    }
 }

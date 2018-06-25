@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.Notification;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
@@ -29,6 +30,9 @@ public class TaskService {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	NotificationService notificationService;
 	
 
 	public Task addTask(Task task) {
@@ -94,14 +98,29 @@ public class TaskService {
 		if (service.getOperation() != null)
 			return new JSONObject().element("service", task.getService().getName())
 					.element("operation", task.getService().getOperation().getName())
-					.element("project", task.getService().getOperation().getProject().getName());
+					.element("project", task.getService().getOperation().getProject().getName())
+					.element("project_id", task.getService().getOperation().getProject().getId());
 		else
 			return new JSONObject().element("service", task.getService().getName()).element("operation", "none")
-					.element("project", task.getService().getProject().getName());
+					.element("project", task.getService().getProject().getName())
+					.element("project_id", task.getService().getProject().getId());
 	}
 
 	public boolean addOneOwner(Task task, User user) {
-		return taskRepo.addOneOwner(task, user);
+		boolean result = taskRepo.addOneOwner(task, user);
+		if(result) {
+			notificationService.sendNotification(user, task);
+			
+			// Add contributing user to task's project
+			if (task.getService().getOperation() != null)
+				userService.addContributingUserToProject(user, task.getService().getOperation().getProject());
+			else
+				userService.addContributingUserToProject(user, task.getService().getProject());
+		}
+		
+		
+			
+		return result;
 	}
 
 	public JSONArray findAllUsersForTask(long taskId) {

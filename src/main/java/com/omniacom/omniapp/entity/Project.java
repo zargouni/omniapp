@@ -54,8 +54,8 @@ public class Project implements Serializable {
 	@OneToOne
 	private BillOfQuantities boq;
 
-	@ManyToMany
-	@JoinTable(name = "USER_PROJECTS", joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+	@ManyToMany(mappedBy="contributedProjectList")
+	//@JoinTable(name = "USER_PROJECTS", joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> workingUsersList;
 
 	@OneToMany(mappedBy = "project")

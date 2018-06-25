@@ -25,5 +25,8 @@ public interface UserRepositoryCustom {
 	
 	public List<Task> findOnGoingTasks(User user);
 	
+	public boolean addContributingUserToProject(User user, Project project);
+
+	
 	
 }

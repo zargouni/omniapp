@@ -21,6 +21,12 @@ public interface NotificationRepository extends CrudRepository<Notification, Lon
 	
 	@Query("select n from Notification n where n.user.id=:userId ORDER BY n.createdAt DESC")
 	List<Notification> userNotifications(@Param("userId") Long userId);
+	
+	@Query("select n from Notification n where n.task.id=:taskId and n.user.id=:userId")
+	Notification findByUserAndTask(@Param("userId") Long userId, @Param("taskId") Long taskId);
+	
+	@Query("select n from Notification n where n.user.id=:userId and n.isRead = false ORDER BY n.createdAt DESC")
+	List<Notification> unseenUserNotifications(@Param("userId") Long userId);
 
 	Notification findByUserAndId(User user,Long id);
 }

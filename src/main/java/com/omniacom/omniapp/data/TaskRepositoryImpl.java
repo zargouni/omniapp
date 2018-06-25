@@ -35,11 +35,11 @@ public class TaskRepositoryImpl implements TaskRepositoryCustom {
 
 	@Override
 	public boolean addOneOwner(Task task, User user) {
-		if(task.getService().getOperation() != null) {
-			task.getService().getOperation().getProject().getWorkingUsersList().add(user);
-		}else {
-			task.getService().getProject().getWorkingUsersList().add(user);
-		}
+//		if(task.getService().getOperation() != null) {
+//			task.getService().getOperation().getProject().getWorkingUsersList().add(user);
+//		}else {
+//			task.getService().getProject().getWorkingUsersList().add(user);
+//		}
 		return task.getUsers().add(user);
 	}
 
