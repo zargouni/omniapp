@@ -1,3 +1,135 @@
+function populateOperationSnags(operationId){
+	$('#operation_snags_wrapper').html("");
+	$.ajax({
+		type : "GET",
+		url : '/get-operation-snags',
+		data : 'id=' + operationId,
+		async : false,
+		success : function(response) {
+			var html_text = "";
+			$('#snags_count').html(response.length);
+			if(response.length != 0)
+			for(var i=0;i<response.length;i++){
+				html_text += getSnagUI(response[i]);
+			}
+			else
+				html_text = '<div class="m-widget24__item">'
+				+'<div>'
+				+'<div style="display: block; vertical-align: middle;">'
+				+'<table width="100%" align="center" border="0"'
+				+'	cellpadding="0" cellspacing="0">'
+				+'	<tbody>'
+				+'		<tr>'
+				+'			<td align="center"><div'
+				+'					 class="emptydashboardbox omnia fonticon40">'
+				+'						<div class="m-demo-icon__preview">'
+				+'							<i style="font-size: 40px;" class="flaticon-user-ok"></i>'
+				+'					</div>'
+				+'				</div></td>'
+				+'		</tr>'
+				+'		<tr>'
+				+'			<td align="center" height="110px">'
+				+'				<div>'
+				+'					<span class="col777 pt12 lh25">This operation'
+				+'						contains no snags. Look up, You can post a snag from there'
+				+'						</span>'
+				+'				</div>'
+				+'			</td>'
+				+'		</tr>'
+				+'	</tbody>'
+				+'</table>'
+				+'</div>'
+				+'</div>'
+				+'</div>';
+			
+			$('#operation_snags_wrapper').html(html_text);
+		},
+		error : function(e) {
+			alert('Error: operation comments ' + e);
+		}
+	});
+}
+
+function getSnagUI(snag){
+	var bgColor;
+	switch(snag.severity) {
+    case 'low':
+        bgColor = "#34bfa3";
+        break;
+    case 'medium':
+    	bgColor = "#ffb822";
+        break;
+    default:
+    	bgColor = "#f4516c";
+}
+	return '<div style="border-radius: 5px;background:'+bgColor+';padding: 10px 20px;" class="m-widget3">'
+	+'<div class="m-widget3__item">'
+	+	'<div class="m-widget3__header">'
+	+		'<div class="m-widget3__user-img">'
+	+			'<img class="m-widget3__img"'
+	+			'	src="assets/app/media/img/users/user-icon.png" alt="">'
+	+		'</div>'
+	+		'<div class="m-widget3__info">'
+	+			'<span style="color: white;"  class="m-widget3__username">' + snag.user + '</span><br>'
+	+			'<span style="color: white;" class="m-widget3__time">' + snag.date + '</span>'
+	+		'</div>'
+	
+	+	'</div>'
+	+	'<div class="m-widget3__body">'
+	+		'<p  style="color: white;" class="m-widget3__text">'
+	+' <strong>'+snag.title+': </strong> '
+	+ 			snag.content
+	+		'</p>'
+	+	'</div>'
+	+'</div>'
++'</div>'
++'<hr style="background: #fff;" />';
+}
+
+function doPostSnag(){
+	var content = $('#snag_content').val();
+	var title = $('#snag_title').val();
+	var severity = $('#snag_severity').val();
+	var operationId = $('#operation_fragment_selected_operation_id').val();
+	
+	
+	var titleError = $('#snag_title_error');
+	var contentError = $('#snag_content_error');
+	
+	
+	titleError.hide('fast');
+	contentError.hide('fast');
+
+	
+	$.ajax({
+		type : "POST",
+		url : '/do-post-snag',
+		data : 'id=' + operationId+"&title="+title+"&content="+content+"&severity="+severity,
+		async : false,
+		success : function(response) {
+			if(response.status == "FAIL"){
+				toastr.error("Couldn't submit snag","Error !");
+				for (i = 0; i < response.result.length; i++) {
+					if (response.result[i].code == "snag.title.empty")
+						titleError.show('slow');
+					if (response.result[i].code == "snag.content.empty")
+						contentError.show('slow');	
+				}
+			}else{
+				$('#snag-modal').modal("hide");
+				toastr.success("Snag submitted successfully","Well done !");
+				$('#snag_content').val("");
+				$('#snag_title').val("");
+				populateOperationSnags(operationId);
+			}
+		},
+		error : function(e) {
+			alert('Error: snag operation ' + e);
+		}
+	});
+
+}
+
 function populateProjectFeed(){
 	var projectId = $('#selected_project_id').val();
 	var feedWrapper = $(".m-timeline-1__items");
@@ -608,6 +740,7 @@ function toggleOperationFragment(operationId) {
 	populateServicesTabOperationFragment(operationId);
 	populateOperationDetails(operationId);
 	populateOperationComments(operationId);
+	populateOperationSnags(operationId);
 	$("#operation-fragment").show();
 
 	$('#operation_map').hide('fast');
@@ -848,15 +981,13 @@ function toggleAddNewServiceSidebar(operationId) {
 function toggleAddNewOperationSidebar() {
 	$('#m_quick_sidebar_add_toggle').click();
 	$('#quick_sidebar_new_operation_nav').click();
-	// $('#select_project_new_operation').selectpicker('refresh');
 	var projectId = $('#selected_project_id').val();
+	
 	$('#select_project_new_operation').val(projectId).change();
 
 	$('#select_project_new_operation').selectpicker('refresh');
-//	 $('#sites_map_container').attr("style","width:100%;height:250px;position: relative;");
-//	 $('.sites_map_canvas').attr("style","position: absolute; top: 20%; right:0; bottom: 0; left: 0;");
-//		
-	//initializeSitesGmap(projectId);
+
+	
 }
 
 function populateServicesTabOperationFragment(operationId) {

@@ -17,6 +17,7 @@ import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
+import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.TaskTemplate;
 import com.omniacom.omniapp.repository.BoqRepository;
@@ -204,6 +205,33 @@ public class OperationService {
 				.element("user", c.getUser().getFirstName() +" "+ c.getUser().getLastName())
 				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(c.getDate()))
 				.element("content", c.getContent());
+	}
+
+	public JSONArray getOperationSnags(long operationId) {
+		JSONArray array = new JSONArray();
+		Operation operation = operationRepo.findOne(operationId);
+		if(!operation.getSnags().isEmpty()) {
+			Collections.sort(operation.getSnags(), new Comparator<Snag>() {
+				  public int compare(Snag o1, Snag o2) {
+				      return o2.getDate().compareTo(o1.getDate());
+				  }
+				});
+			for(Snag s : operation.getSnags()) {
+				array.add(jsonSnag(s));
+			}
+		}
+		
+		return array;
+	}
+
+	private Object jsonSnag(Snag s) {
+		return new JSONObject()
+				.element("id", s.getId())
+				.element("title", s.getTitle())
+				.element("severity", s.getSeverity())
+				.element("user", s.getUser().getFirstName() +" "+ s.getUser().getLastName())
+				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(s.getDate()))
+				.element("content", s.getContent());
 	}
 
 	

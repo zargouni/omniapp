@@ -28,7 +28,9 @@ import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,10 +44,12 @@ import com.omniacom.omniapp.entity.Notification;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
+import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.CommentRepository;
+import com.omniacom.omniapp.repository.SnagRepository;
 import com.omniacom.omniapp.repository.UploadedFileRepository;
 import com.omniacom.omniapp.service.NotificationService;
 import com.omniacom.omniapp.service.OperationService;
@@ -55,6 +59,7 @@ import com.omniacom.omniapp.service.TaskService;
 import com.omniacom.omniapp.service.UploadedFileService;
 import com.omniacom.omniapp.service.UserService;
 import com.omniacom.omniapp.validator.JsonResponse;
+import com.omniacom.omniapp.validator.SnagValidator;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -79,6 +84,9 @@ public class ProjectController {
 
 	@Autowired
 	UploadedFileService fileService;
+	
+	@Autowired
+	SnagValidator snagValidator;
 
 	private Date lastRefreshDateTime;
 
@@ -165,6 +173,11 @@ public class ProjectController {
 	@GetMapping("/get-operation-comments")
 	public @ResponseBody JSONArray getOperationComments(@RequestParam("id") long operationId) {
 		return operationService.getOperationComments(operationId);
+	}
+	
+	@GetMapping("/get-operation-snags")
+	public @ResponseBody JSONArray getOperationSnags(@RequestParam("id") long operationId) {
+		return operationService.getOperationSnags(operationId);
 	}
 	
 	@GetMapping("/get-task-comments")
@@ -423,6 +436,31 @@ public class ProjectController {
 		}
 		return response;
 	}
+	
+	@Autowired
+	private SnagRepository snagRepo;
+	
+	@PostMapping("/do-post-snag")
+	public JsonResponse doPostSnag(@RequestParam("id") long operationId, @Validated Snag snag,BindingResult result) {
+		JsonResponse response = new JsonResponse();
+		Operation operation = operationService.findOne(operationId);
+		if (!result.hasErrors() && operation != null) {
+			snag.setOperation(operation);
+			snag.setUser(userService.getSessionUser());
+			snag.setDate(new Date());
+			if (snagRepo.save(snag) != null) {
+				response.setStatus("SUCCESS");
+			} else {
+				response.setStatus("FAIL");
+			}
+		
+		} else if(result.hasErrors()) {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+		
+		return response;
+	}
 
 	@PostMapping(value = "/upload")
 	public ResponseEntity handleFileUpload(@RequestParam("id") long id, @RequestParam("file") MultipartFile[] files) {
@@ -530,4 +568,8 @@ public class ProjectController {
 		return jsonService;
 	}
 
+	@InitBinder("snag")
+	protected void setSnagValidator(WebDataBinder binder) {
+		binder.addValidators(snagValidator);
+	}
 }

@@ -33,6 +33,9 @@ public class Snag implements Serializable {
 	@ManyToOne
 	private Operation operation;
 	
+	@ManyToOne
+	private User user;
+	
 	public Snag() {
 
 	}
@@ -146,6 +149,20 @@ public class Snag implements Serializable {
 	 */
 	public void setOperation(Operation operation) {
 		this.operation = operation;
+	}
+
+	/**
+	 * @return the user
+	 */
+	public User getUser() {
+		return user;
+	}
+
+	/**
+	 * @param user the user to set
+	 */
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 	

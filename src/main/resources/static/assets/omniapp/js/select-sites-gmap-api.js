@@ -1,5 +1,7 @@
 function initializeSitesGmap(projectId) {
 	
+	
+	
 	if($('#sites_map_container').is(':hidden')){
 		$('#sites_map_canvas_sidebar').attr("style","position: absolute; top: 20%; right: 0; bottom: 0; left: 0;");
 		$('#sites_map_container').attr("style","width:100%; height:250px;position: relative;");
@@ -12,6 +14,9 @@ function initializeSitesGmap(projectId) {
         
         
     });
+	
+	$('#sites_map_canvas_sidebar').css("width","");
+	$('#sites_map_canvas_sidebar').css("height","");
 	
 	
 	

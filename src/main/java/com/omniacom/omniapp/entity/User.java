@@ -61,6 +61,9 @@ public class User implements Serializable {
 	@OneToMany(mappedBy = "user")
 	private List<Comment> comments = new ArrayList<Comment>();
 	
+	@OneToMany(mappedBy = "user")
+	private List<Snag> snags = new ArrayList<Snag>();
+	
 	@OneToMany(mappedBy="user")
 	private List<Notification> notifications;
 
@@ -352,6 +355,20 @@ public class User implements Serializable {
 	 */
 	public void setNotifications(List<Notification> notifications) {
 		this.notifications = notifications;
+	}
+
+	/**
+	 * @return the snags
+	 */
+	public List<Snag> getSnags() {
+		return snags;
+	}
+
+	/**
+	 * @param snags the snags to set
+	 */
+	public void setSnags(List<Snag> snags) {
+		this.snags = snags;
 	}
 
 }

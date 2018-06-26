@@ -1,0 +1,58 @@
+
+<div th:fragment="snag-modal" class="modal fade show " id="snag-modal"
+	tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	style="display: none; padding-right: 17px;">
+
+	<div class="modal-dialog" role="document">
+		<div class="modal-content" style="background: #f1f1f1">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">New Snag</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="" class="form-control-label">Title:</label> <input
+							type="text" class="form-control" id="snag_title">
+						<div id="snag_title_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">title must
+							not be empty</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="form-control-label">Content:</label>
+						<textarea class="form-control" id="snag_content"></textarea>
+						<div id="snag_content_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">content
+							must not be empty</div>
+					</div>
+					<div class="form-group m-form__group row">
+						<label class="col-form-label col-lg-6">Severity</label>
+						<div class="col-lg-6">
+							<div
+								class="btn-group bootstrap-select form-control m-bootstrap-select m_ dropup">
+								<select id="snag_severity" class="form-control m-bootstrap-select m_selectpicker"
+									tabindex="-98">
+									<option value="low">Low</option>
+									<option value="medium">Medium</option>
+									<option value="high">High</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button onclick="doPostSnag()" class="btn btn-primary">Post
+					Snag</button>
+			</div>
+
+
+		</div>
+	</div>
+
+</div>

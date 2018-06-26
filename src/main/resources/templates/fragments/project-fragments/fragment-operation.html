@@ -73,15 +73,16 @@
 								<li class="nav-item m-tabs__item"><a
 									class="nav-link m-tabs__link active show" data-toggle="tab"
 									href="#operation_services" role="tab" aria-selected="true">
-									<i class="la la-briefcase"></i>
-										Services </a></li>
+										<i class="la la-briefcase"></i> Services
+								</a></li>
 								<li class="nav-item m-tabs__item"><a
 									class="nav-link m-tabs__link" data-toggle="tab"
 									href="#operation_snags" role="tab" aria-selected="false"> <i
-										class="la la-bug"></i> Snags
+										class="la la-bug"></i> Snags (<span id="snags_count"></span>)
 								</a></li>
-								
-								<li th:if="${sessionUser.id == selectedProject.owner.id}" style="margin: auto; margin-right: 0; float: right;"><button
+
+								<li th:if="${sessionUser.id == selectedProject.owner.id}"
+									style="margin: auto; margin-right: 0; float: right;"><button
 										class="btn btn-primary btn-sm operation_add_new_service">Add
 										new service</button></li>
 							</ul>
@@ -90,14 +91,15 @@
 					</div>
 					<div class="m-portlet__body">
 						<!--begin::Content-->
-						<div id="scrollable_services" class="m-scrollable"
-							data-scrollable="true" data-max-height="410"
-							data-scrollbar-shown="true">
 
 
-							<div class="tab-content">
-								<div class="tab-pane active show" id="operation_services"
-									role="tabpanel">
+
+						<div class="tab-content">
+							<div class="tab-pane active show" id="operation_services"
+								role="tabpanel">
+								<div id="scrollable_services" class="m-scrollable"
+									data-scrollable="true" data-max-height="410"
+									data-scrollbar-shown="true">
 									<div id="operation_services_widget" class="m-widget4"></div>
 									<div id="operation_empty_services" class="m-widget24"
 										style="display: none;">
@@ -127,7 +129,8 @@
 																</td>
 															</tr>
 															<tr>
-																<td align="center"><button th:if="${sessionUser.id == selectedProject.owner.id}"
+																<td align="center"><button
+																		th:if="${sessionUser.id == selectedProject.owner.id}"
 																		class="btn btn-primary btn-sm operation_add_new_service">Add
 																		new service</button></td>
 															</tr>
@@ -140,17 +143,32 @@
 										</div>
 									</div>
 								</div>
-								<div class="tab-pane" id="operation_snags" role="tabpanel">It
-									has survived not only five centuries, but also the leap into
-									electronic typesetting, remaining essentially unchanged. It was
-									popularised in the 1960s with the release of Letraset sheets
-									containing Lorem Ipsum passages, and more recently with desktop
-									publishing software like Aldus PageMaker including versions of
-									Lorem Ipsum.</div>
-								
+
 							</div>
-							<!--end::Content-->
+							<div class="tab-pane" id="operation_snags" role="tabpanel">
+								<div style="text-align:center;">
+								<a style="position:relative;margin: 0 auto 30px auto;" href="#" data-toggle="modal"
+									data-target="#snag-modal"
+									class="btn btn-danger m-btn btn-sm 	m-btn m-btn--icon m-btn--pill">
+									<span> <i class="la la-warning"></i> <span>New
+											Snag</span>
+								</span>
+								</a>
+								</div>
+
+								<div id="scrollable_snags" class="m-scrollable"
+									data-scrollable="true" data-max-height="350"
+									data-scrollbar-shown="true">
+									<div id="operation_snags_wrapper"
+										style="margin-right: -50px; padding-right: 50px; max-height: 100%; overflow-y: scroll;"></div>
+								</div>
+
+							</div>
+
 						</div>
+						<!--end::Content-->
+						<!--  hedhi  -->
+						<!-- 						</div> -->
 					</div>
 				</div>
 				<!--end:: Widgets/Best Sellers-->
@@ -171,9 +189,9 @@
 					<div class="m-portlet__body"
 						style="max-height: 350px; overflow: hidden;">
 
-						<div
-							style="width: 100%; position: absolute; top: 80%;">
-							<div style="position:relative; width: 80%;" class="form-group m-form__group">
+						<div style="width: 100%; position: absolute; top: 80%;">
+							<div style="position: relative; width: 80%;"
+								class="form-group m-form__group">
 
 								<div class="input-group">
 									<input id="comment_content" type="text"
@@ -201,5 +219,10 @@
 			</div>
 		</div>
 	</div>
+
+	<div
+		th:replace="fragments/modal-fragments/fragment-snag-modal :: snag-modal"></div>
+
 	<input id="operation_fragment_selected_operation_id" type="hidden" />
+
 </div>
