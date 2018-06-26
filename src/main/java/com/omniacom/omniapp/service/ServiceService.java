@@ -65,7 +65,7 @@ public class ServiceService {
 						//new SimpleDateFormat("dd MM YYYY", Locale.ENGLISH).format(service.getCreationDate()))
 						service.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
 				.element("formattedCreationDate",
-						new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(service.getCreationDate()))
+						new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(service.getCreationDate()))
 				.element("creationTime", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(service.getCreationDate()))
 				
 						.element("taskCount", serviceRepo.findAllTasks(service).size())

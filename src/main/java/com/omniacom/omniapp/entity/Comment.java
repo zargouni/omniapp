@@ -30,6 +30,10 @@ public class Comment implements Serializable{
 	private Operation operation;
 	
 	@ManyToOne
+	private Task task;
+	
+	
+	@ManyToOne
 	private User user;
 	
 	public Comment() {
@@ -129,6 +133,20 @@ public class Comment implements Serializable{
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	/**
+	 * @return the task
+	 */
+	public Task getTask() {
+		return task;
+	}
+
+	/**
+	 * @param task the task to set
+	 */
+	public void setTask(Task task) {
+		this.task = task;
 	}
 	
 	

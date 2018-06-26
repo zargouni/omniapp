@@ -1,6 +1,8 @@
 package com.omniacom.omniapp.service;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -9,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Notification;
+import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
@@ -151,6 +155,33 @@ public class TaskService {
 					.element("creationDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(file.getCreationDate())));
 		}
 		return array;
+	}
+
+	public JSONArray getTaskComments(long taskId) {
+		JSONArray array = new JSONArray();
+		Task task = taskRepo.findOne(taskId);
+		if(!task.getComments().isEmpty()) {
+			Collections.sort(task.getComments(), new Comparator<Comment>() {
+				  public int compare(Comment o1, Comment o2) {
+				      return o2.getDate().compareTo(o1.getDate());
+				  }
+				});
+			
+			for(Comment c : task.getComments()) {
+				array.add(jsonComment(c));
+			}
+		}
+		
+		
+		return array;
+	}
+	
+	public JSONObject jsonComment(Comment c) {
+		return new JSONObject()
+				.element("id", c.getId())
+				.element("user", c.getUser().getFirstName() +" "+ c.getUser().getLastName())
+				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(c.getDate()))
+				.element("content", c.getContent());
 	}
 
 	

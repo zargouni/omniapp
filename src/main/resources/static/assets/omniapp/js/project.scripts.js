@@ -652,17 +652,70 @@ function populateOperationComments(operationId){
 		async : false,
 		success : function(response) {
 			var html_text = "";
+			if(response.length != 0)
+			for(var i=0;i<response.length;i++){
+				html_text += getCommentUI(response[i]);
+			}
+			else
+				html_text = '<div class="m-widget24__item">'
+				+'<div>'
+				+'<div style="display: block; vertical-align: middle;">'
+				+'<table width="100%" align="center" border="0"'
+				+'	cellpadding="0" cellspacing="0">'
+				+'	<tbody>'
+				+'		<tr>'
+				+'			<td align="center"><div'
+				+'					style="border-color:#fff !important;" class="emptydashboardbox omnia fonticon40">'
+				+'						<div class="m-demo-icon__preview">'
+				+'							<i style="color:#fff;font-size: 40px;" class="flaticon-chat-1"></i>'
+				+'					</div>'
+				+'				</div></td>'
+				+'		</tr>'
+				+'		<tr>'
+				+'			<td align="center" height="110px">'
+				+'				<div>'
+				+'					<span class="col777 pt12 lh25">This operation'
+				+'						contains no comments yet. You can post a comment down below'
+				+'						</span>'
+				+'				</div>'
+				+'			</td>'
+				+'		</tr>'
+				+'	</tbody>'
+				+'</table>'
+				+'</div>'
+				+'</div>'
+				+'</div>';
+			
+			$('#operation_comments_wrapper').html(html_text);
+		},
+		error : function(e) {
+			alert('Error: operation comments ' + e);
+		}
+	});
+}
+
+function populateTaskComments(taskId){
+	$('#task_comments_wrapper').html("");
+	$.ajax({
+		type : "GET",
+		url : '/get-task-comments',
+		data : 'id=' + taskId,
+		async : false,
+		success : function(response) {
+			var html_text = "";
 			for(var i=0;i<response.length;i++){
 				html_text += getCommentUI(response[i]);
 			}
 			
-			$('#operation_comments_wrapper').html(html_text);
+			$('#task_comments_wrapper').html(html_text);
 		},
 		error : function(e) {
 			alert('Error: operation site ' + e);
 		}
 	});
 }
+
+
 
 function getCommentUI(comment){
 	return '<div class="m-widget3">'
@@ -684,7 +737,33 @@ function getCommentUI(comment){
 	+		'</p>'
 	+	'</div>'
 	+'</div>'
-+'</div>';
++'</div>'
++'<hr style="background: #fff;" />';
+}
+
+function doPostTaskComment(){
+	var comment = $('#task_comment_content').val();
+	var taskId = $('#selected_task_id').val();
+	$.ajax({
+		type : "POST",
+		url : '/do-post-task-comment',
+		data : 'id=' + taskId+"&content="+comment,
+		async : false,
+		success : function(response) {
+			if(response.status == "FAIL")
+				toastr.error("Couldn't post comment","Error");
+			else if(response.status == "NOCONTENT")
+				toastr.error("A comment cannot be empty","Hey !");
+			else{
+				$('#task_comment_content').val("");
+				populateTaskComments(taskId);
+			}
+		},
+		error : function(e) {
+			alert('Error: comment task ' + e);
+		}
+	});
+
 }
 
 function doPostComment(){
@@ -774,11 +853,10 @@ function toggleAddNewOperationSidebar() {
 	$('#select_project_new_operation').val(projectId).change();
 
 	$('#select_project_new_operation').selectpicker('refresh');
-	// $('#sites_map_container').attr("style","width:100%;
-	// height:250px;position: relative;");
-	// $('.sites_map_canvas').attr("style","position: absolute; top: 20%; right:
-	// 0; bottom: 0; left: 0;");
-	//	
+//	 $('#sites_map_container').attr("style","width:100%;height:250px;position: relative;");
+//	 $('.sites_map_canvas').attr("style","position: absolute; top: 20%; right:0; bottom: 0; left: 0;");
+//		
+	//initializeSitesGmap(projectId);
 }
 
 function populateServicesTabOperationFragment(operationId) {
@@ -1062,6 +1140,7 @@ function toggleTaskFragment(taskId) {
 	if ($('#tasks-fragment').is(':visible'))
 		$('#tasks-fragment').hide();
 	populateTaskFragmentDetails(taskId);
+	populateTaskComments(taskId);
 	
 	$('#selected_task_id').val(taskId);
 

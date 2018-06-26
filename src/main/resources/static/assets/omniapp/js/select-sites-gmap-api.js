@@ -1,15 +1,19 @@
 function initializeSitesGmap(projectId) {
-		var map = new GMaps({
+	
+	if($('#sites_map_container').is(':hidden')){
+		$('#sites_map_canvas_sidebar').attr("style","position: absolute; top: 20%; right: 0; bottom: 0; left: 0;");
+		$('#sites_map_container').attr("style","width:100%; height:250px;position: relative;");
+	}
+	
+	var map = new GMaps({
         div: '#sites_map_canvas_sidebar',
         lat: 34.7615155,
         lng: 10.6630578,
         
         
     });
-	if($('#sites_map_container').is(':hidden')){
-		$('#sites_map_canvas_sidebar').attr("style","position: absolute; top: 20%; right: 0; bottom: 0; left: 0;");
-		$('#sites_map_container').attr("style","width:100%; height:250px;position: relative;");
-	}
+	
+	
 	
 	$.ajax({
 		type : "GET",
@@ -44,7 +48,9 @@ function initializeSitesGmap(projectId) {
 				    });
 				  selectSiteOptions += '<option data-subtext="'+response[i].natures+'" value="'+response[i].id+'">'+response[i].name+'</option>';
 		        }
+			
 			map.setZoom(5);
+			map.refresh();
 //					$("#sites_map_container").show();
 //					$(".sites_map_canvas").show();
 //					 
@@ -66,11 +72,13 @@ function initializeSitesGmap(projectId) {
 			    }
 			});
 			
+		
+			
 			
 			
 		},
 		error : function(e) {
-			alert('Error: services ' + e);
+			alert('Error: sidebar map sites ' + e);
 		}
 	});
 	

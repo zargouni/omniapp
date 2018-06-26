@@ -1209,7 +1209,7 @@ function populateSidebarAdd() {
 	populateSelectOwnedProjects();
 	
 	populateOperationResponsibleTypeAhead();
-	$('#sites_map_container').attr("style","display:none;width:100%; height:50px;position: relative;");
+	$('#sites_map_container').attr("style","display:none;max-width:100%; max-height:50px;position: relative;");
 	$('#sites_map_canvas_sidebar').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
 	$('#select_service_div').hide();
 	$('#select_project_new_service').val(' ').change();

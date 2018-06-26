@@ -45,6 +45,9 @@ public class Task implements Serializable {
 	@OneToMany(mappedBy="task")
 	private List<UploadedFile> attachments;
 	
+	@OneToMany( mappedBy = "task")
+	private List<Comment> comments;
+	
 	public Task() {
 
 	}
@@ -246,6 +249,24 @@ public class Task implements Serializable {
 	 */
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+
+
+
+	/**
+	 * @return the comments
+	 */
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+
+
+	/**
+	 * @param comments the comments to set
+	 */
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 	
 

@@ -166,6 +166,11 @@ public class ProjectController {
 	public @ResponseBody JSONArray getOperationComments(@RequestParam("id") long operationId) {
 		return operationService.getOperationComments(operationId);
 	}
+	
+	@GetMapping("/get-task-comments")
+	public @ResponseBody JSONArray getTaskComments(@RequestParam("id") long taskId) {
+		return taskService.getTaskComments(taskId);
+	}
 
 	@GetMapping("/get-service-details")
 	public @ResponseBody JSONObject getServiceDetails(@RequestParam("id") long serviceId) {
@@ -386,6 +391,26 @@ public class ProjectController {
 			Comment comment = new Comment();
 			comment.setContent(content);
 			comment.setOperation(operationService.findOne(operationId));
+			comment.setDate(new Date());
+			comment.setUser(userService.getSessionUser());
+			if (commentRepo.save(comment) != null) {
+				response.setStatus("SUCCESS");
+			} else {
+				response.setStatus("FAIL");
+			}
+		} else {
+			response.setStatus("NOCONTENT");
+		}
+		return response;
+	}
+	
+	@PostMapping("/do-post-task-comment")
+	public JsonResponse doPostTaskComment(@RequestParam("id") long taskId, @RequestParam("content") String content) {
+		JsonResponse response = new JsonResponse();
+		if (content.length() != 0 && taskService.findOne(taskId) != null) {
+			Comment comment = new Comment();
+			comment.setContent(content);
+			comment.setTask(taskService.findOne(taskId));
 			comment.setDate(new Date());
 			comment.setUser(userService.getSessionUser());
 			if (commentRepo.save(comment) != null) {

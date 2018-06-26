@@ -3,6 +3,8 @@ package com.omniacom.omniapp.service;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -182,10 +184,17 @@ public class OperationService {
 	public JSONArray getOperationComments(long operationId) {
 		JSONArray array = new JSONArray();
 		Operation operation = operationRepo.findOne(operationId);
-		if(!operation.getComments().isEmpty())
-		for(Comment c : operation.getComments()) {
-			array.add(jsonComment(c));
+		if(!operation.getComments().isEmpty()) {
+			Collections.sort(operation.getComments(), new Comparator<Comment>() {
+				  public int compare(Comment o1, Comment o2) {
+				      return o2.getDate().compareTo(o1.getDate());
+				  }
+				});
+			for(Comment c : operation.getComments()) {
+				array.add(jsonComment(c));
+			}
 		}
+		
 		return array;
 	}
 	
@@ -193,7 +202,7 @@ public class OperationService {
 		return new JSONObject()
 				.element("id", c.getId())
 				.element("user", c.getUser().getFirstName() +" "+ c.getUser().getLastName())
-				.element("date", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(c.getDate()))
+				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(c.getDate()))
 				.element("content", c.getContent());
 	}
 
