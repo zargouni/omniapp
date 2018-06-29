@@ -74,7 +74,7 @@ var BootstrapDatepicker = function () {
 
         // orientation 
         $('#m_datepicker_4_1').datepicker({
-            orientation: "top left",
+            orientation: "top",
             todayHighlight: true,
             format: 'dd/mm/yyyy',
             templates: {
@@ -84,7 +84,7 @@ var BootstrapDatepicker = function () {
         });
 
         $('#m_datepicker_4_2').datepicker({
-            orientation: "top right",
+            orientation: "top",
             todayHighlight: true,
             format: 'dd/mm/yyyy',
             templates: {
@@ -94,7 +94,7 @@ var BootstrapDatepicker = function () {
         });
 
         $('#m_datepicker_4_3').datepicker({
-            orientation: "bottom left",
+            orientation: "top",
             todayHighlight: true,
             format: 'dd/mm/yyyy',
             templates: {
@@ -104,7 +104,7 @@ var BootstrapDatepicker = function () {
         });
 
         $('#m_datepicker_4_4').datepicker({
-            orientation: "bottom right",
+            orientation: "top",
             todayHighlight: true,
             format: 'dd/mm/yyyy',
             templates: {
@@ -161,6 +161,15 @@ var BootstrapDatepicker = function () {
         });
         
         $('#input_boq_end_date').datepicker({
+            todayHighlight: true,
+            format: 'dd/mm/yyyy',
+            templates: {
+                leftArrow: '<i class="la la-angle-left"></i>',
+                rightArrow: '<i class="la la-angle-right"></i>'
+            }
+        });
+        
+        $('#input_new_issue_due_date').datepicker({
             todayHighlight: true,
             format: 'dd/mm/yyyy',
             templates: {

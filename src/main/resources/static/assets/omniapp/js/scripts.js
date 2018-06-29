@@ -453,7 +453,7 @@ function doAddOperationAjaxPost() {
 							startDateError.show('slow');
 						if (response.result[i].code == "operation.endDate.empty")
 							endDateError.show('slow');
-						if (response.result[i].code == "operation.date.nomatch")
+						if (response.result[i].code == "operation.date.nomatch" || response.result[i].code == "operation.date.nomatch.operation")
 							toastr.warning("Dates don't match", "Warning");
 						if (response.result[i].code == "operation.site.empty")
 							toastr.warning('Select a site for the operation');
@@ -958,10 +958,10 @@ function populateGenerateOperationServicesCheckboxList(projectId,operationId){
 					
 					html_text = '<label '
 									+ 'class="btn btn-secondary btn-sm m-btn m-btn--custom m-btn--label-primary">'
-									+response[i].name +'<span style="font-weight:400;font-size:14px;color:#34bfa3;" class="badge badge-light">'+response[i].price+'</span>'
+									+response[i].name +'<span style="font-weight:400;font-size:14px;color:#f4516c;" class="badge badge-light">'+response[i].price+'</span>'
 									+'<input '
 									+'id="'+response[i].id+'" type="checkbox" class="badgebox">'
-									+'<span class="badge">&check;</span>'
+									+'<span class="badge"><i style="color:#34bfa3;font-size:18px;font-weight:500;margin:auto;" class="la la-dot-circle-o"></i></span>'
 									
 									+'</label>';
 									//+'<span class="badge badge-success">'+response[i].price+'</span>';

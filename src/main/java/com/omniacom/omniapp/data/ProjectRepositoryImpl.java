@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.BillOfQuantities;
+import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
@@ -145,6 +146,17 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 		operations = (List<Operation>) query.getResultList();
 		return operations;
 	}
+
+	@Override
+	public List<Issue> findAllIssues(Project project) {
+		List<Issue> issues = null;
+		Query query = entityManager.createQuery("SELECT issue FROM Issue issue WHERE issue.project=:param")
+				.setParameter("param", project);
+		issues = (List<Issue>) query.getResultList();
+		return issues;
+	}
+
+	
 
 	
 

@@ -1,3 +1,134 @@
+function doAddNewIssueAjax(){
+	var name = $('#input_new_issue_name').val();
+	var description = $('#input_new_issue_description').val();
+	var dueDate = $('#input_new_issue_due_date').val();
+	var severity = $('#input_new_issue_severity').val();
+	var operationId = $('#input_new_issue_operation').val();
+	var projectId = $('#selected_project_id').val();
+	
+	var nameError = $('#new_issue_name_error'); 
+	var descriptionError = $('#new_issue_description_error');
+	var dateError = $('#new_issue_date_error'); 
+	var operationError = $('#new_issue_operation_error'); 
+	
+	nameError.hide('fast');
+	descriptionError.hide('fast');
+	dateError.hide('fast');
+	operationError.hide('fast');
+
+
+	
+	$.ajax({
+		type : "POST",
+		url : '/add-issue',
+		data : 'name=' + name+'&description='+description+'&endDate='+dueDate+'&severity='+severity+'&operation='+operationId
+		+'&id='+projectId,
+		async : false,
+		success : function(response) {
+			if (response.status == "SUCCESS") {
+				$('#m_modal_issue').modal('hide');
+				doAddIssueOwners(response.result);
+				toastr.success("Issue submitted successfully", "Well done!");
+			}
+				
+			else{
+				toastr.warning("Please check that all required fields are filled", "Error!");
+				for (i = 0; i < response.result.length; i++) {
+					if (response.result[i].code == "issue.name.empty")
+						nameError.show('slow');
+					if (response.result[i].code == "issue.description.empty")
+						descriptionError.show('slow');
+					if (response.result[i].code == "issue.endDate.empty")
+						dateError.show('slow');
+					if (response.result[i].code == "issue.operation.empty")
+						operationError.show('slow');
+					
+				}
+			}
+				
+		},
+		error : function(e) {
+			alert('Error: couldnt add issue ' + e);
+		}
+	});
+	
+	
+}
+
+function doAddIssueOwners(issueId){
+	$('#input_new_issue_users').find(":selected").each(function(){
+		var user = $(this).attr('value');
+		// alert('selected values: '+$(this).attr('value'));
+		// alert('task: '+taskId);
+		$.ajax({
+			type : "POST",
+			url : '/add-issue-owner',
+			data : "id=" + issueId + "&userId=" + user,
+			success : function(response) {
+				// we have the response
+				if (response.status == "FAIL") {
+					toastr.error("Couldn't add owner to issue", "Error");
+				} 
+			},
+			error : function(e) {
+				console.log("error: "+e);
+				toastr.error("Couldn't add owner", "Server Error");
+			}
+		});
+	});
+		
+	
+}
+
+function populateNewIssueModal(){
+	var projectId = $('#selected_project_id').val();
+	populateSelectOperations(projectId);
+	populateSelectUsers();
+}
+
+function populateSelectOperations(projectId){
+	$.ajax({
+		type : "GET",
+		url : '/json-operations',
+		data : 'id=' + projectId,
+		async : false,
+		success : function(response) {
+			var html_text = "<option value=' '>None</option>";
+			for (i = 0; i < response.length; i++) {
+				html_text += '<option value="'+response[i].id+'">'+response[i].name+'</option>';
+				
+			}
+			
+			
+			$('#input_new_issue_operation').html(html_text);
+			$('#input_new_issue_operation').selectpicker('refresh');
+		},
+		error : function(e) {
+			alert('Error: project operations ' + e);
+		}
+	});
+}
+
+function populateSelectUsers(){
+	$.ajax({
+		type : "GET",
+		url : '/get-all-users-json-details',
+		async: false,
+		success : function(response) {
+			var html_text = "<option value=' '>None</option>";
+			for (i = 0; i < response.length; i++) {
+				html_text += '<option value="'+response[i].id+'">'+response[i].firstName+' '+response[i].lastName+'</option>';
+				
+			}
+			$('#input_new_issue_users').html(html_text);
+			$('#input_new_issue_users').selectpicker('refresh');
+		},
+		error : function(e) {
+			alert('Error: can"t get users ' + e);
+		}
+	});
+}
+
 function populateOperationSnags(operationId){
 	$('#operation_snags_wrapper').html("");
 	$.ajax({
@@ -158,19 +289,7 @@ function populateProjectFeed(){
 				}else{
 					alignContent = "left";
 				}
-				
-// var detailedActivityWrapper = '<div class="m-timeline-1__item-title">My
-// ToDo</div>'
-// +'<div class="m-list-badge m--margin-top-15">'
-// +'<div class="m-list-badge__label m--font-success">12:00</div>'
-// +'<div class="m-list-badge__items">'
-// +'<a href="#" class="m-list-badge__item">Hiking</a> <a href="#"'
-// +' class="m-list-badge__item">Lunch</a> '
-// +'<a href="#"'
-// +' class="m-list-badge__item">Meet John</a>'
-// +' </div>'
-// +'</div>';
-//	
+	
 
 				
 				
@@ -214,14 +333,11 @@ function populateProjectFeed(){
 			
 			 for (var cpt = 0; cpt < operations.length; cpt++){
 				  var object = operations[cpt];
-				 // console.log("object name is: "+object.name);
-				  // setTimeout(function (){
-					  // console.log("second object name is: "+object.name);
-					 // getFeedMapUI(object);
+				 
 					  while(getFeedMapUI(object) == false){
 						  getFeedMapUI(object);
 					  }
-				  // },2000);
+				 
 			  }
 		},
 		error : function(e) {
@@ -294,7 +410,7 @@ function getDetailedActivityUI(object,objectType,activityType){
 +'<div style="position:relative;float:right;width:100%;height:120px;" >'
 			
 			
-			+'<div class="sites_map boxshadow" style="width:100% !important;height:120px  !important;border-radius:10px;border:2px #000; " id="'+object.id+'"></div>'
+			+'<div class="sites_map boxshadow" style="width:100% !important;height:120px  !important;border:2px #000; " id="'+object.id+'"></div>'
 			
 			// +'</div>'
 			
@@ -1474,6 +1590,7 @@ function projectDynamicContent() {
 	$("#project_issues_toggle").on("click", function() {
 		$('#project_subheader').show();
 		$("#m_dynamic_content_project").children().hide();
+		DatatableIssuesJsonRemote.init();
 		$("#issues-fragment").show();
 	});
 

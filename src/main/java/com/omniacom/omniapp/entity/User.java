@@ -66,6 +66,12 @@ public class User implements Serializable {
 	
 	@OneToMany(mappedBy="user")
 	private List<Notification> notifications;
+	
+	@OneToMany(mappedBy = "creator")
+	private List<Issue> createdIssues;
+	
+	@ManyToMany(mappedBy = "assignedUsers")
+	private List<Issue> issues;
 
 	public User() {
 
@@ -369,6 +375,34 @@ public class User implements Serializable {
 	 */
 	public void setSnags(List<Snag> snags) {
 		this.snags = snags;
+	}
+
+	/**
+	 * @return the createdIssues
+	 */
+	public List<Issue> getCreatedIssues() {
+		return createdIssues;
+	}
+
+	/**
+	 * @return the issues
+	 */
+	public List<Issue> getIssues() {
+		return issues;
+	}
+
+	/**
+	 * @param createdIssues the createdIssues to set
+	 */
+	public void setCreatedIssues(List<Issue> createdIssues) {
+		this.createdIssues = createdIssues;
+	}
+
+	/**
+	 * @param issues the issues to set
+	 */
+	public void setIssues(List<Issue> issues) {
+		this.issues = issues;
 	}
 
 }

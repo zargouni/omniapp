@@ -63,6 +63,9 @@ public class Project implements Serializable {
 	
 	@OneToMany(mappedBy = "project")
 	private List<Service> services;
+	
+	@OneToMany(mappedBy = "project")
+	private List<Issue> issues;
 
 	public Project() {
 
@@ -346,6 +349,20 @@ public class Project implements Serializable {
 	 */
 	public void setBoq(BillOfQuantities boq) {
 		this.boq = boq;
+	}
+
+	/**
+	 * @return the issues
+	 */
+	public List<Issue> getIssues() {
+		return issues;
+	}
+
+	/**
+	 * @param issues the issues to set
+	 */
+	public void setIssues(List<Issue> issues) {
+		this.issues = issues;
 	}
 
 }

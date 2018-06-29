@@ -53,6 +53,8 @@ public class Operation implements Serializable {
 	@OneToMany( mappedBy = "operation")
 	private List<Comment> comments;
 	
+	@OneToMany(mappedBy = "operation")
+	private List<Issue> issues;	
 	
 	public Operation() {
 
@@ -267,6 +269,20 @@ public class Operation implements Serializable {
 	 */
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+
+	/**
+	 * @return the issues
+	 */
+	public List<Issue> getIssues() {
+		return issues;
+	}
+
+	/**
+	 * @param issues the issues to set
+	 */
+	public void setIssues(List<Issue> issues) {
+		this.issues = issues;
 	}
 	
 	

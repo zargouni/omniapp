@@ -30,7 +30,8 @@ public class OperationValidator implements Validator {
 		if (operation.getStartDate() != null && operation.getEndDate() != null) {
 
 			if (operation.getStartDate().after(operation.getEndDate()))
-				errors.rejectValue("startDate", "operation.date.nomatch");
+				errors.reject("operation.date.nomatch");
+			
 			
 		}
 		

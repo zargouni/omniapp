@@ -8,15 +8,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
-import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletResponse;
@@ -39,8 +35,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Comment;
-import com.omniacom.omniapp.entity.Notification;
+import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
@@ -49,8 +46,10 @@ import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.CommentRepository;
+import com.omniacom.omniapp.repository.IssueRepository;
 import com.omniacom.omniapp.repository.SnagRepository;
 import com.omniacom.omniapp.repository.UploadedFileRepository;
+import com.omniacom.omniapp.service.IssueService;
 import com.omniacom.omniapp.service.NotificationService;
 import com.omniacom.omniapp.service.OperationService;
 import com.omniacom.omniapp.service.ProjectService;
@@ -58,6 +57,7 @@ import com.omniacom.omniapp.service.ServiceService;
 import com.omniacom.omniapp.service.TaskService;
 import com.omniacom.omniapp.service.UploadedFileService;
 import com.omniacom.omniapp.service.UserService;
+import com.omniacom.omniapp.validator.IssueValidator;
 import com.omniacom.omniapp.validator.JsonResponse;
 import com.omniacom.omniapp.validator.SnagValidator;
 
@@ -87,6 +87,9 @@ public class ProjectController {
 	
 	@Autowired
 	SnagValidator snagValidator;
+	
+	@Autowired
+	IssueValidator issueValidator;
 
 	private Date lastRefreshDateTime;
 
@@ -157,6 +160,11 @@ public class ProjectController {
 	@GetMapping("/json-operations")
 	public @ResponseBody JSONArray getAllOperationsJson(@RequestParam("id") long projectId) {
 		return operationService.getAllOperationsJson(projectId);
+	}
+	
+	@GetMapping("/json-issues")
+	public @ResponseBody JSONArray getAllIssuesJson(@RequestParam("id") long projectId) {
+		return issueService.getAllIssuesJson(projectId);
 	}
 
 	@GetMapping("/get-operation-services")
@@ -461,6 +469,58 @@ public class ProjectController {
 		
 		return response;
 	}
+	
+	@Autowired
+	IssueRepository issueRepo;
+	
+	@PostMapping("/add-issue")
+	public JsonResponse doAddIssue(@RequestParam("id") long projectId,
+			@Validated Issue issue,BindingResult result) {
+		JsonResponse response = new JsonResponse();
+		//Operation operation = operationService.findOne(operationId);
+		Project project = projectService.findOneById(projectId);
+		if (!result.hasErrors() && project != null) {
+			issue.setProject(project);
+			//issue.setOperation(operation);
+			issue.setCreator(userService.getSessionUser());
+			issue.setCreationDate(new Date());
+			issue.setStatus(StaticString.ISSUE_STATUS_OPEN);
+			Issue savedIssue = issueRepo.save(issue);
+			if (savedIssue != null) {
+				response.setStatus("SUCCESS");
+				response.setResult(savedIssue.getId());
+			} else {
+				response.setStatus("FAIL");
+			}
+		
+		} else if(result.hasErrors()) {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+		
+		return response;
+	}
+	
+	@Autowired
+	IssueService issueService;
+	
+	@PostMapping("/add-issue-owner")
+	public @ResponseBody JsonResponse addUserToIssue(@RequestParam("id") long issueId,
+			@RequestParam("userId") long userId) {
+
+		JsonResponse response = new JsonResponse();
+
+		User user = userService.findById(userId);
+		Issue issue = issueRepo.findOne(issueId);
+		if (issue != null && user != null) {
+			if (!issueService.addOneOwner(issue, user))
+				response.setStatus("FAIL");
+			else {
+				
+			}
+		}
+		return response;
+	}
 
 	@PostMapping(value = "/upload")
 	public ResponseEntity handleFileUpload(@RequestParam("id") long id, @RequestParam("file") MultipartFile[] files) {
@@ -571,5 +631,10 @@ public class ProjectController {
 	@InitBinder("snag")
 	protected void setSnagValidator(WebDataBinder binder) {
 		binder.addValidators(snagValidator);
+	}
+	
+	@InitBinder("issue")
+	protected void setIssueValidator(WebDataBinder binder) {
+		binder.addValidators(issueValidator);
 	}
 }

@@ -1,0 +1,123 @@
+<div th:fragment="new-issue-modal" class="modal fade show"
+	id="m_modal_issue" data-enforceFocus="false" tabindex="-1"
+	role="dialog" aria-labelledby="exampleModalLabel"
+	style="display: none; padding-right: 17px;">
+	<div class="modal-dialog modal-lg " role="document">
+		<div class="modal-content" style="background: #f1f1f1">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">New issue</h5>
+				<button type="button" class="close" data-dismiss="modal"
+					aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button>
+			</div>
+
+			<div class="modal-body">
+
+				<form
+					class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed">
+					<div class="m-portlet__body">
+						<div class="m-form__group form-group row">
+							<div class="col-lg-12">
+								<label for="">Title:</label> <input id="input_new_issue_name"
+									type="text" class="form-control m-input m-input--solid "
+									placeholder="Title">
+								<div id="new_issue_name_error" class="form-control-feedback"
+									style="color: red; float: right; display: none;">* title
+									must not be empty</div>
+							</div>
+						</div>
+
+						<div class="m-form__group form-group row">
+							<div class="col-lg-12">
+								<label for="">Description:</label>
+								<textarea id="input_new_issue_description" type="text"
+									class="form-control m-input m-input--solid"
+									placeholder="Description goes here ..."></textarea>
+								<div id="new_issue_description_error"
+									class="form-control-feedback"
+									style="color: red; float: right; display: none;">*
+									description must not be empty</div>
+							</div>
+						</div>
+
+						<div class="form-group m-form__group row">
+							<label class="col-lg-2 col-form-label">Due Date:</label>
+							<div class="col-lg-3">
+								<div class="input-group date">
+									<input type="text" class="form-control m-input m-input--solid"
+										placeholder="Due date" id="input_new_issue_due_date">
+									<div class="input-group-append">
+										<span class="input-group-text"> <i
+											class="la la-calendar-check-o"></i>
+										</span>
+									</div>
+
+								</div>
+								<div id="new_issue_date_error" class="form-control-feedback"
+									style="color: red; float: right; display: none;">*
+									Required</div>
+							</div>
+							<label class="col-lg-2 col-form-label">Severity:</label>
+							<div class="col-lg-3">
+								<select id="input_new_issue_severity"
+									data-placeholder="Severity"
+									class="form-control m-bootstrap-select m_selectpicker"
+									data-live-search="true">
+									<option value="minor">Minor</option>
+									<option value="major">Major</option>
+									<option value="critical">Critical</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="m-form__group form-group row">
+							<div class="col-lg-12">
+								<label for="">Concerned Operation:</label> <select
+									id="input_new_issue_operation" data-placeholder="None"
+									class="form-control m-bootstrap-select m_selectpicker"
+									data-live-search="true">
+
+								</select>
+								<div id="new_issue_operation_error"
+									class="form-control-feedback"
+									style="color: red; float: right; display: none;">*
+									Required</div>
+							</div>
+						</div>
+
+						<div class="m-form__group form-group row">
+							<div class="col-lg-12">
+								<label for="">Assign to:</label> <select multiple
+									id="input_new_issue_users" data-placeholder="None"
+									class="form-control m-bootstrap-select m_selectpicker"
+									data-live-search="true">
+
+								</select>
+							</div>
+						</div>
+
+
+					</div>
+
+				</form>
+
+
+
+
+				<!-- ahawa -->
+
+
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button onclick="doAddNewIssueAjax()" class="btn btn-primary">Submit</button>
+			</div>
+
+
+
+		</div>
+	</div>
+
+
+</div>

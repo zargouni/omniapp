@@ -3,6 +3,7 @@ package com.omniacom.omniapp.repository.custom;
 import java.util.List;
 
 import com.omniacom.omniapp.entity.BillOfQuantities;
+import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
@@ -13,6 +14,8 @@ public interface ProjectRepositoryCustom {
 
 	public List<Operation> findAllOperations(Project project);
 	
+	public List<Issue> findAllIssues(Project project);
+		
 	public List<Service> findAllServices(Project project);
 	
 	public List<User> findContributingUsers(Project project);
