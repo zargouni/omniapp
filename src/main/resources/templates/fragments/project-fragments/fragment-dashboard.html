@@ -1,7 +1,8 @@
 
 <div id="dashboard-fragment" style="display: none;"
-	th:fragment="fragment-dashboard" class="m-portlet">
-
+	th:fragment="fragment-dashboard" >
+	<div class="m-content">
+<div class="m-portlet">
 	<div class="m-portlet__body  m-portlet__body--no-padding">
 		<div class="row m-row--no-padding m-row--col-separator-xl">
 			<div class="col-xl-4">
@@ -11,7 +12,7 @@
 						<div class="row m-row--no-padding align-items-center">
 							<div class="col">
 								<h3 class="m-widget1__title">Total Tasks</h3>
-								<span class="m-widget1__desc">All Project Tasks</span>
+<!-- 								<span class="m-widget1__desc">All Project Tasks</span> -->
 							</div>
 							<div class="col m--align-right">
 								<span id="tasks_count" class="m-widget1__number m--font-success">None</span>
@@ -21,14 +22,13 @@
 				</div>
 			</div>
 			<div class="col-xl-4">
-				<!--begin::New Feedbacks-->
 				<div class="m-widget1">
 
 					<div class="m-widget1__item">
 						<div class="row m-row--no-padding align-items-center">
 							<div class="col">
 								<h3 class="m-widget1__title">Unassigned Tasks</h3>
-								<span class="m-widget1__desc">Tasks with no owners</span>
+<!-- 								<span class="m-widget1__desc">Tasks with no owners</span> -->
 							</div>
 							<div class="col m--align-right">
 								<span id="unassigned_tasks"
@@ -39,16 +39,14 @@
 
 
 				</div>
-				<!--end::New Feedbacks-->
 			</div>
 			<div class="col-xl-4">
-				<!--begin::New Orders-->
 				<div class="m-widget1">
 					<div class="m-widget1__item">
 						<div class="row m-row--no-padding align-items-center">
 							<div class="col">
 								<h3 class="m-widget1__title">Overdue Tasks</h3>
-								<span class="m-widget1__desc">Tasks end date done</span>
+<!-- 								<span class="m-widget1__desc">Tasks end date done</span> -->
 							</div>
 							<div class="col m--align-right">
 								<span id="overdue_tasks"
@@ -57,12 +55,69 @@
 						</div>
 					</div>
 				</div>
-				<!--end::New Orders-->
 			</div>
 		</div>
+		
+		<!-- BEGIN : Issues Widget -->
+		
+		<div style="background: #f2f2f2;" class="row m-row--no-padding m-row--col-separator-xl">
+			<div class="col-xl-4">
+
+				<div class="m-widget1">
+					<div class="m-widget1__item">
+						<div class="row m-row--no-padding align-items-center">
+							<div class="col">
+								<h3 class="m-widget1__title">Total Issues</h3>
+<!-- 								<span class="m-widget1__desc">All Project Issues</span> -->
+							</div>
+							<div class="col m--align-right">
+								<span id="issues_count" class="m-widget1__number m--font-success">None</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-xl-4">
+				<div class="m-widget1">
+
+					<div class="m-widget1__item">
+						<div class="row m-row--no-padding align-items-center">
+							<div class="col">
+								<h3 class="m-widget1__title">Unassigned Issues</h3>
+<!-- 								<span class="m-widget1__desc">Issues with no owners</span> -->
+							</div>
+							<div class="col m--align-right">
+								<span id="unassigned_issues"
+									class="m-widget1__number m--font-brand">None</span>
+							</div>
+						</div>
+					</div>
 
 
+				</div>
+			</div>
+			<div class="col-xl-4">
+				<div class="m-widget1">
+					<div class="m-widget1__item">
+						<div class="row m-row--no-padding align-items-center">
+							<div class="col">
+								<h3 class="m-widget1__title">Overdue Issues</h3>
+<!-- 								<span class="m-widget1__desc">Issues end date done</span> -->
+							</div>
+							<div class="col m--align-right">
+								<span id="overdue_issues" 
+									class="m-widget1__number m--font-danger">None</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+<!-- END : Issues Widget -->
 
+
+	</div>
 	</div>
 	<div class="m-portlet">
 		<div class="m-portlet__head">
@@ -112,5 +167,6 @@
 
 			<div class="sites_map" id="dashboard_map"></div>
 		</div>
+	</div>
 	</div>
 </div>

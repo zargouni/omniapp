@@ -156,6 +156,25 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 		return issues;
 	}
 
+	@Override
+	public Integer findProjectUnassignedIssuesCount(Project project) {
+		Query query = entityManager.createQuery("SELECT issue FROM Issue issue WHERE issue.project.id = :param"
+				+ " AND size(issue.assignedUsers) = 0 ")
+				.setParameter("param", project.getId());
+		return query.getResultList().size();
+	}
+
+	@Override
+	public Integer findProjectOverdueIssuesCount(Project project) {
+		Integer i = 0;
+		List<Issue> issues = findAllIssues(project);
+		for(Issue issue : issues) {
+			if(issue.getEndDate().before(new Date()) && !issue.getStatus().equals(StaticString.ISSUE_STATUS_CLOSED))
+				i++;
+		}
+		return i;
+	}
+
 	
 
 	

@@ -1034,7 +1034,10 @@ function populateProjectDetails() {
 		success : function(response) {
 			$('#unassigned_tasks').html(response.unassignedTasksCount);
 			$('#overdue_tasks').html(response.overdueTasksCount);
-			$('#tasks_count').html(response.tasksCount)
+			$('#tasks_count').html(response.tasksCount);
+			$('#issues_count').html(response.issuesCount);	
+			$('#unassigned_issues').html(response.unassignedIssuesCount);
+			$('#overdue_issues').html(response.overdueIssuesCount);
 			$('#project_creation_date').html(response.creationDate);
 		},
 		error : function(e) {
@@ -1972,6 +1975,25 @@ function populateTasksFragmentWidget() {
 	});
 }
 
+function populateIssuesFragmentWidget() {
+	var projectId = $('#selected_project_id').val();
+	$.ajax({
+		type : "GET",
+		url : '/get-project-issues-stats',
+		data : 'id=' + projectId,
+		async : false,
+		success : function(response) {
+			$('#issues_fragment_open_issues_percentage').html(response.open);
+			$('#issues_fragment_in_progress_issues_percentage').html(response.in_progress);
+			$('#issues_fragment_to_be_tested_issues_percentage').html(response.to_be_tested);
+			$('#issues_fragment_closed_issues_percentage').html(response.closed);
+		},
+		error : function(e) {
+			alert('Error: Project issues stats widget ' + e);
+		}
+	});
+}
+
 function setSelectedService(serviceId) {
 	$('#service_fragment_selected_service_id').attr('value', serviceId);
 }
@@ -2016,6 +2038,7 @@ function projectDynamicContent() {
 	$("#project_issues_toggle").on("click", function() {
 		$('#project_subheader').show();
 		$("#m_dynamic_content_project").children().hide();
+		populateIssuesFragmentWidget();
 		DatatableIssuesJsonRemote.init();
 		$("#issues-fragment").show();
 	});

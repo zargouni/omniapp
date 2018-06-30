@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,9 @@ import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.BillOfQuantities;
+import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
@@ -126,9 +129,25 @@ public class ProjectService {
 				.element("percentage", getProjectProgress(project))
 				.element("unassignedTasksCount", getProjectUnassignedTasksCount(project))
 				.element("overdueTasksCount", getProjectOverdueTasksCount(project))
-				.element("tasksCount", findTaskCount(project)).element("creationDate",
-						new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(project.getCreationDate()));
+				.element("tasksCount", findTaskCount(project))
+				.element("creationDate",
+						new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(project.getCreationDate()))
+				.element("issuesCount", getProjectIssuesCount(project))
+				.element("unassignedIssuesCount", getProjectUnassignedIssuesCount(project))
+				.element("overdueIssuesCount", getProjectOverdueIssuesCount(project));
 		return json;
+	}
+
+	private Integer getProjectIssuesCount(Project project) {
+		return projectRepo.findAllIssues(project).size();
+	}
+	
+	public Integer getProjectUnassignedIssuesCount(Project project) {
+		return projectRepo.findProjectUnassignedIssuesCount(project);
+	}
+	
+	public Integer getProjectOverdueIssuesCount(Project project) {
+		return projectRepo.findProjectOverdueIssuesCount(project);
 	}
 
 	public Integer getProjectUnassignedTasksCount(Project project) {
@@ -158,6 +177,41 @@ public class ProjectService {
 		} else
 			json.element("totalTasks", taskCount).element("ongoing", "None").element("completed", "None");
 
+		return json;
+	}
+	
+	public JSONObject getProjectIssuesStats(long projectId) {
+		JSONObject json = new JSONObject();
+		Project project = projectRepo.findOne(projectId);
+		//Integer taskCount = findTaskCount(project);
+		Integer open = 0 , inProgress = 0, toBeTested = 0, closed = 0;
+		List<Issue> issues = projectRepo.findAllIssues(project);
+		for(Issue issue : issues) {
+			switch(issue.getStatus()) {
+			   case StaticString.ISSUE_STATUS_OPEN:
+				   open++;
+				   break;
+			   case StaticString.ISSUE_STATUS_IN_PROGRESS :
+				   inProgress++;
+				   break; 
+			   case StaticString.ISSUE_STATUS_TO_BE_TESTED :
+				   toBeTested++;
+				   break;
+			   case StaticString.ISSUE_STATUS_CLOSED :
+				   closed++;
+				   break;
+			}
+		}
+		if (issues.size() != 0) {
+				json.element("open", (open * 100 / issues.size()) + "%")
+					.element("in_progress", (inProgress * 100 / issues.size()) + "%")
+					.element("to_be_tested", (toBeTested * 100 / issues.size()) + "%")
+					.element("closed", (closed * 100 / issues.size()) + "%");
+		} else
+			json.element("open", "None")
+			.element("in_progress", "None")
+			.element("to_be_tested", "None")
+			.element("closed", "None");
 		return json;
 	}
 

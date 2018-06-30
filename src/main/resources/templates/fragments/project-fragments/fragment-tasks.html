@@ -12,12 +12,12 @@
 							<div class="m-widget1__item">
 								<div class="row m-row--no-padding align-items-center">
 									<div class="col">
-										<h3 class="m-widget1__title">Total Tasks</h3>
-										<span class="m-widget1__desc">All tasks count</span>
+										<h3 class="m-widget1__title m--font-info">Total Tasks</h3>
+<!-- 										<span class="m-widget1__desc">All tasks count</span> -->
 									</div>
 									<div class="col m--align-right">
 										<span id="tasks_fragment_all_tasks_count"
-											class="m-widget1__number m--font-brand">+$17,800</span>
+											class="m-widget1__number m--font-info">+$17,800</span>
 									</div>
 								</div>
 							</div>
@@ -32,12 +32,12 @@
 							<div class="m-widget1__item">
 								<div class="row m-row--no-padding align-items-center">
 									<div class="col">
-										<h3 class="m-widget1__title">Open Tasks</h3>
-										<span class="m-widget1__desc">Open tasks percentage</span>
+										<h3 class="m-widget1__title m--font-success">Open</h3>
+<!-- 										<span class="m-widget1__desc">Open tasks percentage</span> -->
 									</div>
 									<div class="col m--align-right">
 										<span id="tasks_fragment_open_tasks_percentage"
-											class="m-widget1__number m--font-danger">+24%</span>
+											class="m-widget1__number m--font-success">+24%</span>
 									</div>
 								</div>
 							</div>
@@ -54,12 +54,12 @@
 							<div class="m-widget1__item">
 								<div class="row m-row--no-padding align-items-center">
 									<div class="col">
-										<h3 class="m-widget1__title">Closed Tasks</h3>
-										<span class="m-widget1__desc">Closed tasks percentage</span>
+										<h3 class="m-widget1__title m--font-danger">Closed</h3>
+<!-- 										<span class="m-widget1__desc">Closed tasks percentage</span> -->
 									</div>
 									<div class="col m--align-right">
 										<span id="tasks_fragment_closed_tasks_percentage"
-											class="m-widget1__number m--font-success">+60%</span>
+											class="m-widget1__number m--font-danger">+60%</span>
 									</div>
 								</div>
 							</div>
@@ -171,7 +171,7 @@
 											<tr>
 												<th>#</th>
 												<th width="30%">Task</th>
-												<th style="text-align: center">Owner(s)</th>
+												<th style="text-align: center">Assignee</th>
 												<th style="text-align: center">Status</th>
 												<th style="text-align: center">Start Date</th>
 												<th style="text-align: center">Due Date</th>
@@ -182,33 +182,33 @@
 										<tbody>
 											<tr th:each="task : ${element.value}">
 												<th scope="row"></th>
-												<td width="30%"><a
+												<td width="30%"><a style="font-weight: 500;cursor:pointer;"
 													th:onclick="'javascript:toggleTaskFragment(' + ${task.id} + ')'"
 													th:text="${task.name}">task name</a></td>
 
 												<td style="text-align: center">
 												<span th:if="${task.users.empty}">Unassigned</span>
-												<span th:each="user : ${task.users}" th:text="|${user.firstName} ${user.lastName} |">
+												<span style="font-weight: 500;" th:each="user : ${task.users}" th:text="|${user.firstName} ${user.lastName} |">
 												</span>
 												</td>
 													
 												<td style="text-align: center"
 													th:if="${task.status == 'ONGOING'}"><span
-													class="m-badge m-badge--danger m-badge--wide">Open</span></td>
+													class="m-badge m-badge--success m-badge--wide">Open</span></td>
 												<td style="text-align: center"
 													th:if="${task.status == 'COMPLETED'}"><span
-													class="m-badge m-badge--success m-badge--wide">Closed</span>
+													class="m-badge m-badge--danger m-badge--wide">Closed</span>
 												</td>
 
-												<td style="text-align: center" th:text="${#dates.format(task.startDate, 'dd-MM-yyyy')}">start
+												<td style="font-weight: 500;text-align: center" th:text="${#dates.format(task.startDate, 'dd MMMM yyyy')}">start
 													date</td>
-												<td style="text-align: center" th:text="${#dates.format(task.endDate, 'dd-MM-yyyy')}">end
-													date</td>
-													
-													<td style="text-align: center" th:if="${task.completedOn != null}" th:text="${#dates.format(task.completedOn, 'dd-MM-yyyy')}">completed
+												<td style="font-weight: 500;text-align: center" th:text="${#dates.format(task.endDate, 'dd MMMM yyyy')}">end
 													date</td>
 													
-													<td style="text-align: center" th:if="${task.completedOn == null}">None</td>
+													<td style="font-weight: 500;text-align: center" th:if="${task.completedOn != null}" th:text="${#dates.format(task.completedOn, 'dd MMMM yyyy')}">completed
+													date</td>
+													
+													<td style="font-weight: 500;text-align: center" th:if="${task.completedOn == null}">None</td>
 
 												<td style="text-align: center"
 													th:if="${task.priority == 'none'}"><span

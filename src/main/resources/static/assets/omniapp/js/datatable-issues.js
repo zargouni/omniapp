@@ -100,12 +100,13 @@ var DatatableIssuesJsonRemote = function () {
 			}, {
 		        field: 'status',
 		        title: 'Status',
-		        width: 60,
+		        width: 100,
 		        template: function(row) {
 		           var status = {
 		              "OPEN": {'title': 'Open', 'class': 'm-badge--info'},
-		              "Overdue": {'title': 'Overdue', 'class': ' m-badge--danger'},
-		              "Closed": {'title': 'Closed', 'class': ' m-badge--success'},
+		              "IN_PROGRESS": {'title': 'In Progress', 'class': ' m-badge--warning'},
+		              "TO_BE_TESTED": {'title': 'To Be Tested', 'class': ' m-badge--success'},
+		              "CLOSED": {'title': 'Closed', 'class': ' m-badge--danger'},
 		           };
 		           return '<span style="margin: 0 auto;" class="m-badge ' + status[row.status].class + ' m-badge--wide">' + status[row.status].title + '</span>';
 		         },

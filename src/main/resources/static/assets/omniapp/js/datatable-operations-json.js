@@ -71,14 +71,29 @@ var DatatableOperationsJsonRemote = function () {
 				field: "name",
 				title: "Name",
 				sortable: true,
-				width: 280,
+				width: 250,
 				template: function(row) {
 					return '<a style="font-weight: 500;" href="#" onclick="toggleOperationFragment('+ row.id +')">'+row.name + '</a>';
 				}
-			}, {
+			},{
+	            field: 'percentage',
+	            title: 'Progress',
+	            // sortable: 'asc', // default sort
+	            filterable: false, // disable or enable filtering
+	            width: 200,
+	            // basic templating support for column rendering,
+	            template: function(row) {
+	          // callback function support for column rendering
+	          	  return '<div style="width:200px !important;" class="progress m-progress--sm">'
+	          	  +'<div class="progress-bar m--bg-success" role="progressbar" style="width: '+row.percentage+';" aria-valuemin="0" aria-valuemax="100"></div>'
+	          	  +'</div>'
+	          	  +'<span style="font-weight:600;font-size:12px;float:right;" class="m-widget4__number m--font-info">'+row.percentage+'</span>'
+	          	  ;
+	            },
+	          }, {
 		        field: 'status',
 		        title: 'Status',
-		        width: 80,
+		        width: 100,
 		        template: function(row) {
 		           var status = {
 		              "Open": {'title': 'Open', 'class': 'm-badge--info'},

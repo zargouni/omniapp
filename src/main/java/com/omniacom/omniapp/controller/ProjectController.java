@@ -741,6 +741,11 @@ public class ProjectController {
 		return response;
 	}
 	
+	@GetMapping("/get-project-issues-stats")
+	public @ResponseBody JSONObject getProjectIssuesStats(@RequestParam("id") long projectId) {
+		return projectService.getProjectIssuesStats(projectId);
+	}
+	
 	
 	@PostMapping("/delete-comment")
 	public @ResponseBody JsonResponse deleteComment(@RequestParam("id") long commentId) {

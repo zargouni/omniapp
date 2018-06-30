@@ -2,6 +2,7 @@ package com.omniacom.omniapp.service;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -122,7 +123,8 @@ public class OperationService {
 				.element("price", getOperationPrice(op))
 				.element("currency", op.getProject().getCurrency())
 				.element("creationDate",new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(op.getCreationDate()))
-				.element("creationTime", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(op.getCreationDate()));
+				.element("creationTime", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(op.getCreationDate()))
+				.element("percentage", getOperationProgress(op));
 		if(op.getEndDate().before(new Date())) {
 			if(getOperationStatus(op).equals("open"))
 				json.accumulate("status", "Overdue");
@@ -179,6 +181,26 @@ public class OperationService {
 		if(open == true)
 			return "open";
 		return "closed";
+	}
+	
+	public String getOperationProgress(Operation op) {
+		List<com.omniacom.omniapp.entity.Service> services = op.getServices();
+		List<Task> opTasks = new ArrayList<Task>();
+		Integer closed = 0;
+		for(com.omniacom.omniapp.entity.Service service : services) {
+			opTasks.addAll(service.getTasks());
+//			if(!serviceService.getServicePercentageComplete(service).equals("100%"))
+//				open = true;
+		}
+		if(!opTasks.isEmpty()) {
+			for(Task t : opTasks) {
+				if(t.getStatus().equals(StaticString.TASK_STATUS_COMPLETED))
+					closed++;
+			}
+			return (closed * 100 / opTasks.size())+"%";
+		}
+		
+		return "0%";
 	}
 	
 
