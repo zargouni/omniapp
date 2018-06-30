@@ -37,6 +37,9 @@ public class Notification implements Serializable{
 	private Task task;
 	
 	@ManyToOne
+	private Issue issue;
+	
+	@ManyToOne
 	private User user;
 	
 	@Transient
@@ -55,6 +58,14 @@ public class Notification implements Serializable{
 		this.createdAt = createdAt;
 		this.user = user;
 		this.task = task;
+		this.isRead = false;
+	}
+	
+	public Notification(String message,Date createdAt,User user,Issue issue){
+		this.message = message;
+		this.createdAt = createdAt;
+		this.user = user;
+		this.issue = issue;
 		this.isRead = false;
 	}
 
@@ -139,6 +150,20 @@ public class Notification implements Serializable{
 	 */
 	public void setPrettyTime(PrettyTime prettyTime) {
 		this.prettyTime = prettyTime;
+	}
+
+	/**
+	 * @return the issue
+	 */
+	public Issue getIssue() {
+		return issue;
+	}
+
+	/**
+	 * @param issue the issue to set
+	 */
+	public void setIssue(Issue issue) {
+		this.issue = issue;
 	}
 
 }

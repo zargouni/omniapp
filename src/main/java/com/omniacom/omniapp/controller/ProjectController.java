@@ -700,13 +700,13 @@ public class ProjectController {
 				response.setStatus("FAIL");
 			else {
 				// Send notification to added users
-//				if (!taskUsers.contains(user)) {
-//					notificationService.sendNotification(user, task);
-//				}
+				if (!issueUsers.contains(user)) {
+					notificationService.sendIssueNotification(user, issue);
+				}
 				
 				// Add contributing user to task's project
 //				if (task.getService().getOperation() != null)
-//					userService.addContributingUserToProject(user, task.getService().getOperation().getProject());
+					userService.addContributingUserToProject(user, issue.getProject());
 //				else
 //					userService.addContributingUserToProject(user, task.getService().getProject());
 

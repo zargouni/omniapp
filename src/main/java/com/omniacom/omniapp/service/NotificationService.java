@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Notification;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
@@ -85,6 +86,10 @@ public class NotificationService {
 	public Notification createNotificationObject(String message,User user,Task task){
 		return new Notification(message,new Date(),user,task);
 	}
+	
+	public Notification createIssueNotificationObject(String message,User user,Issue issue){
+		return new Notification(message,new Date(),user,issue);
+	}
 
 	public Notification findByUserAndNotificationId(User user,Long notificationId){
 		try{
@@ -98,6 +103,15 @@ public class NotificationService {
 	public boolean sendNotification(User user, Task task) {
 		if(notificationRepository.findByUserAndTask(user.getId(), task.getId()) == null) {
 			Notification notification = this.createNotificationObject("You have a new task " + task.getName(), user,task);
+			this.save(notification);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean sendIssueNotification(User user, Issue issue) {
+		if(notificationRepository.findByUserAndIssue(user.getId(), issue.getId()) == null) {
+			Notification notification = this.createIssueNotificationObject("You have a new issue " + issue.getName(), user,issue);
 			this.save(notification);
 			return true;
 		}

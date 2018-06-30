@@ -13,6 +13,21 @@ function handleNotificationClick(taskId){
 	});
 }
 
+function handleIssueNotificationClick(issueId){
+	$.ajax({
+		type : "GET",
+		url : '/get-issue-parents',
+		data : 'id=' + issueId,
+		async : false,
+		success : function(response) {
+			window.location.href = '/project?id='+response.project_id+'#issue='+issueId;
+		},
+		error : function(e) {
+			alert('Error: issue click ' + e);
+		}
+	});
+}
+
 function handleNotificationToggle(){
 	 $.ajax({
 			type : "POST",
@@ -1271,6 +1286,11 @@ $(document).ready(function() {
 
 	 if (window.location.hash.indexOf('#task=') == 0){
 			externalTaskLoad();
+			
+	 }
+	 
+	 if (window.location.hash.indexOf('#issue=') == 0){
+			externalIssueLoad();
 			
 	 }
 	 

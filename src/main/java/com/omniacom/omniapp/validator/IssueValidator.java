@@ -22,8 +22,9 @@ public class IssueValidator implements Validator {
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "issue.name.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", "issue.description.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "endDate", "issue.endDate.empty");
+//		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", "issue.status.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "severity", "issue.severity.empty");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "operation", "issue.operation.empty");
+//		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "operation", "issue.operation.empty");
 			
 	}
 	

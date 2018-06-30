@@ -4,7 +4,7 @@ function doUpdateIssue(issueId) {
 	var severity = $('#issue_severity_select').val();
 	var description = $('#issue_description').val();
 	var endDate = $('#issue_end_date_select').val();
-	var operation = $('#issue_operation')
+//	var operation = $('#issue_operation')
 //	var estimationHR = $('#task_estimation_hr_input').val();
 //	var estimationTime = $('#task_estimation_days_input').val();
 //	var service = $('#service_fragment_selected_service_id').val();
@@ -23,24 +23,24 @@ function doUpdateIssue(issueId) {
 				.ajax({
 					type : "POST",
 					url : '/update-issue',
+					async: false,
 					data : "id=" + issueId + "&name=" + name + "&status=" + status
 							+ "&severity=" + severity + "&endDate="
 							+ endDate + "&description=" + description
-							+ "&operation="
-							+ operation
+//							+ "&operationId="
+//							+ operation
 							,
 					success : function(response) {
 						// we have the response
 						if (response.status == "SUCCESS") {
 							toastr.success("Issue updated successfully",
 									"Well done!");
-							if (response.result != 'undefined') {
+							//if (response.result != 'undefined') {
 								doUpdateIssueOwners(issueId);
-								//$("#edit-boq-details").modal('hide');
 								populateIssueFragmentDetails(issueId);
 								$('#issues_datatable').mDatatable(
 										'reload');
-							}
+							//}
 						} else {
 							
 								toastr.error("Couldn't update Issue", "Error");
@@ -48,6 +48,7 @@ function doUpdateIssue(issueId) {
 
 							// todo
 							for (i = 0; i < response.result.length; i++) {
+								console.log(response.result[i].code);
 								if (response.result[i].code == "issue.name.empty")
 									nameError.show('slow');
 								if (response.result[i].code == "issue.description.empty")
@@ -78,7 +79,8 @@ function doUpdateIssueOwners(issueId) {
 		$.ajax({
 			type : "POST",
 			url : '/update-issue-owners',
-			data : "id=" + taskId + "&userId=" + user,
+			async: false,
+			data : "id=" + issueId + "&userId=" + user,
 			success : function(response) {
 				// we have the response
 				if (response.status == "FAIL") {
@@ -166,7 +168,7 @@ function populateIssueParents(issueId) {
 		success : function(response) {
 			$('#issue_fragment_operation').html(response.operation);
 			$('#issue_fragment_project').html(response.project);
-			$('#issue_operation').val(response.operation_id);
+//			$('#issue_operation').val(response.operation_id);
 		},
 		error : function(e) {
 			alert('Error: Issue Parents ' + e);
@@ -280,43 +282,48 @@ function doAddNewIssueAjax(){
 	operationError.hide('fast');
 
 
+	if($('#input_new_issue_operation').val() == 'none'){
+		toastr.warning("You have to select the concerned operation", "Select Operation");
+		
 	
-	$.ajax({
-		type : "POST",
-		url : '/add-issue',
-		data : 'name=' + name+'&description='+description+'&endDate='+dueDate+'&severity='+severity+'&operation='+operationId
-		+'&id='+projectId,
-		async : false,
-		success : function(response) {
-			if (response.status == "SUCCESS") {
-				if($('#issues_datatable').length){
-					$('#issues_datatable').mDatatable('reload');
+	}else{
+		$.ajax({
+			type : "POST",
+			url : '/add-issue',
+			data : 'name=' + name+'&description='+description+'&endDate='+dueDate+'&severity='+severity+'&operation='+operationId
+			+'&id='+projectId,
+			async : false,
+			success : function(response) {
+				if (response.status == "SUCCESS") {
+					if($('#issues_datatable').length){
+						$('#issues_datatable').mDatatable('reload');
+					}
+					$('#m_modal_issue').modal('hide');
+					doAddIssueOwners(response.result);
+					toastr.success("Issue submitted successfully", "Well done!");
 				}
-				$('#m_modal_issue').modal('hide');
-				doAddIssueOwners(response.result);
-				toastr.success("Issue submitted successfully", "Well done!");
-			}
-				
-			else{
-				toastr.warning("Please check that all required fields are filled", "Error!");
-				for (i = 0; i < response.result.length; i++) {
-					if (response.result[i].code == "issue.name.empty")
-						nameError.show('slow');
-					if (response.result[i].code == "issue.description.empty")
-						descriptionError.show('slow');
-					if (response.result[i].code == "issue.endDate.empty")
-						dateError.show('slow');
-					if (response.result[i].code == "issue.operation.empty")
-						operationError.show('slow');
 					
+				else{
+					toastr.warning("Please check that all required fields are filled", "Error!");
+					for (i = 0; i < response.result.length; i++) {
+						console.log(response.result[i].code);
+						if (response.result[i].code == "issue.name.empty")
+							nameError.show('slow');
+						if (response.result[i].code == "issue.description.empty")
+							descriptionError.show('slow');
+						if (response.result[i].code == "issue.endDate.empty")
+							dateError.show('slow');
+
+						
+					}
 				}
+					
+			},
+			error : function(e) {
+				alert('Error: couldnt add issue ' + e);
 			}
-				
-		},
-		error : function(e) {
-			alert('Error: couldnt add issue ' + e);
-		}
-	});
+		});
+	}
 	
 	
 }
@@ -359,7 +366,7 @@ function populateSelectOperations(projectId){
 		data : 'id=' + projectId,
 		async : false,
 		success : function(response) {
-			var html_text = "<option value=' '>None</option>";
+			var html_text = "<option value='none'>None</option>";
 			for (i = 0; i < response.length; i++) {
 				html_text += '<option value="'+response[i].id+'">'+response[i].name+'</option>';
 				
@@ -1619,6 +1626,15 @@ function externalTaskLoad() {
     
     	var taskId = WindowLocation.substr(WindowLocation.lastIndexOf("=")+1);
     	toggleTaskFragment(taskId);
+    
+}
+
+function externalIssueLoad() {
+	$("#m_dynamic_content_project").children().hide();
+	var WindowLocation = window.location.hash;
+    
+    	var issueId = WindowLocation.substr(WindowLocation.lastIndexOf("=")+1);
+    	toggleIssueFragment(issueId);
     
 }
 
