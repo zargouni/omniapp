@@ -55,7 +55,6 @@ import com.omniacom.omniapp.validator.ProjectValidator;
 import com.omniacom.omniapp.validator.ServiceValidator;
 import com.omniacom.omniapp.validator.SiteValidator;
 import com.omniacom.omniapp.validator.TaskValidator;
-import com.omniacom.omniapp.zohoAPI.ProjectsAPI;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -111,9 +110,6 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private ServiceService serviceService;
-
-	@Autowired
-	private ProjectsAPI projectsApi;
 	
 	@Autowired
 	private NotificationService notificationService;

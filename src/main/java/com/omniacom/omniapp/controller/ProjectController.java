@@ -716,6 +716,44 @@ public class ProjectController {
 	}
 	
 	
+	@GetMapping("/get-issue-comments")
+	public @ResponseBody JSONArray getIssueComments(@RequestParam("id") long issueId) {
+		return issueService.getIssueComments(issueId);
+	}
+	
+	@PostMapping("/do-post-issue-comment")
+	public JsonResponse doPostIssueComment(@RequestParam("id") long issueId, @RequestParam("content") String content) {
+		JsonResponse response = new JsonResponse();
+		if (content.length() != 0 && issueService.findOne(issueId) != null) {
+			Comment comment = new Comment();
+			comment.setContent(content);
+			comment.setIssue(issueService.findOne(issueId));
+			comment.setDate(new Date());
+			comment.setUser(userService.getSessionUser());
+			if (commentRepo.save(comment) != null) {
+				response.setStatus("SUCCESS");
+			} else {
+				response.setStatus("FAIL");
+			}
+		} else {
+			response.setStatus("NOCONTENT");
+		}
+		return response;
+	}
+	
+	
+	@PostMapping("/delete-comment")
+	public @ResponseBody JsonResponse deleteComment(@RequestParam("id") long commentId) {
+		JsonResponse response = new JsonResponse();
+		Comment comment = commentRepo.findOne(commentId);
+		if(comment != null) {
+			commentRepo.delete(comment);
+			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
+		}
+		return response;
+	}
 
 	public JSONObject jsonTask(Task task) {
 		JSONObject jsonTask = new JSONObject().element("TaskId", task.getId()).element("TaskName", task.getName())

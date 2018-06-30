@@ -32,6 +32,9 @@ public class Comment implements Serializable{
 	@ManyToOne
 	private Task task;
 	
+	@ManyToOne
+	private Issue issue;
+	
 	
 	@ManyToOne
 	private User user;
@@ -147,6 +150,20 @@ public class Comment implements Serializable{
 	 */
 	public void setTask(Task task) {
 		this.task = task;
+	}
+
+	/**
+	 * @return the issue
+	 */
+	public Issue getIssue() {
+		return issue;
+	}
+
+	/**
+	 * @param issue the issue to set
+	 */
+	public void setIssue(Issue issue) {
+		this.issue = issue;
 	}
 	
 	

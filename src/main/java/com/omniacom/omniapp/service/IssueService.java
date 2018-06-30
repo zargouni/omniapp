@@ -1,15 +1,17 @@
 package com.omniacom.omniapp.service;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
@@ -163,6 +165,34 @@ public class IssueService {
 			return true;
 		}
 		return false;
+	}
+	
+	public JSONArray getIssueComments(long issueId) {
+		JSONArray array = new JSONArray();
+		Issue issue = issueRepo.findOne(issueId);
+		if(!issue.getComments().isEmpty()) {
+			Collections.sort(issue.getComments(), new Comparator<Comment>() {
+				  public int compare(Comment o1, Comment o2) {
+				      return o2.getDate().compareTo(o1.getDate());
+				  }
+				});
+			
+			for(Comment c : issue.getComments()) {
+				array.add(jsonComment(c));
+			}
+		}
+		
+		
+		return array;
+	}
+	
+	public JSONObject jsonComment(Comment c) {
+		return new JSONObject()
+				.element("id", c.getId())
+				.element("user", c.getUser().getFirstName() +" "+ c.getUser().getLastName())
+				.element("user_id", c.getUser().getId())
+				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(c.getDate()))
+				.element("content", c.getContent());
 	}
 
 }

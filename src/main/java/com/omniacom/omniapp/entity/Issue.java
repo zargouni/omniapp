@@ -42,6 +42,9 @@ public class Issue implements Serializable {
 	@ManyToOne
 	private User creator;
 	
+	@OneToMany( mappedBy = "issue")
+	private List<Comment> comments;
+	
 	@ManyToMany
 	@JoinTable(name = "USER_ISSUE", joinColumns = @JoinColumn(name = "issue_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> assignedUsers;
@@ -219,6 +222,20 @@ public class Issue implements Serializable {
 	 */
 	public void setAssignedUsers(List<User> assignedUsers) {
 		this.assignedUsers = assignedUsers;
+	}
+
+	/**
+	 * @return the comments
+	 */
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	/**
+	 * @param comments the comments to set
+	 */
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 }

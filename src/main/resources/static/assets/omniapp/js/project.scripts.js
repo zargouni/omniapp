@@ -1,3 +1,79 @@
+function populateIssueComments(issueId){
+	$('#issue_comments_wrapper').html("");
+	$.ajax({
+		type : "GET",
+		url : '/get-issue-comments',
+		data : 'id=' + issueId,
+		async : false,
+		success : function(response) {
+			var html_text = "";
+			if(response.length != 0)
+			for(var i=0;i<response.length;i++){
+				html_text += getCommentUI(response[i]);
+			}
+			else
+				html_text = '<div class="m-widget24__item">'
+					+'<div>'
+					+'<div style="display: block; margin-top: 5%;">'
+					+'<table width="100%" align="center" border="0"'
+					+'	cellpadding="0" cellspacing="0">'
+					+'	<tbody>'
+					+'		<tr>'
+					+'			<td align="center"><div'
+					+'					style="border-color:#fff !important;" class="emptydashboardbox omnia fonticon40">'
+					+'						<div class="m-demo-icon__preview">'
+					+'							<i style="color:#fff;font-size: 40px;" class="flaticon-chat-1"></i>'
+					+'					</div>'
+					+'				</div></td>'
+					+'		</tr>'
+					+'		<tr>'
+					+'			<td align="center" height="110px">'
+					+'				<div>'
+					+'					<span class="col777 pt12 lh25">This issue'
+					+'						contains no comments yet.'
+					+'						</span>'
+					+'				</div>'
+					+'			</td>'
+					+'		</tr>'
+					+'	</tbody>'
+					+'</table>'
+					+'</div>'
+					+'</div>'
+					+'</div>';
+			
+			$('#issue_comments_wrapper').html(html_text);
+		},
+		error : function(e) {
+			alert('Error: issue comments ' + e);
+		}
+	});
+}
+
+function doPostIssueComment(){
+	var comment = $('#issue_comment_content').val();
+	var issueId = $('#selected_issue_id').val();
+	$.ajax({
+		type : "POST",
+		url : '/do-post-issue-comment',
+		data : 'id=' + issueId+"&content="+comment,
+		async : false,
+		success : function(response) {
+			if(response.status == "FAIL")
+				toastr.error("Couldn't post comment","Error");
+			else if(response.status == "NOCONTENT")
+				toastr.error("A comment cannot be empty","Hey !");
+			else{
+				$('#issue_comment_content').val("");
+				populateIssueComments(issueId);
+			}
+		},
+		error : function(e) {
+			alert('Error: comment issue ' + e);
+		}
+	});
+
+}
+
 function doUpdateIssue(issueId) {
 	var name = $('#issue_name_input').val();
 	var status = $('#issue_status_select').val();
@@ -252,7 +328,7 @@ function toggleIssueFragment(issueId){
 	$("#m_dynamic_content_project").children().hide();
 	$('#issue-fragment').show();
 	populateIssueFragmentDetails(issueId);
-//	populateTaskComments(taskId);
+	populateIssueComments(issueId);
 	
 	$('#selected_issue_id').val(issueId);
 
@@ -1225,9 +1301,39 @@ function populateTaskComments(taskId){
 		async : false,
 		success : function(response) {
 			var html_text = "";
-			for(var i=0;i<response.length;i++){
-				html_text += getCommentUI(response[i]);
-			}
+			if(response.length != 0)
+				for(var i=0;i<response.length;i++){
+					html_text += getCommentUI(response[i]);
+				}
+				else
+					html_text = '<div class="m-widget24__item">'
+						+'<div>'
+						+'<div style="display: block; margin-top: 5%;">'
+						+'<table width="100%" align="center" border="0"'
+						+'	cellpadding="0" cellspacing="0">'
+						+'	<tbody>'
+						+'		<tr>'
+						+'			<td align="center"><div'
+						+'					style="border-color:#fff !important;" class="emptydashboardbox omnia fonticon40">'
+						+'						<div class="m-demo-icon__preview">'
+						+'							<i style="color:#fff;font-size: 40px;" class="flaticon-chat-1"></i>'
+						+'					</div>'
+						+'				</div></td>'
+						+'		</tr>'
+						+'		<tr>'
+						+'			<td align="center" height="110px">'
+						+'				<div>'
+						+'					<span class="col777 pt12 lh25">This task'
+						+'						contains no comments yet.'
+						+'						</span>'
+						+'				</div>'
+						+'			</td>'
+						+'		</tr>'
+						+'	</tbody>'
+						+'</table>'
+						+'</div>'
+						+'</div>'
+						+'</div>';
 			
 			$('#task_comments_wrapper').html(html_text);
 		},
@@ -1237,9 +1343,38 @@ function populateTaskComments(taskId){
 	});
 }
 
-
+function deleteComment(commentId){
+	$.ajax({
+		type : "POST",
+		url : '/delete-comment',
+		data : 'id=' + commentId,
+		async : false,
+		success : function(response) {
+			if(response.status == "SUCCESS"){
+				toastr.info("Comment deleted successfully");
+				if($('#issue-fragment').is(':visible')){
+					populateIssueComments($('#selected_issue_id').val()); 
+				}else if($('#task-fragment').is(':visible')){
+					populateTaskComments($('#selected_task_id').val());	
+				}else if($('#operation-fragment').is(':visible')){
+					populateOperationComments($('#operation_fragment_selected_operation_id').val());	
+				}
+			}
+		},
+		error : function(e) {
+			alert('Error: delete comment ' + e);
+		}
+	});
+}
 
 function getCommentUI(comment){
+	var deleteComment = "";
+	if($('#session_user_id').val() == comment.user_id){
+		deleteComment = '<a style="opacity: 0.9;float: right;" title="Delete Comment" onclick="deleteComment('+comment.id+')" class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only  m-btn--pill m-btn--air">'
+						+			'<i class="la la-close"></i>'
+						+		'</a>';
+
+	}
 	return '<div class="m-widget3">'
 	+'<div class="m-widget3__item">'
 	+	'<div class="m-widget3__header">'
@@ -1248,19 +1383,21 @@ function getCommentUI(comment){
 	+			'	src="assets/app/media/img/users/user-icon.png" alt="">'
 	+		'</div>'
 	+		'<div class="m-widget3__info">'
+	+		deleteComment
 	+			'<span class="m-widget3__username">' + comment.user + '</span><br>'
 	+			'<span class="m-widget3__time">' + comment.date + '</span>'
-	+		'</div>'
 	
+	+		'</div>'
 	+	'</div>'
 	+	'<div class="m-widget3__body">'
+	
 	+		'<p style="color: white;" class="m-widget3__text">'
 	+ 			comment.content
 	+		'</p>'
 	+	'</div>'
 	+'</div>'
 +'</div>'
-+'<hr style="background: #fff;" />';
++'<hr style="opacity: 0.4;background: #fff;" />';
 }
 
 function doPostTaskComment(){

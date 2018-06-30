@@ -203,6 +203,7 @@ public class OperationService {
 		return new JSONObject()
 				.element("id", c.getId())
 				.element("user", c.getUser().getFirstName() +" "+ c.getUser().getLastName())
+				.element("user_id", c.getUser().getId())
 				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(c.getDate()))
 				.element("content", c.getContent());
 	}
