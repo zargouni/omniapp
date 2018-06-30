@@ -37,6 +37,9 @@ public class IssueService {
 	@Autowired
 	UserService userService;
 	
+	@Autowired
+	NotificationService notificationService;
+	
 	public Issue findOne(long id) {
 		return issueRepo.findOne(id);
 	}
@@ -44,15 +47,13 @@ public class IssueService {
 	public boolean addOneOwner(Issue issue, User user) {
 		boolean result = issue.getAssignedUsers().add(user);
 		issueRepo.save(issue);
-//		if(result) {
-//			notificationService.sendNotification(user, task);
-//			
-//			// Add contributing user to task's project
-//			if (task.getService().getOperation() != null)
-//				userService.addContributingUserToProject(user, task.getService().getOperation().getProject());
-//			else
-//				userService.addContributingUserToProject(user, task.getService().getProject());
-//		}
+		if(result) {
+			notificationService.sendIssueNotification(user, issue);
+			
+			// Add contributing user to task's project
+				userService.addContributingUserToProject(user, issue.getProject());
+			
+		}
 		
 		
 			
