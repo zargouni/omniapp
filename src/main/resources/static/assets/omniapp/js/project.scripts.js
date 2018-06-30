@@ -1,3 +1,266 @@
+function doUpdateIssue(issueId) {
+	var name = $('#issue_name_input').val();
+	var status = $('#issue_status_select').val();
+	var severity = $('#issue_severity_select').val();
+	var description = $('#issue_description').val();
+	var endDate = $('#issue_end_date_select').val();
+	var operation = $('#issue_operation')
+//	var estimationHR = $('#task_estimation_hr_input').val();
+//	var estimationTime = $('#task_estimation_days_input').val();
+//	var service = $('#service_fragment_selected_service_id').val();
+
+	var nameError = $('#issue_fragment_name_error');
+	var descriptionError = $('#issue_fragment_description_error');
+	var EndDateError = $('#issue_fragment_endDate_error');
+
+	nameError.hide('fast');
+//	taskStartDateError.hide('fast');
+	EndDateError.hide('fast');
+	descriptionError.hide('fast');
+
+	if ($('#issue_owner_select').find(":selected").length != 0) {
+		$
+				.ajax({
+					type : "POST",
+					url : '/update-issue',
+					data : "id=" + issueId + "&name=" + name + "&status=" + status
+							+ "&severity=" + severity + "&endDate="
+							+ endDate + "&description=" + description
+							+ "&operation="
+							+ operation
+							,
+					success : function(response) {
+						// we have the response
+						if (response.status == "SUCCESS") {
+							toastr.success("Issue updated successfully",
+									"Well done!");
+							if (response.result != 'undefined') {
+								doUpdateIssueOwners(issueId);
+								//$("#edit-boq-details").modal('hide');
+								populateIssueFragmentDetails(issueId);
+								$('#issues_datatable').mDatatable(
+										'reload');
+							}
+						} else {
+							
+								toastr.error("Couldn't update Issue", "Error");
+							
+
+							// todo
+							for (i = 0; i < response.result.length; i++) {
+								if (response.result[i].code == "issue.name.empty")
+									nameError.show('slow');
+								if (response.result[i].code == "issue.description.empty")
+									descriptionError.show('slow');
+								if (response.result[i].code == "task.endDate.empty")
+									endDateError.show('slow');
+								if (response.result[i].code == "issue.operation.empty")
+									toastr.warning("no op");
+							}
+
+						}
+					},
+					error : function(e) {
+						toastr('Error: can\'t update issue ', e);
+					}
+				});
+	} else {
+		toastr.warning(
+				"Couldn't update Issue, you have to select at least 1 owner",
+				"Select Owner(s)");
+	}
+}
+
+function doUpdateIssueOwners(issueId) {
+	$('#issue_owner_select').find(":selected").each(function() {
+		var user = $(this).attr('value');
+		
+		$.ajax({
+			type : "POST",
+			url : '/update-issue-owners',
+			data : "id=" + taskId + "&userId=" + user,
+			success : function(response) {
+				// we have the response
+				if (response.status == "FAIL") {
+					toastr.error("Couldn't add owner", "Error");
+				}
+			},
+			error : function(e) {
+				console.log("error: " + e);
+				toastr.error("Couldn't add owner", "Server Error");
+			}
+		});
+	});
+
+}
+
+
+function populateIssueFragmentDetails(issueId) {
+	
+	
+//	$('#task_start_date_select').datepicker({
+//		format : 'dd/mm/yyyy'
+//	});
+	$('#issue_end_date_select').datepicker({
+		format : 'dd/mm/yyyy'
+	});
+	
+
+	$.ajax({
+		type : "GET",
+		url : '/get-issue-details',
+		data : 'id=' + issueId,
+		async : false,
+		success : function(response) {
+			var html_text = "";
+			$('#portlet_issue_name').html(response.name);
+			$('#issue_name_input').val(response.name);
+			$('#issue_status_select').val(response.status);
+
+			$('#issue_severity_select').val(response.severity);
+			$('#issue_description').val(response.description);
+			
+
+			//$('#task_start_date_select').val(response.startDate);
+			$('#issue_end_date_select').val(response.endDate);
+//			$('#task_estimation_hr_input').val(response.estimationHR);
+//			$('#task_estimation_days_input').val(response.estimationTime);
+			toggleReadOnlyModeIssue();
+			for(i=0 ; i < response.files.length ; i++){
+				html_text += '<div><div class="row">'
+				+'<div class="col-md-8"><i class="fa fa-file-text"></i><a target="self" href="/attachment?id='+response.files[i].id+'"> '
+				+response.files[i].name+'</a>'
+				+'<span><p><small>size: '+parseInt(response.files[i].size/1024) +' KB</small>'
+				+'<small> Added on: '+response.files[i].creationDate+'</small></p></span>'
+				+'</div>'
+				+'<div style="display:none;" class="delete_attachment" class="col-md-4"><a href="#" onclick="handleDeleteAttachment('+response.files[i].id+')" class="btn btn-danger m-btn m-btn--icon m-btn--icon-only m-btn--pill">'
+				+'<i class="la la-close"></i>'
+				+'</a>'
+				+'</div>'
+				+'</div>'
+				
+				+'</div>';
+			}
+			$('#issue_attachments_div').html(html_text);
+
+		},
+		error : function(e) {
+			alert('Error: Task ' + e);
+		}
+	});
+	
+	populateIssueParents(issueId);
+	populateIssueOwnerSelect(issueId);
+	
+}
+
+function populateIssueParents(issueId) {
+	// var serviceId = $('#service_fragment_selected_service_id').val();
+	// var operationId = $('#operation_fragment_selected_operation_id').val();
+	// var projectId = $('#selected_project_id').val();
+	$.ajax({
+		type : "GET",
+		url : '/get-issue-parents',
+		data : 'id=' + issueId,
+		async : false,
+		success : function(response) {
+			$('#issue_fragment_operation').html(response.operation);
+			$('#issue_fragment_project').html(response.project);
+			$('#issue_operation').val(response.operation_id);
+		},
+		error : function(e) {
+			alert('Error: Issue Parents ' + e);
+		}
+	});
+
+}
+
+function populateIssueOwnerSelect(issueId) {
+	$('.attachments_block').hide();
+	// console.log("session user id: "+$('#session_user_id').val());
+	$.ajax({
+		type : "GET",
+		url : '/get-all-users-in-issue-details-json',
+		async : false,
+		data : "id=" + issueId,
+		success : function(response) {
+			var html_text = '';
+			for (i = 0; i < response.length; i++) {
+				// console.log("user "+response[i].id);
+				// console.log("task "+taskId);
+				if (response[i].selected == true)
+					html_text += '<option selected value="' + response[i].id
+							+ '">' + response[i].firstName + ' '
+							+ response[i].lastName + '</option>';
+				else
+					html_text += '<option value="' + response[i].id + '">'
+							+ response[i].firstName + ' '
+							+ response[i].lastName + '</option>';
+				
+				if(response[i].id == $('#session_user_id').val() && response[i].selected == true
+						|| $('#session_user_id').val() == $('#project_manager_id').val()){
+					// show attachments actions block if user appears in owners
+					// list or user is PM
+					$('.attachments_block').show();
+					$('.delete_attachment').show();
+					
+					// show actions block if user appears in owners list or user
+					// is PM
+					$('#issue_actions').show();
+				}
+
+			}
+			$('#issue_owner_select').html(html_text);
+			$('#issue_owner_select').selectpicker('refresh');
+		},
+		error : function(e) {
+			alert('Error: can"t get users in issue ' + e);
+		}
+	});
+
+}
+
+function toggleUpdateModeIssue() {
+	$('#issue_fragment_update_footer').show();
+	$('#issue_name_container').show();
+	$('#issue_fragment_details').find('select,input,textarea').each(function() {
+		$(this).attr("disabled", false);
+		if ($(this).hasClass('m-bootstrap-select'))
+			$(this).selectpicker('refresh');
+		if ($(this).hasClass('issue_date'))
+			$(this).datepicker('refresh');
+	});
+
+}
+
+function toggleReadOnlyModeIssue() {
+	$('#issue_fragment_update_footer').hide();
+	$('#issue_name_container').hide();
+	$('#issue_fragment_details').find('select,input,textarea').each(function() {
+		$(this).attr("disabled", true);
+		if ($(this).hasClass('m-bootstrap-select'))
+			$(this).selectpicker('refresh');
+		if ($(this).hasClass('issue_date'))
+			$(this).datepicker('refresh');
+	});
+}
+
+function toggleIssueFragment(issueId){
+	
+	$("#m_dynamic_content_project").children().hide();
+	$('#issue-fragment').show();
+	populateIssueFragmentDetails(issueId);
+//	populateTaskComments(taskId);
+	
+	$('#selected_issue_id').val(issueId);
+
+	
+	$('#issue_fragment_update_cancel').attr('onClick',
+			'populateIssueFragmentDetails(' + issueId + ')');
+	$('#issue_fragment_do_update').attr('onClick',
+			'doUpdateIssue(' + issueId + ')');
+}
+
 function doAddNewIssueAjax(){
 	var name = $('#input_new_issue_name').val();
 	var description = $('#input_new_issue_description').val();
@@ -26,6 +289,9 @@ function doAddNewIssueAjax(){
 		async : false,
 		success : function(response) {
 			if (response.status == "SUCCESS") {
+				if($('#issues_datatable').length){
+					$('#issues_datatable').mDatatable('reload');
+				}
 				$('#m_modal_issue').modal('hide');
 				doAddIssueOwners(response.result);
 				toastr.success("Issue submitted successfully", "Well done!");
@@ -1318,7 +1584,13 @@ function handleDeleteAttachment(fileId){
 										swal('Deleted!',
 												'Attachment has been deleted.',
 												'success');
-										populateTaskFragmentDetails($('#selected_task_id').val());
+										if($('#issue-fragment').is(':visible')){
+											populateIssueFragmentDetails($('#selected_issue_id').val());
+											
+										}else if($('#task-fragment').is(':visible')){
+											populateTaskFragmentDetails($('#selected_task_id').val());
+												
+										}
 										
 									} else {
 										swal('Fail!', 'Attachment not deleted.',
@@ -1381,6 +1653,7 @@ function populateTaskParents(taskId) {
 	});
 
 }
+
 function toggleTaskFragment(taskId) {
 	if ($('#service-fragment').is(':visible'))
 		$("#service-fragment").hide();
@@ -1605,14 +1878,7 @@ function projectDynamicContent() {
 
 }
 
-$(document).ready(function() {
-	
-	
-	populateProjectDetails();
-	projectDynamicContent();
-
-   
-	
+function taskDropZone(){
 	// bootstrap dropzone
 	// Get the template HTML and remove it from the doumenthe template HTML and
 	// remove it from the doument
@@ -1676,6 +1942,85 @@ $(document).ready(function() {
 	  myDropzone.removeAllFiles(true);
 	};
 	// end bootstrap dropzone
+}
+
+function issueDropZone(){
+	// bootstrap dropzone
+	// Get the template HTML and remove it from the doumenthe template HTML and
+	// remove it from the doument
+	var previewNode = document.querySelector("#issue_template");
+	previewNode.id = "";
+	var previewTemplate = previewNode.parentNode.innerHTML;
+	previewNode.parentNode.removeChild(previewNode);
+
+	var myDropzone = new Dropzone("#issue-fragment", { // Make the whole body a
+														// dropzone
+	  url: "/upload-issue-attachment", // Set the url
+	  thumbnailWidth: 80,
+	  thumbnailHeight: 80,
+	  parallelUploads: 20,
+	  previewTemplate: previewTemplate,
+	  autoQueue: false, // Make sure the files aren't queued until manually
+						// added
+	  previewsContainer: "#issue_previews", // Define the container to display the
+										// previews
+	  clickable: ".fileinput-button", // Define the element that should be
+										// used as click trigger to select
+										// files.
+	  acceptedFiles: "image/*,application/pdf, .doc, .docx, .xls",
+	});
+
+	myDropzone.on("addedfile", function(file) {
+		if($('#issue_previews').is(':hidden'))
+		$('#issue_previews').show();
+	  // Hookup the start button
+	  file.previewElement.querySelector(".start").onclick = function() { myDropzone.enqueueFile(file); };
+	});
+
+	// Update the total progress bar
+	myDropzone.on("totaluploadprogress", function(progress) {
+	  document.querySelector("#issue_total-progress .progress-bar").style.width = progress + "%";
+	});
+
+	myDropzone.on("sending", function(file, xhr, formData) {
+	  // Show the total progress bar when upload starts
+		 formData.append('id',$('#selected_issue_id').val());
+	  document.querySelector("#issue_total-progress").style.opacity = "1";
+	  // And disable the start button
+	  file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+	});
+
+	// Hide the total progress bar when nothing's uploading anymore
+	myDropzone.on("queuecomplete", function(progress) {
+	  document.querySelector("#issue_total-progress").style.opacity = "0";
+	  toastr.success("Attachment uploaded successfully","Well Done")
+	  $('#issue_previews').hide('slow');
+	  populateIssueFragmentDetails($('#selected_issue_id').val());
+	});
+
+	// Setup the buttons for all transfers
+	// The "add files" button doesn't need to be setup because the config
+	// `clickable` has already been specified.
+	document.querySelector("#issue_actions .start").onclick = function() {
+	  myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED));
+	};
+	document.querySelector("#issue_actions .cancel").onclick = function() {
+	  myDropzone.removeAllFiles(true);
+	};
+	// end bootstrap dropzone
+}
+
+$(document).ready(function() {
+	
+	
+	populateProjectDetails();
+	projectDynamicContent();
+	taskDropZone();
+	issueDropZone();
+
+   
+	
+	
 	
 	
 });

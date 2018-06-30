@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Issue implements Serializable {
@@ -44,6 +45,9 @@ public class Issue implements Serializable {
 	@ManyToMany
 	@JoinTable(name = "USER_ISSUE", joinColumns = @JoinColumn(name = "issue_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> assignedUsers;
+	
+	@OneToMany(mappedBy="issue")
+	private List<UploadedFile> attachments;
 	
 	public Issue() {
 		super();

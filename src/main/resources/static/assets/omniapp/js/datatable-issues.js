@@ -60,20 +60,22 @@ var DatatableIssuesJsonRemote = function () {
 			},
 
 			// columns definition
-			columns: [{
+			columns: [
+				{
 				field: "id",
 				title: "#",
 				width: 20,
 				sortable: false,
 				selector: false,
 				textAlign: 'center',
-			}, {
+			}, 
+			{
 				field: "name",
 				title: "Issue",
 				sortable: true,
-				width: 200,
+				width: 250,
 				template: function(row) {
-					return '<a href="#" onclick="toggleOperationFragment('+ row.id +')">'+row.name + '</a>';
+					return '<a style="font-weight: 500;" href="#" onclick="toggleIssueFragment('+ row.id +')">'+row.name + '</a>';
 				}
 			},{
 				field: "creationDate",
@@ -84,12 +86,21 @@ var DatatableIssuesJsonRemote = function () {
 				width: 100,
 				responsive: {visible: 'lg'},
 				template: function(row){
-					return '<span style="font-weight:400;font-size:14px;color: #716aca;">'+row.creationDate+'</span>'
+					return '<span style="font-weight:400;font-size:14px;">'+row.creationDate+'</span>'
+				}
+			},{
+				field: "owners",
+				title: "Assignee",
+				sortable: true,
+				width: 100,
+				responsive: {visible: 'lg'},
+				template: function(row){
+					return '<span style="font-weight:400;font-size:14px;">'+row.owners+'</span>'
 				}
 			}, {
 		        field: 'status',
 		        title: 'Status',
-		        width: 100,
+		        width: 60,
 		        template: function(row) {
 		           var status = {
 		              "OPEN": {'title': 'Open', 'class': 'm-badge--info'},
@@ -107,7 +118,7 @@ var DatatableIssuesJsonRemote = function () {
 				width: 100,
 				responsive: {visible: 'lg'},
 				template: function(row){
-					return '<span style="font-weight:400;font-size:14px;color: #716aca;">'+row.endDate+'</span>'
+					return '<span style="font-weight:400;font-size:14px;">'+row.endDate+'</span>'
 				}
 			}, {
 				field: "severity",

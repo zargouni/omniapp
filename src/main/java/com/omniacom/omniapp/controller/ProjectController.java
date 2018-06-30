@@ -213,6 +213,8 @@ public class ProjectController {
 	}
 
 	private List<User> taskUsers = null;
+	
+	private List<User> issueUsers = null;
 
 	@PostMapping("/update-task")
 	public @ResponseBody JsonResponse doUpdateTask(@RequestParam("id") long taskId, @Validated Task updatedTask,
@@ -614,6 +616,106 @@ public class ProjectController {
 		}
 		return response;
 	}
+	
+	@GetMapping("/get-issue-details")
+	public @ResponseBody JSONObject getIssueDetails(@RequestParam("id") long issueId) {
+		Issue issue = issueService.findOne(issueId);
+		if (issue != null)
+			return issueService.jsonIssue(issue);
+		return new JSONObject();
+	}
+	
+	@GetMapping("/get-issue-parents")
+	public @ResponseBody JSONObject getIssueParents(@RequestParam("id") long issueId) {
+		return issueService.getIssueParents(issueId);
+	}
+	
+	@GetMapping("/get-all-users-in-issue-details-json")
+	public @ResponseBody JSONArray getAllUsersForIssue(@RequestParam("id") long issueId) {
+		return issueService.findAllUsersForIssue(issueId);
+	}
+	
+	@PostMapping(value = "/upload-issue-attachment")
+	public ResponseEntity handleFileUploadForIssue(@RequestParam("id") long id, @RequestParam("file") MultipartFile[] files) {
+		boolean success = true;
+		UploadedFile dbFile = new UploadedFile();
+		for (int i = 0; i < files.length; i++) {
+			try {
+				fileService.saveFileToLocalDisk(files[i]);
+				dbFile.setName(files[i].getOriginalFilename());
+				dbFile.setSize(files[i].getSize());
+				dbFile.setType(files[i].getContentType());
+				dbFile.setCreationDate(new Date());
+				dbFile.setLocation(fileService.getDestinationLocation());
+				dbFile.setIssue(issueService.findOne(id));
+
+				fileService.saveFileToDatabase(dbFile);
+
+			} catch (IOException e) {
+				success = false;
+			}
+		}
+		if (success)
+			return ResponseEntity.status(HttpStatus.ACCEPTED).body("All Files uploaded");
+
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all files were not uploaded");
+
+	}
+	
+	@PostMapping("/update-issue")
+	public @ResponseBody JsonResponse doUpdateIssue(@RequestParam("id") long issueId, @Validated Issue updatedIssue,
+			BindingResult result) {
+		JsonResponse response = new JsonResponse();
+
+		if (!result.hasErrors()) {
+			issueUsers = issueService.findOne(issueId).getAssignedUsers();
+			if (issueService.updateIssue(issueId, updatedIssue)) {
+
+				response.setStatus("SUCCESS");
+			} else {
+				response.setStatus("FAIL");
+			}
+			
+
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+	
+	@PostMapping("/update-issue-owners")
+	public @ResponseBody JsonResponse addUserToIssueUpdate(@RequestParam("id") long issueId,
+			@RequestParam("userId") long userId) {
+
+		JsonResponse response = new JsonResponse();
+
+		// ServiceTemplate template = stService.findOne(templateId);
+		// Site site = siteService.findSite(siteId);
+		User user = userService.findById(userId);
+		Issue issue = issueService.findOne(issueId);
+		if (issue != null && user != null) {
+			if (!issueService.addOneOwner(issue, user))
+				response.setStatus("FAIL");
+			else {
+				// Send notification to added users
+//				if (!taskUsers.contains(user)) {
+//					notificationService.sendNotification(user, task);
+//				}
+				
+				// Add contributing user to task's project
+//				if (task.getService().getOperation() != null)
+//					userService.addContributingUserToProject(user, task.getService().getOperation().getProject());
+//				else
+//					userService.addContributingUserToProject(user, task.getService().getProject());
+
+			}
+		}
+		return response;
+	}
+	
+	
 
 	public JSONObject jsonTask(Task task) {
 		JSONObject jsonTask = new JSONObject().element("TaskId", task.getId()).element("TaskName", task.getName())

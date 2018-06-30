@@ -71,14 +71,14 @@ var DatatableOperationsJsonRemote = function () {
 				field: "name",
 				title: "Name",
 				sortable: true,
-				width: 200,
+				width: 280,
 				template: function(row) {
-					return '<a href="#" onclick="toggleOperationFragment('+ row.id +')">'+row.name + '</a>';
+					return '<a style="font-weight: 500;" href="#" onclick="toggleOperationFragment('+ row.id +')">'+row.name + '</a>';
 				}
 			}, {
 		        field: 'status',
 		        title: 'Status',
-		        width: 100,
+		        width: 80,
 		        template: function(row) {
 		           var status = {
 		              "Open": {'title': 'Open', 'class': 'm-badge--info'},
@@ -96,7 +96,7 @@ var DatatableOperationsJsonRemote = function () {
 				width: 100,
 				responsive: {visible: 'lg'},
 				template: function(row){
-					return '<span style="font-weight:400;font-size:14px;color: #716aca;">'+row.startDate+'</span>'
+					return '<span style="font-weight:400;font-size:14px;">'+row.startDate+'</span>'
 				}
 			}, {
 				field: "endDate",
@@ -107,7 +107,7 @@ var DatatableOperationsJsonRemote = function () {
 				width: 100,
 				responsive: {visible: 'lg'},
 				template: function(row){
-					return '<span style="font-weight:400;font-size:14px;color: #716aca;">'+row.endDate+'</span>'
+					return '<span style="font-weight:400;font-size:14px;">'+row.endDate+'</span>'
 				}
 			}, {
 				field: "price",

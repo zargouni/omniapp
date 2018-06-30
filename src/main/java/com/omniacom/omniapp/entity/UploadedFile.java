@@ -21,6 +21,8 @@ public class UploadedFile {
 	  private boolean deleted = false;
 	  
 	  private Task task;
+	  
+	  private Issue issue;
 
 	  @Id
 	  @GeneratedValue(strategy = GenerationType.AUTO)
@@ -104,5 +106,20 @@ public class UploadedFile {
 	 */
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	/**
+	 * @return the issue
+	 */
+	@ManyToOne
+	public Issue getIssue() {
+		return issue;
+	}
+
+	/**
+	 * @param issue the issue to set
+	 */
+	public void setIssue(Issue issue) {
+		this.issue = issue;
 	}
 }

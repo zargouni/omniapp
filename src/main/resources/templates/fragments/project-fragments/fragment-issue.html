@@ -1,0 +1,313 @@
+<div id="issue-fragment" style="display: none;"
+	th:fragment="fragment-issue">
+	<div class="m-portlet m-portlet--accent m-portlet--head-solid-bg">
+		<div class="m-portlet__head ">
+			<div class="m-portlet__head-caption--fit">
+				<div class="m-portlet__head-title"
+					style="margin-top: 10px; margin-bottom: 0;">
+					<h3 class="m-portlet__head-text">
+						<span id="portlet_issue_name"></span>
+					</h3>
+
+				</div>
+
+				<ul style="margin-bottom: 10px;"
+					class="m-subheader__breadcrumbs m-nav m-nav--inline">
+					<li style="color: #fff;" class="m-nav__item m-nav__item"><span><small>Project
+								: </small><span id="issue_fragment_project"></span></span></li>
+					<li style="color: #fff;" class="m-nav__item m-nav__item"><span><small>Operation
+								: </small><span id="issue_fragment_operation"></span></span></li>
+<!-- 					<li style="color: #fff;" class="m-nav__item m-nav__item"><span><small>Service -->
+<!-- 								: </small><span id="task_fragment_service"></span></span></li> -->
+
+
+				</ul>
+			</div>
+
+			<div style="display: none;" id="issue_actions"
+				class="m-portlet__head-tools">
+				<ul class="m-portlet__nav">
+					<li class="m-portlet__nav-item"><a title="Delete Issue"
+						href="#" class="m-portlet__nav-link m-portlet__nav-link--icon"><i
+							class="la la-close"></i></a></li>
+					<li class="m-portlet__nav-item"><a title="Edit Issue" href="#"
+						onclick="toggleUpdateModeIssue()"
+						class="m-portlet__nav-link m-portlet__nav-link--icon"><i
+							class="la la-refresh"></i></a></li>
+
+
+				</ul>
+			</div>
+		</div>
+		<form id="issue_fragment_details"
+			class="m-form m-form--fit m-form--label-align-right "
+			target="noTarget">
+			<div class="m-portlet__body">
+				<div id="issue_name_container" style="display: none;"
+					class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Title:</label>
+					<div class="col-lg-8">
+						<input type="text" class="form-control m-input"
+							id="issue_name_input">
+						<div id="issue_fragment_name_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">Please
+							enter a valid issue title</div>
+					</div>
+
+				</div>
+				
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Description:</label>
+					<div class="col-lg-8">
+						<textarea disabled class="form-control m-input" id="issue_description" rows="3"></textarea>
+						<div id="issue_fragment_description_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">Please
+							enter a valid description</div>
+					</div>
+
+				</div>
+				
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Owner(s):</label>
+					<div class="col-lg-8">
+						<select multiple disabled id="issue_owner_select"
+							class="form-control m-bootstrap-select m_selectpicker"
+							data-live-search="true">
+
+						</select>
+					</div>
+
+				</div>
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Status:</label>
+					<div class="col-lg-3">
+						<select disabled id="issue_status_select"
+							class="form-control m-bootstrap-select m_selectpicker">
+							<option value="OPEN">Open</option>
+							<option value="IN_PROGRESS">In Progress</option>
+							<option value="TO_BE_TESTED">To Be Tested</option>
+							<option value="CLOSED">Closed</option>
+						</select>
+					</div>
+					<label class="col-lg-2 col-form-label">Severity:</label>
+					<div class="col-lg-3">
+						<select disabled id="issue_severity_select"
+							class="form-control m-bootstrap-select m_selectpicker">
+							<option value="minor">Minor</option>
+							<option value="major">Major</option>
+							<option value="critical">Critical</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group m-form__group row">
+				<label class="col-lg-2 col-form-label">Due Date:</label>
+					<div class="col-lg-3">
+						<div class="input-group date">
+							<input type="text" class="form-control m-input task_date"
+								readonly="true" placeholder="Due Date" id="issue_end_date_select">
+							<div class="input-group-append">
+								<span class="input-group-text"> <i
+									class="la la-calendar-check-o"></i>
+								</span>
+							</div>
+						</div>
+						<div id="issue_fragment_endDate_error"
+							class="form-control-feedback"
+							style="color: red; float: right; display: none;">* required</div>
+					</div>
+					
+<!-- 					<label class="col-lg-2 col-form-label">Start Date:</label> -->
+<!-- 					<div class="col-lg-3"> -->
+<!-- 						<div class="input-group date"> -->
+<!-- 							<input type="text" class="form-control m-input task_date" -->
+<!-- 								readonly="true" placeholder="Start Date" -->
+<!-- 								id="task_start_date_select"> -->
+<!-- 							<div class="input-group-append"> -->
+<!-- 								<span class="input-group-text"> <i -->
+<!-- 									class="la la-calendar-check-o"></i> -->
+<!-- 								</span> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 						<div id="task_fragment_startDate_error" -->
+<!-- 							class="form-control-feedback" -->
+<!-- 							style="color: red; float: right; display: none;">* required</div> -->
+<!-- 					</div> -->
+					
+				</div>
+
+<!-- 				<div class="form-group m-form__group row"> -->
+<!-- 					<label class="col-lg-2 col-form-label">Estimated HR:</label> -->
+<!-- 					<div class="col-lg-3"> -->
+<!-- 						<input type="number" class="form-control m-input" -->
+<!-- 							id="task_estimation_hr_input"> -->
+<!-- 					</div> -->
+<!-- 					<label class="col-lg-2 col-form-label">Estimated Days:</label> -->
+<!-- 					<div class="col-lg-3"> -->
+<!-- 						<input type="number" class="form-control m-input" -->
+<!-- 							id="task_estimation_days_input"> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+
+<hr />
+
+				<div class="form-group m-form__group row">
+					<label class="col-lg-2 col-form-label">Attachments:</label>
+					<div id="issue_attachments_div" class="col-lg-10"></div>
+
+				</div>
+				
+				
+
+				<!--  BEGIN: Attachments block -->
+				<div
+					style="background: #f5f5f5; width: 70%; max-width: 70%; margin: auto;">
+					<div style="padding: 5%; margin-bottom: 2%;" id="issue_actions"
+						class="row attachments_block">
+
+						<div class="col-lg-7">
+							<!-- The fileinput-button span is used to style the file input field as button -->
+							<span class="btn btn-success fileinput-button dz-clickable">
+								<i class="glyphicon glyphicon-plus"></i> <span>Add
+									Attachments...</span>
+							</span>
+							<button type="submit" class="btn btn-primary start">
+								<i class="glyphicon glyphicon-upload"></i> <span>Start
+									upload</span>
+							</button>
+							<button type="reset" class="btn btn-warning cancel">
+								<i class="glyphicon glyphicon-ban-circle"></i> <span>Cancel
+									upload</span>
+							</button>
+						</div>
+
+						<div class="col-lg-5">
+							<!-- The global file processing state -->
+							<span class="fileupload-process">
+								<div id="issue_total-progress"
+									class="progress progress-striped active" role="progressbar"
+									aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+									<div class="progress-bar progress-bar-success"
+										style="width: 0%;" data-dz-uploadprogress=""></div>
+								</div>
+							</span>
+						</div>
+
+					</div>
+
+					<div class="table table-striped files" id="issue_previews">
+
+						<div style="padding: 5%;" id="issue_template" class="file-row row">
+							<!-- This is used as the file preview template -->
+							<div class="col-md-3">
+								<span class="preview"><img data-dz-thumbnail /></span>
+							</div>
+							<div class="col-md-4">
+								<p class="name" data-dz-name></p>
+								<strong class="error text-danger" data-dz-errormessage></strong>
+							</div>
+							<div class="col-md-2">
+								<p class="size" data-dz-size></p>
+								<div class="progress progress-striped active" role="progressbar"
+									aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+									<div class="progress-bar progress-bar-success"
+										style="width: 0%;" data-dz-uploadprogress></div>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<button class="btn btn-primary start">
+									<i class="glyphicon glyphicon-upload"></i> <span>Start</span>
+								</button>
+								<button data-dz-remove class="btn btn-warning cancel">
+									<i class="glyphicon glyphicon-ban-circle"></i> <span>Cancel</span>
+								</button>
+								<!-- 					<button data-dz-remove class="btn btn-danger delete"> -->
+								<!-- 						<i class="glyphicon glyphicon-trash"></i> <span>Delete</span> -->
+								<!-- 					</button> -->
+							</div>
+						</div>
+					</div>
+					<!--  END: Attachments block -->
+
+				</div>
+
+
+			</div>
+			<div id="issue_fragment_update_footer"
+				class="m-portlet__foot m-portlet__no-border m-portlet__foot--fit">
+				<div class="m-form__actions m-form__actions--solid">
+					<div class="row">
+						<div class="col-lg-9"></div>
+						<div class="col-lg-3">
+							<button id="issue_fragment_do_update" class="btn btn-success">Save
+								Changes</button>
+							<button id="issue_fragment_update_cancel"
+								class="btn btn-secondary">Cancel</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+
+
+
+
+		<input type="hidden" id="selected_issue_id" />
+		<input type="hidden" id="issue_operation" />
+
+
+
+	</div>
+
+	<!--  issue comments block -->
+	<div style="opacity: 0.9;"
+		class="m-portlet m--bg-accent m-portlet--bordered-semi m-portlet--skin-dark m-portlet--full-height">
+		<div class="m-portlet__head">
+			<div class="m-portlet__head-caption">
+				<div class="m-portlet__head-title">
+					<h3 class="m-portlet__head-text">Comments</h3>
+
+
+
+				</div>
+			</div>
+
+<div class="m-portlet__head-tools">
+					<div style="float: right; width: 60%;"
+				class="form-group m-form__group">
+
+				<div class="input-group">
+					<input style="border-top-left-radius: 10px;border-bottom-left-radius: 10px;" id="issue_comment_content" type="text"
+						class="form-control m-input m-input--square"
+						placeholder="Comment ...">
+					<div class="input-group-append">
+						<button
+							class="btn btn-warning m-btn m-btn--icon btn-lg m-btn--icon-only"
+							type="button" onclick="doPostIssueComment()">
+							<i class="fa fa-send-o"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+				</div>
+			
+		</div>
+
+		<div class="m-portlet__body"
+			style="max-height: 350px; overflow-y: scroll;">
+
+			<div style="width: 100%; position: absolute;"></div>
+
+			<div
+				style="max-height: 100%;"
+				id="issue_comments_wrapper"></div>
+
+
+		</div>
+
+	</div>
+	<!--  end issue comments block -->
+
+
+
+
+</div>
