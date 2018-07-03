@@ -3,6 +3,7 @@ package com.omniacom.omniapp.service;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -64,6 +65,9 @@ public class OperationService {
 	@Autowired
 	SiteService siteService;
 	
+	@Autowired
+	TaskService taskService;
+	
 	public Operation addOperation(Operation operation) {
 		operation.setCreationDate(new Date());
 		return operationRepo.save(operation);
@@ -88,8 +92,10 @@ public class OperationService {
 				task.setStatus(StaticString.TASK_STATUS_ONGOING);
 				task.setService(returnService);
 				//TODO
-				task.setStartDate(new Date());
-				task.setEndDate(new Date());
+				Calendar calendar = Calendar.getInstance();
+				calendar.set(1970, 1, 1, 0, 0);
+				task.setStartDate(calendar.getTime());
+				task.setEndDate(calendar.getTime());
 				taskRepo.save(task);
 			}
 			
@@ -158,13 +164,27 @@ public class OperationService {
 	public JSONArray getOperationServices(long operationId) {
 		JSONArray jsonArray = new JSONArray();
 		Operation op = operationRepo.findOne(operationId);
-		if(op != null)
+		if(op != null && !op.getServices().isEmpty())
 		for(com.omniacom.omniapp.entity.Service s : op.getServices()) {
 			jsonArray.add(serviceService.jsonService(s));
 		}
 		return jsonArray;		
 	}
 	
+	
+	public JSONArray getOperationTasks(long operationId) {
+		JSONArray jsonArray = new JSONArray();
+		Operation op = operationRepo.findOne(operationId);
+		List<com.omniacom.omniapp.entity.Service> services = op.getServices();
+		if(op != null && !services.isEmpty())
+		for(com.omniacom.omniapp.entity.Service s : services) {
+			List<Task> tasks = s.getTasks();
+			if(!tasks.isEmpty())
+				for(Task t: tasks)
+					jsonArray.add(taskService.jsonTaskForGantt(t));
+		}
+		return jsonArray;		
+	}
 	
 	public Operation findOne(long operationId) {
 		return operationRepo.findOne(operationId);
@@ -255,6 +275,41 @@ public class OperationService {
 				.element("user", s.getUser().getFirstName() +" "+ s.getUser().getLastName())
 				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(s.getDate()))
 				.element("content", s.getContent());
+	}
+	
+	public JSONObject jsonOperationGantt(Operation op) {
+		JSONObject json = new JSONObject()
+				.element("id", op.getId())
+				.element("name", op.getName())
+				.element("startDate", new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.ENGLISH).format(op.getStartDate()))
+				.element("endDate", new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.ENGLISH).format(op.getEndDate()))
+				
+				//.element("serviceCount", getOperationServiceCount(op))
+				//.element("flag", op.getFlag())
+				//.element("project", projectService.jsonProject(op.getProject()))
+				.element("site", siteService.jsonSite(op.getSite()))
+				.element("price", getOperationPrice(op))
+				.element("currency", op.getProject().getCurrency())
+				//.element("creationDate",new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(op.getCreationDate()))
+				//.element("creationTime", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(op.getCreationDate()))
+				.element("percentage", getOperationProgress(op))
+				//.element("services", getOperationServices(op.getId()));
+				.element("tasks", getOperationTasks(op.getId()));
+//		if(op.getEndDate().before(new Date())) {
+//			if(getOperationStatus(op).equals("open"))
+//				json.accumulate("status", "Overdue");
+//			else
+//				json.accumulate("status", "Closed");
+//		}else {
+//			if(getOperationStatus(op).equals("closed"))
+//				json.accumulate("status", "Closed");
+//			if(getOperationStatus(op).equals("open"))
+//				json.accumulate("status", "Open");
+//		}
+			
+		
+		
+		return json;
 	}
 
 	

@@ -52,8 +52,20 @@ public class ServiceService {
 			if (t.getStatus().equals(StaticString.TASK_STATUS_COMPLETED))
 				complete++;
 		}
-		if (complete != 0)
+		if (tasks.size() != 0)
 			return (complete * 100 / tasks.size() + "%");
+		return "0%";
+	}
+	
+	public String getServiceOpenTasksPercentage(com.omniacom.omniapp.entity.Service service) {
+		List<Task> tasks = serviceRepo.findAllTasks(service);
+		Integer open = 0;
+		for (Task t : tasks) {
+			if (t.getStatus().equals(StaticString.TASK_STATUS_ONGOING))
+				open++;
+		}
+		if (tasks.size() != 0)
+			return (open * 100 / tasks.size() + "%");
 		return "0%";
 	}
 
@@ -61,6 +73,7 @@ public class ServiceService {
 		JSONObject jsonService = new JSONObject().element("id", service.getId()).element("name", service.getName())
 				.element("category", service.getCategory()).element("description", service.getDescription())
 				.element("price", service.getPriceHT())
+				
 				.element("creationDate",
 						//new SimpleDateFormat("dd MM YYYY", Locale.ENGLISH).format(service.getCreationDate()))
 						service.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate())
@@ -69,16 +82,23 @@ public class ServiceService {
 				.element("creationTime", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(service.getCreationDate()))
 				
 						.element("taskCount", serviceRepo.findAllTasks(service).size())
-				.element("percentage", getServicePercentageComplete(service));
+				.element("percentage", getServicePercentageComplete(service))
+				//.element("tasks", getAllServiceTasksGantt(service.getId()))
+				.element("openTasksPercentage", getServiceOpenTasksPercentage(service));
 		if(getServiceClosedDate(service)!=null)
 			jsonService.accumulate("closedDate", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(getServiceClosedDate(service)));
 		else
 			jsonService.accumulate("closedDate", "open");
 		
-		if(service.getOperation() != null)
+		if(service.getOperation() != null) {
 			jsonService.accumulate("parent", operationService.jsonOperationFormattedDates(service.getOperation()));
-		else
+			jsonService.accumulate("currency", service.getOperation().getProject().getCurrency());
+		
+		}else {
 			jsonService.accumulate("parent", "none");
+			jsonService.accumulate("currency", service.getProject().getCurrency());
+		}
+			
 
 		return jsonService;
 		
@@ -90,6 +110,17 @@ public class ServiceService {
 		if (service != null && service.getTasks().size() > 0) {
 			for (Task t : service.getTasks()) {
 				array.add(taskService.jsonTaskFormattedDates(t));
+			}
+		}
+		return array;
+	}
+	
+	public JSONArray getAllServiceTasksGantt(long serviceId) {
+		JSONArray array = new JSONArray();
+		com.omniacom.omniapp.entity.Service service = serviceRepo.findOne(serviceId);
+		if (service != null && service.getTasks().size() > 0) {
+			for (Task t : service.getTasks()) {
+				array.add(taskService.jsonTaskForGantt(t));
 			}
 		}
 		return array;

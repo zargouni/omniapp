@@ -68,6 +68,7 @@ public class TaskService {
 				task.setEstimationTime(taskCopy.getEstimationTime());
 			if(task.getStatus().equals(StaticString.TASK_STATUS_COMPLETED))
 				task.setCompletedOn(new Date());
+			task.setCompletionPercentage(taskCopy.getCompletionPercentage());
 			taskRepo.save(task);
 			return true;
 		}
@@ -79,16 +80,33 @@ public class TaskService {
 				.element("startDate", new SimpleDateFormat("dd/MM/yyyy").format(task.getStartDate()))
 				.element("endDate", new SimpleDateFormat("dd/MM/yyyy").format(task.getEndDate()))
 				.element("estimationHR", task.getEstimationRH()).element("estimationTime", task.getEstimationTime())
-				.element("priority", task.getPriority()).element("status", task.getStatus())
+				.element("completionPercentage", task.getCompletionPercentage())
 				.element("files", findAllFiles(task));
+	}
+	
+	public JSONObject jsonTaskForGantt(Task task) {
+		JSONObject jsonTask =  new JSONObject();
+		 jsonTask.element("id", task.getId()).element("name", task.getName())
+				.element("startDate", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(task.getStartDate()))
+				.element("endDate", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(task.getEndDate()))
+				.element("completionPercentage", task.getCompletionPercentage())
+				.element("users", getTaskUsersAsString(task));
+		 if(task.getStatus().equals(StaticString.TASK_STATUS_COMPLETED)) {
+			 jsonTask.accumulate("status", "1");
+		 		jsonTask.accumulate("completionDate", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(task.getCompletedOn()));
+		 }else
+			 jsonTask.accumulate("status", "0");
+		 return jsonTask;
 	}
 
 	public JSONObject jsonTaskFormattedDates(Task task) {
 		JSONObject json = new JSONObject().element("id", task.getId()).element("name", task.getName())
-				.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(new Date()))
-				.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(new Date()))
+				.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(task.getStartDate()))
+				.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(task.getEndDate()))
 				.element("estimationHR", task.getEstimationRH()).element("estimationTime", task.getEstimationTime())
-				.element("priority", task.getPriority()).element("status", task.getStatus());
+				.element("priority", task.getPriority()).element("status", task.getStatus())
+				.element("completionPercentage", task.getCompletionPercentage())
+				.element("users", getTaskUsersAsString(task));
 		if(task.getCompletedOn() != null)
 			json.accumulate("completedOn", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(task.getCompletedOn()));
 		else
@@ -108,6 +126,14 @@ public class TaskService {
 			return new JSONObject().element("service", task.getService().getName()).element("operation", "none")
 					.element("project", task.getService().getProject().getName())
 					.element("project_id", task.getService().getProject().getId());
+	}
+	
+	public String getTaskUsersAsString(Task task) {
+		String str = "";
+		for(User u :taskRepo.findAllUsers(task)) {
+			str += u.getFirstName()+" "+u.getLastName()+"  ";
+		}
+		return str;
 	}
 
 	public boolean addOneOwner(Task task, User user) {

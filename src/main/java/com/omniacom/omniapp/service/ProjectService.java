@@ -44,6 +44,9 @@ public class ProjectService {
 	@Autowired
 	OperationService operationService;
 
+	@Autowired
+	TaskService taskService;
+	
 	private Project currentProject;
 
 	public Project addProject(Project project) {
@@ -401,6 +404,15 @@ public class ProjectService {
 
 		}
 		return events;
+	}
+	
+	public JSONArray getGanttContent(Project project) {
+		JSONArray json = new JSONArray();
+		List<Operation> operations = projectRepo.findAllOperations(project);
+		for(Operation op : operations) {
+			json.add(operationService.jsonOperationGantt(op));
+		}
+		return json;
 	}
 
 	public List<Project> getUnsyncProjects() {

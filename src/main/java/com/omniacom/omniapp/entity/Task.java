@@ -27,6 +27,7 @@ public class Task implements Serializable {
 	private String name;
 	private String priority;
 	private String status;
+	private String completionPercentage = "0";
 	private Date startDate;
 	private Date endDate;
 	private Date creationDate;
@@ -267,6 +268,24 @@ public class Task implements Serializable {
 	 */
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}
+
+
+
+	/**
+	 * @return the completionPercentage
+	 */
+	public String getCompletionPercentage() {
+		return completionPercentage;
+	}
+
+
+
+	/**
+	 * @param completionPercentage the completionPercentage to set
+	 */
+	public void setCompletionPercentage(String completionPercentage) {
+		this.completionPercentage = completionPercentage;
 	}
 	
 

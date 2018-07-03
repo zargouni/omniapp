@@ -71,18 +71,28 @@ var DatatableServiceTasksJsonRemote = function () {
 				field: "name",
 				title: "Task",
 				sortable: true,
-				width: 200,
+				width: 250,
 				template: function(row) {
-					return '<a onclick="toggleTaskFragment('+ row.id +')">'+row.name + '</a>';
+					return '<a href="#" style="font-weight: 500;" onclick="toggleTaskFragment('+ row.id +')">'+row.name + '</a>';
 				}
 			}, {
+				field: "users",
+				title: "Assignee",
+				sortable: true,
+				width: 100,
+				template: function(row) {
+					if(row.users != "")
+						return '<span style="font-weight: 400;">'+row.users + '</span>';
+					return '<span style="font-weight: 400;">Unassigned</span>';
+				}
+			},{
 		        field: 'status',
 		        title: 'Status',
 		        width: 100,
 		        template: function(row) {
 		           var status = {
-		              'COMPLETED': {'title': 'Closed', 'class': 'm-badge--success'},
-		              'ONGOING': {'title': 'Open', 'class': ' m-badge--danger'},
+		              'COMPLETED': {'title': 'Closed', 'class': 'm-badge--danger'},
+		              'ONGOING': {'title': 'Open', 'class': ' m-badge--success'},
 		           };
 		           return '<span class="m-badge ' + status[row.status].class + ' m-badge--wide">' + status[row.status].title + '</span>';
 		         },
@@ -92,7 +102,10 @@ var DatatableServiceTasksJsonRemote = function () {
 				type: 'date',
 				format: 'DD MMMM YYYY',
 				sortable: true,
-				width: 100
+				width: 100,
+				template: function(row){
+					return '<span style="font-weight:400;font-size:14px;">'+row.startDate+'</span>'
+				}
 			}, {
 				field: "endDate",
 				title: "Due Date",
@@ -100,7 +113,10 @@ var DatatableServiceTasksJsonRemote = function () {
 				format: 'DD MMMM YYYY',
 				sortable: true,
 				width: 100,
-				responsive: {visible: 'lg'}
+				responsive: {visible: 'lg'},
+				template: function(row){
+					return '<span style="font-weight:400;font-size:14px;">'+row.endDate+'</span>'
+				}
 			},{
 				field: "completedOn",
 				title: "Completed On",
@@ -110,25 +126,42 @@ var DatatableServiceTasksJsonRemote = function () {
 				width: 100,
 				template: function(row) {
 			           if(row.completedOn != null)
-			        	   return row.completedOn;
-			           return 'None';
+			        	   return '<span style="font-weight:400;font-size:14px;">'+row.completedOn+'</span>';
+			           return '-';
 			         },
-			},{
-				field: "priority",
-				title: "Priority",
-				sortable: true,
-				width: 100,
-				responsive: {visible: 'lg'},
-				template: function(row) {
-			           var status = {
-			        	  'none': {'title': 'None', 'class': 'm-badge--metal'},
-			              'low': {'title': 'Low', 'class': 'm-badge--metal'},
-			              'medium': {'title': 'Medium', 'class': ' m-badge--brand'},
-			              'high': {'title': 'High', 'class': ' m-badge--danger'},
-			           };
-			           return '<span class="m-badge ' + status[row.priority].class + ' m-badge--wide">' + status[row.priority].title + '</span>';
-			         },
-			}
+		},
+		{
+            field: 'completionPercentage',
+            title: 'Progress',
+            // sortable: 'asc', // default sort
+            filterable: false, // disable or enable filtering
+            width: 200,
+            // basic templating support for column rendering,
+            template: function(row) {
+          // callback function support for column rendering
+          	  return '<div style="width:200px !important;" class="progress m-progress--sm">'
+          	  +'<div class="progress-bar m--bg-success" role="progressbar" style="width: '+row.completionPercentage+'%;" aria-valuemin="0" aria-valuemax="100"></div>'
+          	  +'</div>'
+          	  +'<span style="font-weight:600;font-size:12px;float:right;" class="m-widget4__number m--font-info">'+row.completionPercentage+'%</span>'
+          	  ;
+            },
+          }
+		//{
+//				field: "priority",
+//				title: "Priority",
+//				sortable: true,
+//				width: 100,
+//				responsive: {visible: 'lg'},
+//				template: function(row) {
+//			           var status = {
+//			        	  'none': {'title': 'None', 'class': 'm-badge--metal'},
+//			              'low': {'title': 'Low', 'class': 'm-badge--metal'},
+//			              'medium': {'title': 'Medium', 'class': ' m-badge--brand'},
+//			              'high': {'title': 'High', 'class': ' m-badge--danger'},
+//			           };
+//			           return '<span class="m-badge ' + status[row.priority].class + ' m-badge--wide">' + status[row.priority].title + '</span>';
+//			         },
+//			}
 //			, {
 //				field: "Actions",
 //				width: 60,

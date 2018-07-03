@@ -1,6 +1,9 @@
 
 <div id="dashboard-fragment" style="display: none;"
 	th:fragment="fragment-dashboard" >
+	
+	
+	
 	<div class="m-content">
 <div class="m-portlet">
 	<div class="m-portlet__body  m-portlet__body--no-padding">
@@ -163,9 +166,70 @@
 					class="fa fa-compress"></i></a>
 
 			</div>
-			'
+			
 
 			<div class="sites_map" id="dashboard_map"></div>
+		</div>
+	</div>
+	
+	<div class="m-portlet">
+		<div class="m-portlet__head">
+			<div class="m-portlet__head-caption">
+				<div class="m-portlet__head-title">
+					<span class="m-portlet__head-icon"> <i
+						class="flaticon-analytics"></i>
+					</span>
+					<h3 class="m-portlet__head-text">Gantt Chart</h3>
+				</div>
+			</div>
+
+
+		</div>
+		<div class="m-portlet__body"
+			style="width: 100%; height: 100%; position: relative;">
+			
+
+			<div style="position:relative" class="gantt" id="GanttChartDIV"></div>
+			<div id="gantt_empty" class="m-widget24"
+										style="display: none;">
+										<div class="m-widget24__item">
+											<div>
+												<div style="display: block; vertical-align: middle;">
+
+													<table width="100%" align="center" border="0"
+														cellpadding="0" cellspacing="0">
+														<tbody>
+															<tr>
+																<td align="center"><div
+																		class="emptydashboardbox omnia fonticon40">
+
+																		<div class="m-demo-icon__preview">
+																			<i style="font-size: 40px;" class="flaticon-analytics"></i>
+																		</div>
+																	</div></td>
+															</tr>
+															<tr>
+																<td align="center" height="110px">
+																	<div>
+																		<span class="col777 pt12 lh25">This project has no operations yet to build a Gantt chart
+																			. Add operations, services and tasks to populate it</span>
+																	</div>
+																</td>
+															</tr>
+<!-- 															<tr> -->
+<!-- 																<td align="center"><button -->
+<!-- 																		th:if="${sessionUser.id == selectedProject.owner.id}" -->
+<!-- 																		class="btn btn-primary btn-sm operation_add_new_service">Add -->
+<!-- 																		new service</button></td> -->
+<!-- 															</tr> -->
+														</tbody>
+													</table>
+												</div>
+											</div>
+
+
+										</div>
+									</div>
 		</div>
 	</div>
 	</div>

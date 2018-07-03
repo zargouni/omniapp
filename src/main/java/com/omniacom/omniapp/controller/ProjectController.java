@@ -115,7 +115,12 @@ public class ProjectController {
 		model.addAttribute("ServiceTasksMap", projectService.getMapServiceTasks(projectService.getCurrentProject()));
 
 	}
-
+	
+	@GetMapping("/get-project-gantt")
+	public @ResponseBody JSONArray getProjectGantt(@RequestParam("id") Project project) {
+		return projectService.getGanttContent(project);
+	}
+	
 	@GetMapping("/get-project-feed")
 	public @ResponseBody Map<LocalDate, JSONArray> getProjectFeed(@RequestParam("id") Project project) {
 		lastRefreshDateTime = new Date();

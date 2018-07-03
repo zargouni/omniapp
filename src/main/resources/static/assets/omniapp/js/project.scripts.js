@@ -80,17 +80,17 @@ function doUpdateIssue(issueId) {
 	var severity = $('#issue_severity_select').val();
 	var description = $('#issue_description').val();
 	var endDate = $('#issue_end_date_select').val();
-//	var operation = $('#issue_operation')
-//	var estimationHR = $('#task_estimation_hr_input').val();
-//	var estimationTime = $('#task_estimation_days_input').val();
-//	var service = $('#service_fragment_selected_service_id').val();
+// var operation = $('#issue_operation')
+// var estimationHR = $('#task_estimation_hr_input').val();
+// var estimationTime = $('#task_estimation_days_input').val();
+// var service = $('#service_fragment_selected_service_id').val();
 
 	var nameError = $('#issue_fragment_name_error');
 	var descriptionError = $('#issue_fragment_description_error');
 	var EndDateError = $('#issue_fragment_endDate_error');
 
 	nameError.hide('fast');
-//	taskStartDateError.hide('fast');
+// taskStartDateError.hide('fast');
 	EndDateError.hide('fast');
 	descriptionError.hide('fast');
 
@@ -103,20 +103,20 @@ function doUpdateIssue(issueId) {
 					data : "id=" + issueId + "&name=" + name + "&status=" + status
 							+ "&severity=" + severity + "&endDate="
 							+ endDate + "&description=" + description
-//							+ "&operationId="
-//							+ operation
+// + "&operationId="
+// + operation
 							,
 					success : function(response) {
 						// we have the response
 						if (response.status == "SUCCESS") {
 							toastr.success("Issue updated successfully",
 									"Well done!");
-							//if (response.result != 'undefined') {
+							// if (response.result != 'undefined') {
 								doUpdateIssueOwners(issueId);
 								populateIssueFragmentDetails(issueId);
 								$('#issues_datatable').mDatatable(
 										'reload');
-							//}
+							// }
 						} else {
 							
 								toastr.error("Couldn't update Issue", "Error");
@@ -176,9 +176,9 @@ function doUpdateIssueOwners(issueId) {
 function populateIssueFragmentDetails(issueId) {
 	
 	
-//	$('#task_start_date_select').datepicker({
-//		format : 'dd/mm/yyyy'
-//	});
+// $('#task_start_date_select').datepicker({
+// format : 'dd/mm/yyyy'
+// });
 	$('#issue_end_date_select').datepicker({
 		format : 'dd/mm/yyyy'
 	});
@@ -199,10 +199,10 @@ function populateIssueFragmentDetails(issueId) {
 			$('#issue_description').val(response.description);
 			
 
-			//$('#task_start_date_select').val(response.startDate);
+			// $('#task_start_date_select').val(response.startDate);
 			$('#issue_end_date_select').val(response.endDate);
-//			$('#task_estimation_hr_input').val(response.estimationHR);
-//			$('#task_estimation_days_input').val(response.estimationTime);
+// $('#task_estimation_hr_input').val(response.estimationHR);
+// $('#task_estimation_days_input').val(response.estimationTime);
 			toggleReadOnlyModeIssue();
 			for(i=0 ; i < response.files.length ; i++){
 				html_text += '<div><div class="row">'
@@ -244,7 +244,7 @@ function populateIssueParents(issueId) {
 		success : function(response) {
 			$('#issue_fragment_operation').html(response.operation);
 			$('#issue_fragment_project').html(response.project);
-//			$('#issue_operation').val(response.operation_id);
+// $('#issue_operation').val(response.operation_id);
 		},
 		error : function(e) {
 			alert('Error: Issue Parents ' + e);
@@ -1546,9 +1546,10 @@ function populateServicesTabOperationFragment(operationId) {
 									+ '</span>'
 									+ '</div>'
 									+ '<div class="m-widget4__info">'
-									//+ '<a href="#" onclick="toggleServiceFragment('
-									//+ response[i].id
-									//+ ')">'
+									// + '<a href="#"
+									// onclick="toggleServiceFragment('
+									// + response[i].id
+									// + ')">'
 									+ '<span class="m-widget4__text">'
 									+ response[i].name
 									+ ' <span class="m-widget4__number m--font-info"> ('
@@ -1558,7 +1559,7 @@ function populateServicesTabOperationFragment(operationId) {
 									+ '<span style="font-size:11px;">created on: <span style="color: #36a3f7;">'
 									+ response[i].formattedCreationDate
 									+ '</span></span>'
-									//+ '</a>'
+									// + '</a>'
 									+ '</div>'
 									+ '<div class="m-widget4__ext">'
 									+ '<div style="width:200px !important;" class="progress m-progress--sm">'
@@ -1681,6 +1682,9 @@ function populateTaskFragmentDetails(taskId) {
 			$('#task_end_date_select').val(response.endDate);
 			$('#task_estimation_hr_input').val(response.estimationHR);
 			$('#task_estimation_days_input').val(response.estimationTime);
+			$('#task_completion_percentage').val(response.completionPercentage);
+			
+			
 			toggleReadOnlyModeTask();
 			for(i=0 ; i < response.files.length ; i++){
 				html_text += '<div><div class="row">'
@@ -1862,6 +1866,7 @@ function doUpdateTask(id) {
 	var estimationHR = $('#task_estimation_hr_input').val();
 	var estimationTime = $('#task_estimation_days_input').val();
 	var service = $('#service_fragment_selected_service_id').val();
+	var completionPercentage = $('#task_completion_percentage').val();
 
 	var nameError = $('#task_fragment_name_error');
 	var taskStartDateError = $('#task_fragment_startDate_error');
@@ -1881,7 +1886,7 @@ function doUpdateTask(id) {
 							+ startDate + "&endDate=" + endDate
 							+ "&estimationRH=" + estimationHR
 							+ "&estimationTime=" + estimationTime + "&service="
-							+ service,
+							+ service+"&completionPercentage="+completionPercentage,
 					success : function(response) {
 						// we have the response
 						if (response.status == "SUCCESS") {
@@ -2001,11 +2006,13 @@ function setSelectedService(serviceId) {
 function projectDynamicContent() {
 	// projectDashboardTaskPieChart();
 	populateDashboardMap();
+	 populateGanttChart();
 	$("#dashboard-fragment").show();
 	$('#project_subheader').show();
 
 	$("#project_dashboard_toggle").on("click", function(event) {
 		$('#project_subheader').show();
+		 populateGanttChart();
 		populateDashboardMap();
 		$("#m_dynamic_content_project").children().hide();
 		// projectDashboardTaskPieChart();
@@ -2138,7 +2145,8 @@ function issueDropZone(){
 	  previewTemplate: previewTemplate,
 	  autoQueue: false, // Make sure the files aren't queued until manually
 						// added
-	  previewsContainer: "#issue_previews", // Define the container to display the
+	  previewsContainer: "#issue_previews", // Define the container to display
+											// the
 										// previews
 	  clickable: ".fileinput-button", // Define the element that should be
 										// used as click trigger to select
@@ -2186,8 +2194,50 @@ function issueDropZone(){
 	// end bootstrap dropzone
 }
 
-$(document).ready(function() {
+function populateGanttChart(){
+	 var projectId = $('#selected_project_id').val();
+	var g = new JSGantt.GanttChart(document.getElementById('GanttChartDIV'), 'day');
+
+	$.ajax({
+		type : "GET",
+		url : '/get-project-gantt',
+		data : 'id=' + projectId,
+		async : false,
+		success : function(response) {
+			if(response.length > 0){
+				for(var i = 0 ;i < response.length; i++){
+					var operation = response[i];
+						if(operation.tasks.length > 0){
+							var opId = i+1;
+							g.AddTaskItem(
+									new JSGantt.TaskItem(opId, operation.name, operation.startDate, operation.endDate,'ggroupblack','', 0,  '', operation.percentage,  1,0,1,'','','this is an Operation',g));
+							for(var j = 0; j < operation.tasks.length; j++){
+								var tId = ""+opId+(j+1);
+								var task = operation.tasks[j];
+								if(task.status == "1")
+									g.AddTaskItem(
+											new JSGantt.TaskItem(tId, task.name, task.startDate, task.endDate,'gtaskred','', 0,  task.users, task.completionPercentage,  0, opId ,0,'','','this is a Task',g));
+								else
+									g.AddTaskItem(
+											new JSGantt.TaskItem(tId, task.name, task.startDate, task.endDate,'gtaskgreen','', 0,  task.users, task.completionPercentage,  0, opId ,1,'','','this is a Task',g));
+							}	
+						}				
+				}
+				g.Draw();
+			}else{
+				$('#gantt_empty').show();
+			}
+			
+		},
+		error : function(e) {
+			alert('Error: Gantt ' + e);
+		}
+	});
 	
+
+}
+
+$(document).ready(function() {
 	
 	populateProjectDetails();
 	projectDynamicContent();

@@ -148,6 +148,9 @@ function doAddNewBoqAjax(){
 					$('#input_new_boq_start_date').val('');
 					$('#input_new_boq_end_date').val('');
 					$('#service_templates_new_boq_checkbox_list :checkbox').prop('checked', false);
+					if($('#boqs_datatable').length)
+						$('#boqs_datatable').mDatatable(
+						'reload');
 					populateSelectBoq();
 				}
 			} else {
