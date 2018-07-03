@@ -131,6 +131,7 @@ public class ProjectService {
 				.element("country", project.getCountry()).element("currency", project.getCurrency())
 				.element("percentage", getProjectProgress(project))
 				.element("unassignedTasksCount", getProjectUnassignedTasksCount(project))
+				.element("unplanifiedTasksCount", getProjectUnplanifiedTasksCount(project))
 				.element("overdueTasksCount", getProjectOverdueTasksCount(project))
 				.element("tasksCount", findTaskCount(project))
 				.element("creationDate",
@@ -140,6 +141,9 @@ public class ProjectService {
 				.element("overdueIssuesCount", getProjectOverdueIssuesCount(project));
 		return json;
 	}
+
+	private Integer getProjectUnplanifiedTasksCount(Project project) {
+		return projectRepo.findProjectUnplanifiedTasksCount(project);	}
 
 	private Integer getProjectIssuesCount(Project project) {
 		return projectRepo.findAllIssues(project).size();
@@ -211,10 +215,10 @@ public class ProjectService {
 					.element("to_be_tested", (toBeTested * 100 / issues.size()) + "%")
 					.element("closed", (closed * 100 / issues.size()) + "%");
 		} else
-			json.element("open", "None")
-			.element("in_progress", "None")
-			.element("to_be_tested", "None")
-			.element("closed", "None");
+			json.element("open", "0")
+			.element("in_progress", "0")
+			.element("to_be_tested", "0")
+			.element("closed", "0");
 		return json;
 	}
 

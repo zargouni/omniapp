@@ -119,11 +119,15 @@ public class TaskService {
 		com.omniacom.omniapp.entity.Service service = task.getService();
 		if (service.getOperation() != null)
 			return new JSONObject().element("service", task.getService().getName())
+					.element("service_id", task.getService().getId())
 					.element("operation", task.getService().getOperation().getName())
+					.element("operation_id", task.getService().getOperation().getId())
 					.element("project", task.getService().getOperation().getProject().getName())
 					.element("project_id", task.getService().getOperation().getProject().getId());
 		else
-			return new JSONObject().element("service", task.getService().getName()).element("operation", "none")
+			return new JSONObject().element("service", task.getService().getName())
+					.element("service_id", task.getService().getId())
+					.element("operation", "none")
 					.element("project", task.getService().getProject().getName())
 					.element("project_id", task.getService().getProject().getId());
 	}

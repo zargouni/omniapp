@@ -30,6 +30,8 @@ public interface ProjectRepositoryCustom {
 	
 	public Integer findProjectUnassignedTasksCount(Project project);
 	
+	public Integer findProjectUnplanifiedTasksCount(Project project);
+	
 	public Integer findProjectOverdueTasksCount(Project project);
 	
 	public Integer findProjectUnassignedIssuesCount(Project project);

@@ -1033,6 +1033,7 @@ function populateProjectDetails() {
 		async : false,
 		success : function(response) {
 			$('#unassigned_tasks').html(response.unassignedTasksCount);
+			$('#unplanified_tasks').html(response.unplanifiedTasksCount);
 			$('#overdue_tasks').html(response.overdueTasksCount);
 			$('#tasks_count').html(response.tasksCount);
 			$('#issues_count').html(response.issuesCount);	
@@ -1678,14 +1679,20 @@ function populateTaskFragmentDetails(taskId) {
 
 			$('#task_priority_select').val(response.priority);
 
-			$('#task_start_date_select').val(response.startDate);
-			$('#task_end_date_select').val(response.endDate);
+			if(response.startDate != "01/02/1970")
+				$('#task_start_date_select').val(response.startDate);
+			if(response.endDate != "01/02/1970")
+				$('#task_end_date_select').val(response.endDate);
+			
 			$('#task_estimation_hr_input').val(response.estimationHR);
 			$('#task_estimation_days_input').val(response.estimationTime);
 			$('#task_completion_percentage').val(response.completionPercentage);
 			
 			
 			toggleReadOnlyModeTask();
+			if(response.files.length == 0)
+				html_text += '<div><div class="row"><div style="margin: auto auto;" class="col-md-8">No attachments</div></div></div>';
+			else
 			for(i=0 ; i < response.files.length ; i++){
 				html_text += '<div><div class="row">'
 				+'<div class="col-md-8"><i class="fa fa-file-text"></i><a target="self" href="/attachment?id='+response.files[i].id+'"> '
@@ -1803,8 +1810,12 @@ function populateTaskParents(taskId) {
 		data : 'id=' + taskId,
 		async : false,
 		success : function(response) {
-			$('#task_fragment_service').html(response.service);
-			$('#task_fragment_operation').html(response.operation);
+			$('#task_fragment_service').html('<a style="color: white;" href="#" onclick="toggleServiceFragment('+response.service_id+')">'+response.service+'</a>');
+			if(response.operation != 'none')
+				$('#task_fragment_operation').html('<a style="color: white;" href="#" onclick="toggleOperationFragment('+response.operation_id+')">'+response.operation+'</a>');
+			else
+				$('#task_fragment_operation').html(response.operation);
+
 			$('#task_fragment_project').html(response.project);
 		},
 		error : function(e) {
@@ -2214,12 +2225,15 @@ function populateGanttChart(){
 							for(var j = 0; j < operation.tasks.length; j++){
 								var tId = ""+opId+(j+1);
 								var task = operation.tasks[j];
-								if(task.status == "1")
-									g.AddTaskItem(
-											new JSGantt.TaskItem(tId, task.name, task.startDate, task.endDate,'gtaskred','', 0,  task.users, task.completionPercentage,  0, opId ,0,'','','this is a Task',g));
-								else
-									g.AddTaskItem(
-											new JSGantt.TaskItem(tId, task.name, task.startDate, task.endDate,'gtaskgreen','', 0,  task.users, task.completionPercentage,  0, opId ,1,'','','this is a Task',g));
+								if(task.startDate != "1970-02-01 00:00" && task.endDate != "1970-02-01 00:00" ){
+									if(task.status == "1")
+										g.AddTaskItem(
+												new JSGantt.TaskItem(tId, task.name, task.startDate, task.endDate,'gtaskred','', 0,  task.users, task.completionPercentage,  0, opId ,0,'','','this is a Task',g));
+									else
+										g.AddTaskItem(
+												new JSGantt.TaskItem(tId, task.name, task.startDate, task.endDate,'gtaskgreen','', 0,  task.users, task.completionPercentage,  0, opId ,1,'','','this is a Task',g));
+								
+								}
 							}	
 						}				
 				}

@@ -175,6 +175,16 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 		return i;
 	}
 
+	@Override
+	public Integer findProjectUnplanifiedTasksCount(Project project) {
+		Query query = entityManager.createQuery("SELECT t FROM Task t WHERE ( t.service "
+				+ "IN (SELECT s FROM Service s WHERE s.operation IN (SELECT op FROM Operation op WHERE op.project.id = :param) )"
+				+ "OR t.service.project.id = :param)"
+				+ "AND (t.startDate = '1970-02-01 00:00:59' AND t.endDate = '1970-02-01 00:00:59' )")
+				.setParameter("param", project.getId());
+		return query.getResultList().size();
+	}
+
 	
 
 	

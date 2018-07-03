@@ -104,7 +104,9 @@ var DatatableServiceTasksJsonRemote = function () {
 				sortable: true,
 				width: 100,
 				template: function(row){
-					return '<span style="font-weight:400;font-size:14px;">'+row.startDate+'</span>'
+					if(row.startDate != "01 February 1970")
+						return '<span style="font-weight:400;font-size:14px;">'+row.startDate+'</span>'
+					return '<span style="font-weight:400;font-size:14px;">Not planified</span>';
 				}
 			}, {
 				field: "endDate",
@@ -115,7 +117,9 @@ var DatatableServiceTasksJsonRemote = function () {
 				width: 100,
 				responsive: {visible: 'lg'},
 				template: function(row){
-					return '<span style="font-weight:400;font-size:14px;">'+row.endDate+'</span>'
+					if(row.endDate != "01 February 1970")
+						return '<span style="font-weight:400;font-size:14px;">'+row.endDate+'</span>'
+					return '<span style="font-weight:400;font-size:14px;">Not planified</span>';
 				}
 			},{
 				field: "completedOn",

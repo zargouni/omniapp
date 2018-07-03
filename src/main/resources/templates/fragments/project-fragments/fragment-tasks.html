@@ -13,7 +13,7 @@
 								<div class="row m-row--no-padding align-items-center">
 									<div class="col">
 										<h3 class="m-widget1__title m--font-info">Total Tasks</h3>
-<!-- 										<span class="m-widget1__desc">All tasks count</span> -->
+										<!-- 										<span class="m-widget1__desc">All tasks count</span> -->
 									</div>
 									<div class="col m--align-right">
 										<span id="tasks_fragment_all_tasks_count"
@@ -33,7 +33,7 @@
 								<div class="row m-row--no-padding align-items-center">
 									<div class="col">
 										<h3 class="m-widget1__title m--font-success">Open</h3>
-<!-- 										<span class="m-widget1__desc">Open tasks percentage</span> -->
+										<!-- 										<span class="m-widget1__desc">Open tasks percentage</span> -->
 									</div>
 									<div class="col m--align-right">
 										<span id="tasks_fragment_open_tasks_percentage"
@@ -55,7 +55,7 @@
 								<div class="row m-row--no-padding align-items-center">
 									<div class="col">
 										<h3 class="m-widget1__title m--font-danger">Closed</h3>
-<!-- 										<span class="m-widget1__desc">Closed tasks percentage</span> -->
+										<!-- 										<span class="m-widget1__desc">Closed tasks percentage</span> -->
 									</div>
 									<div class="col m--align-right">
 										<span id="tasks_fragment_closed_tasks_percentage"
@@ -77,7 +77,10 @@
 				<div class="m-portlet__head">
 					<div class="m-portlet__head-caption">
 						<div class="m-portlet__head-title">
-							<h3 class="m-portlet__head-text">All Tasks</h3>
+							<span class="m-portlet__head-icon"> <i class="la la-tasks"></i>
+							</span>
+
+							<h3 class="m-portlet__head-text">Tasks</h3>
 						</div>
 					</div>
 				</div>
@@ -175,6 +178,7 @@
 												<th style="text-align: center">Status</th>
 												<th style="text-align: center">Start Date</th>
 												<th style="text-align: center">Due Date</th>
+												<th style="text-align: center">Progress</th>
 												<th style="text-align: center">Completed On</th>
 												<th style="text-align: center">Priority</th>
 											</tr>
@@ -182,16 +186,17 @@
 										<tbody>
 											<tr th:each="task : ${element.value}">
 												<th scope="row"></th>
-												<td width="30%"><a style="font-weight: 500;cursor:pointer;"
+												<td width="30%"><a
+													style="font-weight: 500; cursor: pointer;"
 													th:onclick="'javascript:toggleTaskFragment(' + ${task.id} + ')'"
 													th:text="${task.name}">task name</a></td>
 
-												<td style="text-align: center">
-												<span th:if="${task.users.empty}">Unassigned</span>
-												<span style="font-weight: 500;" th:each="user : ${task.users}" th:text="|${user.firstName} ${user.lastName} |">
-												</span>
-												</td>
-													
+												<td style="text-align: center"><span
+													th:if="${task.users.empty}" style="font-weight: 400;">Unassigned</span>
+													<span style="font-weight: 400;"
+													th:each="user : ${task.users}"
+													th:text="|${user.firstName} ${user.lastName} |"> </span></td>
+
 												<td style="text-align: center"
 													th:if="${task.status == 'ONGOING'}"><span
 													class="m-badge m-badge--success m-badge--wide">Open</span></td>
@@ -200,15 +205,38 @@
 													class="m-badge m-badge--danger m-badge--wide">Closed</span>
 												</td>
 
-												<td style="font-weight: 500;text-align: center" th:text="${#dates.format(task.startDate, 'dd MMMM yyyy')}">start
+												<td
+													th:if="${#dates.format(task.startDate, 'dd MM yyyy') != '01 02 1970'}"
+													style="font-weight: 400; text-align: center"
+													th:text="${#dates.format(task.startDate, 'dd-MM-yyyy')}">start
 													date</td>
-												<td style="font-weight: 500;text-align: center" th:text="${#dates.format(task.endDate, 'dd MMMM yyyy')}">end
+
+												<td
+													th:if="${#dates.format(task.startDate, 'dd MM yyyy') == '01 02 1970'}"
+													style="font-weight: 400; text-align: center">Not
+													planified</td>
+												<td
+													th:if="${#dates.format(task.endDate, 'dd MM yyyy') != '01 02 1970'}"
+													style="font-weight: 400; text-align: center"
+													th:text="${#dates.format(task.endDate, 'dd-MM-yyyy')}">end
 													date</td>
-													
-													<td style="font-weight: 500;text-align: center" th:if="${task.completedOn != null}" th:text="${#dates.format(task.completedOn, 'dd MMMM yyyy')}">completed
+
+												<td
+													th:if="${#dates.format(task.endDate, 'dd MM yyyy') == '01 02 1970'}"
+													style="font-weight: 400; text-align: center">Not
+													planified</td>
+
+												<td class="m--font-success"
+													style="font-weight: 400; text-align: center"
+													th:text="${task.completionPercentage + '%'}">progress</td>
+
+												<td style="font-weight: 400; text-align: center"
+													th:if="${task.completedOn != null}"
+													th:text="${#dates.format(task.completedOn, 'dd MMMM yyyy')}">completed
 													date</td>
-													
-													<td style="font-weight: 500;text-align: center" th:if="${task.completedOn == null}">None</td>
+
+												<td style="font-weight: 400; text-align: center"
+													th:if="${task.completedOn == null}">None</td>
 
 												<td style="text-align: center"
 													th:if="${task.priority == 'none'}"><span
