@@ -71,11 +71,11 @@ var projectsDatatableRemoteAjax = function() {
           title: 'Project Name',
           // sortable: 'asc', // default sort
           filterable: false, // disable or enable filtering
-          width: 200,
+          width: 350,
           // basic templating support for column rendering,
           template: function(row) {
         // callback function support for column rendering
-        	  return '<a href="/project?id='+row.id+'">'+row.name + '</a>';
+        	  return '<a style="font-weight: 500;" href="/project?id='+row.id+'">'+row.name + '</a>';
           },
         }, {
           field: 'client',

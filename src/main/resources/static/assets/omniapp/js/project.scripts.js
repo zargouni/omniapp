@@ -614,85 +614,94 @@ function populateProjectFeed(){
 	var projectId = $('#selected_project_id').val();
 	var feedWrapper = $(".m-timeline-1__items");
 	feedWrapper.html("");
-	
-	$.ajax({
-		type : "GET",
-		url : '/get-project-feed',
-		data : 'id=' + projectId,
-		async : false,
-		success : function(response) {
-			var i = 0;
-			 var operations = [];
-			$.each(response, function(date, val) {
-				
-				var dateWrapper = "";
-				var alignContent = "";
-				var contentWrapper = "";
-				var firstItem = "";
-				var formattedDate = moment(date).format("DD MMMM YYYY");
-				if(i == 0){
-					firstItem = "m-timeline-1__item--first";
-				}
-				if(i % 2 == 0){
-					alignContent = "right";
-				}else{
-					alignContent = "left";
-				}
-	
-
-				
-				
-				dateWrapper = '<div class="m-timeline-1__item m-timeline-1__item--'+alignContent+' '+firstItem+'">'
-					+'<div style="background:#36a3f7; " class="m-timeline-1__item-circle">'
-					+'	<i class="fa fa-circle m--font-light"></i>'
-					+'</div>'
-					+'<div class="m-timeline-1__item-arrow"></div>'
-					+'<span style="z-index:1;margin-top:2%;color:#fff;" class="m-timeline-1__item-time m-badge m-badge--info m-badge--wide">'+formattedDate+'</span>'
-					+'<div id="content_'+date+'" class="m-timeline-1__item-content">'
-					
-					+'</div>'
-					+'</div>';
-				feedWrapper.append(dateWrapper);
-				 
-				
-					  
-					  for (var j = 0; j < val.length; j++) {
-						  var content = "";
-						  content = getDetailedActivityUI(val[j],val[j].type,val[j].activityType)
-						 
-						  
-						  
-						  contentWrapper += content;
-						  if(val[j].type == "operation"){
-							  operations.push(val[j]);
-						  }
-						  
-						  
-					  }
-					  $("#content_"+date).append(contentWrapper);
-					  
-					 
-					  
-					  i++;
-					  
-					  
-					  
-					  
-				});
+	 $('.loader-wrapper').show();
+	 
+	 setTimeout(function(){
 			
-			 for (var cpt = 0; cpt < operations.length; cpt++){
-				  var object = operations[cpt];
-				 
-					  while(getFeedMapUI(object) == false){
-						  getFeedMapUI(object);
+		 $.ajax({
+				type : "GET",
+				url : '/get-project-feed',
+				data : 'id=' + projectId,
+				async : false,
+				success : function(response) {
+					var i = 0;
+					 var operations = [];
+					$.each(response, function(date, val) {
+						
+						var dateWrapper = "";
+						var alignContent = "";
+						var contentWrapper = "";
+						var firstItem = "";
+						var formattedDate = moment(date).format("DD MMMM YYYY");
+						if(i == 0){
+							firstItem = "m-timeline-1__item--first";
+						}
+						if(i % 2 == 0){
+							alignContent = "right";
+						}else{
+							alignContent = "left";
+						}
+			
+
+						
+						
+						dateWrapper = '<div class="m-timeline-1__item m-timeline-1__item--'+alignContent+' '+firstItem+'">'
+							+'<div style="background:#36a3f7; " class="m-timeline-1__item-circle">'
+							+'	<i class="fa fa-circle m--font-light"></i>'
+							+'</div>'
+							+'<div class="m-timeline-1__item-arrow"></div>'
+							+'<span style="z-index:1;margin-top:2%;color:#fff;" class="m-timeline-1__item-time m-badge m-badge--info m-badge--wide">'+formattedDate+'</span>'
+							+'<div id="content_'+date+'" class="m-timeline-1__item-content">'
+							
+							+'</div>'
+							+'</div>';
+						feedWrapper.append(dateWrapper);
+						 
+						
+							  
+							  for (var j = 0; j < val.length; j++) {
+								  var content = "";
+								  content = getDetailedActivityUI(val[j],val[j].type,val[j].activityType)
+								 
+								  
+								  
+								  contentWrapper += content;
+								  if(val[j].type == "operation"){
+									  operations.push(val[j]);
+								  }
+								  
+								  
+							  }
+							  $("#content_"+date).append(contentWrapper);
+							  
+							 
+							  
+							  i++;
+							  
+							  
+							  
+							  
+						});
+					
+					 for (var cpt = 0; cpt < operations.length; cpt++){
+						  var object = operations[cpt];
+						 
+							  while(getFeedMapUI(object) == false){
+								  getFeedMapUI(object);
+							  }
+						 
 					  }
-				 
-			  }
-		},
-		error : function(e) {
-			alert('Error: project feed ' + e);
-		}
-	});
+				},
+				error : function(e) {
+					alert('Error: project feed ' + e);
+				}
+			});
+		 
+	        $('.loader-wrapper').hide();
+	       
+	    },500);
+	 
+	
 }
 
 function getParentSpan(parent){
@@ -1676,7 +1685,6 @@ function populateTaskFragmentDetails(taskId) {
 			$('#portlet_task_name').html(response.name);
 			$('#task_name_input').val(response.name);
 			$('#task_status_select').val(response.status);
-
 			$('#task_priority_select').val(response.priority);
 
 			if(response.startDate != "01/02/1970")
@@ -1715,6 +1723,9 @@ function populateTaskFragmentDetails(taskId) {
 			alert('Error: Task ' + e);
 		}
 	});
+	
+	$('#task_status_select').selectpicker('refresh');
+	$('#task_priority_select').selectpicker('refresh');
 	
 	populateTaskParents(taskId);
 	populateTaskOwnerSelect(taskId);
@@ -1776,7 +1787,12 @@ function externalTaskLoad() {
 	var WindowLocation = window.location.hash;
     
     	var taskId = WindowLocation.substr(WindowLocation.lastIndexOf("=")+1);
+    	 //$('.loader-wrapper').show();
+    	 
+    	 //setTimeout(function(){
     	toggleTaskFragment(taskId);
+    	 //$('.loader-wrapper').hide();
+    	 //},500);
     
 }
 
@@ -1810,7 +1826,7 @@ function populateTaskParents(taskId) {
 		data : 'id=' + taskId,
 		async : false,
 		success : function(response) {
-			$('#task_fragment_service').html('<a style="color: white;" href="#" onclick="toggleServiceFragment('+response.service_id+')">'+response.service+'</a>');
+			$('#task_fragment_service').html('<a style="color: white;" href="#" onclick="toggleServiceFragment('+response.service_id+')">'+response.service+'</a><input type="hidden" value="'+response.service_id+'" id="task_parent_service_id" />');
 			if(response.operation != 'none')
 				$('#task_fragment_operation').html('<a style="color: white;" href="#" onclick="toggleOperationFragment('+response.operation_id+')">'+response.operation+'</a>');
 			else
@@ -1876,7 +1892,7 @@ function doUpdateTask(id) {
 	var endDate = $('#task_end_date_select').val();
 	var estimationHR = $('#task_estimation_hr_input').val();
 	var estimationTime = $('#task_estimation_days_input').val();
-	var service = $('#service_fragment_selected_service_id').val();
+	var service = $('#task_parent_service_id').val();
 	var completionPercentage = $('#task_completion_percentage').val();
 
 	var nameError = $('#task_fragment_name_error');
@@ -2015,61 +2031,77 @@ function setSelectedService(serviceId) {
 }
 
 function projectDynamicContent() {
-	// projectDashboardTaskPieChart();
-	populateDashboardMap();
-	 populateGanttChart();
-	$("#dashboard-fragment").show();
-	$('#project_subheader').show();
+	goToDashboard();
 
 	$("#project_dashboard_toggle").on("click", function(event) {
-		$('#project_subheader').show();
-		 populateGanttChart();
-		populateDashboardMap();
-		$("#m_dynamic_content_project").children().hide();
-		// projectDashboardTaskPieChart();
-		$("#dashboard-fragment").show();
+		goToDashboard();
 	});
 
 	$("#project_feed_toggle").on("click", function() {
-		populateProjectFeed();
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		$("#feed-fragment").show();
-
+		goToProjectFeed();
 	});
 
 	$("#project_tasks_toggle").on("click", function() {
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		populateTasksFragmentWidget();
-		$("#tasks-fragment").show();
-
+		goToProjectTasks();
 	});
 
 	$("#project_operations_toggle").on("click", function() {
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		DatatableOperationsJsonRemote.init();
-		$("#operations-fragment").show();
+		goToProjectOperations();
 	});
 
 	$("#project_issues_toggle").on("click", function() {
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		populateIssuesFragmentWidget();
-		DatatableIssuesJsonRemote.init();
-		$("#issues-fragment").show();
+		goToProjectIssues();
 	});
 
 	$("#project_calendar_toggle").on("click", function() {
-		$('#project_subheader').show();
-		$("#m_dynamic_content_project").children().hide();
-		
-		populateProjectCalendar();
-		
-		$("#calendar-fragment").show();
+		goToProjectCalendar();
 	});
 
+}
+
+function goToDashboard(){
+	$('#project_subheader').show();
+	 populateGanttChart();
+	populateDashboardMap();
+	$("#m_dynamic_content_project").children().hide();
+	// projectDashboardTaskPieChart();
+	$("#dashboard-fragment").show();
+}
+
+function goToProjectFeed(){
+	populateProjectFeed();
+	$('#project_subheader').show();
+	$("#m_dynamic_content_project").children().hide();
+	$("#feed-fragment").show();
+}
+
+function goToProjectTasks(){
+	$('#project_subheader').show();
+	$("#m_dynamic_content_project").children().hide();
+	populateTasksFragmentWidget();
+	$("#tasks-fragment").show();
+}
+
+function goToProjectIssues(){
+	$('#project_subheader').show();
+	$("#m_dynamic_content_project").children().hide();
+	populateIssuesFragmentWidget();
+	DatatableIssuesJsonRemote.init();
+	$("#issues-fragment").show();
+}
+
+function goToProjectOperations(){
+	$('#project_subheader').show();
+	$("#m_dynamic_content_project").children().hide();
+	DatatableOperationsJsonRemote.init();
+	$("#operations-fragment").show();
+}
+
+function goToProjectCalendar(){
+	$('#project_subheader').show();
+	$("#m_dynamic_content_project").children().hide();
+	populateProjectCalendar();
+	$("#calendar-fragment").show();
 }
 
 function taskDropZone(){

@@ -1292,6 +1292,32 @@ $(document).ready(function() {
 			
 	 }
 	 
+	 if (window.location.hash.indexOf('#feed') == 0){
+		 	goToProjectFeed();
+			
+	 }
+	 
+	 if (window.location.hash.indexOf('#tasks') == 0){
+			goToProjectTasks();
+			
+	 }
+	 
+	 if (window.location.hash.indexOf('#issues') == 0){
+			goToProjectIssues();
+			
+	 }
+	 
+	 if (window.location.hash.indexOf('#operations') == 0){
+			goToProjectOperations();
+			
+	 }
+	 
+	 if (window.location.hash.indexOf('#calendar') == 0){
+			goToProjectCalendar();
+			
+	 }
+	 
+	 
 	 if (window.location.hash.indexOf('#issue=') == 0){
 			externalIssueLoad();
 			

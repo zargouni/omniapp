@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
@@ -31,6 +32,12 @@ public class UserService implements UserDetailsService {
 	
 	@Autowired
 	ProjectService projectService;
+	
+	@Autowired
+	TaskService taskService;
+	
+	@Autowired
+	IssueService issueService;
 
 	@Autowired
 	public UserService(UserRepository userRepo) {
@@ -124,5 +131,29 @@ public class UserService implements UserDetailsService {
 	 public boolean addContributingUserToProject(User user,Project project) {
 		 return userRepo.addContributingUserToProject(user, project);
 	 }
+
+	public JSONArray getAllUserTasksJson(long userId) {
+		JSONArray array = new JSONArray();
+		User user = userRepo.findOne(userId);
+		List<Task> tasks = userRepo.findAllTasks(user);
+		if (user != null && tasks.size() > 0) {
+			for (Task t : tasks) {
+				array.add(taskService.jsonTaskFormattedDates(t));
+			}
+		}
+		return array;
+	}
+
+	public JSONArray getAllUserIssuesJson(long userId) {
+		JSONArray array = new JSONArray();
+		User user = userRepo.findOne(userId);
+		List<Issue> issues = userRepo.findAllIssues(user);
+		if (user != null && issues.size() > 0) {
+			for (Issue issue: issues) {
+				array.add(issueService.jsonIssueFormattedDates(issue));
+			}
+		}
+		return array;
+	}
 
 }

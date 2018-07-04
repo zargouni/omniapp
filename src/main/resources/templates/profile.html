@@ -12,6 +12,8 @@
 <body
 	class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default">
 
+
+
 	<!-- begin:: Page -->
 	<div layout:fragment="content"
 		class="m-grid m-grid--hor m-grid--root m-page">
@@ -22,6 +24,9 @@
 				<div id="loader"></div>
 			</div>
 
+			<!-- BEGIN: Profile user-->
+			<input type="hidden" id="profile_user_id" />
+			<!-- END: profile user -->
 
 
 			<div class="m-grid__item m-grid__item--fluid m-wrapper">
@@ -30,62 +35,7 @@
 				<!-- begin::Content -->
 				<div class="m-content">
 					<!-- BEGIN: Subheader -->
-<!-- 					<div class="m-subheader "> -->
-<!-- 						<div class="d-flex align-items-center"> -->
-<!-- 							<div class="mr-auto"> -->
-<!-- 								<h3 class="m-subheader__title ">My Profile</h3> -->
-<!-- 							</div> -->
-<!-- 							<div> -->
-<!-- 								<div -->
-<!-- 									class="m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push" -->
-<!-- 									data-dropdown-toggle="hover" aria-expanded="true"> -->
-<!-- 									<a href="#" -->
-<!-- 										class="m-portlet__nav-link btn btn-lg btn-secondary  m-btn m-btn--outline-2x m-btn--air m-btn--icon m-btn--icon-only m-btn--pill  m-dropdown__toggle"> -->
-<!-- 										<i class="la la-plus m--hide"></i> <i class="la la-ellipsis-h"></i> -->
-<!-- 									</a> -->
-<!-- 									<div class="m-dropdown__wrapper"> -->
-<!-- 										<span -->
-<!-- 											class="m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust"></span> -->
-<!-- 										<div class="m-dropdown__inner"> -->
-<!-- 											<div class="m-dropdown__body"> -->
-<!-- 												<div class="m-dropdown__content"> -->
-<!-- 													<ul class="m-nav"> -->
-<!-- 														<li class="m-nav__section m-nav__section--first m--hide"> -->
-<!-- 															<span class="m-nav__section-text">Quick Actions</span> -->
-<!-- 														</li> -->
-<!-- 														<li class="m-nav__item"><a href="#" -->
-<!-- 															class="m-nav__link"> <i -->
-<!-- 																class="m-nav__link-icon flaticon-share"></i> <span -->
-<!-- 																class="m-nav__link-text">Activity</span> -->
-<!-- 														</a></li> -->
-<!-- 														<li class="m-nav__item"><a href="#" -->
-<!-- 															class="m-nav__link"> <i -->
-<!-- 																class="m-nav__link-icon flaticon-chat-1"></i> <span -->
-<!-- 																class="m-nav__link-text">Messages</span> -->
-<!-- 														</a></li> -->
-<!-- 														<li class="m-nav__item"><a href="#" -->
-<!-- 															class="m-nav__link"> <i -->
-<!-- 																class="m-nav__link-icon flaticon-info"></i> <span -->
-<!-- 																class="m-nav__link-text">FAQ</span> -->
-<!-- 														</a></li> -->
-<!-- 														<li class="m-nav__item"><a href="#" -->
-<!-- 															class="m-nav__link"> <i -->
-<!-- 																class="m-nav__link-icon flaticon-lifebuoy"></i> <span -->
-<!-- 																class="m-nav__link-text">Support</span> -->
-<!-- 														</a></li> -->
-<!-- 														<li class="m-nav__separator m-nav__separator--fit"></li> -->
-<!-- 														<li class="m-nav__item"><a href="#" -->
-<!-- 															class="btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm">Submit</a> -->
-<!-- 														</li> -->
-<!-- 													</ul> -->
-<!-- 												</div> -->
-<!-- 											</div> -->
-<!-- 										</div> -->
-<!-- 									</div> -->
-<!-- 								</div> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 					</div> -->
+
 					<!-- END: Subheader -->
 					<div class="m-content">
 						<div class="row">
@@ -101,8 +51,11 @@
 												</div>
 											</div>
 											<div class="m-card-profile__details">
-												<span th:text="${profileUser.firstName + ' ' + profileUser.lastName}" class="m-card-profile__name">Mark Andre</span> 
-												<span th:text="${profileUser.email}" class="m-card-profile__email m-link">mark.andre@gmail.com</span>
+												<span
+													th:text="${profileUser.firstName + ' ' + profileUser.lastName}"
+													class="m-card-profile__name">Mark Andre</span> <span
+													th:text="${profileUser.email}"
+													class="m-card-profile__email m-link">mark.andre@gmail.com</span>
 											</div>
 										</div>
 										<ul class="m-nav m-nav--hover-bg m-portlet-fit--sides">
@@ -209,10 +162,10 @@
 												</a></li>
 												<li class="nav-item m-tabs__item"><a
 													class="nav-link m-tabs__link" data-toggle="tab"
-													href="#m_user_profile_tab_2" role="tab"> Messages </a></li>
+													href="#m_user_profile_tab_2" role="tab"> Tasks </a></li>
 												<li class="nav-item m-tabs__item"><a
 													class="nav-link m-tabs__link" data-toggle="tab"
-													href="#m_user_profile_tab_3" role="tab"> Settings </a></li>
+													href="#m_user_profile_tab_3" role="tab"> Issues </a></li>
 											</ul>
 										</div>
 										<div class="m-portlet__head-tools">
@@ -435,8 +388,16 @@
 												</div>
 											</form>
 										</div>
-										<div class="tab-pane " id="m_user_profile_tab_2"></div>
-										<div class="tab-pane " id="m_user_profile_tab_3"></div>
+										<div class="tab-pane " id="m_user_profile_tab_2">
+											<div
+												th:replace="fragments/profile-fragments/fragment-user-tasks :: fragment-user-tasks"></div>
+										
+										</div>
+										<div class="tab-pane " id="m_user_profile_tab_3">
+										<div
+												th:replace="fragments/profile-fragments/fragment-user-issues :: fragment-user-issues"></div>
+										
+										</div>
 									</div>
 								</div>
 							</div>
@@ -446,6 +407,35 @@
 
 
 				</div>
+
+				<script th:inline="javascript" type="text/javascript">
+					$(document).ready(
+							function() {
+
+								let searchParams = new URLSearchParams(
+										window.location.search);
+								let param = searchParams.get('id');
+								$('#profile_user_id').attr('value', param);
+								DatatableUserTasksJsonRemote.init();
+								DatatableUserIssuesJsonRemote.init();
+
+							});
+				</script>
+
+				<script type="text/javascript"
+					src="assets/omniapp/js/datatable-user-tasks.js">
+					
+				</script>
+				
+				<script type="text/javascript"
+					src="assets/omniapp/js/datatable-user-issues.js">
+					
+				</script>
+
+				<script type="text/javascript"
+					src="assets/omniapp/js/profile.scripts.js">
+					
+				</script>
 				<!-- End::Content -->
 			</div>
 		</div>

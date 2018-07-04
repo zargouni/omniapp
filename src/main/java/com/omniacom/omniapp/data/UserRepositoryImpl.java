@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Comment;
+import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
@@ -111,6 +112,16 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		if (!user.getContributedProjectList().contains(project))
 			return user.getContributedProjectList().add(project);
 		return false;
+	}
+	
+	@Override
+	public List<Issue> findAllIssues(User user) {
+		List<Issue> issues = null;
+		Query query = entityManager
+				.createQuery("SELECT issue FROM Issue issue, User u JOIN u.issues issues WHERE u.id = :param AND issues.id = issue.id")
+				.setParameter("param", user.getId());
+		issues = (List<Issue>) query.getResultList();
+		return issues;
 	}
 
 }

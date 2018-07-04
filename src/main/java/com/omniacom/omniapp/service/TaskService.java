@@ -79,6 +79,8 @@ public class TaskService {
 		return new JSONObject().element("id", task.getId()).element("name", task.getName())
 				.element("startDate", new SimpleDateFormat("dd/MM/yyyy").format(task.getStartDate()))
 				.element("endDate", new SimpleDateFormat("dd/MM/yyyy").format(task.getEndDate()))
+				.element("status", task.getStatus())
+				.element("priority", task.getPriority())
 				.element("estimationHR", task.getEstimationRH()).element("estimationTime", task.getEstimationTime())
 				.element("completionPercentage", task.getCompletionPercentage())
 				.element("files", findAllFiles(task));

@@ -136,41 +136,7 @@ var DatatableIssuesJsonRemote = function () {
 			           return '<span style="margin: 0 auto;" class="m-badge ' + status[row.severity].class + ' m-badge--wide">' + status[row.severity].title + '</span>';
 			         },
 		}
-//			         ,{
-//				field: "serviceCount",
-//				title: "Services",
-//				type: 'number',
-//				sortable: true,
-//				width: 100,
-//				responsive: {visible: 'lg'},
-//				template: function(row){
-//					return '<span style="font-weight:600;font-size:14px;color: #36a3f7;">'+row.serviceCount+'</span>'
-//				}
-//			}
-//			, {
-//				field: "Actions",
-//				width: 60,
-//				title: "Actions",
-//				sortable: false,
-//				overflow: 'visible',
-//				template: function (row, index, datatable) {
-//					var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
-//					
-//					return '\
-//						<div class="dropdown ' + dropup + '">\
-//							<a href="#" class="btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" data-toggle="dropdown">\
-//                                <i class="la la-ellipsis-h"></i>\
-//                            </a>\
-//						  	<div class="dropdown-menu dropdown-menu-right">\
-//						    	<a href="#" onclick="toggleModalEditOperationDetails('+row.id+')" class="dropdown-item"><i class="la la-edit"></i> Edit Details</a>\
-//						  	</div>\
-//						</div>\
-//												\<a onclick="handleRemoveBoqClick('+row.id+')" id="btn-remove-boq-'+row.id+'" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete BOQ">\
-//							<i class="la la-trash-o"></i>\
-//						</a>\
-//					';
-//				}
-//			}
+
 			]
 		});
 

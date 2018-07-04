@@ -5,10 +5,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.omniacom.omniapp.service.UserService;
+
+import net.sf.json.JSONArray;
 
 @RestController
 public class ProfileController {
@@ -25,17 +28,21 @@ public class ProfileController {
 	
 	@ModelAttribute
 	public void addAttributes(Model model, @RequestParam("id") long userId) {
-		// set current project
-		//projectService.setCurrentProject(projectService.findOneById(projectId));
 		model.addAttribute("profileUser", userService.findById(userId));
-//		model.addAttribute("taskCount", projectService.findTaskCount(projectService.getCurrentProject()));
-//		model.addAttribute("completedTasksCount",
-//				projectService.findCompletedTasksCount(projectService.getCurrentProject()));
-//		model.addAttribute("onGoingTasksCount",
-//				projectService.findOnGoingTasksCount(projectService.getCurrentProject()));
-//		model.addAttribute("allServices", projectService.findAllServices(projectService.getCurrentProject()));
-//		model.addAttribute("ServiceTasksMap", projectService.getMapServiceTasks(projectService.getCurrentProject()));
+
 
 	}
+	
+	@GetMapping("/json-user-tasks")
+	public @ResponseBody JSONArray getAllUserTasksJson(@RequestParam("id") long userId) {
+		return userService.getAllUserTasksJson(userId);
+	}
+	
+	@GetMapping("/json-user-issues")
+	public @ResponseBody JSONArray getAllUserIssuesJson(@RequestParam("id") long userId) {
+		return userService.getAllUserIssuesJson(userId);
+	}
+	
+	
 
 }

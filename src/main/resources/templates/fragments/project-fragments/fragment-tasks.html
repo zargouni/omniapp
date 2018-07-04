@@ -213,8 +213,7 @@
 
 												<td
 													th:if="${#dates.format(task.startDate, 'dd MM yyyy') == '01 02 1970'}"
-													style="font-weight: 400; text-align: center">Not
-													planified</td>
+													style="font-weight: 400; text-align: center">Unplanned</td>
 												<td
 													th:if="${#dates.format(task.endDate, 'dd MM yyyy') != '01 02 1970'}"
 													style="font-weight: 400; text-align: center"
@@ -223,8 +222,7 @@
 
 												<td
 													th:if="${#dates.format(task.endDate, 'dd MM yyyy') == '01 02 1970'}"
-													style="font-weight: 400; text-align: center">Not
-													planified</td>
+													style="font-weight: 400; text-align: center">Unplanned</td>
 
 												<td class="m--font-success"
 													style="font-weight: 400; text-align: center"
