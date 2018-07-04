@@ -34,6 +34,9 @@ public class Issue implements Serializable {
 	private String severity;
 	
 	@ManyToOne
+	private User closedBy;
+	
+	@ManyToOne
 	private Operation operation;
 	
 	@ManyToOne
@@ -236,6 +239,34 @@ public class Issue implements Serializable {
 	 */
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
+	}
+
+	/**
+	 * @return the closedBy
+	 */
+	public User getClosedBy() {
+		return closedBy;
+	}
+
+	/**
+	 * @return the attachments
+	 */
+	public List<UploadedFile> getAttachments() {
+		return attachments;
+	}
+
+	/**
+	 * @param closedBy the closedBy to set
+	 */
+	public void setClosedBy(User closedBy) {
+		this.closedBy = closedBy;
+	}
+
+	/**
+	 * @param attachments the attachments to set
+	 */
+	public void setAttachments(List<UploadedFile> attachments) {
+		this.attachments = attachments;
 	}
 
 }

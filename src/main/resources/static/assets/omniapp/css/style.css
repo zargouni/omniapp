@@ -518,3 +518,20 @@
     /* Move the check mark back when checked */
 	text-indent: 0;
 }
+
+/* profile charts */
+
+.profilechartwrapper {
+  width: 130%;
+  position: relative;
+  padding-bottom: 50%;
+  top: -20px;	
+  left: -50px;
+}
+
+.profilechartdiv {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}

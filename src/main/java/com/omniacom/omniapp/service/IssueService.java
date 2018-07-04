@@ -157,10 +157,14 @@ public class IssueService {
 			issue.setDescription(issueCopy.getDescription());
 			issue.setEndDate(issueCopy.getEndDate());
 			issue.setSeverity(issueCopy.getSeverity());
-			issue.setStatus(issueCopy.getStatus());
+			
 
-			if(issueCopy.getStatus().equals(StaticString.ISSUE_STATUS_CLOSED))
+			if(!issue.getStatus().equals(StaticString.ISSUE_STATUS_CLOSED) && issueCopy.getStatus().equals(StaticString.ISSUE_STATUS_CLOSED)) {
 				issue.setCompletedOn(new Date());
+				issue.setClosedBy(userService.getSessionUser());
+			}
+				
+			issue.setStatus(issueCopy.getStatus());
 			issueRepo.save(issue);
 			return true;
 		}

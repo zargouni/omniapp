@@ -1,6 +1,14 @@
 package com.omniacom.omniapp.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -10,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.omniapp.entity.Issue;
+import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
@@ -26,16 +35,16 @@ public class UserService implements UserDetailsService {
 	private IAuthenticationFacade authenticationFacade;
 
 	private UserRepository userRepo;
-	
+
 	@Autowired
 	private ProjectRepository projectRepo;
-	
+
 	@Autowired
 	ProjectService projectService;
-	
+
 	@Autowired
 	TaskService taskService;
-	
+
 	@Autowired
 	IssueService issueService;
 
@@ -74,7 +83,7 @@ public class UserService implements UserDetailsService {
 
 	public List<Project> findAllContributedProjects(User user) {
 		return userRepo.findContributedProjects(user);
-		//return user.getContributedProjectList();
+		// return user.getContributedProjectList();
 	}
 
 	public User findByUserName(String userName) {
@@ -92,45 +101,43 @@ public class UserService implements UserDetailsService {
 	public JSONArray findAllUsers() {
 		JSONArray array = new JSONArray();
 		List<User> users = (List<User>) userRepo.findAll();
-		for(User user : users) {
+		for (User user : users) {
 			array.add(user.getUserName());
 		}
 		return array;
 	}
-	
+
 	public JSONArray findAllUsersDetails() {
 		JSONArray array = new JSONArray();
 		List<User> users = (List<User>) userRepo.findAll();
-		for(User user : users) {
+		for (User user : users) {
 			array.add(jsonUser(user));
 		}
 		return array;
 	}
-	
+
 	public JSONObject jsonUser(User user) {
-		return new JSONObject()
-				.element("id", user.getId())
-				.element("firstName", user.getFirstName())
+		return new JSONObject().element("id", user.getId()).element("firstName", user.getFirstName())
 				.element("lastName", user.getLastName());
-			}
+	}
 
 	public JSONArray getAllSessionUserProjects() {
 		JSONArray jsonArray = new JSONArray();
 		List<Project> projects = null;
-		if(getSessionUser().getRole().getName().equals("ADMIN"))
+		if (getSessionUser().getRole().getName().equals("ADMIN"))
 			projects = (List<Project>) projectRepo.findAll();
-		else 
+		else
 			projects = findAllContributedProjects(getSessionUser());
-		
+
 		for (Project p : projects) {
 			jsonArray.add(projectService.jsonProject(p));
 		}
 		return jsonArray;
 	}
-	
-	 public boolean addContributingUserToProject(User user,Project project) {
-		 return userRepo.addContributingUserToProject(user, project);
-	 }
+
+	public boolean addContributingUserToProject(User user, Project project) {
+		return userRepo.addContributingUserToProject(user, project);
+	}
 
 	public JSONArray getAllUserTasksJson(long userId) {
 		JSONArray array = new JSONArray();
@@ -149,11 +156,60 @@ public class UserService implements UserDetailsService {
 		User user = userRepo.findOne(userId);
 		List<Issue> issues = userRepo.findAllIssues(user);
 		if (user != null && issues.size() > 0) {
-			for (Issue issue: issues) {
+			for (Issue issue : issues) {
 				array.add(issueService.jsonIssueFormattedDates(issue));
 			}
 		}
 		return array;
 	}
+
+	public Map<LocalDate, Integer> getAllUserClosedTasksFeedJson(long userId) {
+		User user = userRepo.findOne(userId);
+		TreeMap<LocalDate, Integer> feed = new TreeMap<LocalDate, Integer>();
+		LocalDate currentDate = LocalDate.now();
+		LocalDate startDate = user.getRegisterDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		for (LocalDate date = startDate; date.isBefore(currentDate)
+				|| date.isEqual(currentDate); date = date.plusDays(1)) {
+			Integer count = 0;
+			for (Task t : user.getClosedTasks()) {
+				
+				if (t.getCompletedOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+					count++;
+				}
+			}
+			feed.put(date, count);
+		}
+		return (Map<LocalDate, Integer>) feed;
+	}
+
+	public Map<LocalDate, Integer> getAllUserClosedIssuesFeedJson(long userId) {
+		User user = userRepo.findOne(userId);
+		TreeMap<LocalDate, Integer> feed = new TreeMap<LocalDate, Integer>();
+		LocalDate currentDate = LocalDate.now();
+		LocalDate startDate = user.getRegisterDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		for (LocalDate date = startDate; date.isBefore(currentDate)
+				|| date.isEqual(currentDate); date = date.plusDays(1)) {
+			Integer count = 0;
+			for (Issue i : user.getClosedIssues()) {
+				
+				if (i.getCompletedOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+					count++;
+				}
+			}
+			feed.put(date, count);
+		}
+		return (Map<LocalDate, Integer>) feed;
+	}
+
+	public JSONObject getUserStatsJson(long userId) {
+		User user = userRepo.findOne(userId);
+		JSONObject json = new JSONObject()
+				.element("projects", user.getContributedProjectList().size())
+				.element("tasks", user.getTasks().size())
+				.element("issues", user.getIssues().size());
+		return json;
+	}
+
+
 
 }

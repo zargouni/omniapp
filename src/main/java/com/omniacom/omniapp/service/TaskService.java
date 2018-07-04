@@ -58,16 +58,19 @@ public class TaskService {
 				task.setStartDate(taskCopy.getStartDate());
 			if (!task.getEndDate().equals(taskCopy.getEndDate()))
 				task.setEndDate(taskCopy.getEndDate());
-			if (!task.getStatus().equals(taskCopy.getStatus()))
-				task.setStatus(taskCopy.getStatus());
 			if (!task.getPriority().equals(taskCopy.getPriority()))
 				task.setPriority(taskCopy.getPriority());
 			if (!(task.getEstimationRH() == taskCopy.getEstimationRH()))
 				task.setEstimationRH(taskCopy.getEstimationRH());
 			if (!(task.getEstimationTime() == taskCopy.getEstimationTime()))
 				task.setEstimationTime(taskCopy.getEstimationTime());
-			if(task.getStatus().equals(StaticString.TASK_STATUS_COMPLETED))
+			if(task.getStatus().equals(StaticString.TASK_STATUS_ONGOING) && taskCopy.getStatus().equals(StaticString.TASK_STATUS_COMPLETED) ) {
 				task.setCompletedOn(new Date());
+				task.setClosedBy(userService.getSessionUser());
+				System.out.println("closing user "+userService.getSessionUser().getFirstName());
+			}
+			if (!task.getStatus().equals(taskCopy.getStatus()))
+				task.setStatus(taskCopy.getStatus());
 			task.setCompletionPercentage(taskCopy.getCompletionPercentage());
 			taskRepo.save(task);
 			return true;
@@ -109,8 +112,11 @@ public class TaskService {
 				.element("priority", task.getPriority()).element("status", task.getStatus())
 				.element("completionPercentage", task.getCompletionPercentage())
 				.element("users", getTaskUsersAsString(task));
-		if(task.getCompletedOn() != null)
+		if(task.getCompletedOn() != null) {
 			json.accumulate("completedOn", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(task.getCompletedOn()));
+			json.accumulate("completedOnRaw", task.getCompletedOn());
+
+		}
 		else
 			json.accumulate("completedOn", "Not yet");
 		return json ;

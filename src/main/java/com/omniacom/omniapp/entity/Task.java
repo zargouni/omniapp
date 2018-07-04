@@ -49,6 +49,9 @@ public class Task implements Serializable {
 	@OneToMany( mappedBy = "task")
 	private List<Comment> comments;
 	
+	@ManyToOne
+	private User closedBy;
+	
 	public Task() {
 
 	}
@@ -286,6 +289,24 @@ public class Task implements Serializable {
 	 */
 	public void setCompletionPercentage(String completionPercentage) {
 		this.completionPercentage = completionPercentage;
+	}
+
+
+
+	/**
+	 * @return the closedBy
+	 */
+	public User getClosedBy() {
+		return closedBy;
+	}
+
+
+
+	/**
+	 * @param closedBy the closedBy to set
+	 */
+	public void setClosedBy(User closedBy) {
+		this.closedBy = closedBy;
 	}
 	
 

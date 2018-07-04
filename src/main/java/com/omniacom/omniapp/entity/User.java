@@ -2,6 +2,7 @@ package com.omniacom.omniapp.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -34,6 +35,8 @@ public class User implements Serializable {
 	private String firstName;
 	private String lastName;
 	
+	private Date registerDate;
+	
 	@Column(unique = true)
 	private String email;
 	private String zohoToken;
@@ -57,6 +60,12 @@ public class User implements Serializable {
 
 	@ManyToMany(mappedBy="users")
 	private List<Task> tasks = new ArrayList<Task>();
+	
+	@OneToMany(mappedBy="closedBy")
+	private List<Task> closedTasks = new ArrayList<Task>();
+	
+	@OneToMany(mappedBy="closedBy")
+	private List<Issue> closedIssues = new ArrayList<Issue>();
 
 	@OneToMany(mappedBy = "user")
 	private List<Comment> comments = new ArrayList<Comment>();
@@ -403,6 +412,48 @@ public class User implements Serializable {
 	 */
 	public void setIssues(List<Issue> issues) {
 		this.issues = issues;
+	}
+
+	/**
+	 * @return the closedTasks
+	 */
+	public List<Task> getClosedTasks() {
+		return closedTasks;
+	}
+
+	/**
+	 * @param closedTasks the closedTasks to set
+	 */
+	public void setClosedTasks(List<Task> closedTasks) {
+		this.closedTasks = closedTasks;
+	}
+
+	/**
+	 * @return the registerDate
+	 */
+	public Date getRegisterDate() {
+		return registerDate;
+	}
+
+	/**
+	 * @param registerDate the registerDate to set
+	 */
+	public void setRegisterDate(Date registerDate) {
+		this.registerDate = registerDate;
+	}
+
+	/**
+	 * @return the closedIssues
+	 */
+	public List<Issue> getClosedIssues() {
+		return closedIssues;
+	}
+
+	/**
+	 * @param closedIssues the closedIssues to set
+	 */
+	public void setClosedIssues(List<Issue> closedIssues) {
+		this.closedIssues = closedIssues;
 	}
 
 }

@@ -30,3 +30,21 @@ function handleOnIssueClick(issueId){
 	});
 }
 
+function populateProfileStats(){
+	var profileId = $('#profile_user_id').val();
+	$.ajax({
+		type : "GET",
+		url : '/json-user-stats',
+		data : 'id=' + profileId,
+		async : false,
+		success : function(response) {
+			$('#profile_all_projects_count').html(response.projects);
+			$('#profile_all_tasks_count').html(response.tasks);
+			$('#profile_all_issues_count').html(response.issues);
+		},
+		error : function(e) {
+			alert('Error: profile stats ' + e);
+		}
+	});
+}
+
