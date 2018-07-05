@@ -15,7 +15,7 @@ var userClosedTasksChart = function() {
 				"dashLength" : 1,
 				"position" : "left"
 			} ],
-			"mouseWheelZoomEnabled" : true,
+			"mouseWheelZoomEnabled" : false,
 			"graphs" : [ {
 				"id" : "g1",
 				"balloonText" : "[[value]]",
@@ -50,16 +50,6 @@ var userClosedTasksChart = function() {
 			}
 		});
 
-		chart.addListener("rendered", zoomChart);
-		zoomChart();
-
-		// this method is called when chart is first inited as we listen for
-		// "rendered" event
-		function zoomChart() {
-			// different zoom methods can be used - zoomToIndexes, zoomToDates,
-			// zoomToCategoryValues
-			chart.zoomToIndexes(chartData.length - 40, chartData.length - 1);
-		}
 
 		// generate some random data, quite different range
 		function generateChartData() {
@@ -125,7 +115,7 @@ var userClosedIssuesChart = function() {
 				"dashLength" : 1,
 				"position" : "left"
 			} ],
-			"mouseWheelZoomEnabled" : true,
+			"mouseWheelZoomEnabled" : false,
 			"graphs" : [ {
 				"id" : "g1",
 				"balloonText" : "[[value]]",
@@ -159,17 +149,6 @@ var userClosedIssuesChart = function() {
 				"enabled" : false
 			}
 		});
-
-		chart.addListener("rendered", zoomChart);
-		zoomChart();
-
-		// this method is called when chart is first inited as we listen for
-		// "rendered" event
-		function zoomChart() {
-			// different zoom methods can be used - zoomToIndexes, zoomToDates,
-			// zoomToCategoryValues
-			chart.zoomToIndexes(chartData.length - 40, chartData.length - 1);
-		}
 
 		// generate some random data, quite different range
 		function generateChartData() {

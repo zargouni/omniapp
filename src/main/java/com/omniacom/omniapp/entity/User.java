@@ -35,6 +35,8 @@ public class User implements Serializable {
 	private String firstName;
 	private String lastName;
 	
+	private String profilePic;
+	
 	private Date registerDate;
 	
 	@Column(unique = true)
@@ -454,6 +456,20 @@ public class User implements Serializable {
 	 */
 	public void setClosedIssues(List<Issue> closedIssues) {
 		this.closedIssues = closedIssues;
+	}
+
+	/**
+	 * @return the profilePic
+	 */
+	public String getProfilePic() {
+		return profilePic;
+	}
+
+	/**
+	 * @param profilePic the profilePic to set
+	 */
+	public void setProfilePic(String profilePic) {
+		this.profilePic = profilePic;
 	}
 
 }

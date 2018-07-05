@@ -3,7 +3,7 @@ AmCharts.themes.dark = {
 	themeName: "dark",
 
 	AmChart: {
-		color: "#000", backgroundColor: "#282828"
+		color: "#9816f4", backgroundColor: "#282828"
 	},
 
 	AmCoordinateChart: {
@@ -50,8 +50,8 @@ AmCharts.themes.dark = {
 	},
 
 	ChartCursor: {
-		cursorColor: "#FFFFFF",
-		color: "#000000",
+		cursorColor: "#000",
+		color: "#FFF",
 		cursorAlpha: 0.5
 	},
 

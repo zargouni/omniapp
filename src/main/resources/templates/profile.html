@@ -46,9 +46,71 @@
 											<div class="m-card-profile__title m--hide">Your Profile
 											</div>
 											<div class="m-card-profile__pic">
-												<div class="m-card-profile__pic-wrapper">
-													<img src="assets/app/media/img/users/user4.jpg" alt="" />
-												</div>
+												<!-- 												<div class="m-card-profile__pic-wrapper"> -->
+												<!-- begin profile pic upload -->
+												<form target="noTargett" id="profilePictureForm"
+													name="profilePictureForm">
+													<div class="profile">
+														<div class="photo">
+															<input id="input_picture" name="file" type="file"
+																accept="image/*" required>
+															<div class="photo__helper">
+																<div
+																	th:style="'background:url('+ @{ 'assets/app/media/img/users/' + ${profileUser.profilePic}} +') no-repeat ; 
+        																		-webkit-background-size: cover;
+       																			-moz-background-size: cover;
+        																		-o-background-size: cover;
+      																			background-size: cover;'"
+																	class="photo__frame photo__frame--circle">
+																	<canvas class="photo__canvas">
+																	
+																	</canvas>
+																	<!-- 																	<div class="message is-empty"> -->
+																	<!-- 																		<p class="message--desktop"> -->
+																	<!-- 																		Drop your photo here -->
+																	<!-- 																			or browse your computer.</p> -->
+																	<!-- 																		<p class="message--mobile">Tap here to select your -->
+																	<!-- 																			picture.</p> -->
+																	<!-- 																	</div> -->
+																	<div class="message is-loading">
+																		<i class="fa fa-2x fa-spin fa-spinner"></i>
+																	</div>
+																	<div class="message is-dragover">
+																		<i class="fa fa-2x fa-cloud-upload"></i>
+																		<p>Drop your photo</p>
+																	</div>
+																	<div class="message is-wrong-file-type">
+																		<p>Only images allowed.</p>
+																		<p class="message--desktop">Drop your photo here
+																			or browse your computer.</p>
+																		<p class="message--mobile">Tap here to select your
+																			picture.</p>
+																	</div>
+																	<div class="message is-wrong-image-size">
+																		<p>Your photo must be larger than 350px.</p>
+																	</div>
+																</div>
+															</div>
+
+<!-- 															<div class="photo__options hide"> -->
+<!-- 																<div class="photo__zoom"> -->
+<!-- 																	<input type="range" class="zoom-handler"> -->
+<!-- 																</div> -->
+<!-- 																<a href="javascript:;" class="remove"><i -->
+<!-- 																	class="fa fa-trash"></i></a> -->
+<!-- 															</div> -->
+														</div>
+													</div>
+
+													<!-- 													<hr> -->
+													<button type="submit">Submit</button>
+													<!-- 													<hr> -->
+													<!-- 													<img src="" alt="" class="preview"> <img src="" -->
+													<!-- 														alt="" class="preview preview--rounded"> -->
+												</form>
+												<!-- end profile pic upload -->
+												<!-- 													<img src="assets/app/media/img/users/user4.jpg" alt="" /> -->
+												<!-- 												</div> -->
 											</div>
 											<div class="m-card-profile__details">
 												<span
@@ -106,47 +168,49 @@
 											</a></li>
 										</ul>
 
-										<div class="m-portlet__body-separator"></div>
+										<!-- 										<div class="m-portlet__body-separator"></div> -->
 
 
 
-										<div class="m-widget1 m-widget1--paddingless">
-											<div class="m-widget1__item">
-												<div class="row m-row--no-padding align-items-center">
-													<div class="col">
-														<h3 class="m-widget1__title">Member Profit</h3>
-														<span class="m-widget1__desc">Awerage Weekly Profit</span>
-													</div>
-													<div class="col m--align-right">
-														<span class="m-widget1__number m--font-brand">+$17,800</span>
-													</div>
-												</div>
-											</div>
-											<div class="m-widget1__item">
-												<div class="row m-row--no-padding align-items-center">
-													<div class="col">
-														<h3 class="m-widget1__title">Orders</h3>
-														<span class="m-widget1__desc">Weekly Customer
-															Orders</span>
-													</div>
-													<div class="col m--align-right">
-														<span class="m-widget1__number m--font-danger">+1,800</span>
-													</div>
-												</div>
-											</div>
-											<div class="m-widget1__item">
-												<div class="row m-row--no-padding align-items-center">
-													<div class="col">
-														<h3 class="m-widget1__title">Issue Reports</h3>
-														<span class="m-widget1__desc">System bugs and
-															issues</span>
-													</div>
-													<div class="col m--align-right">
-														<span class="m-widget1__number m--font-success">-27,49%</span>
-													</div>
-												</div>
-											</div>
-										</div>
+										<!-- 										<div class="m-widget1 m-widget1--paddingless"> -->
+										<!-- 											<div class="m-widget1__item"> -->
+										<!-- 												<div class="row m-row--no-padding align-items-center"> -->
+										<!-- 													<div class="col"> -->
+										<!-- 														<h3 class="m-widget1__title">Member Profit</h3> -->
+										<!-- 														<span class="m-widget1__desc">Awerage Weekly Profit</span> -->
+										<!-- 													</div> -->
+										<!-- 													<div class="col m--align-right"> -->
+										<!-- 														<span class="m-widget1__number m--font-brand">+$17,800</span> -->
+										<!-- 													</div> -->
+										<!-- 												</div> -->
+										<!-- 											</div> -->
+										<!-- 											<div class="m-widget1__item"> -->
+										<!-- 												<div class="row m-row--no-padding align-items-center"> -->
+										<!-- 													<div class="col"> -->
+										<!-- 														<h3 class="m-widget1__title">Orders</h3> -->
+										<!-- 														<span class="m-widget1__desc">Weekly Customer -->
+										<!-- 															Orders</span> -->
+										<!-- 													</div> -->
+										<!-- 													<div class="col m--align-right"> -->
+										<!-- 														<span class="m-widget1__number m--font-danger">+1,800</span> -->
+										<!-- 													</div> -->
+										<!-- 												</div> -->
+										<!-- 											</div> -->
+										<!-- 											<div class="m-widget1__item"> -->
+										<!-- 												<div class="row m-row--no-padding align-items-center"> -->
+										<!-- 													<div class="col"> -->
+										<!-- 														<h3 class="m-widget1__title">Issue Reports</h3> -->
+										<!-- 														<span class="m-widget1__desc">System bugs and -->
+										<!-- 															issues</span> -->
+										<!-- 													</div> -->
+										<!-- 													<div class="col m--align-right"> -->
+										<!-- 														<span class="m-widget1__number m--font-success">-27,49%</span> -->
+										<!-- 													</div> -->
+										<!-- 												</div> -->
+										<!-- 											</div> -->
+										<!-- 										</div> -->
+
+
 									</div>
 								</div>
 							</div>
@@ -316,6 +380,9 @@
 
 
 				</div>
+
+				<iframe width="0" height="0" border="0" name="noTargett"
+					id="noTargett"></iframe>
 
 				<script th:inline="javascript" type="text/javascript">
 					$(document).ready(
