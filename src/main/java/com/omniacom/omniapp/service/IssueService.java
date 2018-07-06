@@ -194,6 +194,7 @@ public class IssueService {
 		return new JSONObject()
 				.element("id", c.getId())
 				.element("user", c.getUser().getFirstName() +" "+ c.getUser().getLastName())
+				.element("user_pic", c.getUser().getProfilePic() == null ? "assets/app/media/img/users/user-icon.png" : c.getUser().getProfilePic())
 				.element("user_id", c.getUser().getId())
 				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(c.getDate()))
 				.element("content", c.getContent());

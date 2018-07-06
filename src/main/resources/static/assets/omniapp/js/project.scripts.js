@@ -1386,18 +1386,19 @@ function getCommentUI(comment){
 		deleteComment = '<a style="opacity: 0.9;float: right;" title="Delete Comment" onclick="deleteComment('+comment.id+')" class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only  m-btn--pill m-btn--air">'
 						+			'<i class="la la-close"></i>'
 						+		'</a>';
+	
 
 	}
 	return '<div class="m-widget3">'
 	+'<div class="m-widget3__item">'
 	+	'<div class="m-widget3__header">'
 	+		'<div class="m-widget3__user-img">'
-	+			'<img class="m-widget3__img"'
-	+			'	src="assets/app/media/img/users/user-icon.png" alt="">'
+	+			'<img style="box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);width: 44px; height:44px;" class="m-widget3__img"'
+	+			'	src="'+ comment.user_pic+'" alt="">'
 	+		'</div>'
 	+		'<div class="m-widget3__info">'
 	+		deleteComment
-	+			'<span class="m-widget3__username">' + comment.user + '</span><br>'
+	+			'<span class="m-widget3__username"><a style=" text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);font-weight: 600;color: white;" href="/profile?id='+comment.user_id+'">' + comment.user + '</a></span><br>'
 	+			'<span class="m-widget3__time">' + comment.date + '</span>'
 	
 	+		'</div>'

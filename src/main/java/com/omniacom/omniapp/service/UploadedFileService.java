@@ -19,11 +19,13 @@ public class UploadedFileService {
 
 	@Autowired
 	UploadedFileRepository fileRepo;
-	
+
 	private String destinationLocation = "D:/files/";
-	
-	private String picturesDestinationLocation = new File("").getAbsolutePath()+"/src/main/resources/static/assets/app/media/img/users/";
-	
+
+	private String picturesDestinationLocation = new File("").getAbsolutePath()+"/src/main/resources/static";
+
+	private String picturesLocation = "/assets/app/media/img/users/";
+
 	public UploadedFile saveFileToDatabase(UploadedFile uploadedFile) {
 
 		return fileRepo.save(uploadedFile);
@@ -36,31 +38,45 @@ public class UploadedFileService {
 
 		FileCopyUtils.copy(multipartFile.getBytes(), new FileOutputStream(outputFileName));
 	}
-	
+
 	public String savePicToLocalDisk(User user, MultipartFile multipartFile) throws IOException, FileNotFoundException {
 
-		String outputFileName = getOutputPictureName(user,multipartFile);
+		String outputFileName = getOutputPictureName(user, multipartFile);
+
+		String miniFileName = getMinifiedPictureName(user, multipartFile);
 
 		FileCopyUtils.copy(multipartFile.getBytes(), new FileOutputStream(outputFileName));
-		return user.getFirstName()+user.getLastName()+ multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().indexOf("."));
+		
+		return miniFileName;
 	}
 
 	public String getOutputFilename(MultipartFile multipartFile) {
 
-		return getDestinationLocation() + multipartFile.getOriginalFilename();
+		return getDestinationLocation() + getPicturesLocation() + multipartFile.getOriginalFilename();
 	}
-	
-	public String getOutputPictureName(User user,MultipartFile multipartFile) {
 
-		return getPicturesDestinationLocation() +user.getFirstName()+user.getLastName()+ multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().indexOf("."));
+	public String getOutputPictureName(User user, MultipartFile multipartFile) {
+
+		return getPicturesDestinationLocation() + getPicturesLocation() + user.getFirstName() + user.getLastName()
+				+ multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().indexOf("."));
+	}
+
+	public String getMinifiedPictureName(User user, MultipartFile multipartFile) {
+
+		return getPicturesLocation() + user.getFirstName() + user.getLastName()
+				+ multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().indexOf("."));
 	}
 
 	public String getDestinationLocation() {
 		return destinationLocation;
 	}
-	
+
 	public String getPicturesDestinationLocation() {
 		return picturesDestinationLocation;
+	}
+
+	public String getPicturesLocation() {
+		return picturesLocation;
 	}
 
 	public UploadedFile getUploadedFileInfo(MultipartFile multipartFile) throws IOException {
@@ -73,10 +89,10 @@ public class UploadedFileService {
 
 		return fileInfo;
 	}
-	
+
 	public boolean deleteFile(long fileId) {
 		UploadedFile file = fileRepo.findOne(fileId);
-		if(file != null) {
+		if (file != null) {
 			file.setDeleted(true);
 			fileRepo.save(file);
 			return true;

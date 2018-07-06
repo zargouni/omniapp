@@ -700,12 +700,14 @@
   border-radius: 50%;
 }
 .photo__helper {
+	
   position: relative;
   background-repeat: no-repeat;
   background-color: transparent;
   padding: 15px 0;
 }
 .photo__helper .canvas--helper {
+	display : none;
   position: absolute;
   top: 0;
   left: 0;

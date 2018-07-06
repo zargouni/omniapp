@@ -1,5 +1,6 @@
-<header id="general-header" class="m-grid__item    m-header " data-minimize-offset="200"
-	data-minimize-mobile-offset="200" data-th-fragment="header-general">
+<header id="general-header" class="m-grid__item    m-header "
+	data-minimize-offset="200" data-minimize-mobile-offset="200"
+	data-th-fragment="header-general">
 
 
 	<div class="m-container m-container--fluid m-container--full-height">
@@ -74,64 +75,71 @@
 
 					<div class="m-stack__item m-topbar__nav-wrapper">
 						<ul class="m-topbar__nav m-nav m-nav--inline">
-							
+
 							<li
 								class="m-nav__item m-topbar__notifications m-topbar__notifications--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-center 	m-dropdown--mobile-full-width"
 								data-dropdown-toggle="click" data-dropdown-persistent="true">
-								<a onclick="handleNotificationToggle()" href="#" class="m-nav__link m-dropdown__toggle"
-								id="m_topbar_notification_icon"> <span th:if="${not #lists.isEmpty(unseenNotifications)}"
+								<a onclick="handleNotificationToggle()" href="#"
+								class="m-nav__link m-dropdown__toggle"
+								id="m_topbar_notification_icon"> <span
+									th:if="${not #lists.isEmpty(unseenNotifications)}"
 									class="m-nav__link-badge m-badge m-badge--dot m-badge--dot-small m-badge--danger"></span>
-									<span th:if="${not #lists.isEmpty(unseenNotifications)}" class="m-nav__link-icon m-animate-shake"><i
-										class="flaticon-music-2"></i></span>
-										<span th:if="${#lists.isEmpty(unseenNotifications)}" class="m-nav__link-icon"><i
-										class="flaticon-music-2"></i></span>
+									<span th:if="${not #lists.isEmpty(unseenNotifications)}"
+									class="m-nav__link-icon m-animate-shake"><i
+										class="flaticon-music-2"></i></span> <span
+									th:if="${#lists.isEmpty(unseenNotifications)}"
+									class="m-nav__link-icon"><i class="flaticon-music-2"></i></span>
 							</a>
 								<div class="m-dropdown__wrapper">
 									<span class="m-dropdown__arrow m-dropdown__arrow--center"></span>
 									<div class="m-dropdown__inner">
 										<div class="m-dropdown__header m--align-center"
 											style="background: url(assets/app/media/img/misc/notification_bg.jpg); background-size: cover;">
-											<span th:text="${unseenNotifications.size()}" class="m-dropdown__header-title">9</span> <span
-												class="m-dropdown__header-subtitle">New
-												Notifications</span>
+											<span th:text="${unseenNotifications.size()}"
+												class="m-dropdown__header-title">9</span> <span
+												class="m-dropdown__header-subtitle">New Notifications</span>
 										</div>
 										<div class="m-dropdown__body">
 											<div class="m-dropdown__content">
 												<div class="m-scrollable" data-scrollable="true"
-															data-max-height="250" data-mobile-max-height="200">
-															<div class="m-list-timeline m-list-timeline--skin-light">
-																<div class="m-list-timeline__items">
-																	<div  th:each="notification : ${notifications}" class="m-list-timeline__item" style="cursor: pointer;">
-																	
-																		<span
-																			class="m-list-timeline__badge -m-list-timeline__badge--state-success"></span>
-																			
-																		<span th:if="${notification.task != null}" th:onclick="'handleNotificationClick(\'' + ${notification.task.id} + '\');'" class="m-list-timeline__text">
-																			<span th:text="${notification.message}"></span>
-																			<span th:if="${!notification.isRead}" class="m-badge m-badge--danger m-badge--wide">New</span>
-																			</span> 
-																			
-																			<span th:if="${notification.issue != null}" th:onclick="'handleIssueNotificationClick(\'' + ${notification.issue.id} + '\');'" class="m-list-timeline__text">
-																			<span th:text="${notification.message}"></span>
-																			<span th:if="${!notification.isRead}" class="m-badge m-badge--danger m-badge--wide">New</span>
-																			</span> 
-																			
-																			<span style="text-align:center;" th:text="${notification.createdAtPretty}" class="m-list-timeline__time">Just
-																			now</span>
-																		
-																	</div>
-																	
-																	
-																	
-																	
-																	
-																	
-																	
-																</div>
+													data-max-height="250" data-mobile-max-height="200">
+													<div class="m-list-timeline m-list-timeline--skin-light">
+														<div class="m-list-timeline__items">
+															<div th:each="notification : ${notifications}"
+																class="m-list-timeline__item" style="cursor: pointer;">
+
+																<span
+																	class="m-list-timeline__badge -m-list-timeline__badge--state-success"></span>
+
+																<span th:if="${notification.task != null}"
+																	th:onclick="'handleNotificationClick(\'' + ${notification.task.id} + '\');'"
+																	class="m-list-timeline__text"> <span
+																	th:text="${notification.message}"></span> <span
+																	th:if="${!notification.isRead}"
+																	class="m-badge m-badge--danger m-badge--wide">New</span>
+																</span> <span th:if="${notification.issue != null}"
+																	th:onclick="'handleIssueNotificationClick(\'' + ${notification.issue.id} + '\');'"
+																	class="m-list-timeline__text"> <span
+																	th:text="${notification.message}"></span> <span
+																	th:if="${!notification.isRead}"
+																	class="m-badge m-badge--danger m-badge--wide">New</span>
+																</span> <span style="text-align: center;"
+																	th:text="${notification.createdAtPretty}"
+																	class="m-list-timeline__time">Just now</span>
+
 															</div>
+
+
+
+
+
+
+
 														</div>
-													
-													
+													</div>
+												</div>
+
+
 											</div>
 										</div>
 									</div>
@@ -148,9 +156,17 @@
 								class="m-nav__item m-topbar__user-profile m-topbar__user-profile--img  m-dropdown m-dropdown--medium m-dropdown--arrow m-dropdown--header-bg-fill m-dropdown--align-right m-dropdown--mobile-full-width m-dropdown--skin-light"
 								data-dropdown-toggle="click"><a href="#"
 								class="m-nav__link m-dropdown__toggle"> <span
-									class="m-topbar__userpic"> <img
-										src="assets/app/media/img/users/user4.jpg"
+									class="m-topbar__userpic"> 
+									<img style="height: 41px; width: 41px;"
+										th:if="${sessionUser.profilePic != null}"
+										th:src="@{ ${sessionUser.profilePic}}"
+										class="m--img-rounded m--marginless m--img-centered" /> 
+										
+										<img
+										th:if="${sessionUser.profilePic == null}"
+										src="assets/app/media/img/users/user-icon.png"
 										class="m--img-rounded m--marginless m--img-centered" alt="" />
+
 								</span> <span class="m-topbar__username m--hide"></span>
 							</a>
 								<div class="m-dropdown__wrapper">
@@ -158,18 +174,22 @@
 										class="m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust"></span>
 									<div class="m-dropdown__inner">
 										<div class="m-dropdown__header m--align-center"
-											style="background: url(assets/app/media/img/misc/user_profile_bg.jpg); background-size: cover;">
+											style="background: url(assets/app/media/img/misc/quick_actions_bg.jpg); background-size: cover;">
 											<div class="m-card-user m-card-user--skin-dark">
 												<div class="m-card-user__pic">
-													<img src="assets/app/media/img/users/user4.jpg"
+													<img th:if="${sessionUser.profilePic != null}"
+														th:src="@{ ${sessionUser.profilePic}}"
+														style="height: 70px; width: 70px;"
+														class="m--img-rounded m--marginless" /> <img
+														th:if="${sessionUser.profilePic == null}"
+														src="assets/app/media/img/users/user-icon.png"
 														class="m--img-rounded m--marginless" alt="" />
 												</div>
 												<div class="m-card-user__details">
-													<span class="m-card-user__name m--font-weight-500" 
-													th:text="${sessionUser.firstName + ' ' + sessionUser.lastName}">Mark
-														Andre</span> <a href="#"
+													<span class="m-card-user__name m--font-weight-500"
+														th:text="${sessionUser.firstName + ' ' + sessionUser.lastName}"></span> <a href="#"
 														class="m-card-user__email m--font-weight-300 m-link"
-														th:text="${sessionUser.email}">mark.andre@gmail.com</a>
+														th:text="${sessionUser.email}"></a>
 												</div>
 											</div>
 										</div>
@@ -190,36 +210,36 @@
 															</span>
 														</span>
 													</a></li>
-													<li class="m-nav__item"><a
-														href="indexa80c.html?page=header/profile&amp;demo=default"
-														class="m-nav__link"> <i
-															class="m-nav__link-icon flaticon-share"></i> <span
-															class="m-nav__link-text">Activity</span>
-													</a></li>
-													<li class="m-nav__item"><a
-														href="indexa80c.html?page=header/profile&amp;demo=default"
-														class="m-nav__link"> <i
-															class="m-nav__link-icon flaticon-chat-1"></i> <span
-															class="m-nav__link-text">Messages</span>
-													</a></li>
-													<li class="m-nav__separator m-nav__separator--fit"></li>
-													<li class="m-nav__item"><a
-														href="indexa80c.html?page=header/profile&amp;demo=default"
-														class="m-nav__link"> <i
-															class="m-nav__link-icon flaticon-info"></i> <span
-															class="m-nav__link-text">FAQ</span>
-													</a></li>
-													<li class="m-nav__item"><a
-														href="indexa80c.html?page=header/profile&amp;demo=default"
-														class="m-nav__link"> <i
-															class="m-nav__link-icon flaticon-lifebuoy"></i> <span
-															class="m-nav__link-text">Support</span>
-													</a></li>
-													<li class="m-nav__separator m-nav__separator--fit"></li>
-													<li class="m-nav__item"><a
-														href="indexb101.html?page=snippets/pages/user/login-1&amp;demo=default"
-														class="btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder">Logout</a>
-													</li>
+<!-- 													<li class="m-nav__item"><a -->
+<!-- 														href="indexa80c.html?page=header/profile&amp;demo=default" -->
+<!-- 														class="m-nav__link"> <i -->
+<!-- 															class="m-nav__link-icon flaticon-share"></i> <span -->
+<!-- 															class="m-nav__link-text">Activity</span> -->
+<!-- 													</a></li> -->
+<!-- 													<li class="m-nav__item"><a -->
+<!-- 														href="indexa80c.html?page=header/profile&amp;demo=default" -->
+<!-- 														class="m-nav__link"> <i -->
+<!-- 															class="m-nav__link-icon flaticon-chat-1"></i> <span -->
+<!-- 															class="m-nav__link-text">Messages</span> -->
+<!-- 													</a></li> -->
+<!-- 													<li class="m-nav__separator m-nav__separator--fit"></li> -->
+<!-- 													<li class="m-nav__item"><a -->
+<!-- 														href="indexa80c.html?page=header/profile&amp;demo=default" -->
+<!-- 														class="m-nav__link"> <i -->
+<!-- 															class="m-nav__link-icon flaticon-info"></i> <span -->
+<!-- 															class="m-nav__link-text">FAQ</span> -->
+<!-- 													</a></li> -->
+<!-- 													<li class="m-nav__item"><a -->
+<!-- 														href="indexa80c.html?page=header/profile&amp;demo=default" -->
+<!-- 														class="m-nav__link"> <i -->
+<!-- 															class="m-nav__link-icon flaticon-lifebuoy"></i> <span -->
+<!-- 															class="m-nav__link-text">Support</span> -->
+<!-- 													</a></li> -->
+<!-- 													<li class="m-nav__separator m-nav__separator--fit"></li> -->
+<!-- 													<li class="m-nav__item"><a -->
+<!-- 														href="indexb101.html?page=snippets/pages/user/login-1&amp;demo=default" -->
+<!-- 														class="btn m-btn--pill    btn-secondary m-btn m-btn--custom m-btn--label-brand m-btn--bolder">Logout</a> -->
+<!-- 													</li> -->
 												</ul>
 											</div>
 										</div>

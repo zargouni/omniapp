@@ -46,17 +46,16 @@
 											<div class="m-card-profile__title m--hide">Your Profile
 											</div>
 											<div class="m-card-profile__pic">
-												<!-- 												<div class="m-card-profile__pic-wrapper"> -->
 												<!-- begin profile pic upload -->
-												<form target="noTargett" id="profilePictureForm"
+												<form th:if="${profileUser.id == sessionUser.id}" target="noTargett" id="profilePictureForm"
 													name="profilePictureForm">
-													<div class="profile">
+													<div title="Click to update profile picture"  class="profile">
 														<div class="photo">
 															<input id="input_picture" name="file" type="file"
 																accept="image/*" required>
 															<div class="photo__helper">
-																<div
-																	th:style="'background:url('+ @{ 'assets/app/media/img/users/' + ${profileUser.profilePic}} +') no-repeat ; 
+																<div th:if="${profileUser.profilePic != null}"
+																	th:style="'background:url('+ @{ ${profileUser.profilePic}} +') no-repeat ; 
         																		-webkit-background-size: cover;
        																			-moz-background-size: cover;
         																		-o-background-size: cover;
@@ -65,20 +64,42 @@
 																	<canvas class="photo__canvas">
 																	
 																	</canvas>
-																	<!-- 																	<div class="message is-empty"> -->
-																	<!-- 																		<p class="message--desktop"> -->
-																	<!-- 																		Drop your photo here -->
-																	<!-- 																			or browse your computer.</p> -->
-																	<!-- 																		<p class="message--mobile">Tap here to select your -->
-																	<!-- 																			picture.</p> -->
-																	<!-- 																	</div> -->
 																	<div class="message is-loading">
 																		<i class="fa fa-2x fa-spin fa-spinner"></i>
 																	</div>
-																	<div class="message is-dragover">
-																		<i class="fa fa-2x fa-cloud-upload"></i>
-																		<p>Drop your photo</p>
+<!-- 																	<div class="message is-dragover"> -->
+<!-- 																		<i class="fa fa-2x fa-cloud-upload"></i> -->
+<!-- 																		<p>Drop your photo</p> -->
+<!-- 																	</div> -->
+																	<div class="message is-wrong-file-type">
+																		<p>Only images allowed.</p>
+																		<p class="message--desktop">Drop your photo here
+																			or browse your computer.</p>
+																		<p class="message--mobile">Tap here to select your
+																			picture.</p>
 																	</div>
+																	<div class="message is-wrong-image-size">
+																		<p>Your photo must be larger than 350px.</p>
+																	</div>
+																</div>
+																
+																<div th:if="${profileUser.profilePic == null}"
+																	style="background:url('assets/app/media/img/users/user-icon.png') no-repeat ; 
+        																		-webkit-background-size: cover;
+       																			-moz-background-size: cover;
+        																		-o-background-size: cover;
+      																			background-size: cover;"
+																	class="photo__frame photo__frame--circle">
+																	<canvas class="photo__canvas">
+																	
+																	</canvas>
+																	<div class="message is-loading">
+																		<i class="fa fa-2x fa-spin fa-spinner"></i>
+																	</div>
+<!-- 																	<div class="message is-dragover"> -->
+<!-- 																		<i class="fa fa-2x fa-cloud-upload"></i> -->
+<!-- 																		<p>Drop your photo</p> -->
+<!-- 																	</div> -->
 																	<div class="message is-wrong-file-type">
 																		<p>Only images allowed.</p>
 																		<p class="message--desktop">Drop your photo here
@@ -92,25 +113,25 @@
 																</div>
 															</div>
 
-<!-- 															<div class="photo__options hide"> -->
-<!-- 																<div class="photo__zoom"> -->
-<!-- 																	<input type="range" class="zoom-handler"> -->
-<!-- 																</div> -->
-<!-- 																<a href="javascript:;" class="remove"><i -->
-<!-- 																	class="fa fa-trash"></i></a> -->
-<!-- 															</div> -->
 														</div>
 													</div>
 
-													<!-- 													<hr> -->
-													<button type="submit">Submit</button>
-													<!-- 													<hr> -->
-													<!-- 													<img src="" alt="" class="preview"> <img src="" -->
-													<!-- 														alt="" class="preview preview--rounded"> -->
+													<button class="btn m-btn--pill m-btn--air         btn-info btn-sm" style="display: none;margin-top: -50px;" id="btnSubmitProfilePicture" type="submit">Save</button>
 												</form>
 												<!-- end profile pic upload -->
 												<!-- 													<img src="assets/app/media/img/users/user4.jpg" alt="" /> -->
 												<!-- 												</div> -->
+												<div th:if="${profileUser.id != sessionUser.id && profileUser.profilePic != null}" style="margin: 20px 0 35px 0;" class="profile">
+														<div class="photo">
+														<img style="width:130px;height:130px;" th:src="@{ ${profileUser.profilePic}}" />
+														</div>
+												</div>
+												
+												<div th:if="${profileUser.id != sessionUser.id && profileUser.profilePic == null}" style="margin: 20px 0 35px 0;" class="profile">
+														<div class="photo-wrapper">
+														<img src="assets/app/media/img/users/user-icon.png" alt="" />
+														</div>
+												</div>
 											</div>
 											<div class="m-card-profile__details">
 												<span
@@ -120,53 +141,53 @@
 													class="m-card-profile__email m-link">mark.andre@gmail.com</span>
 											</div>
 										</div>
-										<ul class="m-nav m-nav--hover-bg m-portlet-fit--sides">
-											<li class="m-nav__separator m-nav__separator--fit"></li>
-											<li class="m-nav__section m--hide"><span
-												class="m-nav__section-text">Section</span></li>
-											<li class="m-nav__item"><a
-												href="indexa80c.html?page=header/profile&amp;demo=default"
-												class="m-nav__link"> <i
-													class="m-nav__link-icon flaticon-profile-1"></i> <span
-													class="m-nav__link-title"> <span
-														class="m-nav__link-wrap"> <span
-															class="m-nav__link-text">My Profile</span> <span
-															class="m-nav__link-badge"><span
-																class="m-badge m-badge--success">2</span></span>
-													</span>
-												</span>
-											</a></li>
-											<li class="m-nav__item"><a
-												href="indexa80c.html?page=header/profile&amp;demo=default"
-												class="m-nav__link"> <i
-													class="m-nav__link-icon flaticon-share"></i> <span
-													class="m-nav__link-text">Activity</span>
-											</a></li>
-											<li class="m-nav__item"><a
-												href="indexa80c.html?page=header/profile&amp;demo=default"
-												class="m-nav__link"> <i
-													class="m-nav__link-icon flaticon-chat-1"></i> <span
-													class="m-nav__link-text">Messages</span>
-											</a></li>
-											<li class="m-nav__item"><a
-												href="indexa80c.html?page=header/profile&amp;demo=default"
-												class="m-nav__link"> <i
-													class="m-nav__link-icon flaticon-graphic-2"></i> <span
-													class="m-nav__link-text">Sales</span>
-											</a></li>
-											<li class="m-nav__item"><a
-												href="indexa80c.html?page=header/profile&amp;demo=default"
-												class="m-nav__link"> <i
-													class="m-nav__link-icon flaticon-time-3"></i> <span
-													class="m-nav__link-text">Events</span>
-											</a></li>
-											<li class="m-nav__item"><a
-												href="indexa80c.html?page=header/profile&amp;demo=default"
-												class="m-nav__link"> <i
-													class="m-nav__link-icon flaticon-lifebuoy"></i> <span
-													class="m-nav__link-text">Support</span>
-											</a></li>
-										</ul>
+<!-- 										<ul class="m-nav m-nav--hover-bg m-portlet-fit--sides"> -->
+<!-- 											<li class="m-nav__separator m-nav__separator--fit"></li> -->
+<!-- 											<li class="m-nav__section m--hide"><span -->
+<!-- 												class="m-nav__section-text">Section</span></li> -->
+<!-- 											<li class="m-nav__item"><a -->
+<!-- 												href="indexa80c.html?page=header/profile&amp;demo=default" -->
+<!-- 												class="m-nav__link"> <i -->
+<!-- 													class="m-nav__link-icon flaticon-profile-1"></i> <span -->
+<!-- 													class="m-nav__link-title"> <span -->
+<!-- 														class="m-nav__link-wrap"> <span -->
+<!-- 															class="m-nav__link-text">My Profile</span> <span -->
+<!-- 															class="m-nav__link-badge"><span -->
+<!-- 																class="m-badge m-badge--success">2</span></span> -->
+<!-- 													</span> -->
+<!-- 												</span> -->
+<!-- 											</a></li> -->
+<!-- 											<li class="m-nav__item"><a -->
+<!-- 												href="indexa80c.html?page=header/profile&amp;demo=default" -->
+<!-- 												class="m-nav__link"> <i -->
+<!-- 													class="m-nav__link-icon flaticon-share"></i> <span -->
+<!-- 													class="m-nav__link-text">Activity</span> -->
+<!-- 											</a></li> -->
+<!-- 											<li class="m-nav__item"><a -->
+<!-- 												href="indexa80c.html?page=header/profile&amp;demo=default" -->
+<!-- 												class="m-nav__link"> <i -->
+<!-- 													class="m-nav__link-icon flaticon-chat-1"></i> <span -->
+<!-- 													class="m-nav__link-text">Messages</span> -->
+<!-- 											</a></li> -->
+<!-- 											<li class="m-nav__item"><a -->
+<!-- 												href="indexa80c.html?page=header/profile&amp;demo=default" -->
+<!-- 												class="m-nav__link"> <i -->
+<!-- 													class="m-nav__link-icon flaticon-graphic-2"></i> <span -->
+<!-- 													class="m-nav__link-text">Sales</span> -->
+<!-- 											</a></li> -->
+<!-- 											<li class="m-nav__item"><a -->
+<!-- 												href="indexa80c.html?page=header/profile&amp;demo=default" -->
+<!-- 												class="m-nav__link"> <i -->
+<!-- 													class="m-nav__link-icon flaticon-time-3"></i> <span -->
+<!-- 													class="m-nav__link-text">Events</span> -->
+<!-- 											</a></li> -->
+<!-- 											<li class="m-nav__item"><a -->
+<!-- 												href="indexa80c.html?page=header/profile&amp;demo=default" -->
+<!-- 												class="m-nav__link"> <i -->
+<!-- 													class="m-nav__link-icon flaticon-lifebuoy"></i> <span -->
+<!-- 													class="m-nav__link-text">Support</span> -->
+<!-- 											</a></li> -->
+<!-- 										</ul> -->
 
 										<!-- 										<div class="m-portlet__body-separator"></div> -->
 
@@ -414,6 +435,11 @@
 
 				<script type="text/javascript"
 					src="assets/omniapp/js/profile.scripts.js">
+					
+				</script>
+				
+				<script th:if="${profileUser.id == sessionUser.id}" type="text/javascript"
+					src="assets/omniapp/js/profile.picture.upload.js">
 					
 				</script>
 
