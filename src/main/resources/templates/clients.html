@@ -17,11 +17,15 @@
 		<!-- begin::Content -->
 		<div
 			class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
+			<div class="loader-wrapper" style="display: none;">
+				<div id="loader"></div>
+			</div>
+			
 			<div class="m-grid__item m-grid__item--fluid m-wrapper">
 				<div class="m-subheader ">
 					<div class="d-flex align-items-center">
 						<div class="mr-auto">
-							<h3 class="m-subheader__title m-subheader__title--separator">Clients</h3>
+<!-- 							<h3 class="m-subheader__title m-subheader__title--separator">Clients</h3> -->
 
 						</div>
 						<div>
@@ -70,11 +74,13 @@
 		<!-- end:: Content -->
 		<script type="text/javascript"
 			src="assets/omniapp/js/clients.scripts.js"></script>
+			<script type="text/javascript"
+			src="assets/omniapp/js/client.logo.js"></script>
 		<script type="text/javascript"
 			src="assets/omniapp/js/datatable-nature-json.js"></script>
 		<script type="text/javascript">
 			$(document).ready(function() {
-				populateClientsUI()
+				//populateClientsUI()
 
 			});
 		</script>

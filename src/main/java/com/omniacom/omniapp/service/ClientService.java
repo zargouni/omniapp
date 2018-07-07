@@ -94,7 +94,8 @@ public class ClientService {
 		JSONObject jsonClient = new JSONObject().element("id", client.getId()).element("name", client.getName())
 				.element("email", client.getEmail()).element("address", client.getAddress())
 				.element("country", client.getCountry()).element("phone", client.getPhone())
-				.element("sitesCount", findSitesCount(client));
+				.element("sitesCount", findSitesCount(client))
+				.element("logo", client.getLogo() == null ? "assets/app/media/img/logos/no_logo.jpg" : client.getLogo());
 		return jsonClient;
 	}
 

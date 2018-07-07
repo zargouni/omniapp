@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.UploadedFileRepository;
@@ -25,6 +26,8 @@ public class UploadedFileService {
 	private String picturesDestinationLocation = new File("").getAbsolutePath()+"/src/main/resources/static";
 
 	private String picturesLocation = "/assets/app/media/img/users/";
+	
+	private String logosLocation = "/assets/app/media/img/logos/";
 
 	public UploadedFile saveFileToDatabase(UploadedFile uploadedFile) {
 
@@ -49,6 +52,18 @@ public class UploadedFileService {
 		
 		return miniFileName;
 	}
+	
+	public String saveLogoToLocalDisk(Client client, MultipartFile multipartFile) throws IOException, FileNotFoundException {
+
+		String outputFileName = getOutputLogoName(client, multipartFile);
+
+		String miniFileName = getMinifiedLogoName(client, multipartFile);
+
+		FileCopyUtils.copy(multipartFile.getBytes(), new FileOutputStream(outputFileName));
+		
+		return miniFileName;
+	}
+
 
 	public String getOutputFilename(MultipartFile multipartFile) {
 
@@ -66,6 +81,18 @@ public class UploadedFileService {
 		return getPicturesLocation() + user.getFirstName() + user.getLastName()
 				+ multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().indexOf("."));
 	}
+	
+	public String getOutputLogoName(Client client, MultipartFile multipartFile) {
+
+		return getPicturesDestinationLocation() + getLogosLocation() + client.getName()
+				+ multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().indexOf("."));
+	}
+	
+	public String getMinifiedLogoName(Client client, MultipartFile multipartFile) {
+
+		return getLogosLocation() + client.getName()
+				+ multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().indexOf("."));
+	}
 
 	public String getDestinationLocation() {
 		return destinationLocation;
@@ -77,6 +104,10 @@ public class UploadedFileService {
 
 	public String getPicturesLocation() {
 		return picturesLocation;
+	}
+	
+	public String getLogosLocation() {
+		return logosLocation;
 	}
 
 	public UploadedFile getUploadedFileInfo(MultipartFile multipartFile) throws IOException {

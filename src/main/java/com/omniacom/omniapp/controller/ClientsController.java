@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -15,14 +17,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Nature;
 import com.omniacom.omniapp.entity.Site;
+import com.omniacom.omniapp.entity.User;
+import com.omniacom.omniapp.repository.ClientRepository;
 import com.omniacom.omniapp.service.ClientService;
 import com.omniacom.omniapp.service.NatureService;
 import com.omniacom.omniapp.service.SiteService;
+import com.omniacom.omniapp.service.UploadedFileService;
 import com.omniacom.omniapp.validator.JsonResponse;
 import com.omniacom.omniapp.validator.NatureValidator;
 
@@ -43,6 +49,12 @@ public class ClientsController {
 	
 	@Autowired
 	NatureValidator natureValidator;
+	
+	@Autowired
+	UploadedFileService fileService;
+	
+	@Autowired
+	ClientRepository clientRepo;
 	
 	@GetMapping("/clients")
 	public @ResponseBody ModelAndView index(Model model) {
@@ -306,6 +318,31 @@ public class ClientsController {
 			response.setResult(result.getFieldErrors());
 		}
 
+		return response;
+	}
+	
+	@PostMapping(value = "/upload-client-logo")
+	public JsonResponse handleClientLogoUpload(@RequestParam("id") long clientId,@RequestParam("file") MultipartFile file) {
+		boolean success = true;
+		JsonResponse response = new JsonResponse();
+		
+			try {
+				Client client = clientService.findById(clientId); 
+				String logo = fileService.saveLogoToLocalDisk(client, file);
+				client.setLogo(logo);
+				
+				clientRepo.save(client);
+			
+			} catch (IOException e) {
+				e.printStackTrace();
+				success = false;
+			}
+		
+		if (success) {
+			response.setStatus("SUCCESS");
+			return response;
+		}
+		response.setStatus("FAIL");
 		return response;
 	}
 }

@@ -28,6 +28,8 @@ function populateClientsUI(){
 							+'</div>'
 
 							+	'<h2 class="m-portlet__head-label m-portlet__head-label--danger">'
+							+'<span>'+ getLogoUploadForm(response[i])+'</span>'
+
 							+		'<span>'+response[i].name+'</span>'
 							+	'</h2>'
 							+'</div>'
@@ -100,6 +102,7 @@ function populateClientsUI(){
 				}
 			}
 
+			
 
 		},
 		error : function(e) {
@@ -110,6 +113,46 @@ function populateClientsUI(){
 	populateNatureFilter();
 
 	}
+
+function getLogoUploadForm(client){
+	
+	return '<form target="noTarget" id="clientLogoForm_'+client.id+'"'
+		+' name="clientLogoForm">'
+		+'<div title="Click to update client logo"  class="client-logo">'
+		+'<div class="logo">'
+		+'	<input id="input_logo_'+client.id+'" class="'+client.id+'" name="file" type="file"'
+		+'		accept="image/*" required>'
+		+'	<div class="logo__helper">'
+		+'		<div '
+		+'			style="background:url(\''+ client.logo +'\') no-repeat ;'
+		+'						-webkit-background-size: cover;'
+		+'								-moz-background-size: cover;'
+		+'							-o-background-size: cover;'
+		+'										background-size: cover;"'
+		+'				class="logo__frame logo__frame--circle">'
+		+'						<canvas class="logo__canvas">'
+		+'						</canvas>'
+		+'				<div class="message is-loading">'
+		+'					<i class="fa fa-2x fa-spin fa-spinner"></i>'
+		+'				</div>'
+		+'	<div class="message is-wrong-file-type">'
+		+'				<p>Only images allowed.</p>'
+		+'				<p class="message--desktop">Drop your photo here'
+		+'					or browse your computer.</p>'
+		+'				<p class="message--mobile">Tap here to select your'
+		+'					picture.</p>'
+		+'			</div>'
+		+'			<div class="message is-wrong-image-size">'
+		+'				<p>Your photo must be larger than 350px.</p>'
+		+'			</div>'
+		+'		</div>'
+					
+		+'		</div>'
+
+		+'	</div>'
+		+'</div>'
+		+'</form>';
+}
 
 function HandleMapControls(map,clientId){
 	// var googleMapWidth = $("#m_portlet_tab_1_2").css('width');
@@ -829,7 +872,8 @@ function populateModalNewSite(clientId){
 	populateNatureListNewSite();
 	
 	 
-	 var myDropzone = new Dropzone("#xls-dropzone-site", { // Make the whole body a
+	 var myDropzone = new Dropzone("#xls-dropzone-site", { // Make the whole
+															// body a
 			// dropzone
 		 paramName: "excelfile",
 		 url: "/process-excel-sites", // Set the url
@@ -853,7 +897,8 @@ function populateModalNewSite(clientId){
 			 formData.append('id',clientId);
 		 // document.querySelector("#total-progress").style.opacity = "1";
 		  // And disable the start button
-		  //file.previewElement.querySelector(".start").setAttribute("disabled", "disabled");
+		  // file.previewElement.querySelector(".start").setAttribute("disabled",
+			// "disabled");
 		});
 	}
 
@@ -861,11 +906,59 @@ function initFormRepeaterNewSite(){
 	populateNatureListNewSite();
 }
 
+function uploadClientLogo(clientId) {
+    var input = document.querySelector('#input_logo_'+clientId);
+	var file = input.files[0];
+	var formData = new FormData();
+    formData.append("id", clientId);
+    formData.append("file", file);
+    $.ajax({
+		type : "POST",
+		url : '/upload-client-logo',
+		data: formData,
+		processData: false,
+		contentType: false,
+		success : function(response) {
+			if(response.status="SUCCESS")
+				toastr.success("Logo updated successfully");
+			else
+				toastr.error("Couldn't update logo");
+		},
+		error : function(e) {
+			alert('Error: Client logo upload ' + e);
+		}
+	});
+    
+}
+
+
+
+
+
+$('.loader-wrapper').show();
+
 $(document).ready(function() {
-// $('#init_nature_datatable').on('click',function(){
-// natureDatatableJson.init();
-// });
+
 	
+	populateClientsUI();
+	$('.loader-wrapper').hide();
+	
+	$('form[id*=clientLogoForm_]').each(function(){
+		 var p = new ClientLogo("#"+$(this).attr('id'), null,
+      {
+        imageHelper: true,
+          onRemove: function (type) {
+              $('.preview').hide().attr('src','');
+          },
+          onError: function (type) {
+              console.log('Error type: ' + type);
+          }
+      });
+		 
+		
+	});
+	
+
 	
 	
 });

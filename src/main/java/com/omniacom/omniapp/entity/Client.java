@@ -26,6 +26,8 @@ public class Client implements Serializable {
 	private String phone;
 	private String email;
 	
+	private String logo;
+	
 	@OneToMany(mappedBy = "client")
 	private List<Project> projects;
 	
@@ -223,6 +225,22 @@ public class Client implements Serializable {
 		} else if (!phone.equals(other.phone))
 			return false;
 		return true;
+	}
+
+
+	/**
+	 * @return the logo
+	 */
+	public String getLogo() {
+		return logo;
+	}
+
+
+	/**
+	 * @param logo the logo to set
+	 */
+	public void setLogo(String logo) {
+		this.logo = logo;
 	}
 	
 	

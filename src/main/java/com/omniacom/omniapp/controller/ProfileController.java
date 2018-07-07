@@ -24,6 +24,7 @@ import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.UserRepository;
 import com.omniacom.omniapp.service.UploadedFileService;
 import com.omniacom.omniapp.service.UserService;
+import com.omniacom.omniapp.validator.JsonResponse;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -56,35 +57,31 @@ public class ProfileController {
 	}
 	
 	@PostMapping(value = "/upload-profile-picture")
-	public ResponseEntity handleProfilePictureUpload(@RequestParam("file") MultipartFile file) {
+	public JsonResponse handleProfilePictureUpload(@RequestParam("file") MultipartFile file) {
 		boolean success = true;
-		//System.out.println("dkhal");
-		//UploadedFile dbFile = new UploadedFile();
-		//for (int i = 0; i < files.length; i++) {
+		JsonResponse response = new JsonResponse();
 			try {
-			
-				
-//				System.out.println(file.getOriginalFilename());
-//				System.out.println("baad file name ");
-				//System.out.println("path: " +);
 				User user = userRepo.findOne(userService.getSessionUser().getId()); 
 				String picture = fileService.savePicToLocalDisk(user,file);
 				user.setProfilePic(picture);
 				
 				userRepo.save(user);
-				//fileService.saveFileToDatabase(dbFile);
-				//userService.
+			
 			} catch (IOException e) {
 				e.printStackTrace();
 				success = false;
 			}
-		//}
-		if (success)
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("All Files uploaded");
-
-		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all files were not uploaded");
+			
+		if (success) {
+			response.setStatus("SUCCESS");
+			return response;
+		}
+		response.setStatus("FAIL");
+		return response;
 
 	}
+	
+	
 	@GetMapping("/json-user-stats")
 	public @ResponseBody JSONObject getUserStats(@RequestParam("id") long userId) {
 		return userService.getUserStatsJson(userId);

@@ -1,32 +1,26 @@
-/**
- * Profile picture
- * @author Daniel Salvagni <danielsalvagni@gmail.com>
- */
-
 
 /**
  * Turn the globals into local variables.
  */
 ; (function (window, $, undefined) {
-    if (!window.profilePicture) {
-        window.profilePicture = profilePicture;
+    if (!window.ClientLogo) {
+        window.ClientLogo = ClientLogo;
     }
 
     /**
      * Component
      */
-    function profilePicture(cssSelector, imageFilePath, options) {
+    function ClientLogo(cssSelector, imageFilePath, options) {
         var self = this;
         /**
          * Map the DOM elements
          */
         self.element = $(cssSelector);
-        self.canvas = $(cssSelector + ' .photo__frame .photo__canvas')[0];
-        self.photoImg = $(cssSelector + ' .photo__frame img');
-        self.photoLoading = $(cssSelector + ' .photo__frame .message.is-loading');
-        self.photoOptions = $(cssSelector + ' .photo__options');
-        self.photoFrame = $(cssSelector + ' .photo__frame');
-        self.photoArea = $(cssSelector + ' .photo');
+        self.canvas = $(cssSelector + ' .logo__frame .logo__canvas')[0];
+        self.photoImg = $(cssSelector + ' .logo__frame img');
+        self.photoLoading = $(cssSelector + ' .logo__frame .message.is-loading');
+        self.photoFrame = $(cssSelector + ' .logo__frame');
+        self.photoArea = $(cssSelector + ' .logo');
         /**
          * Image info to post to the API
          */
@@ -65,12 +59,7 @@
         /**
          * Zoom default options
          */
-        self.defaults.zoom = {
-            initialValue: 1,
-            minValue: 0.1,
-            maxValue: 2,
-            step: 0.01
-        };
+
         /**
          * Image default options
          */
@@ -88,7 +77,6 @@
         /**
          * Zoom controls
          */
-        self.zoom = $(cssSelector + ' .zoom');
 
         /**
          * Call the constructor
@@ -129,21 +117,17 @@
              * Merge the defaults with the user options
              */
             self.options = $.extend({}, self.defaults, options);
-
-            /**
-             * Enable/disable the image helper
-             */
-
+            
 
             registerDropZoneEvents();
-          
+            
             /**
              * Start
              */
             if (imageFilePath) {
                 processFile(imageFilePath);
             } else {
-                self.photoArea.addClass('photo--empty');
+                self.photoArea.addClass('logo--empty');
             }
         }
 
@@ -180,15 +164,31 @@
             if (!isDataURL(imageUrl)) {
                 image.crossOrigin = 'anonymous';
             }
-            self.photoArea.addClass('photo--loading');
+            self.photoArea.addClass('logo--loading');
             image.onload = function () {
                 var ratio,
                     newH, newW,
                     w = this.width, h = this.height;
 
+//                if (w < self.options.image.minWidth ||
+//                    h < self.options.image.minHeight) {
+//                    self.photoArea.addClass('logo--error--image-size logo--empty');
+//                    setModel({});
+//
+//                    /**
+//                     * Call the onError callback
+//                     */
+//                    if (typeof self.options.onError === 'function') {
+//                        self.options.onError('image-size');
+//                    }
+//
+//                    self.photoArea.removeClass('logo--loading');
+//                    return;
+//                } else {
+//                    self.photoArea.removeClass('logo--error--image-size');
+//                }
 
-
-                self.photoArea.removeClass('photo--empty photo--error--file-type photo--loading');
+                self.photoArea.removeClass('logo--empty logo--error--file-type logo--loading');
 
                 var frameRatio = self.options.image.maxHeight / self.options.image.maxWidth;
                 var imageRatio = self.model.height / self.model.width;
@@ -214,7 +214,6 @@
                 self.model.cropHeight = self.photoFrame.outerHeight();
                 self.model.x = 0;
                 self.model.y = 0;
-                self.photoOptions.removeClass('hide');
                 fitToFrame();
                 render();
 
@@ -239,7 +238,7 @@
          */
         function registerDropZoneEvents() {
             var target = null;
-
+            
             /**
              * On a file is selected, calls the readFile method.
              * It is allowed to select just one file - we're forcing it here.
@@ -247,30 +246,31 @@
             self.element.on('change', 'input[type=file]', function (e) {
                 if (this.files && this.files.length) {
                     readFile(this.files[0]);
-                    uploadProfilePicture(this.files[0]);
+                    uploadClientLogo($(this).attr('class'));
+                    
                   
                 }
             });
             /**
              * Handle the click to the hidden input file so we can browser files.
              */
-            self.element.on('click', '.photo--empty .photo__frame', function (e) {
+            self.element.on('click', '.logo--empty .logo__frame', function (e) {
                 $(cssSelector + ' input[type=file]').trigger('click');
 
             });
-
+            
             /**
              * Only into the DropZone scope.
              * Read a file using the FileReader API.
              * Validates file type.
              */
             function readFile(file) {
-                self.photoArea.removeClass('photo--error photo--error--file-type photo--error-image-size');
+                self.photoArea.removeClass('logo--error logo--error--file-type logo--error-image-size');
                 /**
                  * Validate file type
                  */
                 if (!file.type.match('image.*')) {
-                    self.photoArea.addClass('photo--error--file-type');
+                    self.photoArea.addClass('logo--error--file-type');
                     /**
                      * Call the onError callback
                      */
@@ -283,7 +283,7 @@
                 var reader;
                 reader = new FileReader();
                 reader.onloadstart = function () {
-                    self.photoArea.addClass('photo--loading');
+                    self.photoArea.addClass('logo--loading');
                 }
                 reader.onloadend = function (data) {
                     self.photoImg.css({ left: 0, top: 0 });
@@ -291,7 +291,7 @@
                     processFile(base64Image, file.type);
                 }
                 reader.onerror = function () {
-                    self.photoArea.addClass('photo--error');
+                    self.photoArea.addClass('logo--error');
                     /**
                      * Call the onError callback
                      */
@@ -302,7 +302,6 @@
                 reader.readAsDataURL(file);
             }
         }
-
 
         /**
          * Resize and position the image to fit into the frame
@@ -322,16 +321,20 @@
                 scaleRatio = (newWidth / self.model.width);
                 newHeight = parseFloat(self.model.height) * scaleRatio;
             }
+            self.model.zoom = scaleRatio;
+
 
             self.model.height = newHeight;
             self.model.width = newWidth;
+          
         }
         /**
          * Update image's position and size
          */
         function render() {
-             self.canvasContext.drawImage(self.model.imageSrc, self.model.x, self.model.y, self.model.width, self.model.height);
-           
+            
+            self.canvasContext.drawImage(self.model.imageSrc, self.model.x, self.model.y, self.model.width, self.model.height);
+
             if (self.options.imageHelper) {
                 updateHelper();
             }
@@ -349,7 +352,7 @@
         function updateHelper() {
             var x = self.model.x + self.photoFrame.position().left;
             var y = self.model.y + self.photoFrame.position().top;
-            
+
         }
         /**
          * Creates the canvas for the image helper
@@ -377,51 +380,3 @@
         }
     }
 })(window, jQuery);
-
-
-$(function() {
-  
-/**
-     * DEMO
-     */ 
-    var p = new profilePicture('.profile', null,
-        {
-          imageHelper: false,
-            
-            onError: function (type) {
-                console.log('Error type: ' + type);
-            }
-        });
-
-
-    
-});
-
-
-function uploadProfilePicture(file) {
-	
-	 
-		var formData = new FormData();
-	    formData.append("id", "1");
-	    formData.append("file", file);
-	    $.ajax({
-			type : "POST",
-			url : '/upload-profile-picture',
-			data: formData,
-			processData: false,
-			contentType: false,
-			success : function(response) {
-				if(response.status="SUCCESS")
-					toastr.success("Profile picture updated successfully");
-				
-				else
-					toastr.error("Couldn't update profile picture");
-			},
-			error : function(e) {
-				alert('Error: Profile picture upload ' + e);
-			}
-		});
-	    
-
-}
-
