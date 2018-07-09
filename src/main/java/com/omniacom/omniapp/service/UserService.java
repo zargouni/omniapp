@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
@@ -118,7 +119,8 @@ public class UserService implements UserDetailsService {
 
 	public JSONObject jsonUser(User user) {
 		return new JSONObject().element("id", user.getId()).element("firstName", user.getFirstName())
-				.element("lastName", user.getLastName());
+				.element("lastName", user.getLastName())
+				.element("email", user.getEmail());
 	}
 
 	public JSONArray getAllSessionUserProjects() {
@@ -208,6 +210,26 @@ public class UserService implements UserDetailsService {
 				.element("tasks", user.getTasks().size())
 				.element("issues", user.getIssues().size());
 		return json;
+	}
+
+	public boolean updateSessionUserInfos(User user) {
+		User sessionUser = getSessionUser();
+		sessionUser.setFirstName(user.getFirstName());
+		sessionUser.setLastName(user.getLastName());
+		sessionUser.setEmail(user.getEmail());
+		if(userRepo.save(sessionUser) != null)
+			return true;
+		return false;
+	}
+
+	public boolean updateSessionUserPassword(String currentPassword, String newPassword) {
+		User user = getSessionUser();
+		if(user.getPassword().equals(currentPassword)) {
+			user.setPassword(newPassword);
+			userRepo.save(user);
+			return true;
+		}
+		return false;
 	}
 
 

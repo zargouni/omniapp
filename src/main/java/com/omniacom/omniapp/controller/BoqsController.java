@@ -3,7 +3,10 @@ package com.omniacom.omniapp.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +27,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @RestController
+
 public class BoqsController {
 
 	@Autowired

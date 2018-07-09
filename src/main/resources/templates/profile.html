@@ -71,16 +71,16 @@
 <!-- 																		<i class="fa fa-2x fa-cloud-upload"></i> -->
 <!-- 																		<p>Drop your photo</p> -->
 <!-- 																	</div> -->
-																	<div class="message is-wrong-file-type">
-																		<p>Only images allowed.</p>
-																		<p class="message--desktop">Drop your photo here
-																			or browse your computer.</p>
-																		<p class="message--mobile">Tap here to select your
-																			picture.</p>
-																	</div>
-																	<div class="message is-wrong-image-size">
-																		<p>Your photo must be larger than 350px.</p>
-																	</div>
+<!-- 																	<div class="message is-wrong-file-type"> -->
+<!-- 																		<p>Only images allowed.</p> -->
+<!-- 																		<p class="message--desktop">Drop your photo here -->
+<!-- 																			or browse your computer.</p> -->
+<!-- 																		<p class="message--mobile">Tap here to select your -->
+<!-- 																			picture.</p> -->
+<!-- 																	</div> -->
+<!-- 																	<div class="message is-wrong-image-size"> -->
+<!-- 																		<p>Your photo must be larger than 350px.</p> -->
+<!-- 																	</div> -->
 																</div>
 																
 																<div th:if="${profileUser.profilePic == null}"
@@ -100,16 +100,16 @@
 <!-- 																		<i class="fa fa-2x fa-cloud-upload"></i> -->
 <!-- 																		<p>Drop your photo</p> -->
 <!-- 																	</div> -->
-																	<div class="message is-wrong-file-type">
-																		<p>Only images allowed.</p>
-																		<p class="message--desktop">Drop your photo here
-																			or browse your computer.</p>
-																		<p class="message--mobile">Tap here to select your
-																			picture.</p>
-																	</div>
-																	<div class="message is-wrong-image-size">
-																		<p>Your photo must be larger than 350px.</p>
-																	</div>
+<!-- 																	<div class="message is-wrong-file-type"> -->
+<!-- 																		<p>Only images allowed.</p> -->
+<!-- 																		<p class="message--desktop">Drop your photo here -->
+<!-- 																			or browse your computer.</p> -->
+<!-- 																		<p class="message--mobile">Tap here to select your -->
+<!-- 																			picture.</p> -->
+<!-- 																	</div> -->
+<!-- 																	<div class="message is-wrong-image-size"> -->
+<!-- 																		<p>Your photo must be larger than 350px.</p> -->
+<!-- 																	</div> -->
 																</div>
 															</div>
 
@@ -141,22 +141,27 @@
 													class="m-card-profile__email m-link">mark.andre@gmail.com</span>
 											</div>
 										</div>
-<!-- 										<ul class="m-nav m-nav--hover-bg m-portlet-fit--sides"> -->
-<!-- 											<li class="m-nav__separator m-nav__separator--fit"></li> -->
-<!-- 											<li class="m-nav__section m--hide"><span -->
-<!-- 												class="m-nav__section-text">Section</span></li> -->
-<!-- 											<li class="m-nav__item"><a -->
-<!-- 												href="indexa80c.html?page=header/profile&amp;demo=default" -->
-<!-- 												class="m-nav__link"> <i -->
-<!-- 													class="m-nav__link-icon flaticon-profile-1"></i> <span -->
-<!-- 													class="m-nav__link-title"> <span -->
-<!-- 														class="m-nav__link-wrap"> <span -->
-<!-- 															class="m-nav__link-text">My Profile</span> <span -->
+										
+										<ul th:if="${profileUser.id == sessionUser.id}" class="m-nav m-nav--hover-bg m-portlet-fit--sides">
+											<li class="m-nav__separator m-nav__separator--fit"></li>
+											<li class="m-nav__section m--hide"><span
+												class="m-nav__section-text">Section</span></li>
+											<li class="m-nav__item"><a
+											data-toggle="modal" data-target="#modal_update_user_infos"
+												onclick="populateModalUpdateInfos()"
+												href="#"
+												class="m-nav__link"> <i
+													class="m-nav__link-icon flaticon-profile-1"></i> <span
+													class="m-nav__link-title"> <span
+														class="m-nav__link-wrap"> <span
+															class="m-nav__link-text">Update Informations</span> 
+<!-- 															<span -->
 <!-- 															class="m-nav__link-badge"><span -->
 <!-- 																class="m-badge m-badge--success">2</span></span> -->
-<!-- 													</span> -->
-<!-- 												</span> -->
-<!-- 											</a></li> -->
+													</span>
+												</span>
+											</a></li>
+											</ul>
 <!-- 											<li class="m-nav__item"><a -->
 <!-- 												href="indexa80c.html?page=header/profile&amp;demo=default" -->
 <!-- 												class="m-nav__link"> <i -->
@@ -189,47 +194,48 @@
 <!-- 											</a></li> -->
 <!-- 										</ul> -->
 
-										<!-- 										<div class="m-portlet__body-separator"></div> -->
+																				<div class="m-portlet__body-separator"></div>
 
 
 
-										<!-- 										<div class="m-widget1 m-widget1--paddingless"> -->
-										<!-- 											<div class="m-widget1__item"> -->
-										<!-- 												<div class="row m-row--no-padding align-items-center"> -->
-										<!-- 													<div class="col"> -->
-										<!-- 														<h3 class="m-widget1__title">Member Profit</h3> -->
-										<!-- 														<span class="m-widget1__desc">Awerage Weekly Profit</span> -->
-										<!-- 													</div> -->
-										<!-- 													<div class="col m--align-right"> -->
-										<!-- 														<span class="m-widget1__number m--font-brand">+$17,800</span> -->
-										<!-- 													</div> -->
-										<!-- 												</div> -->
-										<!-- 											</div> -->
-										<!-- 											<div class="m-widget1__item"> -->
-										<!-- 												<div class="row m-row--no-padding align-items-center"> -->
-										<!-- 													<div class="col"> -->
-										<!-- 														<h3 class="m-widget1__title">Orders</h3> -->
-										<!-- 														<span class="m-widget1__desc">Weekly Customer -->
-										<!-- 															Orders</span> -->
-										<!-- 													</div> -->
-										<!-- 													<div class="col m--align-right"> -->
-										<!-- 														<span class="m-widget1__number m--font-danger">+1,800</span> -->
-										<!-- 													</div> -->
-										<!-- 												</div> -->
-										<!-- 											</div> -->
-										<!-- 											<div class="m-widget1__item"> -->
-										<!-- 												<div class="row m-row--no-padding align-items-center"> -->
-										<!-- 													<div class="col"> -->
-										<!-- 														<h3 class="m-widget1__title">Issue Reports</h3> -->
-										<!-- 														<span class="m-widget1__desc">System bugs and -->
-										<!-- 															issues</span> -->
-										<!-- 													</div> -->
-										<!-- 													<div class="col m--align-right"> -->
-										<!-- 														<span class="m-widget1__number m--font-success">-27,49%</span> -->
-										<!-- 													</div> -->
-										<!-- 												</div> -->
-										<!-- 											</div> -->
-										<!-- 										</div> -->
+																				<div class="m-widget1 m-widget1--paddingless">
+																					<div class="m-widget1__item">
+																						<div class="row m-row--no-padding align-items-center">
+																							<div class="col">
+																								<h3 class="m-widget1__title">Projects</h3>
+																								<span class="m-widget1__desc">Total projects contributions</span>
+																							</div>
+																							<div class="col m--align-right">
+																								<span id="profile_all_projects_count"
+																				class="m-widget1__number m--font-info">-</span>
+																							</div>
+																						</div>
+																					</div>
+																					<div class="m-widget1__item">
+																						<div class="row m-row--no-padding align-items-center">
+																							<div class="col">
+																								<h3 class="m-widget1__title">Tasks</h3>
+																								<span class="m-widget1__desc">Total tasks contributions</span>
+																							</div>
+																							<div class="col m--align-right">
+																								<span id="profile_all_tasks_count"
+																				class="m-widget1__number m--font-success">-</span>
+																							</div>
+																						</div>
+																					</div>
+																					<div class="m-widget1__item">
+																						<div class="row m-row--no-padding align-items-center">
+																							<div class="col">
+																								<h3 class="m-widget1__title">Issues</h3>
+																								<span class="m-widget1__desc">Total issues contributions</span>
+																							</div>
+																							<div class="col m--align-right">
+																								<span id="profile_all_issues_count"
+																				class="m-widget1__number m--font-danger">-</span>
+																							</div>
+																						</div>
+																					</div>
+																				</div>
 
 
 									</div>
@@ -264,69 +270,69 @@
 											<div class="m-portlet">
 												<div class="m-portlet__body  m-portlet__body--no-padding">
 
-													<div class="row m-row--no-padding m-row--col-separator-xl">
-														<div class="col-md-12 col-lg-12 col-xl-4">
-															<!--begin:: Widgets/Stats2-1 -->
-															<div class="m-widget1">
-																<div class="m-widget1__item">
-																	<div class="row m-row--no-padding align-items-center">
-																		<div class="col">
-																			<h3 class="m-widget1__title m--font-info">Total
-																				Projects</h3>
-																			<!-- 										<span class="m-widget1__desc">All tasks count</span> -->
-																		</div>
-																		<div class="col m--align-right">
-																			<span id="profile_all_projects_count"
-																				class="m-widget1__number m--font-info">-</span>
-																		</div>
-																	</div>
-																</div>
+<!-- 													<div class="row m-row--no-padding m-row--col-separator-xl"> -->
+<!-- 														<div class="col-md-12 col-lg-12 col-xl-4"> -->
+<!-- 															begin:: Widgets/Stats2-1 -->
+<!-- 															<div class="m-widget1"> -->
+<!-- 																<div class="m-widget1__item"> -->
+<!-- 																	<div class="row m-row--no-padding align-items-center"> -->
+<!-- 																		<div class="col"> -->
+<!-- 																			<h3 class="m-widget1__title m--font-info">Total -->
+<!-- 																				Projects</h3> -->
+<!-- 																													<span class="m-widget1__desc">All tasks count</span> -->
+<!-- 																		</div> -->
+<!-- 																		<div class="col m--align-right"> -->
+<!-- 																			<span id="profile_all_projects_count" -->
+<!-- 																				class="m-widget1__number m--font-info">-</span> -->
+<!-- 																		</div> -->
+<!-- 																	</div> -->
+<!-- 																</div> -->
 
 
-															</div>
-															<!--end:: Widgets/Stats2-1 -->
-														</div>
-														<div class="col-md-12 col-lg-12 col-xl-4">
-															<!--begin:: Widgets/Stats2-2 -->
-															<div class="m-widget1">
-																<div class="m-widget1__item">
-																	<div class="row m-row--no-padding align-items-center">
-																		<div class="col">
-																			<h3 class="m-widget1__title m--font-success">Tasks</h3>
-																			<!-- 										<span class="m-widget1__desc">Open tasks percentage</span> -->
-																		</div>
-																		<div class="col m--align-right">
-																			<span id="profile_all_tasks_count"
-																				class="m-widget1__number m--font-success">-</span>
-																		</div>
-																	</div>
-																</div>
+<!-- 															</div> -->
+<!-- 															end:: Widgets/Stats2-1 -->
+<!-- 														</div> -->
+<!-- 														<div class="col-md-12 col-lg-12 col-xl-4"> -->
+<!-- 															begin:: Widgets/Stats2-2 -->
+<!-- 															<div class="m-widget1"> -->
+<!-- 																<div class="m-widget1__item"> -->
+<!-- 																	<div class="row m-row--no-padding align-items-center"> -->
+<!-- 																		<div class="col"> -->
+<!-- 																			<h3 class="m-widget1__title m--font-success">Tasks</h3> -->
+<!-- 																													<span class="m-widget1__desc">Open tasks percentage</span> -->
+<!-- 																		</div> -->
+<!-- 																		<div class="col m--align-right"> -->
+<!-- 																			<span id="profile_all_tasks_count" -->
+<!-- 																				class="m-widget1__number m--font-success">-</span> -->
+<!-- 																		</div> -->
+<!-- 																	</div> -->
+<!-- 																</div> -->
 
 
-															</div>
-															<!--begin:: Widgets/Stats2-2 -->
-														</div>
-														<div class="col-md-12 col-lg-12 col-xl-4">
-															<!--begin:: Widgets/Stats2-3 -->
-															<div class="m-widget1">
+<!-- 															</div> -->
+<!-- 															begin:: Widgets/Stats2-2 -->
+<!-- 														</div> -->
+<!-- 														<div class="col-md-12 col-lg-12 col-xl-4"> -->
+<!-- 															begin:: Widgets/Stats2-3 -->
+<!-- 															<div class="m-widget1"> -->
 
 
-																<div class="m-widget1__item">
-																	<div class="row m-row--no-padding align-items-center">
-																		<div class="col">
-																			<h3 class="m-widget1__title m--font-danger">Issues</h3>
-																			<!-- 										<span class="m-widget1__desc">Closed tasks percentage</span> -->
-																		</div>
-																		<div class="col m--align-right">
-																			<span id="profile_all_issues_count"
-																				class="m-widget1__number m--font-danger">-</span>
-																		</div>
-																	</div>
-																</div>
-															</div>
-															<!--begin:: Widgets/Stats2-3 -->
-														</div>
-													</div>
+<!-- 																<div class="m-widget1__item"> -->
+<!-- 																	<div class="row m-row--no-padding align-items-center"> -->
+<!-- 																		<div class="col"> -->
+<!-- 																			<h3 class="m-widget1__title m--font-danger">Issues</h3> -->
+<!-- 																													<span class="m-widget1__desc">Closed tasks percentage</span> -->
+<!-- 																		</div> -->
+<!-- 																		<div class="col m--align-right"> -->
+<!-- 																			<span id="profile_all_issues_count" -->
+<!-- 																				class="m-widget1__number m--font-danger">-</span> -->
+<!-- 																		</div> -->
+<!-- 																	</div> -->
+<!-- 																</div> -->
+<!-- 															</div> -->
+<!-- 															begin:: Widgets/Stats2-3 -->
+<!-- 														</div> -->
+<!-- 													</div> -->
 
 
 
@@ -342,8 +348,8 @@
 																<div class="m-widget14__header">
 																	<h3 class="m-widget14__title m--font-info">Closed
 																		Tasks</h3>
-																	<span class="m-widget14__desc m--font-info">
-																		Tasks closure assured by this user </span>
+																	<span th:text="${'Tasks closure assured by ' + profileUser.firstName + ' since registration '}" class="m-widget14__desc m--font-info">
+																		</span>
 																</div>
 																<div class="profilechartwrapper" style="height: 200px;">
 																	<!--begin:: tasks stats Portlet-->
@@ -362,8 +368,8 @@
 																<div class="m-widget14__header">
 																	<h3 class="m-widget14__title m--font-focus">Closed
 																		Issues</h3>
-																	<span class="m-widget14__desc m--font-focus">
-																		Issues closure assured by this user </span>
+																	<span th:text="${'Issues closure assured by ' + profileUser.firstName + ' since registration'}" class="m-widget14__desc m--font-focus">
+																		</span>
 																</div>
 																<div class="profilechartwrapper" style="height: 200px;">
 																	<!--begin:: issues stats Portlet-->
@@ -401,6 +407,12 @@
 
 
 				</div>
+				
+				<div th:if="${profileUser.id == sessionUser.id}" th:replace="fragments/profile-fragments/fragment-update-user-infos :: update-user-infos"></div>
+				
+				<div th:if="${profileUser.id == sessionUser.id}" th:replace="fragments/profile-fragments/fragment-update-password :: update-password"></div>
+				
+
 
 				<iframe width="0" height="0" border="0" name="noTargett"
 					id="noTargett"></iframe>
