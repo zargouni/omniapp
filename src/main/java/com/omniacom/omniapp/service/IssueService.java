@@ -104,6 +104,7 @@ public class IssueService {
 				.element("status", issue.getStatus())
 				.element("severity", issue.getSeverity())
 				.element("description", issue.getDescription())
+				.element("creationDate",new SimpleDateFormat("yyyy-MM-dd").format(issue.getCreationDate()))
 				.element("files", findAllFiles(issue));
 	}
 	

@@ -1274,10 +1274,115 @@ function gmapPopoverInit(){
 	
 
 
+function populateModalOverdueItems(){
+	DatatableOverdueItemsRemote.init();
+}
 
+var userOverviewChart = function() {
+
+	var demo7 = function() {
+		var chartData = generateChartData();
+		var chart = AmCharts.makeChart("user_overview", {
+			"type" : "serial",
+			"theme" : "patterns",
+			"marginRight" : 40,
+			"marginLeft" : 40,
+			"autoMarginOffset" : 20,
+			"marginTop" : 7,
+			"dataProvider" : chartData,
+			"valueAxes" : [ {
+				"axisAlpha" : 0.2,
+				"dashLength" : 0,
+				"position" : ""
+			} ],
+			"mouseWheelZoomEnabled" : false,
+			"graphs" : [ {
+				"id" : "g1",
+				"balloonText" : "[[value]] items closed",
+				"bullet" : "round",
+				
+				"bulletBorderAlpha" : 0,
+				"bulletColor" : "#fff",
+				"hideBulletsCount" : 50,
+				"title" : "red line",
+				"valueField" : "tasks",
+				"useLineColorForBulletBorder" : true,
+				"balloon" : {
+					"drop" : true,
+					"color": "#fff",
+					"fillColor": "#000",
+					"fillAlpha": 0.8,
+					"borderThickness": 1
+				}
+			} ],
+			"chartScrollbar" : {
+				"autoGridCount" : true,
+				"graph" : "g1",
+				"scrollbarHeight" : 20
+			},
+			"chartCursor" : {
+				"limitToGraph" : "g1",
+				
+			},
+			"categoryField" : "date",
+			"categoryAxis" : {
+				"parseDates" : true,
+				"axisColor" : "#DADADA",
+				"dashLength" : 1,
+				"minorGridEnabled" : true
+			},
+			"export" : {
+				"enabled" : false
+			}
+		});
+
+
+		// generate some random data, quite different range
+		function generateChartData() {
+
+			var chartData = [];
+			
+		
+			$.ajax({
+				type : "GET",
+				url : '/json-user-overview-feed',
+				async : false,
+				success : function(response) {
+
+					$.each(response, function(date, val) {
+
+							var newDate = new Date(date);
+
+							var tasksCount = val;
+						
+						chartData.push({
+							date : newDate,
+							tasks : tasksCount
+						});
+					});
+
+				},
+				error : function(e) {
+					alert('Error: user overview ' + e);
+				}
+			});
+
+			return chartData;
+		}
+	}
+
+	return {
+		// public functions
+		init : function() {
+
+			demo7();
+
+		}
+	};
+}();
 
 $(document).ready(function() {
-	
+	userOverviewChart.init();
 	
 	gmapPopoverInit();
 	
@@ -1286,6 +1391,16 @@ $(document).ready(function() {
 	$("#select_project_new_task").change(function() {
 		updateSelectServices();
 	});
+	
+	 
+	 if (window.location.hash.indexOf('#my-tasks') == 0){
+			$('#my-tasks-nav-link').click();			
+	 }
+	 
+	 if (window.location.hash.indexOf('#my-issues') == 0){
+			$('#my-issues-nav-link').click();
+	 }
+	 
 
 	 if (window.location.hash.indexOf('#task=') == 0){
 			externalTaskLoad();
@@ -1327,6 +1442,7 @@ $(document).ready(function() {
 			externalOperationLoad();
 			
 	 }
+	
 	    
 	
 	
@@ -1356,6 +1472,8 @@ $(document).ready(function() {
 	
 	
     });
+
+
 
 
 

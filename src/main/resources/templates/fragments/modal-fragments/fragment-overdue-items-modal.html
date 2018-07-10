@@ -1,0 +1,56 @@
+<div th:fragment="overdue-items-modal"
+	class="modal fade show" id="modal_overdue_items"
+	tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	style="display: none; padding-right: 17px;">
+	<div class="modal-dialog modal-lg " role="document">
+		<div class="modal-content" style="background: #f1f1f1">
+			<!-- 			<div class="modal-header"> -->
+			<!-- 				<h5 class="modal-title" id="exampleModalLabel">Generate -->
+			<!-- 					Operation Services from Templates</h5> -->
+			<!-- 				<button type="button" class="close" data-dismiss="modal" -->
+			<!-- 					aria-label="Close"> -->
+			<!-- 					<span aria-hidden="true">×</span> -->
+			<!-- 				</button> -->
+			<!-- 			</div> -->
+
+			<div class="modal-body">
+				<!--begin: Search Form -->
+			<div
+				class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
+				<div class="row align-items-center">
+					<div class="col-xl-8 order-2 order-xl-1">
+						<div class="form-group m-form__group row align-items-center">
+							<div class="col-md-4">
+								<div class="m-input-icon m-input-icon--left">
+									<input type="text" class="form-control m-input m-input--solid"
+										placeholder="Search..." id="generalSearchOverdueItems"> <span
+										class="m-input-icon__icon m-input-icon__icon--left"> <span><i
+											class="la la-search"></i></span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+			<!--end: Search Form -->
+
+
+			<!--begin: Datatable -->
+			<div
+				class="m_datatable m-datatable m-datatable--default m-datatable--error m-datatable"
+				id="overdue_items_datatable" style="position: static; zoom: 1;">
+			</div>
+			<!--end: Datatable -->
+
+			</div>
+
+
+
+		</div>
+	</div>
+
+
+</div>
+

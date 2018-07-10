@@ -86,6 +86,7 @@ public class TaskService {
 				.element("priority", task.getPriority())
 				.element("estimationHR", task.getEstimationRH()).element("estimationTime", task.getEstimationTime())
 				.element("completionPercentage", task.getCompletionPercentage())
+				.element("creationDate",new SimpleDateFormat("yyyy-MM-dd").format(task.getCreationDate()))
 				.element("files", findAllFiles(task));
 	}
 	

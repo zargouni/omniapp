@@ -63,7 +63,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public List<Task> findAllTasks(User user) {
 		List<Task> tasks = null;
 		Query query = entityManager
-				.createQuery("SELECT t FROM Task t, User u JOIN u.tasks task WHERE u.id = :param AND task.id = t.id")
+				.createQuery("SELECT t FROM Task t, User u JOIN u.tasks task WHERE u.id = :param AND task.id = t.id ORDER BY t.creationDate DESC")
 				.setParameter("param", user.getId());
 		tasks = (List<Task>) query.getResultList();
 		return tasks;
@@ -118,7 +118,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public List<Issue> findAllIssues(User user) {
 		List<Issue> issues = null;
 		Query query = entityManager
-				.createQuery("SELECT issue FROM Issue issue, User u JOIN u.issues issues WHERE u.id = :param AND issues.id = issue.id")
+				.createQuery("SELECT issue FROM Issue issue, User u JOIN u.issues issues WHERE u.id = :param AND issues.id = issue.id ORDER BY issue.creationDate DESC")
 				.setParameter("param", user.getId());
 		issues = (List<Issue>) query.getResultList();
 		return issues;

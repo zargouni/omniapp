@@ -5,88 +5,18 @@
 		<div class="col-xl-6">
 
 			<div
-				class="m-portlet m-portlet--bordered-semi m-portlet--widget-fit m-portlet--full-height m-portlet--skin-light  m-portlet--rounded-force">
+				class="m-portlet m-portlet--bordered-semi m-portlet--widget-fit m-portlet--full-height m-portlet--rounded-force">
 				<div class="m-portlet__head">
 					<div class="m-portlet__head-caption">
 						<div class="m-portlet__head-title">
-							<h3 class="m-portlet__head-text m--font-light">Overview</h3>
+							<h3 class="m-portlet__head-text">My Overview</h3>
 						</div>
 					</div>
-					<div class="m-portlet__head-tools">
-						<ul class="m-portlet__nav">
-							<li
-								class="m-portlet__nav-item m-dropdown m-dropdown--inline m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push"
-								data-dropdown-toggle="hover"><a href="#"
-								class="m-portlet__nav-link m-portlet__nav-link--icon m-portlet__nav-link--icon-xl">
-									<i class="fa fa-genderless m--font-light"></i>
-							</a>
-								<div class="m-dropdown__wrapper">
-									<span
-										class="m-dropdown__arrow m-dropdown__arrow--right m-dropdown__arrow--adjust"></span>
-									<div class="m-dropdown__inner">
-										<div class="m-dropdown__body">
-											<div class="m-dropdown__content">
-												<ul class="m-nav">
-													<li class="m-nav__section m-nav__section--first"><span
-														class="m-nav__section-text">Quick Actions</span></li>
-													<li class="m-nav__item"><a href="#"
-														class="m-nav__link"> <i
-															class="m-nav__link-icon flaticon-share"></i> <span
-															class="m-nav__link-text">Activity</span>
-													</a></li>
-													<li class="m-nav__item"><a href="#"
-														class="m-nav__link"> <i
-															class="m-nav__link-icon flaticon-chat-1"></i> <span
-															class="m-nav__link-text">Messages</span>
-													</a></li>
-													<li class="m-nav__item"><a href="#"
-														class="m-nav__link"> <i
-															class="m-nav__link-icon flaticon-info"></i> <span
-															class="m-nav__link-text">FAQ</span>
-													</a></li>
-													<li class="m-nav__item"><a href="#"
-														class="m-nav__link"> <i
-															class="m-nav__link-icon flaticon-lifebuoy"></i> <span
-															class="m-nav__link-text">Support</span>
-													</a></li>
-													<li class="m-nav__separator m-nav__separator--fit"></li>
-													<li class="m-nav__item"><a href="#"
-														class="btn btn-outline-danger m-btn m-btn--pill m-btn--wide btn-sm">Cancel</a>
-													</li>
-												</ul>
-											</div>
-										</div>
-									</div>
-								</div></li>
-						</ul>
-					</div>
+
 				</div>
-				<div class="m-portlet__body">
-					<div class="m-widget17">
-						<div
-							class="m-widget17__visual m-widget17__visual--chart m-portlet-fit--top m-portlet-fit--bottom m-portlet-fit--sides m--bg-info">
-							<div class="m-widget17__chart" style="height: 320px;">
-								<div class="chartjs-size-monitor"
-									style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-									<div class="chartjs-size-monitor-expand"
-										style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-										<div
-											style="position: absolute; width: 1000000px; height: 1000000px; left: 0; top: 0"></div>
-									</div>
-									<div class="chartjs-size-monitor-shrink"
-										style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-										<div
-											style="position: absolute; width: 200%; height: 200%; left: 0; top: 0"></div>
-									</div>
-								</div>
-								<canvas id="m_chart_activities" width="865" height="216"
-									class="chartjs-render-monitor"
-									style="display: block; width: 865px; height: 216px;"></canvas>
-							</div>
-						</div>
-
-
-
+				<div class="m-portlet__body" style="background: #F4516C;">
+					<div class="profilechartwrapper" style="margin-left: -18px !important;margin-right: 0px;width:124% !important;height: 115%;">
+						<div class="profilechartdiv" id="user_overview"></div>
 					</div>
 				</div>
 			</div>
@@ -100,40 +30,77 @@
 							<h3 class="m-portlet__head-text">My Tasks</h3>
 						</div>
 					</div>
-					<div style="width: 50%; position: absolute; left: 85%; top: 17px;">
-						<button type="button" class="btn btn-outline-brand btn-sm">
-							All Tasks</button>
+					<div class="m-portlet__head-tools">
+						<a th:href="${'/profile?id='+ sessionUser.id+'#my-tasks'}"
+							class="btn m-btn--square btn-info btn-sm "> View More</a>
 					</div>
 				</div>
 				<div class="m-portlet__body">
 					<!--begin::Section-->
-					<div class="tab-content">
-						<div class="tab-pane active" id="m_widget2_tab1_content">
-							<div class="m-widget2">
-								<div th:each="task : ${tasks}">
-									<div th:if="${task.status} == ${TASK_STATUS_COMPLETED}" class="m-widget2__item m-widget2__item--success">
-										<div class="m-widget2__checkbox">
-										</div>
-										<div class="m-widget2__desc">
-											<span th:text="${task.name}" class="m-widget2__text">
-											</span><br> <span th:text="${task.endDate}"
-												class="m-widget2__user-name"> </span>
-										</div>
-									</div>
-									<div th:if="${task.status} == ${TASK_STATUS_ONGOING}" class="m-widget2__item m-widget2__item--brand">
-										<div class="m-widget2__checkbox">
-										</div>
-										<div class="m-widget2__desc">
-											<span th:text="${task.name}" class="m-widget2__text">
-											</span><br> <span th:text="${task.endDate}"
-												class="m-widget2__user-name"> </span>
-										</div>
-									</div>
+					<!-- 					<div class="tab-content"> -->
+					<!-- 						<div class="tab-pane active" id="m_widget2_tab1_content"> -->
+					<div th:if="${not #lists.isEmpty(tasks)}" class="m-widget2">
+						<div
+							style="background: #f9f9f9; padding: 5px 0 5px 0; border-radius: 1px; margin-bottom: 5px;"
+							th:each="task : ${tasks}"
+							th:onclick="${'handleNotificationClick('+ task.id +')'}">
+							<div th:if="${task.status} == ${TASK_STATUS_COMPLETED}"
+								style="margin-bottom: 2px;"
+								class="m-widget2__item m-widget2__item--danger">
+								<div class="m-widget2__checkbox"></div>
+								<div class="m-widget2__desc">
+									<span th:text="${task.name}" class="m-widget2__text"> </span> <span
+										style="width: 10%; height: 20px; padding: 5px 0 0 0;"
+										class="badge badge-danger pull-right">Closed</span> <br>
+									<small><span
+										th:text="${'Due date: '+ #dates.format(task.endDate, 'dd-MM-yyyy')}"
+										class="m-widget2__user-name"> </span></small>
+
+								</div>
+							</div>
+							<div th:if="${task.status} == ${TASK_STATUS_ONGOING}"
+								style="margin-bottom: 0;"
+								class="m-widget2__item m-widget2__item--success">
+								<div class="m-widget2__checkbox"></div>
+								<div class="m-widget2__desc">
+									<span th:text="${task.name}" class="m-widget2__text"> </span> <span
+										style="width: 10%; height: 20px; padding: 5px 0 0 0;"
+										class="badge badge-success pull-right">Open</span> <br> <small><span
+										th:text="${'Due date: '+ #dates.format(task.endDate, 'dd-MM-yyyy')}"
+										class="m-widget2__user-name"> </span></small>
 								</div>
 							</div>
 						</div>
-						<div class="tab-pane" id="m_widget2_tab2_content"></div>
-						<div class="tab-pane" id="m_widget2_tab3_content"></div>
+					</div>
+
+					<div th:if="${#lists.isEmpty(tasks)}" class="m-widget24__item">
+						<div>
+							<div style="display: block; vertical-align: middle;">
+								<table width="100%" align="center" border="0" cellpadding="0"
+									cellspacing="0">
+									<tbody>
+										<tr>
+											<td align="center"><div
+													style="border-color: #e6e6e6 !important;"
+													class="emptydashboardbox omnia fonticon40">
+													<div class="m-demo-icon__preview">
+														<i style="color: #e6e6e6; font-size: 40px;"
+															class="flaticon-tool"></i>
+													</div>
+												</div></td>
+										</tr>
+										<tr>
+											<td align="center" height="110px">
+												<div>
+													<span style="color: #a6a6a6;" class="col777 pt12 lh25">Nothing
+														to show here</span>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 					<!--end::Section-->
 
@@ -158,8 +125,77 @@
 				<div class="m-portlet__body">
 					<!--begin::Section-->
 					<div class="m-section">
-						<div class="m-loader m-loader--brand"
-							style="position: absolute; left: 0; top: 50%; width: 100%;"></div>
+						<div th:if="${not #lists.isEmpty(itemsDueToday)}"
+							class="m-widget2">
+							<div
+								style="background: #f9f9f9; padding: 5px 0 5px 0; border-radius: 1px; margin-bottom: 5px;"
+								th:each="item : ${itemsDueToday}">
+								<div th:if="${item.nature == 'task'}"
+									th:onclick="${'handleNotificationClick('+ item.id +')'}">
+									<div style="margin-bottom: 2px;"
+										class="m-widget2__item m-widget2__item--info">
+										<div class="m-widget2__checkbox"></div>
+										<div class="m-widget2__desc">
+											<span th:text="${item.name}" class="m-widget2__text">
+											</span> <span style="width: 20%; height: 20px; padding: 5px 0 0 0;"
+												class="badge badge-info pull-right">Task</span> <br> <small><span
+												th:text="${'Due date: '+ #dates.format(item.endDate, 'dd-MM-yyyy')}"
+												class="m-widget2__user-name"> </span></small>
+
+										</div>
+									</div>
+
+								</div>
+								<div th:if="${item.nature == 'issue'}"
+									th:onclick="${'handleIssueNotificationClick('+ item.id +')'}">
+									<div style="margin-bottom: 2px;"
+										class="m-widget2__item m-widget2__item--danger">
+										<div class="m-widget2__checkbox"></div>
+										<div class="m-widget2__desc">
+											<span th:text="${item.name}" class="m-widget2__text">
+											</span> <span style="width: 20%; height: 20px; padding: 5px 0 0 0;"
+												class="badge badge-danger pull-right">Issue</span> <br>
+											<small><span
+												th:text="${'Due date: '+ #dates.format(item.endDate, 'dd-MM-yyyy')}"
+												class="m-widget2__user-name"> </span></small>
+
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+						</div>
+						<div th:if="${#lists.isEmpty(itemsDueToday)}"
+							class="m-widget24__item">
+							<div>
+								<div style="display: block; vertical-align: middle;">
+									<table width="100%" align="center" border="0" cellpadding="0"
+										cellspacing="0">
+										<tbody>
+											<tr>
+												<td align="center"><div
+														style="border-color: #e6e6e6 !important;"
+														class="emptydashboardbox omnia fonticon40">
+														<div class="m-demo-icon__preview">
+															<i style="color: #e6e6e6; font-size: 40px;"
+																class="flaticon-tool"></i>
+														</div>
+													</div></td>
+											</tr>
+											<tr>
+												<td align="center" height="110px">
+													<div>
+														<span style="color: #a6a6a6;" class="col777 pt12 lh25">Nothing
+															to show here</span>
+													</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
 					</div>
 					<!--end::Section-->
 
@@ -177,12 +213,84 @@
 							<h3 class="m-portlet__head-text">My Overdue Work Items</h3>
 						</div>
 					</div>
+					<div class="m-portlet__head-tools">
+						<a data-toggle="modal" data-target="#modal_overdue_items"
+							onclick="populateModalOverdueItems()"
+							class="btn m-btn--square btn-info btn-sm "> View More</a>
+					</div>
 				</div>
 				<div class="m-portlet__body">
 					<!--begin::Section-->
-					<div class="m-section">
-						<div class="m-loader m-loader--brand"
-							style="position: absolute; left: 0; top: 50%; width: 100%;"></div>
+					<div th:if="${not #lists.isEmpty(overdueItems)}" class="m-widget2">
+						<div
+							style="background: #f9f9f9; padding: 5px 0 5px 0; border-radius: 1px; margin-bottom: 5px;"
+							th:each="item : ${overdueItems}">
+							<div th:if="${item.nature == 'task'}"
+								th:onclick="${'handleNotificationClick('+ item.id +')'}">
+								<div style="margin-bottom: 2px;"
+									class="m-widget2__item m-widget2__item--info">
+									<div class="m-widget2__checkbox"></div>
+									<div class="m-widget2__desc">
+										<span th:text="${item.name}" class="m-widget2__text"> </span>
+										<span style="width: 20%; height: 20px; padding: 5px 0 0 0;"
+											class="badge badge-info pull-right">Task</span> <br> <small><span
+											th:text="${'Due date: '+ #dates.format(item.endDate, 'dd-MM-yyyy')}"
+											class="m-widget2__user-name"> </span></small>
+
+									</div>
+								</div>
+
+							</div>
+							<div th:if="${item.nature == 'issue'}"
+								th:onclick="${'handleIssueNotificationClick('+ item.id +')'}">
+								<div style="margin-bottom: 2px;"
+									class="m-widget2__item m-widget2__item--danger">
+									<div class="m-widget2__checkbox"></div>
+									<div class="m-widget2__desc">
+										<span th:text="${item.name}" class="m-widget2__text"> </span>
+										<span style="width: 20%; height: 20px; padding: 5px 0 0 0;"
+											class="badge badge-danger pull-right">Issue</span> <br>
+										<small><span
+											th:text="${'Due date: '+ #dates.format(item.endDate, 'dd-MM-yyyy')}"
+											class="m-widget2__user-name"> </span></small>
+
+									</div>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+
+					<div th:if="${#lists.isEmpty(overdueItems)}"
+						class="m-widget24__item">
+						<div>
+							<div style="display: block; vertical-align: middle;">
+								<table width="100%" align="center" border="0" cellpadding="0"
+									cellspacing="0">
+									<tbody>
+										<tr>
+											<td align="center"><div
+													style="border-color: #e6e6e6 !important;"
+													class="emptydashboardbox omnia fonticon40">
+													<div class="m-demo-icon__preview">
+														<i style="color: #e6e6e6; font-size: 40px;"
+															class="flaticon-tool"></i>
+													</div>
+												</div></td>
+										</tr>
+										<tr>
+											<td align="center" height="110px">
+												<div>
+													<span style="color: #a6a6a6;" class="col777 pt12 lh25">Nothing
+														to show here</span>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 					<!--end::Section-->
 
@@ -201,16 +309,101 @@
 							<h3 class="m-portlet__head-text">My Issues</h3>
 						</div>
 					</div>
-					<div style="width: 50%; position: absolute; left: 72%; top: 17px;">
-						<button type="button" class="btn btn-outline-brand btn-sm">
-							View More</button>
+					<div class="m-portlet__head-tools">
+						<a th:href="${'/profile?id='+ sessionUser.id+'#my-issues'}"
+							class="btn m-btn--square btn-info btn-sm "> View More</a>
 					</div>
 				</div>
 				<div class="m-portlet__body">
 					<!--begin::Section-->
-					<div class="m-section">
-						<div class="m-loader m-loader--brand"
-							style="position: absolute; left: 0; top: 50%; width: 100%;"></div>
+					<div th:if="${not #lists.isEmpty(issues)}" class="m-widget2">
+						<div
+							style="background: #f9f9f9; padding: 5px 0 5px 0; border-radius: 1px; margin-bottom: 5px;"
+							th:each="issue : ${issues}"
+							th:onclick="${'handleIssueNotificationClick('+ issue.id +')'}">
+							<div th:if="${issue.status} == ${ISSUE_STATUS_OPEN}"
+								style="margin-bottom: 2px;"
+								class="m-widget2__item m-widget2__item--info">
+								<div class="m-widget2__checkbox"></div>
+								<div class="m-widget2__desc">
+									<span th:text="${issue.name}" class="m-widget2__text"> </span>
+									<span style="width: 25%; height: 20px; padding: 5px 0 0 0;"
+										class="badge badge-info pull-right">Open</span> <br> <small><span
+										th:text="${'Due date: '+ #dates.format(issue.endDate, 'dd-MM-yyyy')}"
+										class="m-widget2__user-name"> </span></small>
+
+								</div>
+							</div>
+							<div th:if="${issue.status} == ${ISSUE_STATUS_IN_PROGRESS}"
+								style="margin-bottom: 0;"
+								class="m-widget2__item m-widget2__item--warning">
+								<div class="m-widget2__checkbox"></div>
+								<div class="m-widget2__desc">
+									<span th:text="${issue.name}" class="m-widget2__text"> </span>
+									<span style="width: 25%; height: 20px; padding: 5px 0 0 0;"
+										class="badge badge-warning pull-right">In progress</span> <br>
+									<small><span
+										th:text="${'Due date: '+ #dates.format(issue.endDate, 'dd-MM-yyyy')}"
+										class="m-widget2__user-name"> </span></small>
+								</div>
+							</div>
+							<div th:if="${issue.status} == ${ISSUE_STATUS_TO_BE_TESTED}"
+								style="margin-bottom: 0;"
+								class="m-widget2__item m-widget2__item--success">
+								<div class="m-widget2__checkbox"></div>
+								<div class="m-widget2__desc">
+									<span th:text="${issue.name}" class="m-widget2__text"> </span>
+									<span style="width: 25%; height: 20px; padding: 5px 0 0 0;"
+										class="badge badge-success pull-right">To be tested</span> <br>
+									<small><span
+										th:text="${'Due date: '+ #dates.format(issue.endDate, 'dd-MM-yyyy')}"
+										class="m-widget2__user-name"> </span></small>
+								</div>
+							</div>
+							<div th:if="${issue.status} == ${ISSUE_STATUS_CLOSED}"
+								style="margin-bottom: 0;"
+								class="m-widget2__item m-widget2__item--danger">
+								<div class="m-widget2__checkbox"></div>
+								<div class="m-widget2__desc">
+									<span th:text="${issue.name}" class="m-widget2__text"> </span>
+									<span style="width: 25%; height: 20px; padding: 5px 0 0 0;"
+										class="badge badge-danger pull-right">Closed</span> <br>
+									<small><span
+										th:text="${'Due date: '+ #dates.format(issue.endDate, 'dd-MM-yyyy')}"
+										class="m-widget2__user-name"> </span></small>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div th:if="${#lists.isEmpty(issues)}" class="m-widget24__item">
+						<div>
+							<div style="display: block; vertical-align: middle;">
+								<table width="100%" align="center" border="0" cellpadding="0"
+									cellspacing="0">
+									<tbody>
+										<tr>
+											<td align="center"><div
+													style="border-color: #e6e6e6 !important;"
+													class="emptydashboardbox omnia fonticon40">
+													<div class="m-demo-icon__preview">
+														<i style="color: #e6e6e6; font-size: 40px;"
+															class="flaticon-tool"></i>
+													</div>
+												</div></td>
+										</tr>
+										<tr>
+											<td align="center" height="110px">
+												<div>
+													<span style="color: #a6a6a6;" class="col777 pt12 lh25">Nothing
+														to show here</span>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</div>
 					<!--end::Section-->
 
@@ -259,6 +452,8 @@
 	<!--End::Section-->
 
 
+	<div
+		th:replace="fragments/modal-fragments/fragment-overdue-items-modal :: overdue-items-modal"></div>
 
 
 
