@@ -7,29 +7,32 @@ AmCharts.themes.patterns = {
 	},
 
 	AmCoordinateChart: {
-		colors:["#fff","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000"],
+		colors:["#fff"
+//			,"#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000","#000000"
+			],
 		patterns:[
 		{"url":"patterns/black/pattern1.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern2.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern3.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern4.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern5.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern6.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern7.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern8.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern9.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern10.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern11.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern12.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern13.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern14.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern15.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern16.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern17.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern18.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern19.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern20.png", "width":4, "height":4},
-		{"url":"patterns/black/pattern21.png", "width":4, "height":4}]
+//		{"url":"patterns/black/pattern2.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern3.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern4.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern5.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern6.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern7.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern8.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern9.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern10.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern11.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern12.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern13.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern14.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern15.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern16.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern17.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern18.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern19.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern20.png", "width":4, "height":4},
+//		{"url":"patterns/black/pattern21.png", "width":4, "height":4}
+		]
 	},
 
 
@@ -99,8 +102,8 @@ AmCharts.themes.patterns = {
 		graphFillAlpha: 0.4,
 		selectedGraphFillAlpha: 0.7,
 		graphLineAlpha: 0,
-		selectedBackgroundColor: "#FFFFFF",
-		selectedBackgroundAlpha: 0.9,
+		selectedBackgroundColor: "#000",
+		selectedBackgroundAlpha: 0.5,
 		gridAlpha: 0.15
 	},
 
@@ -110,12 +113,12 @@ AmCharts.themes.patterns = {
 		cursorAlpha: 0.5
 	},
 
-	AmLegend: {
-		color: "#000000",
-		markerBorderAlpha:0.1,
-		markerSize:20,
-		switchColor:"#000000"
-	},
+//	AmLegend: {
+//		color: "#000000",
+//		markerBorderAlpha:0.1,
+//		markerSize:20,
+//		switchColor:"#000000"
+//	},
 
 	AmGraph: {
 		lineAlpha: 0.4,

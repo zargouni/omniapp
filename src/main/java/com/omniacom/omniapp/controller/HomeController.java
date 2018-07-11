@@ -75,7 +75,7 @@ public class HomeController {
 	}
 	
 	@GetMapping("/json-user-overview-feed")
-	public @ResponseBody Map<LocalDate, Integer> getAllUserClosedTasksheyFeedJson() {
+	public @ResponseBody Map<String, Integer> getAllUserClosedTasksheyFeedJson() {
 		return userService.getUserOverviewFeedJson(userService.getSessionUser().getId());
 	}
 

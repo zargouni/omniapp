@@ -5,17 +5,17 @@
 		<div class="col-xl-6">
 
 			<div
-				class="m-portlet m-portlet--bordered-semi m-portlet--widget-fit m-portlet--full-height m-portlet--rounded-force">
+				style="background: #F4516C;" class="m-portlet m-portlet--bordered-semi m-portlet--widget-fit m-portlet--full-height m-portlet--rounded-force">
 				<div class="m-portlet__head">
 					<div class="m-portlet__head-caption">
 						<div class="m-portlet__head-title">
-							<h3 class="m-portlet__head-text">My Overview</h3>
+							<h3 class="m-portlet__head-text  m--font-light">My Overview</h3>
 						</div>
 					</div>
 
 				</div>
-				<div class="m-portlet__body" style="background: #F4516C;">
-					<div class="profilechartwrapper" style="margin-left: -18px !important;margin-right: 0px;width:124% !important;height: 115%;">
+				<div class="m-portlet__body" >
+					<div class="profilechartwrapper" style="margin-left: -18px !important;margin-right: 0px;width:120% !important;height: 115%;">
 						<div class="profilechartdiv" id="user_overview"></div>
 					</div>
 				</div>
@@ -50,7 +50,7 @@
 								<div class="m-widget2__checkbox"></div>
 								<div class="m-widget2__desc">
 									<span th:text="${task.name}" class="m-widget2__text"> </span> <span
-										style="width: 10%; height: 20px; padding: 5px 0 0 0;"
+										style="width: 20%; height: 20px; padding: 5px 0 0 0;"
 										class="badge badge-danger pull-right">Closed</span> <br>
 									<small><span
 										th:text="${'Due date: '+ #dates.format(task.endDate, 'dd-MM-yyyy')}"
@@ -64,7 +64,7 @@
 								<div class="m-widget2__checkbox"></div>
 								<div class="m-widget2__desc">
 									<span th:text="${task.name}" class="m-widget2__text"> </span> <span
-										style="width: 10%; height: 20px; padding: 5px 0 0 0;"
+										style="width: 20%; height: 20px; padding: 5px 0 0 0;"
 										class="badge badge-success pull-right">Open</span> <br> <small><span
 										th:text="${'Due date: '+ #dates.format(task.endDate, 'dd-MM-yyyy')}"
 										class="m-widget2__user-name"> </span></small>
@@ -114,7 +114,7 @@
 	<div class="row">
 		<!--begin:: Widgets/My Overdue Work Items-->
 		<div class="col-xl-4">
-			<div class="m-portlet">
+			<div class="m-portlet m-portlet--bordered-semi m-portlet--widget-fit m-portlet--full-height m-portlet--rounded-force">
 				<div class="m-portlet__head">
 					<div class="m-portlet__head-caption">
 						<div class="m-portlet__head-title">

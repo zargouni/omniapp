@@ -1285,22 +1285,22 @@ var userOverviewChart = function() {
 		var chart = AmCharts.makeChart("user_overview", {
 			"type" : "serial",
 			"theme" : "patterns",
-			"marginRight" : 40,
-			"marginLeft" : 40,
-			"autoMarginOffset" : 20,
-			"marginTop" : 7,
+			"marginRight" : 0,
+			"marginLeft" : 0,
+			"autoMarginOffset" : 12,
+			"marginTop" : 0,
 			"dataProvider" : chartData,
 			"valueAxes" : [ {
 				"axisAlpha" : 0.2,
 				"dashLength" : 0,
-				"position" : ""
+				"position" : "left"
 			} ],
 			"mouseWheelZoomEnabled" : false,
 			"graphs" : [ {
 				"id" : "g1",
 				"balloonText" : "[[value]] items closed",
 				"bullet" : "round",
-				
+				 "showBalloon": true,
 				"bulletBorderAlpha" : 0,
 				"bulletColor" : "#fff",
 				"hideBulletsCount" : 50,
@@ -1308,17 +1308,18 @@ var userOverviewChart = function() {
 				"valueField" : "tasks",
 				"useLineColorForBulletBorder" : true,
 				"balloon" : {
-					"drop" : true,
+					"drop" : false,
 					"color": "#fff",
 					"fillColor": "#000",
 					"fillAlpha": 0.8,
-					"borderThickness": 1
+					"borderThickness": 0
 				}
 			} ],
 			"chartScrollbar" : {
 				"autoGridCount" : true,
 				"graph" : "g1",
-				"scrollbarHeight" : 20
+				"scrollbarHeight" : 20,
+				"resizeEnabled": false,
 			},
 			"chartCursor" : {
 				"limitToGraph" : "g1",
@@ -1326,10 +1327,10 @@ var userOverviewChart = function() {
 			},
 			"categoryField" : "date",
 			"categoryAxis" : {
-				"parseDates" : true,
-				"axisColor" : "#DADADA",
+				"parseDates" : false,
+				"axisColor" : "#fff",
 				"dashLength" : 1,
-				"minorGridEnabled" : true
+				"minorGridEnabled" :true
 			},
 			"export" : {
 				"enabled" : false
@@ -1351,7 +1352,7 @@ var userOverviewChart = function() {
 
 					$.each(response, function(date, val) {
 
-							var newDate = new Date(date);
+							var newDate = date;
 
 							var tasksCount = val;
 						
@@ -1382,7 +1383,7 @@ var userOverviewChart = function() {
 }();
 
 $(document).ready(function() {
-	userOverviewChart.init();
+	
 	
 	gmapPopoverInit();
 	

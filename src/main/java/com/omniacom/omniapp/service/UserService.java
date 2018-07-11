@@ -1,13 +1,16 @@
 package com.omniacom.omniapp.service;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.TextStyle;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -298,30 +301,37 @@ public class UserService implements UserDetailsService {
 		return array;
 	}
 
-	public Map<LocalDate, Integer> getUserOverviewFeedJson(long id) {
+	public Map<String, Integer> getUserOverviewFeedJson(long id) {
 		User user = userRepo.findOne(id);
-		TreeMap<LocalDate, Integer> feed = new TreeMap<LocalDate, Integer>();
+		Map<String, Integer> feed = new TreeMap<String, Integer>(new Comparator<String>() {
+		    public int compare(String o1, String o2) {
+		        
+		            SimpleDateFormat fmt = new SimpleDateFormat("MMMM", Locale.ENGLISH );
+		            try {
+						return fmt.parse(o1).compareTo(fmt.parse(o2));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+		            return o1.compareTo(o2);	       
+		    }
+		});
 		LocalDate currentDate = LocalDate.now();
-		LocalDate startDate = user.getRegisterDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		for (LocalDate date = startDate; date.isBefore(currentDate)
-				|| date.isEqual(currentDate); date = date.plusDays(1)) {
+		LocalDate startDate = currentDate.minusMonths(5);//user.getRegisterDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().month;
+		for (int date = startDate.getMonthValue(); date <= currentDate.getMonthValue(); date++) {
 			Integer count = 0;
 			for (Issue i : user.getClosedIssues()) {
-
-				if (i.getCompletedOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+				if (i.getCompletedOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getMonthValue() == date) {
 					count++;
 				}
 			}
 
 			for (Task t : user.getClosedTasks()) {
-
-				if (t.getCompletedOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+				if (t.getCompletedOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getMonthValue() == date) {
 					count++;
 				}
 			}
-			feed.put(date, count);
+			feed.put(LocalDate.now().withMonth(date).getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) +" "+LocalDate.now().getYear(), count);
 		}
-		return (Map<LocalDate, Integer>) feed;
+		return feed;
 	}
-
 }
