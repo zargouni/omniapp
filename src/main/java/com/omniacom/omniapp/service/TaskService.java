@@ -225,5 +225,9 @@ public class TaskService {
 				.element("content", c.getContent());
 	}
 
+	public void deleteTask(Task task) {
+		taskRepo.delete(task);
+	}
+
 	
 }

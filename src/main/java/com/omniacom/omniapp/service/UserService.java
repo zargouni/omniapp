@@ -304,34 +304,68 @@ public class UserService implements UserDetailsService {
 	public Map<String, Integer> getUserOverviewFeedJson(long id) {
 		User user = userRepo.findOne(id);
 		Map<String, Integer> feed = new TreeMap<String, Integer>(new Comparator<String>() {
-		    public int compare(String o1, String o2) {
-		        
-		            SimpleDateFormat fmt = new SimpleDateFormat("MMMM", Locale.ENGLISH );
-		            try {
-						return fmt.parse(o1).compareTo(fmt.parse(o2));
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
-		            return o1.compareTo(o2);	       
-		    }
+			public int compare(String o1, String o2) {
+
+				SimpleDateFormat fmt = new SimpleDateFormat("MMMM", Locale.ENGLISH);
+				try {
+					return fmt.parse(o1).compareTo(fmt.parse(o2));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				return o1.compareTo(o2);
+			}
 		});
 		LocalDate currentDate = LocalDate.now();
-		LocalDate startDate = currentDate.minusMonths(5);//user.getRegisterDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().month;
+		LocalDate startDate = currentDate.minusMonths(5);// user.getRegisterDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().month;
 		for (int date = startDate.getMonthValue(); date <= currentDate.getMonthValue(); date++) {
 			Integer count = 0;
 			for (Issue i : user.getClosedIssues()) {
-				if (i.getCompletedOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getMonthValue() == date) {
+				if (i.getCompletedOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+						.getMonthValue() == date) {
 					count++;
 				}
 			}
 
 			for (Task t : user.getClosedTasks()) {
-				if (t.getCompletedOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getMonthValue() == date) {
+				if (t.getCompletedOn().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+						.getMonthValue() == date) {
 					count++;
 				}
 			}
-			feed.put(LocalDate.now().withMonth(date).getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) +" "+LocalDate.now().getYear(), count);
+			feed.put(LocalDate.now().withMonth(date).getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH) + " "
+					+ LocalDate.now().getYear(), count);
 		}
 		return feed;
+	}
+
+	public JSONArray getCalendarEvents(User user) {
+		JSONArray events = new JSONArray();
+		List<Task> tasks = findAllTasks(user);
+		List<Issue> issues = findAllIssues(user);
+		for (Task t : tasks) {
+			Date startDate = t.getStartDate();
+			Date endDate = t.getEndDate();
+			if (!t.getStatus().equals(StaticString.TASK_STATUS_COMPLETED)) {
+				events.add(
+						new JSONObject().element("id", t.getId()).element("type", "task").element("name", t.getName())
+								.element("startDate",
+										new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH).format(endDate))
+								.element("endDate", new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH)
+										.format(endDate.getDay() + 1)));
+			}
+
+		}
+		for (Issue issue : issues) {
+			if (!issue.getStatus().equals(StaticString.ISSUE_STATUS_CLOSED)) {
+				events.add(new JSONObject().element("id", issue.getId()).element("type", "issue")
+						.element("name", issue.getName())
+						.element("startDate",
+								new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH).format(issue.getEndDate()))
+						.element("endDate",
+								new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH).format(issue.getEndDate()))
+						.element("severity", issue.getSeverity()));
+			}
+		}
+		return events;
 	}
 }

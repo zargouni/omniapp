@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Issue;
+import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.service.UserService;
 
@@ -77,6 +78,11 @@ public class HomeController {
 	@GetMapping("/json-user-overview-feed")
 	public @ResponseBody Map<String, Integer> getAllUserClosedTasksheyFeedJson() {
 		return userService.getUserOverviewFeedJson(userService.getSessionUser().getId());
+	}
+	
+	@GetMapping("/get-user-calendar-events")
+	public @ResponseBody JSONArray getProjectCalendarEvents() {
+		return userService.getCalendarEvents(userService.getSessionUser());
 	}
 
 }

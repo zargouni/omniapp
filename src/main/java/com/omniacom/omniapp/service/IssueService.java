@@ -201,4 +201,8 @@ public class IssueService {
 				.element("content", c.getContent());
 	}
 
+	public void deleteIssue(Issue issue) {
+		issueRepo.delete(issue);
+	}
+
 }

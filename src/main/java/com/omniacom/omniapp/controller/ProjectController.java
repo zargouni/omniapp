@@ -84,10 +84,10 @@ public class ProjectController {
 
 	@Autowired
 	UploadedFileService fileService;
-	
+
 	@Autowired
 	SnagValidator snagValidator;
-	
+
 	@Autowired
 	IssueValidator issueValidator;
 
@@ -115,12 +115,12 @@ public class ProjectController {
 		model.addAttribute("ServiceTasksMap", projectService.getMapServiceTasks(projectService.getCurrentProject()));
 
 	}
-	
+
 	@GetMapping("/get-project-gantt")
 	public @ResponseBody JSONArray getProjectGantt(@RequestParam("id") Project project) {
 		return projectService.getGanttContent(project);
 	}
-	
+
 	@GetMapping("/get-project-feed")
 	public @ResponseBody Map<LocalDate, JSONArray> getProjectFeed(@RequestParam("id") Project project) {
 		lastRefreshDateTime = new Date();
@@ -166,7 +166,7 @@ public class ProjectController {
 	public @ResponseBody JSONArray getAllOperationsJson(@RequestParam("id") long projectId) {
 		return operationService.getAllOperationsJson(projectId);
 	}
-	
+
 	@GetMapping("/json-issues")
 	public @ResponseBody JSONArray getAllIssuesJson(@RequestParam("id") long projectId) {
 		return issueService.getAllIssuesJson(projectId);
@@ -187,12 +187,12 @@ public class ProjectController {
 	public @ResponseBody JSONArray getOperationComments(@RequestParam("id") long operationId) {
 		return operationService.getOperationComments(operationId);
 	}
-	
+
 	@GetMapping("/get-operation-snags")
 	public @ResponseBody JSONArray getOperationSnags(@RequestParam("id") long operationId) {
 		return operationService.getOperationSnags(operationId);
 	}
-	
+
 	@GetMapping("/get-task-comments")
 	public @ResponseBody JSONArray getTaskComments(@RequestParam("id") long taskId) {
 		return taskService.getTaskComments(taskId);
@@ -218,7 +218,7 @@ public class ProjectController {
 	}
 
 	private List<User> taskUsers = null;
-	
+
 	private List<User> issueUsers = null;
 
 	@PostMapping("/update-task")
@@ -257,6 +257,19 @@ public class ProjectController {
 		return response;
 	}
 
+	@PostMapping("/delete-task")
+	public @ResponseBody JsonResponse doDeleteTask(@RequestParam("id") long taskId) {
+		JsonResponse response = new JsonResponse();
+		Task task = taskService.findOne(taskId);
+		if (task != null) {
+			taskService.deleteTask(task);
+			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
+		}
+		return response;
+	}
+
 	@GetMapping("/get-project-tasks-stats")
 	public @ResponseBody JSONObject getProjectTasksStats(@RequestParam("id") long projectId) {
 		return projectService.getProjectTaskStats(projectId);
@@ -266,110 +279,7 @@ public class ProjectController {
 	public @ResponseBody JSONObject getTaskParents(@RequestParam("id") long taskId) {
 		return taskService.getTaskParents(taskId);
 	}
-	// @PostMapping("/get_services_all_tasks_for_current_project")
-	// public @ResponseBody JSONArray
-	// getAllTasksGroupedByService(@RequestParam("id") long projectId ) {
-	// Map<Service, List<Task>> map =
-	// projectService.getMapServiceTasks(projectService.findOneById(projectId));
-	//
-	// List<JSONObject> jsonArray = new ArrayList<JSONObject>();
-	//
-	// for (Map.Entry<Service, List<Task>> pair : map.entrySet()) {
-	// JSONObject jsonService = jsonService(pair.getKey());
-	// for(Task task : pair.getValue()) {
-	// jsonService.accumulate("tasks", jsonTask(task));
-	// }
-	// jsonArray.add(jsonService);
-	// //i += pair.getKey() + pair.getValue();
-	// }
-	// JSONArray json = JSONArray.fromObject(jsonArray);
-	// return json;
-	// }
-
-	// @PostMapping("/get_tasks_by_service")
-	// public @ResponseBody JSONArray getTasksByService(@RequestParam("serviceId")
-	// long serviceId ) {
-	// //Map<Service, List<Task>> map =
-	// projectService.getMapServiceTasks(projectService.findOneById(projectId));
-	// List<Task> tasks =
-	// serviceService.findAllTasks(serviceService.findById(serviceId));
-	// List<JSONObject> jsonList = new ArrayList<>();
-	// List<JSONObject> jsonArray = new ArrayList<JSONObject>();
-	//
-	// for (Map.Entry<Service, List<Task>> pair : map.entrySet()) {
-	// JSONObject jsonService = jsonService(pair.getKey());
-	// for(Task task : pair.getValue()) {
-	// jsonService.accumulate("tasks", jsonTask(task));
-	// }
-	// jsonArray.add(jsonService);
-	// //i += pair.getKey() + pair.getValue();
-	// }
-	// for(Task task : tasks) {
-	// JSONObject jsonTask = jsonTask(task);
-	// jsonList.add(jsonTask);
-	// }
-	// JSONArray json = JSONArray.fromObject(jsonList);
-	// return json;
-	// }
-
-	// @GetMapping("/get_tasks_by_service")
-	// public @ResponseBody JSONArray getTasksByService(@RequestParam("service_id")
-	// long serviceId) {
-	//
-	//
-	//// List<Task> tasks = (List<Task>)
-	// serviceService.findAllTasks(serviceService.findById(serviceId));
-	//// List<JSONObject> jsonArray = new ArrayList<JSONObject>();
-	//// for (Task t : tasks) {
-	//// jsonArray.add(jsonTask(t));
-	//// }
-	//// JSONArray json = JSONArray.fromObject(jsonArray);
-	// return json;
-	// }
-
-	// @GetMapping("/dashboard")
-	// public ModelAndView dashboard() {
-	// return new ModelAndView("fragments/project-fragments/fragment-dashboard ::
-	// fragment-dashboard");
-	// }
-	//
-	// @GetMapping("/feed")
-	// public ModelAndView feed() {
-	// return new ModelAndView("fragments/project-fragments/fragment-feed ::
-	// fragment-feed");
-	// }
-	//
-	// @GetMapping("/operations")
-	// public ModelAndView operations() {
-	// return new ModelAndView("fragments/project-fragments/fragment-operations ::
-	// fragment-operations");
-	// }
-	//
-	// @GetMapping("/tasks")
-	// public ModelAndView tasks() {
-	// return new ModelAndView("fragments/project-fragments/fragment-tasks ::
-	// fragment-tasks");
-	// }
-	//
-	// @GetMapping("/issues")
-	// public ModelAndView issues() {
-	// return new ModelAndView("fragments/project-fragments/fragment-issues ::
-	// fragment-issues");
-	// }
-	//
-	// @GetMapping("/calendar")
-	// public ModelAndView calendar() {
-	// return new ModelAndView("fragments/project-fragments/fragment-calendar ::
-	// fragment-calendar");
-	// }
-
-	// @ModelAttribute(name = "currentProject")
-	// return currentProject;
-	// }
-	//
-	// public void setCurrentProject(Project currentProject) {
-	// this.currentProject = currentProject;
-	// }
+	
 
 	@GetMapping("/get-all-users-in-task-details-json")
 	public @ResponseBody JSONArray getAllUsersForTask(@RequestParam("id") long taskId) {
@@ -397,7 +307,7 @@ public class ProjectController {
 				if (!taskUsers.contains(user)) {
 					notificationService.sendNotification(user, task);
 				}
-				
+
 				// Add contributing user to task's project
 				if (task.getService().getOperation() != null)
 					userService.addContributingUserToProject(user, task.getService().getOperation().getProject());
@@ -431,7 +341,7 @@ public class ProjectController {
 		}
 		return response;
 	}
-	
+
 	@PostMapping("/do-post-task-comment")
 	public JsonResponse doPostTaskComment(@RequestParam("id") long taskId, @RequestParam("content") String content) {
 		JsonResponse response = new JsonResponse();
@@ -451,12 +361,12 @@ public class ProjectController {
 		}
 		return response;
 	}
-	
+
 	@Autowired
 	private SnagRepository snagRepo;
-	
+
 	@PostMapping("/do-post-snag")
-	public JsonResponse doPostSnag(@RequestParam("id") long operationId, @Validated Snag snag,BindingResult result) {
+	public JsonResponse doPostSnag(@RequestParam("id") long operationId, @Validated Snag snag, BindingResult result) {
 		JsonResponse response = new JsonResponse();
 		Operation operation = operationService.findOne(operationId);
 		if (!result.hasErrors() && operation != null) {
@@ -468,27 +378,26 @@ public class ProjectController {
 			} else {
 				response.setStatus("FAIL");
 			}
-		
-		} else if(result.hasErrors()) {
+
+		} else if (result.hasErrors()) {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());
 		}
-		
+
 		return response;
 	}
-	
+
 	@Autowired
 	IssueRepository issueRepo;
-	
+
 	@PostMapping("/add-issue")
-	public JsonResponse doAddIssue(@RequestParam("id") long projectId,
-			@Validated Issue issue,BindingResult result) {
+	public JsonResponse doAddIssue(@RequestParam("id") long projectId, @Validated Issue issue, BindingResult result) {
 		JsonResponse response = new JsonResponse();
-		//Operation operation = operationService.findOne(operationId);
+		// Operation operation = operationService.findOne(operationId);
 		Project project = projectService.findOneById(projectId);
 		if (!result.hasErrors() && project != null) {
 			issue.setProject(project);
-			//issue.setOperation(operation);
+			// issue.setOperation(operation);
 			issue.setCreator(userService.getSessionUser());
 			issue.setCreationDate(new Date());
 			issue.setStatus(StaticString.ISSUE_STATUS_OPEN);
@@ -499,18 +408,18 @@ public class ProjectController {
 			} else {
 				response.setStatus("FAIL");
 			}
-		
-		} else if(result.hasErrors()) {
+
+		} else if (result.hasErrors()) {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());
 		}
-		
+
 		return response;
 	}
-	
+
 	@Autowired
 	IssueService issueService;
-	
+
 	@PostMapping("/add-issue-owner")
 	public @ResponseBody JsonResponse addUserToIssue(@RequestParam("id") long issueId,
 			@RequestParam("userId") long userId) {
@@ -523,8 +432,21 @@ public class ProjectController {
 			if (!issueService.addOneOwner(issue, user))
 				response.setStatus("FAIL");
 			else {
-				
+
 			}
+		}
+		return response;
+	}
+	
+	@PostMapping("/delete-issue")
+	public @ResponseBody JsonResponse doDeleteIssue(@RequestParam("id") long issueId) {
+		JsonResponse response = new JsonResponse();
+		Issue issue = issueService.findOne(issueId);
+		if (issue != null) {
+			issueService.deleteIssue(issue);
+			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
 		}
 		return response;
 	}
@@ -621,7 +543,7 @@ public class ProjectController {
 		}
 		return response;
 	}
-	
+
 	@GetMapping("/get-issue-details")
 	public @ResponseBody JSONObject getIssueDetails(@RequestParam("id") long issueId) {
 		Issue issue = issueService.findOne(issueId);
@@ -629,19 +551,20 @@ public class ProjectController {
 			return issueService.jsonIssue(issue);
 		return new JSONObject();
 	}
-	
+
 	@GetMapping("/get-issue-parents")
 	public @ResponseBody JSONObject getIssueParents(@RequestParam("id") long issueId) {
 		return issueService.getIssueParents(issueId);
 	}
-	
+
 	@GetMapping("/get-all-users-in-issue-details-json")
 	public @ResponseBody JSONArray getAllUsersForIssue(@RequestParam("id") long issueId) {
 		return issueService.findAllUsersForIssue(issueId);
 	}
-	
+
 	@PostMapping(value = "/upload-issue-attachment")
-	public ResponseEntity handleFileUploadForIssue(@RequestParam("id") long id, @RequestParam("file") MultipartFile[] files) {
+	public ResponseEntity handleFileUploadForIssue(@RequestParam("id") long id,
+			@RequestParam("file") MultipartFile[] files) {
 		boolean success = true;
 		UploadedFile dbFile = new UploadedFile();
 		for (int i = 0; i < files.length; i++) {
@@ -666,7 +589,7 @@ public class ProjectController {
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all files were not uploaded");
 
 	}
-	
+
 	@PostMapping("/update-issue")
 	public @ResponseBody JsonResponse doUpdateIssue(@RequestParam("id") long issueId, @Validated Issue updatedIssue,
 			BindingResult result) {
@@ -680,7 +603,6 @@ public class ProjectController {
 			} else {
 				response.setStatus("FAIL");
 			}
-			
 
 		} else {
 			response.setStatus("FAIL");
@@ -689,7 +611,7 @@ public class ProjectController {
 
 		return response;
 	}
-	
+
 	@PostMapping("/update-issue-owners")
 	public @ResponseBody JsonResponse addUserToIssueUpdate(@RequestParam("id") long issueId,
 			@RequestParam("userId") long userId) {
@@ -708,24 +630,24 @@ public class ProjectController {
 				if (!issueUsers.contains(user)) {
 					notificationService.sendIssueNotification(user, issue);
 				}
-				
+
 				// Add contributing user to task's project
-//				if (task.getService().getOperation() != null)
-					userService.addContributingUserToProject(user, issue.getProject());
-//				else
-//					userService.addContributingUserToProject(user, task.getService().getProject());
+				// if (task.getService().getOperation() != null)
+				userService.addContributingUserToProject(user, issue.getProject());
+				// else
+				// userService.addContributingUserToProject(user,
+				// task.getService().getProject());
 
 			}
 		}
 		return response;
 	}
-	
-	
+
 	@GetMapping("/get-issue-comments")
 	public @ResponseBody JSONArray getIssueComments(@RequestParam("id") long issueId) {
 		return issueService.getIssueComments(issueId);
 	}
-	
+
 	@PostMapping("/do-post-issue-comment")
 	public JsonResponse doPostIssueComment(@RequestParam("id") long issueId, @RequestParam("content") String content) {
 		JsonResponse response = new JsonResponse();
@@ -745,18 +667,17 @@ public class ProjectController {
 		}
 		return response;
 	}
-	
+
 	@GetMapping("/get-project-issues-stats")
 	public @ResponseBody JSONObject getProjectIssuesStats(@RequestParam("id") long projectId) {
 		return projectService.getProjectIssuesStats(projectId);
 	}
-	
-	
+
 	@PostMapping("/delete-comment")
 	public @ResponseBody JsonResponse deleteComment(@RequestParam("id") long commentId) {
 		JsonResponse response = new JsonResponse();
 		Comment comment = commentRepo.findOne(commentId);
-		if(comment != null) {
+		if (comment != null) {
 			commentRepo.delete(comment);
 			response.setStatus("SUCCESS");
 		} else {
@@ -782,7 +703,7 @@ public class ProjectController {
 	protected void setSnagValidator(WebDataBinder binder) {
 		binder.addValidators(snagValidator);
 	}
-	
+
 	@InitBinder("issue")
 	protected void setIssueValidator(WebDataBinder binder) {
 		binder.addValidators(issueValidator);

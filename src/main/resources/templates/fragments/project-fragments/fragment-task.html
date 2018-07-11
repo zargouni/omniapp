@@ -27,8 +27,8 @@
 			<div style="display: none;" id="task_actions"
 				class="m-portlet__head-tools">
 				<ul class="m-portlet__nav">
-					<li class="m-portlet__nav-item"><a title="Delete Task"
-						href="#" class="m-portlet__nav-link m-portlet__nav-link--icon"><i
+					<li th:if="${selectedProject.owner.id == sessionUser.id}" class="m-portlet__nav-item"><a title="Delete Task"
+						href="#" onclick="deleteTask()" class="m-portlet__nav-link m-portlet__nav-link--icon"><i
 							class="la la-close"></i></a></li>
 					<li class="m-portlet__nav-item"><a title="Edit Task" href="#"
 						onclick="toggleUpdateModeTask()"

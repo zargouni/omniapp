@@ -43,14 +43,17 @@ public class Task implements Serializable {
 	@JoinTable(name = "USER_TASK", joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> users = new ArrayList<User>();
 	
-	@OneToMany(mappedBy="task")
+	@OneToMany(mappedBy="task", orphanRemoval=true)
 	private List<UploadedFile> attachments;
 	
-	@OneToMany( mappedBy = "task")
+	@OneToMany( mappedBy = "task", orphanRemoval=true)
 	private List<Comment> comments;
 	
 	@ManyToOne
 	private User closedBy;
+	
+	@OneToMany(mappedBy="task", orphanRemoval=true)
+	private List<Notification> notifications;
 	
 	public Task() {
 
@@ -307,6 +310,24 @@ public class Task implements Serializable {
 	 */
 	public void setClosedBy(User closedBy) {
 		this.closedBy = closedBy;
+	}
+
+
+
+	/**
+	 * @return the notifications
+	 */
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+
+
+	/**
+	 * @param notifications the notifications to set
+	 */
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
 	}
 	
 

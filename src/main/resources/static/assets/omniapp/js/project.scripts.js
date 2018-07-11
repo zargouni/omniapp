@@ -80,17 +80,12 @@ function doUpdateIssue(issueId) {
 	var severity = $('#issue_severity_select').val();
 	var description = $('#issue_description').val();
 	var endDate = $('#issue_end_date_select').val();
-// var operation = $('#issue_operation')
-// var estimationHR = $('#task_estimation_hr_input').val();
-// var estimationTime = $('#task_estimation_days_input').val();
-// var service = $('#service_fragment_selected_service_id').val();
 
 	var nameError = $('#issue_fragment_name_error');
 	var descriptionError = $('#issue_fragment_description_error');
 	var EndDateError = $('#issue_fragment_endDate_error');
 
 	nameError.hide('fast');
-// taskStartDateError.hide('fast');
 	EndDateError.hide('fast');
 	descriptionError.hide('fast');
 
@@ -102,26 +97,20 @@ function doUpdateIssue(issueId) {
 					async: false,
 					data : "id=" + issueId + "&name=" + name + "&status=" + status
 							+ "&severity=" + severity + "&endDate="
-							+ endDate + "&description=" + description
-// + "&operationId="
-// + operation
-							,
+							+ endDate + "&description=" + description,
 					success : function(response) {
 						// we have the response
 						if (response.status == "SUCCESS") {
 							toastr.success("Issue updated successfully",
 									"Well done!");
-							// if (response.result != 'undefined') {
 								doUpdateIssueOwners(issueId);
 								populateIssueFragmentDetails(issueId);
 								$('#issues_datatable').mDatatable(
 										'reload');
-							// }
-						} else {
+							} else {
 							
 								toastr.error("Couldn't update Issue", "Error");
-							
-
+						
 							// todo
 							for (i = 0; i < response.result.length; i++) {
 								console.log(response.result[i].code);
@@ -146,6 +135,49 @@ function doUpdateIssue(issueId) {
 				"Couldn't update Issue, you have to select at least 1 owner",
 				"Select Owner(s)");
 	}
+}
+
+function deleteIssue(){
+	var id = $('#selected_issue_id').val();
+	
+	swal({
+		title : 'Are you sure?',
+		text : "You won't be able to revert this!",
+		type : 'warning',
+		showCancelButton : true,
+		confirmButtonText : 'Yes, delete it!'
+	}).then(
+			function(result) {
+				if (result.value) {
+					$.ajax({
+						type : "POST",
+						url : '/delete-issue',
+						data : "id=" + id,
+						success : function(response) {
+							// we have the response
+							if (response.status == "SUCCESS") {
+								swal('Deleted!',
+										'Issue has been deleted.',
+										'success');
+								goToProjectIssues();
+								$('#issues_datatable').mDatatable(
+								'reload');
+//								if (response.result != 'undefined') {
+//									$('#service_tasks_datatable').mDatatable(
+//											'reload');
+//								}
+							} else {
+								swal('Fail!', 'Couldn\'t delete issue.',
+								'error');
+							}
+						},
+						error : function(e) {
+							toastr('Error: can\'t delete issue ', e);
+						}
+					});
+				}
+			}
+	);
 }
 
 function doUpdateIssueOwners(issueId) {
@@ -300,14 +332,21 @@ function populateIssueOwnerSelect(issueId) {
 
 function toggleUpdateModeIssue() {
 	$('#issue_fragment_update_footer').show();
-	$('#issue_name_container').show();
-	$('#issue_fragment_details').find('select,input,textarea').each(function() {
-		$(this).attr("disabled", false);
-		if ($(this).hasClass('m-bootstrap-select'))
-			$(this).selectpicker('refresh');
-		if ($(this).hasClass('issue_date'))
-			$(this).datepicker('refresh');
-	});
+	if($('#session_user_id').val() == $('#project_manager_id').val()){
+		$('#issue_name_container').show();
+		$('#issue_fragment_details').find('select,input,textarea').each(function() {
+			$(this).attr("disabled", false);
+			if ($(this).hasClass('m-bootstrap-select'))
+				$(this).selectpicker('refresh');
+			if ($(this).hasClass('issue_date'))
+				$(this).datepicker('refresh');
+		});
+	}else{
+		$('#issue_status_select').attr("disabled",false);
+		$('#issue_status_select').selectpicker('refresh');
+		}
+	
+	
 
 }
 
@@ -970,22 +1009,7 @@ function getCalendarEvents(){
 		data : 'id=' + projectId,
 		async : false,
 		success : function(response) {
-// if(response.status == "REFRESH"){
-// $('#loader-wrapper').show();
-// setTimeout(function(){
-// $(".m-timeline-1__items").html("");
-// populateProjectFeed();
-// $('#loader-wrapper').hide();
-//			       
-// },2100);
-//				
-//				
-//				
-//				
-//					
-// }else{
-// toastr.info("Nothing to add, Feed is up to date");
-// }
+
 			for(var i = 0 ; i < response.length ; i++){
 				var event;
 				if(response[i].type == "operation")
@@ -1015,17 +1039,13 @@ function getCalendarEvents(){
 			
 		},
 		error : function(e) {
-			alert('Error: refresh project feed ' + e);
+			alert('Error: Calendar events ' + e);
 		}
 	});
 	
 	for(var j = 0 ; j< events.length; j++){
-		// console.log("events:"+i +" "+ events[j].title+" startDate:
-		// "+moment(events[j].startDate)+" endDate:
-		// "+moment(events[j].endDate));
 		$('#project_calendar').fullCalendar('renderEvent', events[j],true);
 	}
-	// console.log("events:"+events.length);
 	$("#project_calendar").fullCalendar('rerenderEvents');
     
 	return events;
@@ -1862,14 +1882,22 @@ function toggleTaskFragment(taskId) {
 
 function toggleUpdateModeTask() {
 	$('#task_fragment_update_footer').show();
-	$('#task_name_container').show();
-	$('#task_fragment_details').find('select,input').each(function() {
-		$(this).attr("disabled", false);
-		if ($(this).hasClass('m-bootstrap-select'))
-			$(this).selectpicker('refresh');
-		if ($(this).hasClass('task_date'))
-			$(this).datepicker('refresh');
-	});
+	if($('#session_user_id').val() == $('#project_manager_id').val()){
+		$('#task_name_container').show();
+		$('#task_fragment_details').find('select,input').each(function() {
+			$(this).attr("disabled", false);
+			if ($(this).hasClass('m-bootstrap-select'))
+				$(this).selectpicker('refresh');
+			if ($(this).hasClass('task_date'))
+				$(this).datepicker('refresh');
+		});	
+	}else{
+		$('#task_status_select').attr("disabled",false);
+		$('#task_completion_percentage').attr("disabled",false);
+		$('#task_status_select').selectpicker('refresh');
+		$('#task_completion_percentage').selectpicker('refresh');
+	}
+	
 
 }
 
@@ -1883,6 +1911,44 @@ function toggleReadOnlyModeTask() {
 		if ($(this).hasClass('task_date'))
 			$(this).datepicker('refresh');
 	});
+}
+
+function deleteTask(){
+	var id = $('#selected_task_id').val();
+	
+	swal({
+		title : 'Are you sure?',
+		text : "You won't be able to revert this!",
+		type : 'warning',
+		showCancelButton : true,
+		confirmButtonText : 'Yes, delete it!'
+	}).then(
+			function(result) {
+				if (result.value) {
+					$.ajax({
+						type : "POST",
+						url : '/delete-task',
+						data : "id=" + id,
+						success : function(response) {
+							// we have the response
+							if (response.status == "SUCCESS") {
+								swal('Deleted!',
+										'Task has been deleted.',
+										'success');
+								window.location.href = '#tasks';
+								//goToProjectTasks();
+							} else {
+								swal('Fail!', 'Couldn\'t delete task.',
+								'error');
+							}
+						},
+						error : function(e) {
+							toastr('Error: can\'t delete Task ', e);
+						}
+					});
+				}
+			}
+	);
 }
 
 function doUpdateTask(id) {

@@ -45,15 +45,18 @@ public class Issue implements Serializable {
 	@ManyToOne
 	private User creator;
 	
-	@OneToMany( mappedBy = "issue")
+	@OneToMany( mappedBy = "issue", orphanRemoval=true)
 	private List<Comment> comments;
 	
 	@ManyToMany
 	@JoinTable(name = "USER_ISSUE", joinColumns = @JoinColumn(name = "issue_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> assignedUsers;
 	
-	@OneToMany(mappedBy="issue")
+	@OneToMany(mappedBy="issue", orphanRemoval=true)
 	private List<UploadedFile> attachments;
+	
+	@OneToMany(mappedBy="issue", orphanRemoval=true)
+	private List<Notification> notifications;
 	
 	public Issue() {
 		super();
@@ -267,6 +270,20 @@ public class Issue implements Serializable {
 	 */
 	public void setAttachments(List<UploadedFile> attachments) {
 		this.attachments = attachments;
+	}
+
+	/**
+	 * @return the notifications
+	 */
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+	/**
+	 * @param notifications the notifications to set
+	 */
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
 	}
 
 }

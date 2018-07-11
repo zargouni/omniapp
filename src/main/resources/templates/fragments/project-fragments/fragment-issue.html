@@ -27,8 +27,8 @@
 			<div style="display: none;" id="issue_actions"
 				class="m-portlet__head-tools">
 				<ul class="m-portlet__nav">
-					<li class="m-portlet__nav-item"><a title="Delete Issue"
-						href="#" class="m-portlet__nav-link m-portlet__nav-link--icon"><i
+					<li class="m-portlet__nav-item"><a th:if="${selectedProject.owner.id == sessionUser.id}" title="Delete Issue"
+						href="#" onclick="deleteIssue()" class="m-portlet__nav-link m-portlet__nav-link--icon"><i
 							class="la la-close"></i></a></li>
 					<li class="m-portlet__nav-item"><a title="Edit Issue" href="#"
 						onclick="toggleUpdateModeIssue()"

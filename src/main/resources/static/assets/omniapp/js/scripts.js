@@ -6,6 +6,11 @@ function handleNotificationClick(taskId){
 		async : false,
 		success : function(response) {
 			window.location.href = '/project?id='+response.project_id+'#task='+taskId;
+			let searchParams = new URLSearchParams(window.location.search);
+			let param = searchParams.get('id');
+			if(param == $('#selected_project_id').val()){
+				toggleTaskFragment(taskId);
+			}
 		},
 		error : function(e) {
 			alert('Error: notification click ' + e);
@@ -21,6 +26,12 @@ function handleIssueNotificationClick(issueId){
 		async : false,
 		success : function(response) {
 			window.location.href = '/project?id='+response.project_id+'#issue='+issueId;
+			let searchParams = new URLSearchParams(window.location.search);
+			let param = searchParams.get('id');
+			if(param == $('#selected_project_id').val()){
+				toggleIssueFragment(issueId);
+			}
+			//location.reload();
 		},
 		error : function(e) {
 			alert('Error: issue click ' + e);
@@ -982,7 +993,8 @@ function populateGenerateOperationServicesCheckboxList(projectId,operationId){
 									+'<span class="badge"><i style="color:#34bfa3;font-size:18px;font-weight:500;margin:auto;" class="la la-dot-circle-o"></i></span>'
 									
 									+'</label>';
-									//+'<span class="badge badge-success">'+response[i].price+'</span>';
+									// +'<span class="badge
+									// badge-success">'+response[i].price+'</span>';
 					switch(response[i].category) {
 				    	case "BTS":
 				    		$('#category_bts').append(html_text);
@@ -1381,6 +1393,155 @@ var userOverviewChart = function() {
 		}
 	};
 }();
+function populateUserCalendar(){
+	
+    var todayDate = moment().startOf('day');
+    var YM = todayDate.format('YYYY-MM');
+    var YESTERDAY = todayDate.clone().subtract(1, 'day').format('YYYY-MM-DD');
+    var TODAY = todayDate.format('YYYY-MM-DD');
+    var TOMORROW = todayDate.clone().add(1, 'day').format('YYYY-MM-DD');
+   // $('.loader-wrapper').show();
+	
+    // var eventss = getCalendarEvents();
+    
+    
+    $('#user_calendar').fullCalendar( 'removeEvents');
+    
+    
+ 
+    
+   // setTimeout(function(){
+		// $(".m-timeline-1__items").html("");
+    	
+    	$('#user_calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'listWeek,month,agendaWeek,agendaDay'
+               
+            },
+            defaultView: 'listWeek',
+            editable: true,
+            eventLimit: true, // allow "more" link when too many
+								// events
+            navLinks: true,
+            editable: false,
+            
+            businessHours: {
+            	  // days of week. an array of zero-based day of
+					// week integers (0=Sunday)
+            	  dow: [ 1, 2, 3, 4, 5 ], // Monday - Thursday
+
+            	  start: '8:00', // a start time (10am in this
+									// example)
+            	  end: '18:00', // an end time (6pm in this example)
+            	},
+          // events: eventss,
+
+            eventRender: function(event, element) {
+                if (element.hasClass('fc-day-grid-event')) {
+                	element.data('content', event.description);
+                    element.data('placement', 'top');
+                    mApp.initPopover(element); 
+                    element.css("background",event.color);
+                  // element.find('.fc-time').html('<i class="fa
+					// fa-'+event.icon+'">' + event.description +
+					// '</i>');
+                } else if (element.hasClass('fc-time-grid-event')) {
+                    element.find('.fc-title').append('<div class="fc-description">' + event.description + '</div>'); 
+                } else if (element.find('.fc-list-item-title').lenght !== 0) {
+                    element.find('.fc-list-item-title').append('<div class="fc-description">' + event.description + '</div>'); 
+                }
+            },
+            
+            eventClick: function(calEvent, jsEvent, view) {
+
+            	if(calEvent.type == "task"){
+                // alert('Operation: ' + calEvent.title);
+            		handleNotificationClick(calEvent.id);
+            	}
+            	else{
+            		handleIssueNotificationClick(calEvent.id);
+            	}
+            		// alert('Service: ' + calEvent.title);
+                // change the border color just for fun
+                // $(this).css('border-color', 'red');
+
+              }
+        });
+    	
+		getUserCalendarEvents();
+       // $('.loader-wrapper').hide();
+       
+    // },500);
+
+}
+
+function getUserCalendarEvents(){
+// var projectId = $('#selected_project_id').val();
+var events = [];
+$.ajax({
+type : "GET",
+url : '/get-user-calendar-events',
+async : false,
+success : function(response) {
+
+for(var i = 0 ; i < response.length ; i++){
+	var event;
+	if(response[i].type == "task")
+	var event={
+			type: "task",
+			id:	response[i].id ,
+			title: response[i].name ,
+			start:  response[i].startDate,
+			end: response[i].endDate,
+			color: "#34bfa3",
+			className: "m-fc-event--light m-fc-event--solid-light",
+			description: 'Task "'+response[i].name+'" due date.',
+				 };
+	else{
+		var issueSeverity;
+		switch(response[i].severity) {
+	    case "minor":
+	        issueSeverity = "#36a3f7";
+	        break;
+	    case "major":
+	    	issueSeverity = "#ffb822";
+	    	break;
+	    case "critical":
+	    	issueSeverity = "#f4516c";
+	    	break;
+	}
+		var event={
+				type: "issue",
+				id:	response[i].id ,
+				title: response[i].name ,
+				start:  response[i].startDate,
+				end: response[i].endDate,
+				color: issueSeverity,
+				description: 'Issue "'+response[i].name+'" due date.',
+				className: "m-fc-event--light m-fc-event--solid-light"
+			};
+	}
+		
+	events.push(event);
+}
+
+},
+error : function(e) {
+alert('Error: refresh project feed ' + e);
+}
+});
+
+for(var j = 0 ; j< events.length; j++){
+$('#user_calendar').fullCalendar('renderEvent', events[j],true);
+}
+$("#user_calendar").fullCalendar('rerenderEvents');
+
+return events;
+
+
+}
 
 $(document).ready(function() {
 	
