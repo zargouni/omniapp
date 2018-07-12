@@ -16,6 +16,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Entity
 public class User implements Serializable {
 
@@ -29,20 +32,31 @@ public class User implements Serializable {
 	private long id;
 	
 	@Column( nullable = false, unique = true, updatable = false)
+	@NotEmpty(message = "Please provide a username")
 	private String userName;
 	private String password;
 	
+	@NotEmpty(message = "Please provide your first name")
 	private String firstName;
+	
+	@NotEmpty(message = "Please provide your last name")
 	private String lastName;
 	
 	private String profilePic;
 	
 	private Date registerDate;
 	
-	@Column(unique = true)
+	@Column(name = "email", nullable = false, unique = true)
+	@Email(message = "Please provide a valid e-mail")
+	@NotEmpty(message = "Please provide an e-mail")
 	private String email;
+	
 	private String zohoToken;
 	private long zohoId;
+	
+	private String confirmationToken;
+	
+	private boolean enabled;
 
 	@ManyToOne
 	private Role role;
@@ -470,6 +484,34 @@ public class User implements Serializable {
 	 */
 	public void setProfilePic(String profilePic) {
 		this.profilePic = profilePic;
+	}
+
+	/**
+	 * @return the confirmationToken
+	 */
+	public String getConfirmationToken() {
+		return confirmationToken;
+	}
+
+	/**
+	 * @param confirmationToken the confirmationToken to set
+	 */
+	public void setConfirmationToken(String confirmationToken) {
+		this.confirmationToken = confirmationToken;
+	}
+
+	/**
+	 * @return the enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * @param enabled the enabled to set
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 }

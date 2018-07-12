@@ -26,6 +26,32 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	private EntityManager entityManager;
 
 	@Override
+	public User findOneByEmail(String email) {
+		User user = null;
+		Query query = entityManager.createQuery("SELECT u FROM User u WHERE email=:param").setParameter("param",
+				email);
+		List<User> results = (List<User>) query.getResultList();
+		if (!results.isEmpty())
+			// ignores multiple results
+			user = (User) results.get(0);
+
+		return user;
+	}
+	
+	@Override
+	public User findOneConfirmationToken(String confirmationToken) {
+		User user = null;
+		Query query = entityManager.createQuery("SELECT u FROM User u WHERE confirmationToken=:param").setParameter("param",
+				confirmationToken);
+		List<User> results = (List<User>) query.getResultList();
+		if (!results.isEmpty())
+			// ignores multiple results
+			user = (User) results.get(0);
+
+		return user;
+	}
+	
+	@Override
 	public User findOneByUserName(String userName) {
 		User user = null;
 		Query query = entityManager.createQuery("SELECT u FROM User u WHERE userName=:param").setParameter("param",

@@ -368,4 +368,36 @@ public class UserService implements UserDetailsService {
 		}
 		return events;
 	}
+
+	public JSONArray findAllUsersDetailed() {
+		JSONArray array = new JSONArray();
+		List<User> users = (List<User>) userRepo.findAll();
+		for(User user : users) {
+			array.add(new JSONObject()
+					.element("id", user.getId())
+					.element("username", user.getUserName())
+					.element("name", user.getFirstName()+" "+user.getLastName())
+					.element("email", user.getEmail())
+					.element("role", user.getRole().getName())
+					.element("registerDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(user.getRegisterDate()))
+					.element("picture", user.getProfilePic() == null ? "assets/app/media/img/users/user-icon.png" : user.getProfilePic() ));
+		}
+		return array;
+	}
+
+	public User findByEmail(String email) {
+		return userRepo.findOneByEmail(email);
+	}
+	
+	public User findByUsername(String username) {
+		return userRepo.findOneByUserName(username);
+	}
+
+	public User save(User user) {
+		return userRepo.save(user);
+	}
+	
+	public User findByConfirmationToken(String confirmationToken) {
+		return userRepo.findOneConfirmationToken(confirmationToken);
+	}
 }

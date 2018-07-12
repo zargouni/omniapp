@@ -102,11 +102,20 @@ var SnippetLogin = function() {
 
     var handleSignUpFormSubmit = function() {
         $('#m_login_signup_submit').click(function(e) {
-            e.preventDefault();
+           e.preventDefault();
 
             var btn = $(this);
             var form = $(this).closest('form');
-
+            
+            var fullname = $('#new_fullname').val();
+            var username = $('#new_username').val();
+            var email = $('#new_email').val();
+            var password = $('#new_password').val();
+            var formData = new FormData();
+            formData.append("fullname", fullname);
+            formData.append("username", username);
+            formData.append("email", email);
+            formData.append("password", password);
             form.validate({
                 rules: {
                     fullname: {
@@ -114,7 +123,7 @@ var SnippetLogin = function() {
                     },
                     email: {
                         required: true,
-                        email: true
+                        //email: true
                     },
                     password: {
                         required: true
@@ -122,37 +131,56 @@ var SnippetLogin = function() {
                     rpassword: {
                         required: true
                     },
-                    agree: {
-                        required: true
-                    }
+//                    agree: {
+//                        required: true
+//                    }
                 }
             });
 
             if (!form.valid()) {
                 return;
             }
-
+            
             btn.addClass('m-loader m-loader--right m-loader--light').attr('disabled', true);
+            
+            	console.log("send...");
+            	$.ajax({
+            		url: '/register',
+                    type: "POST",
+                    data: formData,
+                    async: false,
+                    processData: false,
+                    success: function( response ) {
+                    	// similate 2s delay
+                    	if(response.status == "SUCCESS")
+                    		setTimeout(function() {
+    	                    btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
+    	                    form.clearForm();
+    	                    form.validate().resetForm();
 
-            form.ajaxSubmit({
-                url: '',
-                success: function(response, status, xhr, $form) {
-                	// similate 2s delay
-                	setTimeout(function() {
-	                    btn.removeClass('m-loader m-loader--right m-loader--light').attr('disabled', false);
-	                    form.clearForm();
-	                    form.validate().resetForm();
+    	                    // display signup form
+    	                    displaySignInForm();
+    	                    var signInForm = login.find('.m-login__signin form');
+    	                    signInForm.clearForm();
+    	                    signInForm.validate().resetForm();
 
-	                    // display signup form
-	                    displaySignInForm();
-	                    var signInForm = login.find('.m-login__signin form');
-	                    signInForm.clearForm();
-	                    signInForm.validate().resetForm();
+    	                    showErrorMsg(signInForm, 'success', 'Thank you. To complete your registration please check your email.');
+    	                }, 2000);
+                    	else if(response.status == "FAIL"){
+                    		toastr.error("error");
+                    	}
+                    },
+                    error : function(e) {
+            			alert('Error: register ' + e);
+            		}
+            	});
+            
 
-	                    showErrorMsg(signInForm, 'success', 'Thank you. To complete your registration please check your email.');
-	                }, 2000);
-                }
-            });
+           
+
+//            form.ajaxSubmit(function(){
+//            	
+//            });
         });
     }
 

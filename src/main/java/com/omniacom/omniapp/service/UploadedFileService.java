@@ -72,13 +72,13 @@ public class UploadedFileService {
 
 	public String getOutputPictureName(User user, MultipartFile multipartFile) {
 
-		return getPicturesDestinationLocation() + getPicturesLocation() + user.getFirstName() + user.getLastName()
+		return getPicturesDestinationLocation() + getPicturesLocation() + user.getUserName()
 				+ multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().indexOf("."));
 	}
 
 	public String getMinifiedPictureName(User user, MultipartFile multipartFile) {
 
-		return getPicturesLocation() + user.getFirstName() + user.getLastName()
+		return getPicturesLocation() + user.getUserName()
 				+ multipartFile.getOriginalFilename().substring(multipartFile.getOriginalFilename().indexOf("."));
 	}
 	

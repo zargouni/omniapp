@@ -30,6 +30,10 @@ public interface UserRepositoryCustom {
 
 	public List<Issue> findAllIssues(User user);
 
+	User findOneByEmail(String email);
+
+	User findOneConfirmationToken(String confirmationToken);
+
 	
 	
 }
