@@ -42,7 +42,7 @@
 								class="m-menu__submenu m-menu__submenu--classic m-menu__submenu--left">
 								<span class="m-menu__arrow m-menu__arrow--adjust"></span>
 								<ul class="m-menu__subnav">
-									<li id="m_new_project_sidebar_toggle" class="m-menu__item "
+									<li th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}" id="m_new_project_sidebar_toggle" class="m-menu__item "
 										aria-haspopup="true"><a href="#" class="m-menu__link "><i
 											class="m-menu__link-icon flaticon-add"></i><span
 											class="m-menu__link-text">New Project</span></a></li>
@@ -186,7 +186,7 @@
 								</div>
 							</li>
 
-							<li onclick="populateSidebarAdd()"
+							<li th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}" onclick="populateSidebarAdd()"
 								id="m_quick_sidebar_add_toggle" class="m-nav__item"><a
 								href="#" class="m-nav__link m-dropdown__toggle"> <span
 									class="m-nav__link-icon"><i class="flaticon-plus"></i></span>
@@ -300,23 +300,23 @@
 
 
 	<!-- begin::New Project Sidebar -->
-	<div
+	<div th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}"
 		data-th-replace="fragments/fragment-new-project-sidebar :: new-project-sidebar"></div>
 	<!-- end::New Project Sidebar -->
 
 	<!-- begin::New Project Sidebar -->
-	<div
-		data-th-replace="fragments/fragment-project-details-sidebar :: project-details-sidebar"></div>
+<!-- 	<div -->
+<!-- 		data-th-replace="fragments/fragment-project-details-sidebar :: project-details-sidebar"></div> -->
 	<!-- end::New Project Sidebar -->
 
 	<!-- begin::Quick Sidebar Add -->
-	<div
+	<div th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}"
 		data-th-replace="fragments/fragment-quick-sidebar-add :: quick-sidebar-add"></div>
 	<!-- end::Quick Sidebar Add -->
 
 	<!-- begin::Quick Sidebar Messenger -->
-	<div
-		data-th-replace="fragments/fragment-quick-sidebar-messenger :: quick-sidebar-messenger"></div>
+<!-- 	<div -->
+<!-- 		data-th-replace="fragments/fragment-quick-sidebar-messenger :: quick-sidebar-messenger"></div> -->
 	<!-- end::Quick Sidebar Messenger -->
 
 

@@ -103,7 +103,7 @@ AmCharts.themes.patterns = {
 		selectedGraphFillAlpha: 0.7,
 		graphLineAlpha: 0,
 		selectedBackgroundColor: "#000",
-		selectedBackgroundAlpha: 0.5,
+		selectedBackgroundAlpha: 0.8,
 		gridAlpha: 0.15
 	},
 
