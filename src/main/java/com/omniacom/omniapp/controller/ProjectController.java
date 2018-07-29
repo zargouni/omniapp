@@ -98,6 +98,8 @@ public class ProjectController {
 
 		if (projectService.getCurrentProject() == null)
 			return new ModelAndView("404");
+		else if(!userService.getSessionUser().getContributedProjectList().contains(projectService.getCurrentProject()))
+			return new ModelAndView("403");
 		return new ModelAndView("project");
 	}
 
@@ -170,6 +172,11 @@ public class ProjectController {
 	@GetMapping("/json-issues")
 	public @ResponseBody JSONArray getAllIssuesJson(@RequestParam("id") long projectId) {
 		return issueService.getAllIssuesJson(projectId);
+	}
+	
+	@GetMapping("/json-pos")
+	public @ResponseBody JSONArray getAllPosJson(@RequestParam("id") long projectId) {
+		return projectService.getAllPosJson(projectId);
 	}
 
 	@GetMapping("/get-operation-services")

@@ -30,6 +30,8 @@ public class Service implements Serializable, Comparable<Service> {
 	private int flag;
 	private float priceHT;
 	private long zohoId;
+	
+	private String poNumber = "NOPO";
 
 	private ServiceCategory category;
 
@@ -248,6 +250,20 @@ public class Service implements Serializable, Comparable<Service> {
 		} else if (creationDate.after(o.creationDate))
 			return 1;
 		return 0;
+	}
+
+	/**
+	 * @return the poNumber
+	 */
+	public String getPoNumber() {
+		return poNumber;
+	}
+
+	/**
+	 * @param poNumber the poNumber to set
+	 */
+	public void setPoNumber(String poNumber) {
+		this.poNumber = poNumber;
 	}
 
 }

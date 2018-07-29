@@ -2115,6 +2115,10 @@ function projectDynamicContent() {
 	$("#project_operations_toggle").on("click", function() {
 		goToProjectOperations();
 	});
+	
+	$("#project_pos_toggle").on("click", function() {
+		goToProjectPos();
+	});
 
 	$("#project_issues_toggle").on("click", function() {
 		goToProjectIssues();
@@ -2155,6 +2159,14 @@ function goToProjectIssues(){
 	populateIssuesFragmentWidget();
 	DatatableIssuesJsonRemote.init();
 	$("#issues-fragment").show();
+}
+
+function goToProjectPos(){
+	$('#project_subheader').show();
+	$("#m_dynamic_content_project").children().hide();
+	//populateIssuesFragmentWidget();
+	DatatablePosJsonRemote.init();
+	$("#pos-fragment").show();
 }
 
 function goToProjectOperations(){

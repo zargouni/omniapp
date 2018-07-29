@@ -8,7 +8,7 @@ function populateClientsUI(){
 		success : function(response) {
 
 			for (i = 0; i < response.length; i++) {
-				var html_text = '<div'
+				var html_text = '<div '
 					+' class="m-portlet m-portlet--tabs m-portlet--creative m-portlet--first m-portlet--bordered-semi">'
 					+'<div class="m-portlet__head">'
 						+'<div class="m-portlet__head-caption">'
@@ -27,7 +27,7 @@ function populateClientsUI(){
 							+'	</ul>'
 							+'</div>'
 
-							+	'<h2 class="m-portlet__head-label m-portlet__head-label--danger">'
+							+	'<h2 class="m-portlet__head-label m-portlet__head-label--info">'
 							+'<span>'+ getLogoUploadForm(response[i])+'</span>'
 
 							+		'<span>'+response[i].name+'</span>'

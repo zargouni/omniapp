@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -426,6 +427,55 @@ public class ProjectService {
 
 	public List<Operation> findAllUnsyncedOperations(Project project) {
 		return projectRepo.findAllUnsyncedOperations(project);
+	}
+
+	public JSONArray getAllPosJson(long projectId) {
+		JSONArray json = new JSONArray();
+		Project project = projectRepo.findOne(projectId);
+		List<com.omniacom.omniapp.entity.Service> services = projectRepo.findAllServices(project);
+		Map<String,List<com.omniacom.omniapp.entity.Service>> feed = getServicesByPoNumbers(services);
+		for (Map.Entry<String, List<com.omniacom.omniapp.entity.Service>> entry : feed.entrySet()) {
+		    String poNumber = entry.getKey();
+		    List<com.omniacom.omniapp.entity.Service> poServices = entry.getValue();
+		    Float price = 0f;
+		    for(com.omniacom.omniapp.entity.Service s : poServices) {
+		    	price += s.getPriceHT();
+		    }
+		    json.add(new JSONObject()
+		    		.element("number", poNumber)
+		    		.element("services", poServices.size())
+		    		.element("price", price));
+		}
+
+		return json;
+	}
+	
+	public Map<String,List<com.omniacom.omniapp.entity.Service>> getServicesByPoNumbers(List<com.omniacom.omniapp.entity.Service> services)
+	{
+		Map<String,List<com.omniacom.omniapp.entity.Service>> feed = new HashMap<String,List<com.omniacom.omniapp.entity.Service>>();
+		List<com.omniacom.omniapp.entity.Service> list;
+		for (com.omniacom.omniapp.entity.Service service : services) {
+			if (service.getPoNumber() == null || service.getPoNumber().equals("NOPO")) {
+				if (feed.containsKey("NOPO"))
+					feed.get("NOPO").add(service);
+				else {
+					list = new ArrayList<com.omniacom.omniapp.entity.Service>();
+					list.add(service);
+					feed.put("NOPO", list);
+				}
+			}else {
+				if (feed.containsKey(service.getPoNumber().toUpperCase()))
+					feed.get(service.getPoNumber().toUpperCase()).add(service);
+				else {
+					list = new ArrayList<com.omniacom.omniapp.entity.Service>();
+					list.add(service);
+					feed.put(service.getPoNumber().toUpperCase(), list);
+				}
+			}
+			
+
+		}
+		return feed;
 	}
 
 }

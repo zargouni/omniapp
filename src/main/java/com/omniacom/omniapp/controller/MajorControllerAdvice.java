@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.omniacom.StaticString;
@@ -619,6 +620,11 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 	@InitBinder("service")
 	protected void setServiceValidator(WebDataBinder binder) {
 		binder.addValidators(serviceValidator);
+	}
+	
+	@GetMapping("/forbidden")
+	public ModelAndView forbidden() {
+		return new ModelAndView("403");
 	}
 
 }
