@@ -21,6 +21,7 @@ public class ProjectValidator implements Validator {
 		
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "project.name.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "client", "project.client.empty");
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "finalClient", "project.finalClient.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "country", "project.country.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currency", "project.currency.empty");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nature", "project.nature.empty");

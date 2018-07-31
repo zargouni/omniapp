@@ -167,5 +167,12 @@ public class ServiceService {
 		return service.getCreationDate();
 	}
 	
+	public List<com.omniacom.omniapp.entity.Service> findAllByPoNumber(long projectId, String poNumber){
+		return serviceRepo.findAllByPoNumber(projectId, poNumber);
+	}
+	
+	public com.omniacom.omniapp.entity.Service save(com.omniacom.omniapp.entity.Service service){
+		return serviceRepo.save(service);
+	}
 	
 }

@@ -128,6 +128,7 @@ public class ProjectService {
 	public JSONObject jsonProject(Project project) {
 		JSONObject json = new JSONObject().element("id", project.getId()).element("name", project.getName())
 				.element("client", project.getClient().getName())
+				.element("finalClient", project.getFinalClient().getName())
 				.element("owner", project.getOwner().getFirstName() + " " + project.getOwner().getLastName())
 				.element("country", project.getCountry()).element("currency", project.getCurrency())
 				.element("percentage", getProjectProgress(project))
@@ -444,7 +445,8 @@ public class ProjectService {
 		    json.add(new JSONObject()
 		    		.element("number", poNumber)
 		    		.element("services", poServices.size())
-		    		.element("price", price));
+		    		.element("price", price)
+		    		.element("currency", project.getCurrency()));
 		}
 
 		return json;
@@ -455,6 +457,7 @@ public class ProjectService {
 		Map<String,List<com.omniacom.omniapp.entity.Service>> feed = new HashMap<String,List<com.omniacom.omniapp.entity.Service>>();
 		List<com.omniacom.omniapp.entity.Service> list;
 		for (com.omniacom.omniapp.entity.Service service : services) {
+			if(!service.getName().equals("General"))
 			if (service.getPoNumber() == null || service.getPoNumber().equals("NOPO")) {
 				if (feed.containsKey("NOPO"))
 					feed.get("NOPO").add(service);
@@ -476,6 +479,22 @@ public class ProjectService {
 
 		}
 		return feed;
+	}
+
+	public JSONArray getAllPoServicesJson(long projectId, String poNumber) {
+		List<com.omniacom.omniapp.entity.Service> services = serviceService.findAllByPoNumber(projectId, poNumber);
+		JSONArray json = new JSONArray();
+		for(com.omniacom.omniapp.entity.Service s : services) {
+			json.add(new JSONObject()
+					.element("id", s.getId())
+					.element("name", s.getName())
+					.element("description", s.getDescription())
+					.element("operation_name", s.getOperation() == null ? "none" : s.getOperation().getName())
+					.element("site_name", s.getOperation() == null ? "none" : s.getOperation().getSite().getName())
+					.element("po_number", s.getPoNumber())
+					);
+		}
+		return json;
 	}
 
 }

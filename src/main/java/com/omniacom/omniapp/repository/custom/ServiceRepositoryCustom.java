@@ -11,4 +11,6 @@ public interface ServiceRepositoryCustom {
 	List<Task> findAllTasks(Service service);
 	
 	Date getServiceClosedDate(Service service);
+	
+	List<Service> findAllByPoNumber(long projectId, String poNumber);
 }

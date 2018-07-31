@@ -1249,6 +1249,8 @@ function toggleOperationFragment(operationId) {
 		lng : -24.834370,
 		scrollwheel : false,
 		disableDefaultUI : true,
+		draggable: false,
+		disableDoubleClickZoom: true,
 	});
 	map.addMarker({
 		lat : coordinates[0],
@@ -1710,8 +1712,12 @@ function populateTaskFragmentDetails(taskId) {
 
 			if(response.startDate != "01/02/1970")
 				$('#task_start_date_select').val(response.startDate);
+			else
+				$('#task_start_date_select').val("");
 			if(response.endDate != "01/02/1970")
 				$('#task_end_date_select').val(response.endDate);
+			else
+				$('#task_end_date_select').val("");
 			
 			$('#task_estimation_hr_input').val(response.estimationHR);
 			$('#task_estimation_days_input').val(response.estimationTime);
@@ -2192,7 +2198,7 @@ function taskDropZone(){
 	var previewTemplate = previewNode.parentNode.innerHTML;
 	previewNode.parentNode.removeChild(previewNode);
 
-	var myDropzone = new Dropzone("#task-fragment", { // Make the whole body a
+	var myDropzone = new Dropzone(".attachments_block", { // Make the whole body a
 														// dropzone
 	  url: "/upload", // Set the url
 	  thumbnailWidth: 80,
@@ -2270,7 +2276,7 @@ function issueDropZone(){
 	  previewsContainer: "#issue_previews", // Define the container to display
 											// the
 										// previews
-	  clickable: ".fileinput-button", // Define the element that should be
+	  clickable: ".issue_fileinput-button", // Define the element that should be
 										// used as click trigger to select
 										// files.
 	  acceptedFiles: "image/*,application/pdf, .doc, .docx, .xls",

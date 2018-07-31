@@ -86,18 +86,7 @@ var natureDatatableJson = function () {
 				template: function (row, index, datatable) {
 					var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
 					
-					return '\
-						<div class="dropdown ' + dropup + '">\
-							<a href="#" class="btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" data-toggle="dropdown">\
-                                <i class="la la-ellipsis-h"></i>\
-                            </a>\
-						  	<div class="dropdown-menu dropdown-menu-right">\
-						    	<a href="#" onclick="toggleModalEditDetails('+row.id+')" class="dropdown-item"><i class="la la-edit"></i> Edit Details</a>\
-						    	<a href="#"  onclick="toggleModalAddTasks('+row.id+')" class="dropdown-item"><i class="la la-leaf"></i> Add Tasks</a>\
-						    	<a href="#" onclick="toggleModalEditTasks('+row.id+')" class="dropdown-item"><i class="la la-print"></i> Edit Task Lisk</a>\
-						  	</div>\
-						</div>\
-												\<a onclick="handleRemoveNatureClick('+row.id+')" id="btn-remove-nature-'+row.id+'" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete Nature">\
+					return '\<a onclick="handleRemoveNatureClick('+row.id+')" id="btn-remove-nature-'+row.id+'" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete Nature">\
 							<i class="la la-trash-o"></i>\
 						</a>\
 					';

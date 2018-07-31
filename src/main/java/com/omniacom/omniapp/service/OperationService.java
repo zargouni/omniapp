@@ -91,6 +91,7 @@ public class OperationService {
 				task.setEstimationTime(t.getEstimationTime());
 				task.setStatus(StaticString.TASK_STATUS_ONGOING);
 				task.setService(returnService);
+				task.setCreationDate(new Date());
 				//TODO
 				Calendar calendar = Calendar.getInstance();
 				calendar.set(1970, 1, 1, 0, 0);
@@ -99,7 +100,6 @@ public class OperationService {
 				taskRepo.save(task);
 			}
 			
-			return returnService;
 		}
 		return returnService;
 	}

@@ -71,7 +71,7 @@ var projectsDatatableRemoteAjax = function() {
           title: 'Project Name',
           // sortable: 'asc', // default sort
           filterable: false, // disable or enable filtering
-          width: 350,
+          width: 300,
           // basic templating support for column rendering,
           template: function(row) {
         // callback function support for column rendering
@@ -85,10 +85,18 @@ var projectsDatatableRemoteAjax = function() {
 //            // callback function support for column rendering
 //            return row.ShipCountry + ' - ' + row.ShipCity;
 //          },
-        }, {
+        },{
+            field: 'finalClient',
+            title: 'Final Client',
+            width: 100,
+//            template: function(row) {
+//              // callback function support for column rendering
+//              return row.ShipCountry + ' - ' + row.ShipCity;
+//            },
+          }, {
           field: 'owner',
           title: 'Owner',
-          width: 200,
+          width: 100,
         }, {
           field: 'country',
           title: 'Country',

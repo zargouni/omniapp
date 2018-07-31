@@ -67,7 +67,7 @@ public class UploadedFileService {
 
 	public String getOutputFilename(MultipartFile multipartFile) {
 
-		return getDestinationLocation() + getPicturesLocation() + multipartFile.getOriginalFilename();
+		return getDestinationLocation() + multipartFile.getOriginalFilename();
 	}
 
 	public String getOutputPictureName(User user, MultipartFile multipartFile) {

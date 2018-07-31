@@ -98,7 +98,7 @@ public class ProjectController {
 
 		if (projectService.getCurrentProject() == null)
 			return new ModelAndView("404");
-		else if(!userService.getSessionUser().getContributedProjectList().contains(projectService.getCurrentProject()))
+		else if(!userService.getSessionUser().getContributedProjectList().contains(projectService.getCurrentProject()) && projectService.getCurrentProject().getOwner() != userService.getSessionUser() )
 			return new ModelAndView("403");
 		return new ModelAndView("project");
 	}
@@ -178,7 +178,71 @@ public class ProjectController {
 	public @ResponseBody JSONArray getAllPosJson(@RequestParam("id") long projectId) {
 		return projectService.getAllPosJson(projectId);
 	}
-
+	
+	@PostMapping("/remove-service-from-po")
+	public @ResponseBody JsonResponse removeServiceFromPo(@RequestParam("id") long serviceId) {
+		Service service = serviceService.findById(serviceId);
+		JsonResponse response = new JsonResponse();
+		service.setPoNumber("NOPO");
+		if ( serviceService.save(service) != null ) {
+			response.setStatus("SUCCESS");
+		}else {
+			response.setStatus("FAIL");
+		}
+		return response;
+	}
+	
+	@PostMapping("/delete-po")
+	public @ResponseBody JsonResponse deletePo(@RequestParam("id") long projectId, @RequestParam("number") String poNumber) {
+		JsonResponse response = new JsonResponse();
+		boolean success = true;
+		List<Service> services = serviceService.findAllByPoNumber(projectId, poNumber);
+		for(Service service : services) {
+			service.setPoNumber("NOPO");
+			if(serviceService.save(service) == null) {
+				success = false;
+			}
+		}
+		if ( success ) {
+			response.setStatus("SUCCESS");
+		}else {
+			response.setStatus("FAIL");
+		}
+		return response;
+	}
+	
+	@PostMapping("/update-service-po")
+	public @ResponseBody JsonResponse updateServicePo(@RequestParam("id") long serviceId, @RequestParam("number") String poNumber) {
+		Service service = serviceService.findById(serviceId);
+		JsonResponse response = new JsonResponse();
+		service.setPoNumber(poNumber);
+		if ( serviceService.save(service) != null ) {
+			response.setStatus("SUCCESS");
+		}else {
+			response.setStatus("FAIL");
+		}
+		return response;
+	}
+	
+	@PostMapping("/check-po-existance")
+	public @ResponseBody JsonResponse checkPoExistance(@RequestParam("id") long projectId, @RequestParam("number") String poNumber) {
+		JsonResponse response = new JsonResponse();
+		
+		if(!serviceService.findAllByPoNumber(projectId, poNumber).isEmpty()) {
+			response.setStatus("EXISTS");
+				
+		} else {
+			response.setStatus("SUCCESS");
+		}
+		return response;
+	}
+	
+	
+	@GetMapping("/json-po-services")
+	public @ResponseBody JSONArray getAllPoServices(@RequestParam("id") long projectId, @RequestParam("number") String poNumber) {
+		return projectService.getAllPoServicesJson(projectId, poNumber);
+	}
+	
 	@GetMapping("/get-operation-services")
 	public @ResponseBody JSONArray getOperationServices(@RequestParam("id") long operationId) {
 		return operationService.getOperationServices(operationId);

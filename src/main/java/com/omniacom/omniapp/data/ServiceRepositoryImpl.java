@@ -34,4 +34,14 @@ public class ServiceRepositoryImpl implements ServiceRepositoryCustom {
 		return null;
 	}
 
+	@Override
+	public List<Service> findAllByPoNumber(long projectId, String poNumber) {
+		List<Service> services = null;
+		Query query = entityManager.createQuery("SELECT s FROM Service s WHERE s.poNumber LIKE :param AND "
+				+ "(s.operation.project.id = :param2 OR s.project.id = :param2)").setParameter("param",
+				poNumber).setParameter("param2", projectId);
+		services = (List<Service>) query.getResultList();
+		return services;
+	}
+
 }

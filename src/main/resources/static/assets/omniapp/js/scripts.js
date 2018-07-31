@@ -310,12 +310,15 @@ function removeThisServiceFromSelectedServices(serviceId){
 
 function doAddProjectAjaxPost() {
 	var nameError = $('#project_name_error');
+	var finalClientError = $('#project_final_client_error');
 	var clientError = $('#project_client_error');
+
 	var countryError = $('#project_country_error');
 	var currencyError = $('#project_currency_error');
 	var natureError = $('#project_nature_error');
 	var name = $('#project_name').val();
 	var client = $('#project_client').val();
+	var finalClient = $('#project_final_client').val();
 	var country = $('#project_country').val();
 	var currency = $('#project_currency').val();
 	var owner = $('#project_owner').val();
@@ -326,11 +329,12 @@ function doAddProjectAjaxPost() {
 	countryError.hide('fast');
 	currencyError.hide('fast');
 	natureError.hide('fast');
+	finalClientError.hide('fast');
 
 	$.ajax({
 		type : "POST",
 		url : '/add-project',
-		data : "name=" + name + "&client=" + client + "&country=" + country
+		data : "name=" + name + "&client=" + finalClient +"&finalClient="+client+ "&country=" + country
 				+ "&currency=" + currency + "&owner=" + owner+"&nature="+nature,
 		success : function(response) {
 			if (response.status == "SUCCESS") {
@@ -342,12 +346,16 @@ function doAddProjectAjaxPost() {
 				
 				$('#project_name').val('');
 				$('#project_client').val('');
+				$('#project_final_client').val('');
 				$('#project_country').val('');
 				$('#project_currency').val('');
 				$('#select_boq_new_project').val('');
 				$('#select_nature_new_project').val('');
 				if($("#select_boq_content").is(":visible"))
 					$("#m_switch_project_boq").click();
+				$('#m_new_project_sidebar_close').click();
+				if($('#projects_datatable').length)
+				$('#projects_datatable').mDatatable('reload');
 
 			} else {
 				toastr.error("Couldn't add project", "Error");
@@ -358,6 +366,8 @@ function doAddProjectAjaxPost() {
 						nameError.show('slow');
 					if (response.result[i].code == "project.client.empty")
 						clientError.show('slow');
+					if (response.result[i].code == "project.finalClient.empty")
+						finalClientError.show('slow');
 					if (response.result[i].code == "project.country.empty")
 						countryError.show('slow');
 					if (response.result[i].code == "project.currency.empty")

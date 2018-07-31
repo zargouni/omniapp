@@ -49,6 +49,9 @@ public class Project implements Serializable {
 	private Client client;
 	
 	@ManyToOne
+	private Client finalClient;
+	
+	@ManyToOne
 	private Nature nature;
 
 	@OneToOne
@@ -363,6 +366,20 @@ public class Project implements Serializable {
 	 */
 	public void setIssues(List<Issue> issues) {
 		this.issues = issues;
+	}
+
+	/**
+	 * @return the finalClient
+	 */
+	public Client getFinalClient() {
+		return finalClient;
+	}
+
+	/**
+	 * @param finalClient the finalClient to set
+	 */
+	public void setFinalClient(Client finalClient) {
+		this.finalClient = finalClient;
 	}
 
 }
