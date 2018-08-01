@@ -72,9 +72,12 @@ public class ProjectService {
 	}
 
 	public Map<com.omniacom.omniapp.entity.Service, List<Task>> getMapServiceTasks(Project project) {
-		Map<com.omniacom.omniapp.entity.Service, List<Task>> map = new TreeMap<>();
-		for (com.omniacom.omniapp.entity.Service s : projectRepo.findAllServices(project))
+		Map<com.omniacom.omniapp.entity.Service, List<Task>> map = new HashMap<com.omniacom.omniapp.entity.Service, List<Task>>();
+		for (com.omniacom.omniapp.entity.Service s : projectRepo.findAllServices(project)) {
 			map.put(s, serviceService.findAllTasks(s));
+			
+		}
+
 		return map;
 	}
 
@@ -425,10 +428,17 @@ public class ProjectService {
 		// TODO Auto-generated method stub
 		return projectRepo.getUnsyncProjects();
 	}
+	
+	public List<Project> getSyncProjects() {
+		// TODO Auto-generated method stub
+		return projectRepo.getSyncProjects();
+	}
 
 	public List<Operation> findAllUnsyncedOperations(Project project) {
 		return projectRepo.findAllUnsyncedOperations(project);
 	}
+	
+	
 
 	public JSONArray getAllPosJson(long projectId) {
 		JSONArray json = new JSONArray();

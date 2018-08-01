@@ -274,6 +274,8 @@ public class OperationService {
 				.element("title", s.getTitle())
 				.element("severity", s.getSeverity())
 				.element("user", s.getUser().getFirstName() +" "+ s.getUser().getLastName())
+				.element("user_id", s.getUser().getId())
+				.element("user_pic", s.getUser().getProfilePic() == null ? "assets/app/media/img/users/user-icon.png" : s.getUser().getProfilePic())
 				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(s.getDate()))
 				.element("content", s.getContent());
 	}
@@ -311,6 +313,14 @@ public class OperationService {
 		
 		
 		return json;
+	}
+	
+	public List<Operation> findAllSyncedOperations(){
+		return operationRepo.findAllSyncedOperations();
+	}
+
+	public List<com.omniacom.omniapp.entity.Service> findAllUnsyncedServices(Operation op) {
+		return  operationRepo.findAllUnsyncedServices(op);
 	}
 
 	

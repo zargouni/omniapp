@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Operation;
+import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.User;
@@ -61,6 +62,25 @@ public class OperationRepositoryImpl implements OperationRepositoryCustom {
 				.setParameter("param", operation.getId());
 		users = (List<User>) query.getResultList();
 		return users;
+	}
+	
+	@Override
+	public List<Operation> findAllSyncedOperations() {
+		List<Operation> operations = null;
+		Query query = entityManager.createQuery(
+				"SELECT op FROM Operation op WHERE op.zohoId != 0");
+		operations = (List<Operation>) query.getResultList();
+		return operations;
+	}
+
+	@Override
+	public List<Service> findAllUnsyncedServices(Operation op) {
+		List<Service> services = null;
+		Query query = entityManager.createQuery(
+				"SELECT service FROM Service service WHERE service.operation.id = :param AND service.zohoId = 0")
+				.setParameter("param", op.getId());
+		services = (List<Service>) query.getResultList();
+		return services;
 	}
 
 }

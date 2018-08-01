@@ -564,7 +564,7 @@ function populateOperationSnags(operationId){
 			$('#operation_snags_wrapper').html(html_text);
 		},
 		error : function(e) {
-			alert('Error: operation comments ' + e);
+			alert('Error: operation snags ' + e);
 		}
 	});
 }
@@ -585,11 +585,17 @@ function getSnagUI(snag){
 	+'<div class="m-widget3__item">'
 	+	'<div class="m-widget3__header">'
 	+		'<div class="m-widget3__user-img">'
-	+			'<img class="m-widget3__img"'
-	+			'	src="assets/app/media/img/users/user-icon.png" alt="">'
+	+'<a href="/profile?id='+snag.user_id+'" >'
+	+			'<img style="box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);width: 44px; height:44px;" class="m-widget3__img"'
+	+			'	src="' + snag.user_pic + '" alt="">'
+	+' </a>'
 	+		'</div>'
 	+		'<div class="m-widget3__info">'
-	+			'<span style="color: white;"  class="m-widget3__username">' + snag.user + '</span><br>'
+	+'<a href="/profile?id='+snag.user_id+'" style=" text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);font-weight: 600;color: white;" >'
+	+			'<span style="color: white;"  class="m-widget3__username">' + snag.user + '</span>'
+	+' </a>'
+
+	+'<br>'
 	+			'<span style="color: white;" class="m-widget3__time">' + snag.date + '</span>'
 	+		'</div>'
 	

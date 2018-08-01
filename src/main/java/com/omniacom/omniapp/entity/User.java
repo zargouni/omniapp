@@ -47,8 +47,8 @@ public class User implements Serializable {
 	private Date registerDate;
 	
 	@Column(name = "email", nullable = false, unique = true)
-	@Email(message = "Please provide a valid e-mail")
-	@NotEmpty(message = "Please provide an e-mail")
+	//@Email(message = "Please provide a valid e-mail")
+	//@NotEmpty(message = "Please provide an e-mail")
 	private String email;
 	
 	private String zohoToken;

@@ -40,6 +40,9 @@ public interface ProjectRepositoryCustom {
 	
 	public List<Project> getUnsyncProjects();
 	
+	public List<Project> getSyncProjects();
+	
 	public List<Operation> findAllUnsyncedOperations(Project project);
 	
+
 }

@@ -114,6 +114,7 @@ public class ProjectController {
 		model.addAttribute("onGoingTasksCount",
 				projectService.findOnGoingTasksCount(projectService.getCurrentProject()));
 		model.addAttribute("allServices", projectService.findAllServices(projectService.getCurrentProject()));
+		//System.out.println("services count: "+projectService.getMapServiceTasks(projectService.getCurrentProject()).keySet().size());
 		model.addAttribute("ServiceTasksMap", projectService.getMapServiceTasks(projectService.getCurrentProject()));
 
 	}

@@ -67,7 +67,7 @@ public class TaskService {
 			if(task.getStatus().equals(StaticString.TASK_STATUS_ONGOING) && taskCopy.getStatus().equals(StaticString.TASK_STATUS_COMPLETED) ) {
 				task.setCompletedOn(new Date());
 				task.setClosedBy(userService.getSessionUser());
-				System.out.println("closing user "+userService.getSessionUser().getFirstName());
+				//System.out.println("closing user "+userService.getSessionUser().getFirstName());
 			}
 			if (!task.getStatus().equals(taskCopy.getStatus()))
 				task.setStatus(taskCopy.getStatus());

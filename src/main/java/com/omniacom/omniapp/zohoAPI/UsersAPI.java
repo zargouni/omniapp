@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +17,14 @@ import org.springframework.util.FileCopyUtils;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.UserRepository;
 import com.zoho.projects.api.PortalsAPI;
+import com.zoho.projects.api.ProjectsAPI;
 import com.zoho.projects.model.Portal;
+import com.zoho.projects.model.Project;
+import com.zoho.projects.service.ZohoProjects;
 
 @Service
 public class UsersAPI {
+	
 	
 	@Autowired
 	private UserRepository userRepo;
@@ -83,5 +90,39 @@ public class UsersAPI {
 			//System.out.println("portal id: "+portals.get(0).getIdString());
 			return portals.get(0).getIdString();
 		}
+		
+		public List<com.zoho.projects.model.User> getAllPortalUsers() throws Exception {
+			ZohoProjects zoho = new ZohoProjects();
+			User admin = userRepo.findOne(1L);
+			zoho.initialize(admin.getZohoToken(), getPortalId(admin));
+			ProjectsAPI papi = zoho.getProjectsAPI();
+			List<Project> zohoProjects = papi.getProjects(null);
+			List<com.zoho.projects.model.User> zohoProjectUsers = new ArrayList<com.zoho.projects.model.User>();
+			List<com.zoho.projects.model.User> users = new ArrayList<com.zoho.projects.model.User>();
+			for(Project p : zohoProjects) {
+				zohoProjectUsers.addAll(zoho.getUsersAPI().getUsers(p.getIdString()));
+			}
+			
+			for(com.zoho.projects.model.User user : zohoProjectUsers) {
+				if(!users.contains(user))
+					users.add(user);
+			}
+			System.out.println("users: "+users.size());
+			return users;
+		}
+		
+		public void syncPortalUsers() throws Exception {
+			List<com.zoho.projects.model.User> zohoUsers = getAllPortalUsers();
+			//List<User> localUsers = (List<User>) userRepo.findAll();
+			for(com.zoho.projects.model.User zohoUser : zohoUsers) {
+				User localUser = userRepo.findOneByEmail(zohoUser.getEmail());
+				if( localUser != null && localUser.getZohoId() == 0) {
+					System.out.println("zoho email: "+zohoUser.getEmail());
+					localUser.setZohoId(Long.parseLong(zohoUser.getId()));
+					userRepo.save(localUser);
+				}
+			}
+		}
+		
 
 }

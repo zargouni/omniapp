@@ -85,35 +85,35 @@ public class OmniApp {
 	RoleRepository roleRepo;
 
 	
-//	private static void testSync() throws SchedulerException {
-//		
-//		//System.out.println("elements: "+projectService.getUnsyncProjects().size());
-//		
-//		//unsyncedProjects = projectService.getUnsyncProjects();
-//		
-//		 Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-//		 
-//		// define the job and tie it to our MyJob class
-//		  JobDetail job = newJob(SyncZohoPortal.class)
-//		      .withIdentity("Sync Zoho projects", "Sync")
-//		      .build();
-//
-//		  // Trigger the job to run now, and then repeat every 40 seconds
-//		  Trigger trigger = newTrigger()
-//		      .withIdentity("trigger1", "group1")
-//		      .startNow()
-//		      .withSchedule(simpleSchedule()
-//		              .withIntervalInMinutes(1)
-//		              .repeatForever())
-//		      .build();
-//
-//		  // Tell quartz to schedule the job using our trigger
-//		  scheduler.scheduleJob(job, trigger);
-//		  
-//		  scheduler.start();
-//		
-//		
-//
-//	}
+	private static void testSync() throws SchedulerException {
+		
+		//System.out.println("elements: "+projectService.getUnsyncProjects().size());
+		
+		//unsyncedProjects = projectService.getUnsyncProjects();
+		
+		 Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+		 
+		// define the job and tie it to our MyJob class
+		  JobDetail job = newJob(SyncZohoPortal.class)
+		      .withIdentity("Sync Zoho projects", "Sync")
+		      .build();
+
+		  // Trigger the job to run now, and then repeat every 40 seconds
+		  Trigger trigger = newTrigger()
+		      .withIdentity("trigger1", "group1")
+		      .startNow()
+		      .withSchedule(simpleSchedule()
+		              .withIntervalInMinutes(1)
+		              .repeatForever())
+		      .build();
+
+		  // Tell quartz to schedule the job using our trigger
+		  scheduler.scheduleJob(job, trigger);
+		  
+		  scheduler.start();
+		
+		
+
+	}
 
 }

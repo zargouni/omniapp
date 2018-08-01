@@ -34,10 +34,12 @@ public class ProjectsAPI {
 		com.zoho.projects.model.Project zohoResult = null;
 		com.zoho.projects.model.Project zohoProject = Converters.convertLocalProjectToZoho(project);
 		try {
-			// TODO push to zoho + update local project with zoho id
-			zohoResult = projectsApi.create(zohoProject);
-			project.setZohoId(zohoResult.getId());
-			projectRepo.save(project);
+			if(project.getOwner().getZohoId() != 0) {
+				zohoResult = projectsApi.create(zohoProject);
+				project.setZohoId(zohoResult.getId());
+				projectRepo.save(project);
+			}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

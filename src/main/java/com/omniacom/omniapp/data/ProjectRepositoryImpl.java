@@ -185,6 +185,17 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 		return query.getResultList().size();
 	}
 
+	@Override
+	public List<Project> getSyncProjects() {
+		List<Project> projects = null;
+		Query query = entityManager.createQuery(
+				"SELECT p FROM Project p WHERE p.zohoId != 0");
+		projects = (List<Project>) query.getResultList();
+		return projects;
+	}
+
+	
+
 	
 
 	
