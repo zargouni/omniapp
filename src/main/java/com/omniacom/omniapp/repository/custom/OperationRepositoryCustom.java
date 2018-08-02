@@ -4,6 +4,7 @@ import java.util.List;
 
 
 import com.omniacom.omniapp.entity.Comment;
+import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Snag;
@@ -22,6 +23,9 @@ public interface OperationRepositoryCustom {
 	public List<Operation> findAllSyncedOperations();
 	
 	public 	List<Service> findAllUnsyncedServices(Operation op);
+	
+	List<Issue> findAllUnsyncedIssues(Operation op);
+
 
 	
 }

@@ -1,6 +1,5 @@
 package com.omniacom.omniapp.controller;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -9,14 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Issue;
-import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.service.UserService;
 
@@ -45,7 +42,7 @@ public class HomeController {
 			return tasks.subList(0, 5);
 		return tasks;
 	}
-	
+
 	@ModelAttribute(name = "issues")
 	public List<Issue> getAllIssues() {
 		List<Issue> issues = userService.findAllIssues(userService.getSessionUser());
@@ -53,7 +50,7 @@ public class HomeController {
 			return issues.subList(0, 5);
 		return issues;
 	}
-	
+
 	@ModelAttribute(name = "overdueItems")
 	public Collection<Object> getOverdueItems() {
 		JSONArray items = userService.findAllOverdueItems(userService.getSessionUser());
@@ -61,7 +58,7 @@ public class HomeController {
 			return items.subList(0, 5);
 		return items;
 	}
-	
+
 	@ModelAttribute(name = "itemsDueToday")
 	public Collection<Object> getItemsDueToday() {
 		JSONArray items = userService.findAllItemsDueToday(userService.getSessionUser());
@@ -69,17 +66,17 @@ public class HomeController {
 			return items.subList(0, 5);
 		return items;
 	}
-	
+
 	@GetMapping("/get-all-user-overdue-items")
 	public Collection<Object> getAllOverdueItems() {
 		return userService.findAllOverdueItems(userService.getSessionUser());
 	}
-	
+
 	@GetMapping("/json-user-overview-feed")
 	public @ResponseBody Map<String, Integer> getAllUserClosedTasksheyFeedJson() {
 		return userService.getUserOverviewFeedJson(userService.getSessionUser().getId());
 	}
-	
+
 	@GetMapping("/get-user-calendar-events")
 	public @ResponseBody JSONArray getProjectCalendarEvents() {
 		return userService.getCalendarEvents(userService.getSessionUser());

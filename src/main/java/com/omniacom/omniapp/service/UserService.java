@@ -3,14 +3,10 @@ package com.omniacom.omniapp.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.TextStyle;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -22,11 +18,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Issue;
-import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
@@ -372,15 +366,14 @@ public class UserService implements UserDetailsService {
 	public JSONArray findAllUsersDetailed() {
 		JSONArray array = new JSONArray();
 		List<User> users = (List<User>) userRepo.findAll();
-		for(User user : users) {
-			array.add(new JSONObject()
-					.element("id", user.getId())
-					.element("username", user.getUserName())
-					.element("name", user.getFirstName()+" "+user.getLastName())
-					.element("email", user.getEmail())
+		for (User user : users) {
+			array.add(new JSONObject().element("id", user.getId()).element("username", user.getUserName())
+					.element("name", user.getFirstName() + " " + user.getLastName()).element("email", user.getEmail())
 					.element("role", user.getRole().getName())
-					.element("registerDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(user.getRegisterDate()))
-					.element("picture", user.getProfilePic() == null ? "assets/app/media/img/users/user-icon.png" : user.getProfilePic() ));
+					.element("registerDate",
+							new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(user.getRegisterDate()))
+					.element("picture", user.getProfilePic() == null ? "assets/app/media/img/users/user-icon.png"
+							: user.getProfilePic()));
 		}
 		return array;
 	}
@@ -388,7 +381,7 @@ public class UserService implements UserDetailsService {
 	public User findByEmail(String email) {
 		return userRepo.findOneByEmail(email);
 	}
-	
+
 	public User findByUsername(String username) {
 		return userRepo.findOneByUserName(username);
 	}
@@ -396,7 +389,7 @@ public class UserService implements UserDetailsService {
 	public User save(User user) {
 		return userRepo.save(user);
 	}
-	
+
 	public User findByConfirmationToken(String confirmationToken) {
 		return userRepo.findOneConfirmationToken(confirmationToken);
 	}

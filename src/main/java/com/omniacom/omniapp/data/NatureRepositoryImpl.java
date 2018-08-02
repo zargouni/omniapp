@@ -9,7 +9,6 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Nature;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.repository.custom.NatureRepositoryCustom;
@@ -34,9 +33,8 @@ public class NatureRepositoryImpl implements NatureRepositoryCustom {
 
 	@Override
 	public boolean exists(String name) {
-		Query query = entityManager
-				.createQuery("SELECT n FROM Nature n WHERE n.name=:param")
-				.setParameter("param",name);
+		Query query = entityManager.createQuery("SELECT n FROM Nature n WHERE n.name=:param").setParameter("param",
+				name);
 		List<Nature> results = (List<Nature>) query.getResultList();
 		if (!results.isEmpty())
 			return true;
@@ -46,18 +44,15 @@ public class NatureRepositoryImpl implements NatureRepositoryCustom {
 
 	@Override
 	public Nature findOne(String name) {
-		Query query = entityManager
-				.createQuery("SELECT n FROM Nature n WHERE n.name=:param")
-				.setParameter("param",name);
+		Query query = entityManager.createQuery("SELECT n FROM Nature n WHERE n.name=:param").setParameter("param",
+				name);
 		return (Nature) query.getSingleResult();
 	}
 
 	@Override
 	public List<Nature> findAllAvailableNatures() {
 		List<Nature> natures = null;
-		Query query = entityManager
-				.createQuery(
-						"SELECT n FROM Nature n WHERE n.deleted = false");
+		Query query = entityManager.createQuery("SELECT n FROM Nature n WHERE n.deleted = false");
 		natures = (List<Nature>) query.getResultList();
 		return natures;
 	}

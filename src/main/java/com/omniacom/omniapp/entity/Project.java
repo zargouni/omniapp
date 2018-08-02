@@ -9,16 +9,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
-import org.springframework.data.annotation.CreatedDate;
 
 @Entity
 public class Project implements Serializable {
@@ -33,8 +27,6 @@ public class Project implements Serializable {
 	private String name;
 
 	@Column(nullable = false, updatable = false)
-//	@Temporal(TemporalType.DATE)
-//	@CreatedDate
 	private Date creationDate;
 	private String description;
 	private String currency;
@@ -47,26 +39,28 @@ public class Project implements Serializable {
 
 	@ManyToOne
 	private Client client;
-	
+
 	@ManyToOne
 	private Client finalClient;
-	
+
 	@ManyToOne
 	private Nature nature;
 
 	@OneToOne
 	private BillOfQuantities boq;
 
-	@ManyToMany(mappedBy="contributedProjectList")
-	//@JoinTable(name = "USER_PROJECTS", joinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
+	@ManyToMany(mappedBy = "contributedProjectList")
+	// @JoinTable(name = "USER_PROJECTS", joinColumns = @JoinColumn(name =
+	// "project_id", referencedColumnName = "id"), inverseJoinColumns =
+	// @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> workingUsersList;
 
 	@OneToMany(mappedBy = "project")
 	private List<Operation> operations;
-	
+
 	@OneToMany(mappedBy = "project")
 	private List<Service> services;
-	
+
 	@OneToMany(mappedBy = "project")
 	private List<Issue> issues;
 
@@ -279,8 +273,6 @@ public class Project implements Serializable {
 		return client;
 	}
 
-	
-
 	/**
 	 * @param client
 	 *            the client to set
@@ -289,13 +281,14 @@ public class Project implements Serializable {
 		this.client = client;
 	}
 
-	
 	public void addUser(User user) {
 		this.workingUsersList.add(user);
 		user.getContributedProjectList().add(this);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -313,7 +306,8 @@ public class Project implements Serializable {
 	}
 
 	/**
-	 * @param services the services to set
+	 * @param services
+	 *            the services to set
 	 */
 	public void setServices(List<Service> services) {
 		this.services = services;
@@ -334,7 +328,8 @@ public class Project implements Serializable {
 	}
 
 	/**
-	 * @param nature the nature to set
+	 * @param nature
+	 *            the nature to set
 	 */
 	public void setNature(Nature nature) {
 		this.nature = nature;
@@ -348,7 +343,8 @@ public class Project implements Serializable {
 	}
 
 	/**
-	 * @param boq the boq to set
+	 * @param boq
+	 *            the boq to set
 	 */
 	public void setBoq(BillOfQuantities boq) {
 		this.boq = boq;
@@ -362,7 +358,8 @@ public class Project implements Serializable {
 	}
 
 	/**
-	 * @param issues the issues to set
+	 * @param issues
+	 *            the issues to set
 	 */
 	public void setIssues(List<Issue> issues) {
 		this.issues = issues;
@@ -376,7 +373,8 @@ public class Project implements Serializable {
 	}
 
 	/**
-	 * @param finalClient the finalClient to set
+	 * @param finalClient
+	 *            the finalClient to set
 	 */
 	public void setFinalClient(Client finalClient) {
 		this.finalClient = finalClient;

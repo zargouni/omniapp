@@ -17,17 +17,16 @@ import com.omniacom.omniapp.repository.custom.TaskRepositoryCustom;
 @Repository
 @Transactional
 public class TaskRepositoryImpl implements TaskRepositoryCustom {
-	
+
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+
 	@Override
 	public List<User> findAllUsers(Task task) {
 		// TODO Auto-generated method stub
 		List<User> users = null;
 		Query query = entityManager
-				.createQuery(
-				"SELECT u FROM User u, Task t JOIN t.users users WHERE t.id = :param AND users.id = u.id")
+				.createQuery("SELECT u FROM User u, Task t JOIN t.users users WHERE t.id = :param AND users.id = u.id")
 				.setParameter("param", task.getId());
 		users = (List<User>) query.getResultList();
 		return users;
@@ -35,20 +34,18 @@ public class TaskRepositoryImpl implements TaskRepositoryCustom {
 
 	@Override
 	public boolean addOneOwner(Task task, User user) {
-//		if(task.getService().getOperation() != null) {
-//			task.getService().getOperation().getProject().getWorkingUsersList().add(user);
-//		}else {
-//			task.getService().getProject().getWorkingUsersList().add(user);
-//		}
+		// if(task.getService().getOperation() != null) {
+		// task.getService().getOperation().getProject().getWorkingUsersList().add(user);
+		// }else {
+		// task.getService().getProject().getWorkingUsersList().add(user);
+		// }
 		return task.getUsers().add(user);
 	}
 
 	@Override
 	public List<UploadedFile> findAllFiles(Task task) {
 		List<UploadedFile> files = null;
-		Query query = entityManager
-				.createQuery(
-				"SELECT f FROM UploadedFile f WHERE f.task.id = :param")
+		Query query = entityManager.createQuery("SELECT f FROM UploadedFile f WHERE f.task.id = :param")
 				.setParameter("param", task.getId());
 		files = (List<UploadedFile>) query.getResultList();
 		return files;

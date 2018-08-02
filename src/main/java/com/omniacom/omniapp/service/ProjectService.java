@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,7 +46,7 @@ public class ProjectService {
 
 	@Autowired
 	TaskService taskService;
-	
+
 	private Project currentProject;
 
 	public Project addProject(Project project) {
@@ -75,7 +74,7 @@ public class ProjectService {
 		Map<com.omniacom.omniapp.entity.Service, List<Task>> map = new HashMap<com.omniacom.omniapp.entity.Service, List<Task>>();
 		for (com.omniacom.omniapp.entity.Service s : projectRepo.findAllServices(project)) {
 			map.put(s, serviceService.findAllTasks(s));
-			
+
 		}
 
 		return map;
@@ -148,16 +147,17 @@ public class ProjectService {
 	}
 
 	private Integer getProjectUnplanifiedTasksCount(Project project) {
-		return projectRepo.findProjectUnplanifiedTasksCount(project);	}
+		return projectRepo.findProjectUnplanifiedTasksCount(project);
+	}
 
 	private Integer getProjectIssuesCount(Project project) {
 		return projectRepo.findAllIssues(project).size();
 	}
-	
+
 	public Integer getProjectUnassignedIssuesCount(Project project) {
 		return projectRepo.findProjectUnassignedIssuesCount(project);
 	}
-	
+
 	public Integer getProjectOverdueIssuesCount(Project project) {
 		return projectRepo.findProjectOverdueIssuesCount(project);
 	}
@@ -191,39 +191,36 @@ public class ProjectService {
 
 		return json;
 	}
-	
+
 	public JSONObject getProjectIssuesStats(long projectId) {
 		JSONObject json = new JSONObject();
 		Project project = projectRepo.findOne(projectId);
-		//Integer taskCount = findTaskCount(project);
-		Integer open = 0 , inProgress = 0, toBeTested = 0, closed = 0;
+		// Integer taskCount = findTaskCount(project);
+		Integer open = 0, inProgress = 0, toBeTested = 0, closed = 0;
 		List<Issue> issues = projectRepo.findAllIssues(project);
-		for(Issue issue : issues) {
-			switch(issue.getStatus()) {
-			   case StaticString.ISSUE_STATUS_OPEN:
-				   open++;
-				   break;
-			   case StaticString.ISSUE_STATUS_IN_PROGRESS :
-				   inProgress++;
-				   break; 
-			   case StaticString.ISSUE_STATUS_TO_BE_TESTED :
-				   toBeTested++;
-				   break;
-			   case StaticString.ISSUE_STATUS_CLOSED :
-				   closed++;
-				   break;
+		for (Issue issue : issues) {
+			switch (issue.getStatus()) {
+			case StaticString.ISSUE_STATUS_OPEN:
+				open++;
+				break;
+			case StaticString.ISSUE_STATUS_IN_PROGRESS:
+				inProgress++;
+				break;
+			case StaticString.ISSUE_STATUS_TO_BE_TESTED:
+				toBeTested++;
+				break;
+			case StaticString.ISSUE_STATUS_CLOSED:
+				closed++;
+				break;
 			}
 		}
 		if (issues.size() != 0) {
-				json.element("open", (open * 100 / issues.size()) + "%")
+			json.element("open", (open * 100 / issues.size()) + "%")
 					.element("in_progress", (inProgress * 100 / issues.size()) + "%")
 					.element("to_be_tested", (toBeTested * 100 / issues.size()) + "%")
 					.element("closed", (closed * 100 / issues.size()) + "%");
 		} else
-			json.element("open", "0")
-			.element("in_progress", "0")
-			.element("to_be_tested", "0")
-			.element("closed", "0");
+			json.element("open", "0").element("in_progress", "0").element("to_be_tested", "0").element("closed", "0");
 		return json;
 	}
 
@@ -414,11 +411,11 @@ public class ProjectService {
 		}
 		return events;
 	}
-	
+
 	public JSONArray getGanttContent(Project project) {
 		JSONArray json = new JSONArray();
 		List<Operation> operations = projectRepo.findAllOperations(project);
-		for(Operation op : operations) {
+		for (Operation op : operations) {
 			json.add(operationService.jsonOperationGantt(op));
 		}
 		return json;
@@ -428,7 +425,7 @@ public class ProjectService {
 		// TODO Auto-generated method stub
 		return projectRepo.getUnsyncProjects();
 	}
-	
+
 	public List<Project> getSyncProjects() {
 		// TODO Auto-generated method stub
 		return projectRepo.getSyncProjects();
@@ -437,55 +434,49 @@ public class ProjectService {
 	public List<Operation> findAllUnsyncedOperations(Project project) {
 		return projectRepo.findAllUnsyncedOperations(project);
 	}
-	
-	
 
 	public JSONArray getAllPosJson(long projectId) {
 		JSONArray json = new JSONArray();
 		Project project = projectRepo.findOne(projectId);
 		List<com.omniacom.omniapp.entity.Service> services = projectRepo.findAllServices(project);
-		Map<String,List<com.omniacom.omniapp.entity.Service>> feed = getServicesByPoNumbers(services);
+		Map<String, List<com.omniacom.omniapp.entity.Service>> feed = getServicesByPoNumbers(services);
 		for (Map.Entry<String, List<com.omniacom.omniapp.entity.Service>> entry : feed.entrySet()) {
-		    String poNumber = entry.getKey();
-		    List<com.omniacom.omniapp.entity.Service> poServices = entry.getValue();
-		    Float price = 0f;
-		    for(com.omniacom.omniapp.entity.Service s : poServices) {
-		    	price += s.getPriceHT();
-		    }
-		    json.add(new JSONObject()
-		    		.element("number", poNumber)
-		    		.element("services", poServices.size())
-		    		.element("price", price)
-		    		.element("currency", project.getCurrency()));
+			String poNumber = entry.getKey();
+			List<com.omniacom.omniapp.entity.Service> poServices = entry.getValue();
+			Float price = 0f;
+			for (com.omniacom.omniapp.entity.Service s : poServices) {
+				price += s.getPriceHT();
+			}
+			json.add(new JSONObject().element("number", poNumber).element("services", poServices.size())
+					.element("price", price).element("currency", project.getCurrency()));
 		}
 
 		return json;
 	}
-	
-	public Map<String,List<com.omniacom.omniapp.entity.Service>> getServicesByPoNumbers(List<com.omniacom.omniapp.entity.Service> services)
-	{
-		Map<String,List<com.omniacom.omniapp.entity.Service>> feed = new HashMap<String,List<com.omniacom.omniapp.entity.Service>>();
+
+	public Map<String, List<com.omniacom.omniapp.entity.Service>> getServicesByPoNumbers(
+			List<com.omniacom.omniapp.entity.Service> services) {
+		Map<String, List<com.omniacom.omniapp.entity.Service>> feed = new HashMap<String, List<com.omniacom.omniapp.entity.Service>>();
 		List<com.omniacom.omniapp.entity.Service> list;
 		for (com.omniacom.omniapp.entity.Service service : services) {
-			if(!service.getName().equals("General"))
-			if (service.getPoNumber() == null || service.getPoNumber().equals("NOPO")) {
-				if (feed.containsKey("NOPO"))
-					feed.get("NOPO").add(service);
-				else {
-					list = new ArrayList<com.omniacom.omniapp.entity.Service>();
-					list.add(service);
-					feed.put("NOPO", list);
+			if (!service.getName().equals("General"))
+				if (service.getPoNumber() == null || service.getPoNumber().equals("NOPO")) {
+					if (feed.containsKey("NOPO"))
+						feed.get("NOPO").add(service);
+					else {
+						list = new ArrayList<com.omniacom.omniapp.entity.Service>();
+						list.add(service);
+						feed.put("NOPO", list);
+					}
+				} else {
+					if (feed.containsKey(service.getPoNumber().toUpperCase()))
+						feed.get(service.getPoNumber().toUpperCase()).add(service);
+					else {
+						list = new ArrayList<com.omniacom.omniapp.entity.Service>();
+						list.add(service);
+						feed.put(service.getPoNumber().toUpperCase(), list);
+					}
 				}
-			}else {
-				if (feed.containsKey(service.getPoNumber().toUpperCase()))
-					feed.get(service.getPoNumber().toUpperCase()).add(service);
-				else {
-					list = new ArrayList<com.omniacom.omniapp.entity.Service>();
-					list.add(service);
-					feed.put(service.getPoNumber().toUpperCase(), list);
-				}
-			}
-			
 
 		}
 		return feed;
@@ -494,15 +485,12 @@ public class ProjectService {
 	public JSONArray getAllPoServicesJson(long projectId, String poNumber) {
 		List<com.omniacom.omniapp.entity.Service> services = serviceService.findAllByPoNumber(projectId, poNumber);
 		JSONArray json = new JSONArray();
-		for(com.omniacom.omniapp.entity.Service s : services) {
-			json.add(new JSONObject()
-					.element("id", s.getId())
-					.element("name", s.getName())
+		for (com.omniacom.omniapp.entity.Service s : services) {
+			json.add(new JSONObject().element("id", s.getId()).element("name", s.getName())
 					.element("description", s.getDescription())
 					.element("operation_name", s.getOperation() == null ? "none" : s.getOperation().getName())
 					.element("site_name", s.getOperation() == null ? "none" : s.getOperation().getSite().getName())
-					.element("po_number", s.getPoNumber())
-					);
+					.element("po_number", s.getPoNumber()));
 		}
 		return json;
 	}

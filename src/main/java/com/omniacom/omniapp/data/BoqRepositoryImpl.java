@@ -15,12 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.BoqService;
 import com.omniacom.omniapp.entity.BoqServiceId;
-import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
-import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.BoqServiceRepository;
 import com.omniacom.omniapp.repository.custom.BoqRepositoryCustom;
-
 
 @Repository
 @Transactional
@@ -57,7 +54,7 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 	}
 
 	@Override
-	public boolean addOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template,float price) {
+	public boolean addOneServiceTemplate(BillOfQuantities boq, ServiceTemplate template, float price) {
 		BoqService boqService = new BoqService();
 		boqService.getBoqServiceId().setPrice(price);
 		boq.assignBoqServiceToThisBoq(boqService);
@@ -73,7 +70,7 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 		bstId.setBoqId(boq.getId());
 		bstId.setTemplateId(template.getId());
 		BoqService bs = boqStRepo.findOne(bstId);
-		if(bs != null) {
+		if (bs != null) {
 			boqStRepo.delete(bstId);
 			return true;
 		}
@@ -82,16 +79,15 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 
 	@Override
 	public void removeAllServiceTemplates(BillOfQuantities boq) {
-		Query query = entityManager.createQuery(
-				"DELETE FROM BoqService s WHERE s.boq.id = :param ")
+		Query query = entityManager.createQuery("DELETE FROM BoqService s WHERE s.boq.id = :param ")
 				.setParameter("param", boq.getId());
-		int result = query.executeUpdate(); 
+		int result = query.executeUpdate();
 	}
 
 	@Override
 	public boolean templateExists(BillOfQuantities boq, ServiceTemplate template) {
-		Query query = entityManager.createQuery(
-				"SELECT bs FROM BoqService bs WHERE bs.boq.id = :param AND bs.template.id = :templateId")
+		Query query = entityManager
+				.createQuery("SELECT bs FROM BoqService bs WHERE bs.boq.id = :param AND bs.template.id = :templateId")
 				.setParameter("param", boq.getId()).setParameter("templateId", template.getId());
 		if (query.getResultList().size() != 0)
 			return true;
@@ -125,8 +121,7 @@ public class BoqRepositoryImpl implements BoqRepositoryCustom {
 		Float price = null;
 		Query query = entityManager.createQuery(
 				"SELECT porteuse.boqServiceId.price FROM BoqService porteuse WHERE porteuse.boq.id = :param AND porteuse.template.id = :param2")
-				.setParameter("param", boq.getId())
-				.setParameter("param2", template.getId());
+				.setParameter("param", boq.getId()).setParameter("param2", template.getId());
 		List<Float> results = (List<Float>) query.getResultList();
 		if (!results.isEmpty())
 			// ignores multiple results

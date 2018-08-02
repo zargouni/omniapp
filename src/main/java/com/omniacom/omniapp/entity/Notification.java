@@ -9,14 +9,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import org.ocpsoft.prettytime.PrettyTime;
 
-
 @Entity
-public class Notification implements Serializable{
+public class Notification implements Serializable {
 
 	/**
 	 * 
@@ -24,51 +22,49 @@ public class Notification implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	private String message;
-	
+
 	private Date createdAt;
-	
+
 	private boolean isRead;
-	
+
 	@ManyToOne
 	private Task task;
-	
+
 	@ManyToOne
 	private Issue issue;
-	
+
 	@ManyToOne
 	private User user;
-	
+
 	@Transient
-	private String createdAtPretty; 
-	
+	private String createdAtPretty;
+
 	@Transient
 	private PrettyTime prettyTime = new PrettyTime(Locale.ENGLISH);
-	
-	
-	public Notification(){
-		
+
+	public Notification() {
+
 	}
-	
-	public Notification(String message,Date createdAt,User user,Task task){
+
+	public Notification(String message, Date createdAt, User user, Task task) {
 		this.message = message;
 		this.createdAt = createdAt;
 		this.user = user;
 		this.task = task;
 		this.isRead = false;
 	}
-	
-	public Notification(String message,Date createdAt,User user,Issue issue){
+
+	public Notification(String message, Date createdAt, User user, Issue issue) {
 		this.message = message;
 		this.createdAt = createdAt;
 		this.user = user;
 		this.issue = issue;
 		this.isRead = false;
 	}
-
 
 	public Long getId() {
 		return id;
@@ -101,7 +97,7 @@ public class Notification implements Serializable{
 	public void setUser(User user) {
 		this.user = user;
 	}
-	
+
 	public boolean getIsRead() {
 		return isRead;
 	}
@@ -118,7 +114,8 @@ public class Notification implements Serializable{
 	}
 
 	/**
-	 * @param task the task to set
+	 * @param task
+	 *            the task to set
 	 */
 	public void setTask(Task task) {
 		this.task = task;
@@ -139,14 +136,16 @@ public class Notification implements Serializable{
 	}
 
 	/**
-	 * @param createdAtPretty the createdAtPretty to set
+	 * @param createdAtPretty
+	 *            the createdAtPretty to set
 	 */
 	public void setCreatedAtPretty(String createdAtPretty) {
 		this.createdAtPretty = createdAtPretty;
 	}
 
 	/**
-	 * @param prettyTime the prettyTime to set
+	 * @param prettyTime
+	 *            the prettyTime to set
 	 */
 	public void setPrettyTime(PrettyTime prettyTime) {
 		this.prettyTime = prettyTime;
@@ -160,7 +159,8 @@ public class Notification implements Serializable{
 	}
 
 	/**
-	 * @param issue the issue to set
+	 * @param issue
+	 *            the issue to set
 	 */
 	public void setIssue(Issue issue) {
 		this.issue = issue;

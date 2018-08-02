@@ -5,9 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Nature;
-import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.repository.SiteRepository;
 
@@ -17,15 +15,15 @@ import net.sf.json.JSONObject;
 public class SiteService {
 	@Autowired
 	SiteRepository siteRepo;
-	
+
 	public Site addSite(Site site) {
 		return siteRepo.save(site);
 	}
-	
+
 	public void addSites(List<Site> siteList) {
 		siteRepo.save(siteList);
 	}
-	
+
 	public Site findSite(long id) {
 		return siteRepo.findOne(id);
 	}
@@ -39,14 +37,14 @@ public class SiteService {
 		}
 		return false;
 	}
-	
+
 	public boolean addOneNature(Site site, Nature nature) {
 		return siteRepo.addOneNature(site, nature);
 	}
-	
+
 	public boolean updateSite(long siteId, Site siteCopy) {
 		Site site = siteRepo.findOne(siteId);
-		 site.getNatures().clear();
+		site.getNatures().clear();
 		if (site != null) {
 			if (!site.getName().equals(siteCopy.getName()))
 				site.setName(siteCopy.getName());
@@ -59,17 +57,10 @@ public class SiteService {
 		}
 		return false;
 	}
-	
+
 	public JSONObject jsonSite(Site site) {
-		return new JSONObject()
-				.element("name", site.getName())
-				.element("latitude", site.getLatitude())
-				.element("longitude", site.getLongitude())
-				.element("deleted", site.isDeleted());
+		return new JSONObject().element("name", site.getName()).element("latitude", site.getLatitude())
+				.element("longitude", site.getLongitude()).element("deleted", site.isDeleted());
 	}
-	
-	
-	
-	
 
 }

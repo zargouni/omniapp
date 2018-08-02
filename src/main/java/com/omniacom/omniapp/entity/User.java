@@ -16,7 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
@@ -30,32 +29,32 @@ public class User implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
-	@Column( nullable = false, unique = true, updatable = false)
+
+	@Column(nullable = false, unique = true, updatable = false)
 	@NotEmpty(message = "Please provide a username")
 	private String userName;
 	private String password;
-	
+
 	@NotEmpty(message = "Please provide your first name")
 	private String firstName;
-	
+
 	@NotEmpty(message = "Please provide your last name")
 	private String lastName;
-	
+
 	private String profilePic;
-	
+
 	private Date registerDate;
-	
+
 	@Column(name = "email", nullable = false, unique = true)
-	//@Email(message = "Please provide a valid e-mail")
-	//@NotEmpty(message = "Please provide an e-mail")
+	// @Email(message = "Please provide a valid e-mail")
+	// @NotEmpty(message = "Please provide an e-mail")
 	private String email;
-	
+
 	private String zohoToken;
 	private long zohoId;
-	
+
 	private String confirmationToken;
-	
+
 	private boolean enabled;
 
 	@ManyToOne
@@ -63,7 +62,7 @@ public class User implements Serializable {
 
 	@OneToMany(mappedBy = "owner")
 	private List<Project> ownedProjects = new ArrayList<Project>();
-	
+
 	@ManyToMany
 	@JoinTable(name = "USER_PROJECTS", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "project_id", referencedColumnName = "id"))
 	private List<Project> contributedProjectList = new ArrayList<Project>();
@@ -71,30 +70,30 @@ public class User implements Serializable {
 	@OneToMany(mappedBy = "responsible")
 	private List<Operation> operations = new ArrayList<Operation>();
 
-	@ManyToMany(mappedBy="workingUsersList")
+	@ManyToMany(mappedBy = "workingUsersList")
 	private List<Operation> contributedOperationList = new ArrayList<Operation>();
 
-	@ManyToMany(mappedBy="users")
+	@ManyToMany(mappedBy = "users")
 	private List<Task> tasks = new ArrayList<Task>();
-	
-	@OneToMany(mappedBy="closedBy")
+
+	@OneToMany(mappedBy = "closedBy")
 	private List<Task> closedTasks = new ArrayList<Task>();
-	
-	@OneToMany(mappedBy="closedBy")
+
+	@OneToMany(mappedBy = "closedBy")
 	private List<Issue> closedIssues = new ArrayList<Issue>();
 
 	@OneToMany(mappedBy = "user")
 	private List<Comment> comments = new ArrayList<Comment>();
-	
+
 	@OneToMany(mappedBy = "user")
 	private List<Snag> snags = new ArrayList<Snag>();
-	
-	@OneToMany(mappedBy="user")
+
+	@OneToMany(mappedBy = "user")
 	private List<Notification> notifications;
-	
+
 	@OneToMany(mappedBy = "creator")
 	private List<Issue> createdIssues;
-	
+
 	@ManyToMany(mappedBy = "assignedUsers")
 	private List<Issue> issues;
 
@@ -319,22 +318,21 @@ public class User implements Serializable {
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
-	
+
 	public void addTask(Task task) {
 		this.tasks.add(task);
 		task.getUsers().add(this);
 	}
-	
+
 	public void addProject(Project project) {
 		this.contributedProjectList.add(project);
 		project.getWorkingUsersList().add(this);
 	}
-	
+
 	public void addOperation(Operation operation) {
 		this.contributedOperationList.add(operation);
 		operation.getWorkingUsersList().add(this);
 	}
-	
 
 	/*
 	 * (non-Javadoc)
@@ -361,14 +359,16 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param firstName the firstName to set
+	 * @param firstName
+	 *            the firstName to set
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
 	/**
-	 * @param lastName the lastName to set
+	 * @param lastName
+	 *            the lastName to set
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
@@ -382,7 +382,8 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param notifications the notifications to set
+	 * @param notifications
+	 *            the notifications to set
 	 */
 	public void setNotifications(List<Notification> notifications) {
 		this.notifications = notifications;
@@ -396,7 +397,8 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param snags the snags to set
+	 * @param snags
+	 *            the snags to set
 	 */
 	public void setSnags(List<Snag> snags) {
 		this.snags = snags;
@@ -417,14 +419,16 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param createdIssues the createdIssues to set
+	 * @param createdIssues
+	 *            the createdIssues to set
 	 */
 	public void setCreatedIssues(List<Issue> createdIssues) {
 		this.createdIssues = createdIssues;
 	}
 
 	/**
-	 * @param issues the issues to set
+	 * @param issues
+	 *            the issues to set
 	 */
 	public void setIssues(List<Issue> issues) {
 		this.issues = issues;
@@ -438,7 +442,8 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param closedTasks the closedTasks to set
+	 * @param closedTasks
+	 *            the closedTasks to set
 	 */
 	public void setClosedTasks(List<Task> closedTasks) {
 		this.closedTasks = closedTasks;
@@ -452,7 +457,8 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param registerDate the registerDate to set
+	 * @param registerDate
+	 *            the registerDate to set
 	 */
 	public void setRegisterDate(Date registerDate) {
 		this.registerDate = registerDate;
@@ -466,7 +472,8 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param closedIssues the closedIssues to set
+	 * @param closedIssues
+	 *            the closedIssues to set
 	 */
 	public void setClosedIssues(List<Issue> closedIssues) {
 		this.closedIssues = closedIssues;
@@ -480,7 +487,8 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param profilePic the profilePic to set
+	 * @param profilePic
+	 *            the profilePic to set
 	 */
 	public void setProfilePic(String profilePic) {
 		this.profilePic = profilePic;
@@ -494,7 +502,8 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param confirmationToken the confirmationToken to set
+	 * @param confirmationToken
+	 *            the confirmationToken to set
 	 */
 	public void setConfirmationToken(String confirmationToken) {
 		this.confirmationToken = confirmationToken;
@@ -508,7 +517,8 @@ public class User implements Serializable {
 	}
 
 	/**
-	 * @param enabled the enabled to set
+	 * @param enabled
+	 *            the enabled to set
 	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;

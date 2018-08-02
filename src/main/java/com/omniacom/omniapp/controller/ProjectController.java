@@ -98,7 +98,8 @@ public class ProjectController {
 
 		if (projectService.getCurrentProject() == null)
 			return new ModelAndView("404");
-		else if(!userService.getSessionUser().getContributedProjectList().contains(projectService.getCurrentProject()) && projectService.getCurrentProject().getOwner() != userService.getSessionUser() )
+		else if (!userService.getSessionUser().getContributedProjectList().contains(projectService.getCurrentProject())
+				&& projectService.getCurrentProject().getOwner() != userService.getSessionUser())
 			return new ModelAndView("403");
 		return new ModelAndView("project");
 	}
@@ -114,7 +115,8 @@ public class ProjectController {
 		model.addAttribute("onGoingTasksCount",
 				projectService.findOnGoingTasksCount(projectService.getCurrentProject()));
 		model.addAttribute("allServices", projectService.findAllServices(projectService.getCurrentProject()));
-		//System.out.println("services count: "+projectService.getMapServiceTasks(projectService.getCurrentProject()).keySet().size());
+		// System.out.println("services count:
+		// "+projectService.getMapServiceTasks(projectService.getCurrentProject()).keySet().size());
 		model.addAttribute("ServiceTasksMap", projectService.getMapServiceTasks(projectService.getCurrentProject()));
 
 	}
@@ -174,76 +176,79 @@ public class ProjectController {
 	public @ResponseBody JSONArray getAllIssuesJson(@RequestParam("id") long projectId) {
 		return issueService.getAllIssuesJson(projectId);
 	}
-	
+
 	@GetMapping("/json-pos")
 	public @ResponseBody JSONArray getAllPosJson(@RequestParam("id") long projectId) {
 		return projectService.getAllPosJson(projectId);
 	}
-	
+
 	@PostMapping("/remove-service-from-po")
 	public @ResponseBody JsonResponse removeServiceFromPo(@RequestParam("id") long serviceId) {
 		Service service = serviceService.findById(serviceId);
 		JsonResponse response = new JsonResponse();
 		service.setPoNumber("NOPO");
-		if ( serviceService.save(service) != null ) {
+		if (serviceService.save(service) != null) {
 			response.setStatus("SUCCESS");
-		}else {
+		} else {
 			response.setStatus("FAIL");
 		}
 		return response;
 	}
-	
+
 	@PostMapping("/delete-po")
-	public @ResponseBody JsonResponse deletePo(@RequestParam("id") long projectId, @RequestParam("number") String poNumber) {
+	public @ResponseBody JsonResponse deletePo(@RequestParam("id") long projectId,
+			@RequestParam("number") String poNumber) {
 		JsonResponse response = new JsonResponse();
 		boolean success = true;
 		List<Service> services = serviceService.findAllByPoNumber(projectId, poNumber);
-		for(Service service : services) {
+		for (Service service : services) {
 			service.setPoNumber("NOPO");
-			if(serviceService.save(service) == null) {
+			if (serviceService.save(service) == null) {
 				success = false;
 			}
 		}
-		if ( success ) {
+		if (success) {
 			response.setStatus("SUCCESS");
-		}else {
+		} else {
 			response.setStatus("FAIL");
 		}
 		return response;
 	}
-	
+
 	@PostMapping("/update-service-po")
-	public @ResponseBody JsonResponse updateServicePo(@RequestParam("id") long serviceId, @RequestParam("number") String poNumber) {
+	public @ResponseBody JsonResponse updateServicePo(@RequestParam("id") long serviceId,
+			@RequestParam("number") String poNumber) {
 		Service service = serviceService.findById(serviceId);
 		JsonResponse response = new JsonResponse();
 		service.setPoNumber(poNumber);
-		if ( serviceService.save(service) != null ) {
+		if (serviceService.save(service) != null) {
 			response.setStatus("SUCCESS");
-		}else {
+		} else {
 			response.setStatus("FAIL");
 		}
 		return response;
 	}
-	
+
 	@PostMapping("/check-po-existance")
-	public @ResponseBody JsonResponse checkPoExistance(@RequestParam("id") long projectId, @RequestParam("number") String poNumber) {
+	public @ResponseBody JsonResponse checkPoExistance(@RequestParam("id") long projectId,
+			@RequestParam("number") String poNumber) {
 		JsonResponse response = new JsonResponse();
-		
-		if(!serviceService.findAllByPoNumber(projectId, poNumber).isEmpty()) {
+
+		if (!serviceService.findAllByPoNumber(projectId, poNumber).isEmpty()) {
 			response.setStatus("EXISTS");
-				
+
 		} else {
 			response.setStatus("SUCCESS");
 		}
 		return response;
 	}
-	
-	
+
 	@GetMapping("/json-po-services")
-	public @ResponseBody JSONArray getAllPoServices(@RequestParam("id") long projectId, @RequestParam("number") String poNumber) {
+	public @ResponseBody JSONArray getAllPoServices(@RequestParam("id") long projectId,
+			@RequestParam("number") String poNumber) {
 		return projectService.getAllPoServicesJson(projectId, poNumber);
 	}
-	
+
 	@GetMapping("/get-operation-services")
 	public @ResponseBody JSONArray getOperationServices(@RequestParam("id") long operationId) {
 		return operationService.getOperationServices(operationId);
@@ -351,7 +356,6 @@ public class ProjectController {
 	public @ResponseBody JSONObject getTaskParents(@RequestParam("id") long taskId) {
 		return taskService.getTaskParents(taskId);
 	}
-	
 
 	@GetMapping("/get-all-users-in-task-details-json")
 	public @ResponseBody JSONArray getAllUsersForTask(@RequestParam("id") long taskId) {
@@ -509,7 +513,7 @@ public class ProjectController {
 		}
 		return response;
 	}
-	
+
 	@PostMapping("/delete-issue")
 	public @ResponseBody JsonResponse doDeleteIssue(@RequestParam("id") long issueId) {
 		JsonResponse response = new JsonResponse();

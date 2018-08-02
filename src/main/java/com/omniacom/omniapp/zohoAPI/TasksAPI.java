@@ -1,20 +1,10 @@
 package com.omniacom.omniapp.zohoAPI;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Component;
 
 import com.omniacom.omniapp.entity.Service;
@@ -60,12 +50,10 @@ public class TasksAPI {
 		} catch (ProjectsException pe) {
 			System.out.println("Code : "+ pe.getCode() +" Message : "+ pe.getMessage());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		return zohoResult;
-
 	}
 
 	public List<Task> pushAllTasks() {
@@ -82,80 +70,52 @@ public class TasksAPI {
 
 			for (Task task : unsyncedTasks) {
 				try {
-					 //System.out.println("PZOHOID :"+String.valueOf(s.getOperation().getProject().getZohoId()));
 					this.pushTask(task, String.valueOf(s.getOperation().getProject().getZohoId()), user);
 					syncedTasks.add(task);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
 		}
 		return syncedTasks;
-
 	}
-	
-    private static HttpURLConnection con;
 
-	public void updateAllTasks() throws IOException {
+	public void updateAllTasks() throws Exception {
 		List<Task> syncedTasks = taskService.findAllSyncedTasks();
 		User user = userRepo.findOne(1L);
 		tasksApi = new com.zoho.projects.api.TasksAPI(usersApi.getUserAuthToken(user), usersApi.getPortalId(user));
 
 		for(Task task : syncedTasks) {
-			try {
-				tasksApi.update(String.valueOf(task.getService().getOperation().getProject().getZohoId()), Converters.convertTaskToZohoTask(task));
-			} catch (ProjectsException pe) {
-				System.out.println("Code : "+ pe.getCode() +" Message : "+ pe.getMessage());
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			com.zoho.projects.model.Task zohoTask = tasksApi.get(String.valueOf(task.getService().getOperation().getProject().getZohoId()),
+					String.valueOf(Converters.convertTaskToZohoTask(task).getId()));
 			
-//			String url = "https://projectsapi.zoho.com/restapi/portal/"
-//					+usersApi.getPortalId(user)+"/projects/"
-//					+String.valueOf(task.getService().getOperation().getProject().getZohoId())
-//					+"/tasks/"+task.getZohoId()+"/";
-//	        String urlParameters = "percent_complete="+task.getCompletionPercentage();
-//	        byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-//
-//	        try {
-//
-//	            URL myurl = new URL(url);
-//	            con = (HttpURLConnection) myurl.openConnection();
-//
-//	            con.setDoOutput(true);
-//	            con.setRequestMethod("POST");
-//	            con.setRequestProperty("User-Agent", "Java client");
-//	            con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-//
-//	            try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
-//	                wr.write(postData);
-//	            }
-//
-//	            StringBuilder content;
-//
-//	            try (BufferedReader in = new BufferedReader(
-//	                    new InputStreamReader(con.getInputStream()))) {
-//
-//	                String line;
-//	                content = new StringBuilder();
-//
-//	                while ((line = in.readLine()) != null) {
-//	                    content.append(line);
-//	                    content.append(System.lineSeparator());
-//	                }
-//	            }
-//
-//	            System.out.println(content.toString());
-//
-//	        } finally {
-//	            
-//	            con.disconnect();
-//	        }
+			com.zoho.projects.model.Task zohoLocalTask = Converters.convertTaskToZohoTask(task);
+			
+			if(!compareZohoTasks(zohoTask, zohoLocalTask)){
+				try {
+					tasksApi.update(String.valueOf(task.getService().getOperation().getProject().getZohoId()), Converters.convertTaskToZohoTask(task));
+				} catch (ProjectsException pe) {
+					System.out.println("Code : "+ pe.getCode() +" Message : "+ pe.getMessage());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}	
 		}
-		
+	}
 	
+	public boolean compareZohoTasks(com.zoho.projects.model.Task newTask, com.zoho.projects.model.Task oldTask) {
+		boolean result = true;
+		if(!newTask.getName().equals(oldTask.getName()))
+			result = false;
+//		if(!(newTask.getOwners().containsAll(oldTask.getOwners()) && newTask.getOwners().size() == oldTask.getOwners().size()))
+//			result = false;
+		if(!newTask.getEndDate().equals(oldTask.getEndDate()))
+			result = false;
+		if(!newTask.getStartDate().equals(oldTask.getStartDate()))
+			result = false;
 		
+		System.out.println("task start date: "+newTask.getStartDate()+" old task start date: "+oldTask.getStartDate());
+		
+		return result;
 	}
 }

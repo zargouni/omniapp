@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Client;
 import com.omniacom.omniapp.entity.Nature;
 import com.omniacom.omniapp.entity.Site;

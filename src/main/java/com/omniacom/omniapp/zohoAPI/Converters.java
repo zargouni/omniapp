@@ -7,10 +7,12 @@ import java.util.Locale;
 import org.springframework.format.datetime.DateFormatter;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.User;
+import com.zoho.projects.model.Bug;
 import com.zoho.projects.model.Milestone;
 import com.zoho.projects.model.Owner;
 import com.zoho.projects.model.Task;
@@ -57,27 +59,59 @@ public class Converters {
 
 	public static Task convertTaskToZohoTask(com.omniacom.omniapp.entity.Task task) {
 		Task zohoTask = new Task();
-		if(task.getZohoId() != 0)
+		if (task.getZohoId() != 0)
 			zohoTask.setId(task.getZohoId());
 		zohoTask.setName(task.getName());
 		zohoTask.setEndDate(new DateFormatter("MM-dd-YYYY").print(task.getEndDate(), Locale.ENGLISH));
 		zohoTask.setStartDate(new DateFormatter("MM-dd-YYYY").print(task.getStartDate(), Locale.ENGLISH));
-		//zohoTask.setCompleted(task.getStatus().equals(StaticString.TASK_STATUS_COMPLETED));
-		zohoTask.setCompleted(true);
 		if (task.getService().getZohoId() != 0)
 			zohoTask.setTasklist(convertServiceToTaskList(task.getService()));
-		//zohoTask.setCompleted(task.getCompletedOn() == null ? false : true);
-		//zohoTask.setPercentComplete(20);//Integer.parseInt(task.getCompletionPercentage()));
-		
-		//task users
+		zohoTask.setPercentComplete(50);// Integer.parseInt(task.getCompletionPercentage()));
+
+		// task users
 		List<Owner> owners = new ArrayList<Owner>();
-		for(User user : task.getUsers()) {
+		for (User user : task.getUsers()) {
 			Owner owner = new Owner();
 			owner.setId(Long.toString(user.getZohoId()));
 			owners.add(owner);
 		}
 		zohoTask.setOwners(owners);
 		return zohoTask;
+	}
+
+	public static Bug convertIssueToZohoBug(Issue issue) {
+		Bug bug = new Bug();
+		bug.setTitle(issue.getName());
+		bug.setCreatedTime(new DateFormatter("MM-dd-YYYY").print(issue.getCreationDate(), Locale.ENGLISH));
+		bug.setDescription(issue.getDescription());
+		bug.setDueDate(new DateFormatter("MM-dd-YYYY").print(issue.getEndDate(), Locale.ENGLISH));
+		bug.setMilestoneId(issue.getOperation().getZohoId());
+		bug.setClosed(issue.getStatus().equals(StaticString.ISSUE_STATUS_CLOSED));
+		bug.setProjectId(issue.getOperation().getProject().getZohoId());
+		bug.setSeverityType(issue.getSeverity());
+		bug.setStatusType(issue.getStatus());
+
+		List<User> issueUsers = issue.getAssignedUsers();
+
+		if (issueUsers.size() > 0)
+			bug.setAssigneeId(Long.toString(issueUsers.get(0).getZohoId()));
+
+		switch (issue.getStatus()) {
+		case StaticString.ISSUE_STATUS_OPEN:
+			bug.setStatusId(1224395000000007045L);
+			break;
+		case StaticString.ISSUE_STATUS_IN_PROGRESS:
+			bug.setStatusId(1224395000000007048L);
+			break;
+		case StaticString.ISSUE_STATUS_TO_BE_TESTED:
+			bug.setStatusId(1224395000000007051L);
+			break;
+		case StaticString.ISSUE_STATUS_CLOSED:
+			bug.setStatusId(1224395000000007054L);
+			break;
+
+		}
+		return bug;
 	}
 
 }

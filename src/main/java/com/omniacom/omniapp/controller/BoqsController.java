@@ -3,10 +3,7 @@ package com.omniacom.omniapp.controller;
 import java.io.IOException;
 import java.util.List;
 
-import javax.annotation.security.RolesAllowed;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -54,8 +51,8 @@ public class BoqsController {
 	@GetMapping("/get-boq-details")
 	public @ResponseBody JSONObject getBoqDetails(@RequestParam("id") long id) {
 		BillOfQuantities boq = boqService.findOne(id);
-		return boqService.jsonBoq(boq)
-				.element("services", stService.jsonServiceTemplatesWithPrices(boq,boqService.findAllServiceTemplates(boq)));
+		return boqService.jsonBoq(boq).element("services",
+				stService.jsonServiceTemplatesWithPrices(boq, boqService.findAllServiceTemplates(boq)));
 	}
 
 	@PostMapping("/delete-boq")
@@ -78,7 +75,7 @@ public class BoqsController {
 
 		if (!result.hasErrors()) {
 			if (!boqService.boqNameExists(boq.getName())) {
-				
+
 				if (boqService.updateBoq(boqId, boq)) {
 
 					response.setStatus("SUCCESS");
@@ -106,7 +103,7 @@ public class BoqsController {
 
 		return response;
 	}
-	
+
 	@PostMapping("/update-boq-service-templates")
 	public @ResponseBody JsonResponse addServiceTemplateToBoq(@RequestParam("id") long templateId,
 			@RequestParam("boqId") long boqId, @RequestParam("price") String priceString) throws IOException {
@@ -116,7 +113,7 @@ public class BoqsController {
 		ServiceTemplate template = stService.findOne(templateId);
 		BillOfQuantities boq = boqService.findOne(boqId);
 		if (template != null && boq != null) {
-			if (!boqService.addOneServiceTemplate(boq, template,priceHT))
+			if (!boqService.addOneServiceTemplate(boq, template, priceHT))
 				response.setStatus("FAIL");
 		}
 		return response;

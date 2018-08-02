@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.omniacom.omniapp.entity.Comment;
+import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
-import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
 import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.User;
@@ -57,18 +57,17 @@ public class OperationRepositoryImpl implements OperationRepositoryCustom {
 	@Override
 	public List<User> findContributingUsers(Operation operation) {
 		List<User> users = null;
-		Query query = entityManager
-				.createQuery("SELECT u FROM User u, Operation o JOIN o.workingUsersList user WHERE o.id = :param AND user.id = u.id")
+		Query query = entityManager.createQuery(
+				"SELECT u FROM User u, Operation o JOIN o.workingUsersList user WHERE o.id = :param AND user.id = u.id")
 				.setParameter("param", operation.getId());
 		users = (List<User>) query.getResultList();
 		return users;
 	}
-	
+
 	@Override
 	public List<Operation> findAllSyncedOperations() {
 		List<Operation> operations = null;
-		Query query = entityManager.createQuery(
-				"SELECT op FROM Operation op WHERE op.zohoId != 0");
+		Query query = entityManager.createQuery("SELECT op FROM Operation op WHERE op.zohoId != 0");
 		operations = (List<Operation>) query.getResultList();
 		return operations;
 	}
@@ -81,6 +80,16 @@ public class OperationRepositoryImpl implements OperationRepositoryCustom {
 				.setParameter("param", op.getId());
 		services = (List<Service>) query.getResultList();
 		return services;
+	}
+
+	@Override
+	public List<Issue> findAllUnsyncedIssues(Operation op) {
+		List<Issue> issues = null;
+		Query query = entityManager
+				.createQuery("SELECT issue FROM Issue issue WHERE issue.operation.id = :param AND issue.zohoId = 0")
+				.setParameter("param", op.getId());
+		issues = (List<Issue>) query.getResultList();
+		return issues;
 	}
 
 }

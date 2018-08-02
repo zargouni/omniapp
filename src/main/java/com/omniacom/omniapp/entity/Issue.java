@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +14,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class Issue implements Serializable {
@@ -33,6 +37,8 @@ public class Issue implements Serializable {
 	private String status;
 	private String severity;
 	
+	private long zohoId;
+	
 	@ManyToOne
 	private User closedBy;
 	
@@ -48,7 +54,8 @@ public class Issue implements Serializable {
 	@OneToMany( mappedBy = "issue", orphanRemoval=true)
 	private List<Comment> comments;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	@JoinTable(name = "USER_ISSUE", joinColumns = @JoinColumn(name = "issue_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> assignedUsers;
 	
@@ -284,6 +291,20 @@ public class Issue implements Serializable {
 	 */
 	public void setNotifications(List<Notification> notifications) {
 		this.notifications = notifications;
+	}
+
+	/**
+	 * @return the zohoId
+	 */
+	public long getZohoId() {
+		return zohoId;
+	}
+
+	/**
+	 * @param zohoId the zohoId to set
+	 */
+	public void setZohoId(long zohoId) {
+		this.zohoId = zohoId;
 	}
 
 }
