@@ -44,4 +44,21 @@ public class ServiceRepositoryImpl implements ServiceRepositoryCustom {
 		return services;
 	}
 
+	@Override
+	public List<Service> findAllSyncedServices() {
+		List<Service> services = null;
+		Query query = entityManager.createQuery("SELECT s FROM Service s WHERE s.zohoId != 0 ");
+		services = (List<Service>) query.getResultList();
+		return services;
+	}
+
+	@Override
+	public List<Task> findAllUnsyncedTasks(Service s) {
+		List<Task> tasks = null;
+		Query query = entityManager.createQuery("SELECT t FROM Task t WHERE t.service=:param AND t.zohoId = 0").setParameter("param",
+				s);
+		tasks = (List<Task>) query.getResultList();
+		return tasks;
+	}
+
 }

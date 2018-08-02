@@ -13,5 +13,8 @@ public interface TaskRepositoryCustom {
 	boolean addOneOwner(Task task, User user);
 	
 	List<UploadedFile> findAllFiles(Task task);
+	
+	List<Task> findAllSyncedTasks();
+
 
 }

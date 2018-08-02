@@ -54,4 +54,12 @@ public class TaskRepositoryImpl implements TaskRepositoryCustom {
 		return files;
 	}
 
+	@Override
+	public List<Task> findAllSyncedTasks() {
+		List<Task> tasks = null;
+		Query query = entityManager.createQuery("SELECT t FROM Task t WHERE t.zohoId != 0");
+		tasks = (List<Task>) query.getResultList();
+		return tasks;
+	}
+
 }

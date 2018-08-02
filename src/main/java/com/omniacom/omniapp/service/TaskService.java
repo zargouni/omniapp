@@ -229,5 +229,9 @@ public class TaskService {
 		taskRepo.delete(task);
 	}
 
+	public List<Task> findAllSyncedTasks() {
+		return taskRepo.findAllSyncedTasks();
+	}
+
 	
 }

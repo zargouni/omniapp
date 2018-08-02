@@ -1,7 +1,7 @@
 package com.omniacom.omniapp.zohoAPI;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
-import com.zoho.projects.model.User;
+import com.omniacom.omniapp.entity.Task;
 
 @Component
 public class SyncZohoPortal implements Job {
@@ -22,34 +22,45 @@ public class SyncZohoPortal implements Job {
 
 	@Autowired
 	private OperationsAPI operationsApi;
-	
+
 	@Autowired
 	private ServicesAPI servicesApi;
 
+	@Autowired
+	private TasksAPI tasksApi;
 
 	@Autowired
 	private UsersAPI usersApi;
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		//Sync portal Users
-				try {
-					usersApi.syncPortalUsers();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		
+		// Sync portal Users
+		try {
+			usersApi.syncPortalUsers();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 		// Sync projects to Zoho Portal
 		List<Project> syncedProjects = projectsApi.pushAllProjects();
-		
-
 
 		// Sync Operations to Zoho portal
 		List<Operation> syncedOperations = operationsApi.pushAllMilestones();
-		
+
 		// Sync Services to Zoho portal
 		List<Service> syncedServices = servicesApi.pushAllTaskLists();
+
+		// Sync Tasks to Zoho Portal
+		List<Task> syncedTasks = tasksApi.pushAllTasks();
+		
+		//Update Synced Tasks to Zoho portal
+		try {
+			tasksApi.updateAllTasks();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 }

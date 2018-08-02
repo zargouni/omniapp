@@ -13,4 +13,10 @@ public interface ServiceRepositoryCustom {
 	Date getServiceClosedDate(Service service);
 	
 	List<Service> findAllByPoNumber(long projectId, String poNumber);
+	
+	List<Service> findAllSyncedServices();
+	
+	List<Task> findAllUnsyncedTasks(Service s);
+
+
 }
