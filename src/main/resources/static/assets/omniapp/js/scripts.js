@@ -162,6 +162,8 @@ function doAddNewBoqAjax(){
 					if($('#boqs_datatable').length)
 						$('#boqs_datatable').mDatatable(
 						'reload');
+					if($('#selected_service_templates').length)
+						$('#selected_service_templates').html("");
 					populateSelectBoq();
 				}
 			} else {

@@ -36,6 +36,9 @@ public class Notification implements Serializable {
 
 	@ManyToOne
 	private Issue issue;
+	
+	@ManyToOne
+	private Project project;
 
 	@ManyToOne
 	private User user;
@@ -45,6 +48,8 @@ public class Notification implements Serializable {
 
 	@Transient
 	private PrettyTime prettyTime = new PrettyTime(Locale.ENGLISH);
+
+	
 
 	public Notification() {
 
@@ -63,6 +68,14 @@ public class Notification implements Serializable {
 		this.createdAt = createdAt;
 		this.user = user;
 		this.issue = issue;
+		this.isRead = false;
+	}
+
+	public Notification(String message, Date date, User user, Project project) {
+		this.message = message;
+		this.createdAt = date;
+		this.user = user;
+		this.project = project;
 		this.isRead = false;
 	}
 
@@ -164,6 +177,20 @@ public class Notification implements Serializable {
 	 */
 	public void setIssue(Issue issue) {
 		this.issue = issue;
+	}
+
+	/**
+	 * @return the project
+	 */
+	public Project getProject() {
+		return project;
+	}
+
+	/**
+	 * @param project the project to set
+	 */
+	public void setProject(Project project) {
+		this.project = project;
 	}
 
 }

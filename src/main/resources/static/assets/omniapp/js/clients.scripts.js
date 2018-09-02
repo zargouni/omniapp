@@ -18,9 +18,9 @@ function populateClientsUI(){
 							+	'</span>'
 							+'<div class="m-portlet__head-tools">'
 							+'<ul class="m-portlet__nav ">'
-							+'	<li class="m-portlet__nav-item"><a href="#"'
-							+'		class="m-portlet__nav-link m-portlet__nav-link--icon"><i'
-							+'			class="la la-close"></i></a></li>'
+//							+'	<li class="m-portlet__nav-item"><a href="#"'
+//							+'		class="m-portlet__nav-link m-portlet__nav-link--icon"><i'
+//							+'			class="la la-close"></i></a></li>'
 							+'	<li class="m-portlet__nav-item"><a onclick="toggleUpdateClientModal('+response[i].id+')"'
 							+'	class="m-portlet__nav-link m-portlet__nav-link--icon"><i'
 							+'		class="la la-refresh"></i></a></li>'
@@ -38,26 +38,27 @@ function populateClientsUI(){
 						+	'<ul'
 							+	' class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--right m-tabs-line-danger"'
 							+	' role="tablist">'
+//							+	'<li class="nav-item m-tabs__item"><a'
+//							+		' class="nav-link m-tabs__link active show" data-toggle="tab"'
+//							+		' href="#m_portlet_tab_'+response[i].id+'_1" role="tab" aria-selected="true">'
+//							+			' Stats </a></li>'
 							+	'<li class="nav-item m-tabs__item"><a'
-							+		' class="nav-link m-tabs__link active show" data-toggle="tab"'
-							+		' href="#m_portlet_tab_'+response[i].id+'_1" role="tab" aria-selected="true">'
-							+			' Stats </a></li>'
+							+		' class="nav-link m-tabs__link  active show" data-toggle="tab"'
+							+		' href="#m_portlet_tab_'+response[i].id+'_3" role="tab" aria-selected="true">'
+							+		'	Details </a></li>'
 							+	'<li class="nav-item m-tabs__item"><a'
 							+		' onclick="populateClientSites('+response[i].id+')" class="nav-link m-tabs__link" data-toggle="tab"'
 							+		' href="#m_portlet_tab_'+response[i].id+'_2" role="tab" aria-selected="false">'
 							+			' Sites ('+response[i].sitesCount+')</a></li>'
-							+	'<li class="nav-item m-tabs__item"><a'
-							+		' class="nav-link m-tabs__link" data-toggle="tab"'
-							+		' href="#m_portlet_tab_'+response[i].id+'_3" role="tab" aria-selected="false">'
-							+		'	Details </a></li>'
+						
 							+'</ul>'
 						+'</div>'
 					+'</div>'
 					+'<div class="m-portlet__body">'
 						+'<div class="tab-content">'
-							+'<div style="height:100%;" class="tab-pane active show" id="m_portlet_tab_'+response[i].id+'_1">'
-							+populateClientStats(response[i].id)
-							+'</div>'
+//							+'<div style="height:100%;" class="tab-pane active show" id="m_portlet_tab_'+response[i].id+'_1">'
+//							+populateClientStats(response[i].id)
+//							+'</div>'
 							+'<div style="position:relative;width:100%;height:260px;" class="tab-pane" id="m_portlet_tab_'+response[i].id+'_2">'
 							
 							+'<div class="sites_map" id="sites_client_'+response[i].id+'">'
@@ -86,7 +87,7 @@ function populateClientsUI(){
 							+'<i class="fa fa-check-square-o"></i>'
 							+'</a></div>'
 							+'</div>'
-							+'<div class="tab-pane" id="m_portlet_tab_'+response[i].id+'_3">'
+							+'<div class="tab-pane  active show" id="m_portlet_tab_'+response[i].id+'_3">'
 							+populateClientDetails(response[i])
 						+'</div>'
 					+'</div>'
@@ -106,6 +107,7 @@ function populateClientsUI(){
 
 		},
 		error : function(e) {
+			alert("this");
 			alert('Error: clients ' + e);
 		}
 	});
@@ -435,54 +437,55 @@ function doUpdateSiteNatures(siteId){
 	
 }
 
-function populateClientStats(clientId){
-	var html_text;
-	$.ajax({
-		type : "GET",
-		url : '/get-client-stats',
-		data: 'clientId='+clientId,
-		async: false,
-		success : function(response) {
-			
-			
-			html_text = '<div class="m-widget4">'
-+'<div class="m-widget4__item">'
-+	'<div class="m-widget4__ext">'
-+		'<span class="m-widget4__icon m--font-brand"> <i'
-+			' class="flaticon-interface-3"></i>'
-+		'</span>'
-+	'</div>'
-+	'<div class="m-widget4__info">'
-+		'<span class="m-widget4__text"> Total Projects </span>'
-+	'</div>'
-+	'<div class="m-widget4__ext">'
-+		'<span class="m-widget4__number m--font-info"> '+response.projects+' </span>'
-+	'</div>'
-+'</div>'
-+'<div class="m-widget4__item">'
-+	'<div class="m-widget4__ext">'
-+		'<span class="m-widget4__icon m--font-brand"> <i'
-+			' class="flaticon-folder-4"></i>'
-+		'</span>'
-+	'</div>'
-+	'<div class="m-widget4__info">'
-+		'<span class="m-widget4__text"> Total Transactions </span>'
-+	'</div>'
-+	'<div class="m-widget4__ext">'
-+		'<span class="m-widget4__number m--font-info"> '+response.money+' </span>'
-+	'</div>'
-+'</div>'
-+'</div>';
-			  
-
-		
-},
-error : function(e) {
-	alert('Error: clients ' + e);
-}
-});
-return html_text;		
-}
+//function populateClientStats(clientId){
+//	var html_text;
+//	$.ajax({
+//		type : "GET",
+//		url : '/get-client-stats',
+//		data: 'clientId='+clientId,
+//		async: false,
+//		success : function(response) {
+//			
+//			
+//			html_text = '<div class="m-widget4">'
+//+'<div class="m-widget4__item">'
+//+	'<div class="m-widget4__ext">'
+//+		'<span class="m-widget4__icon m--font-brand"> <i'
+//+			' class="flaticon-interface-3"></i>'
+//+		'</span>'
+//+	'</div>'
+//+	'<div class="m-widget4__info">'
+//+		'<span class="m-widget4__text"> Total Projects </span>'
+//+	'</div>'
+//+	'<div class="m-widget4__ext">'
+//+		'<span class="m-widget4__number m--font-info"> '+response.projects+' </span>'
+//+	'</div>'
+//+'</div>'
+//+'<div class="m-widget4__item">'
+//+	'<div class="m-widget4__ext">'
+//+		'<span class="m-widget4__icon m--font-brand"> <i'
+//+			' class="flaticon-folder-4"></i>'
+//+		'</span>'
+//+	'</div>'
+//+	'<div class="m-widget4__info">'
+//+		'<span class="m-widget4__text"> Total Transactions </span>'
+//+	'</div>'
+//+	'<div class="m-widget4__ext">'
+//+		'<span class="m-widget4__number m--font-info"> '+response.money+' </span>'
+//+	'</div>'
+//+'</div>'
+//+'</div>';
+//			  
+//
+//		
+//},
+//error : function(e) {
+//	alert("this+1");
+//	alert('Error: clients ' + e);
+//}
+//});
+//return html_text;		
+//}
 
 function populateClientSites(clientId){
 	var map_div = '#sites_client_'+clientId;
@@ -833,6 +836,7 @@ function populateNatureFilter(){
 		}
 	});
 }
+
 function populateNatureListNewSite() {
 	$.ajax({
 		type : "GET",

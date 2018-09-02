@@ -40,6 +40,9 @@ public class TemplatingController {
 	@Autowired
 	private TaskTemplateValidator taskTemplateValidator;
 	
+	@Autowired
+	private TaskTemplateRepository ttRepo;
+	
 	@ModelAttribute
 	public void addAttributes(Model model) {
 		model.addAttribute("serviceTemplate", new ServiceTemplate());
@@ -61,6 +64,22 @@ public class TemplatingController {
 		}
 		return jsonArray;
 	}
+	
+	@GetMapping("/json-service-template-tasks")
+	public @ResponseBody JSONArray populateServiceTemplateTasksDatatable(@RequestParam("id") long serviceId) {
+		JSONArray jsonArray = new JSONArray();
+		ServiceTemplate st = stService.findOne(serviceId);
+		List<TaskTemplate> tasks = st.getTasks();
+		for(TaskTemplate task : tasks) {
+			jsonArray.add(new JSONObject().element("id", task.getId())
+					.element("estimationJH", task.getEstimationHR())
+					.element("estimationTime", task.getEstimationTime())
+					.element("name", task.getName())
+					.element("priority", task.getPriority()));
+		}
+		return jsonArray;
+	}
+	
 
 	@PostMapping("/delete-service-template")
 	public @ResponseBody JsonResponse deleteServiceTemplate(@RequestParam("serviceId") long serviceId ) {
@@ -72,6 +91,20 @@ public class TemplatingController {
 		} else {
 			response.setStatus("FAIL");
 			//response.setResult(result.getFieldErrors());
+		}
+		return response;
+	}
+	
+	@PostMapping("/delete-task-template")
+	public @ResponseBody JsonResponse deleteTaskTemplate(@RequestParam("taskId") long taskId ) {
+		JsonResponse response = new JsonResponse();
+		TaskTemplate tt = ttRepo.findOne(taskId);
+		if(tt != null) {
+			ttRepo.delete(tt);
+			response.setStatus("SUCCESS");
+		}
+		else {
+			response.setStatus("FAIL");
 		}
 		return response;
 	}

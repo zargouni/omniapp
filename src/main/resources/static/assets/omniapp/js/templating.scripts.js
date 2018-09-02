@@ -109,6 +109,52 @@ function handleRemoveServiceClick(id) {
 
 }
 
+function handleRemoveTaskTemplateClick(id) {
+	var taskId = $("#btn-remove-task-template-" + id).attr('id').substring(25);
+
+	swal({
+		title : 'Are you sure?',
+		text : "You won't be able to revert this!",
+		type : 'warning',
+		showCancelButton : true,
+		confirmButtonText : 'Yes, delete it!'
+	}).then(
+			function(result) {
+				if (result.value) {
+					$
+							.ajax({
+								type : "POST",
+								url : '/delete-task-template',
+								data : "taskId=" + taskId,
+								async : true,
+								success : function(response) {
+									if (response.status == "SUCCESS") {
+										swal('Deleted!',
+												'Task Template has been deleted.',
+												'success');
+										$('#service_template_tasks_datatable').mDatatable('reload');
+
+									} else {
+										swal('Fail!', 'Template not deleted.',
+												'error');
+									}
+
+								},
+								error : function(e) {
+									toastr.error("Couldn't delete template",
+											"Server Error");
+									result = false;
+								}
+							});
+
+				}
+
+			}
+
+	);
+
+}
+
 function saveServiceTemplateTask(name, estimationHR, estimationDays,priority, serviceId) {
 	var result = false;
 
@@ -283,6 +329,8 @@ function populateTaskTemplatePriorities(){
 
 function toggleModalEditTasks(id) {
 //TODO
+	$('#service_template_tasks_datatable').mDatatable('destroy');
+	ServiceTemplateTasksDatatableJson.init(id);
 	$("#edit-service-template-tasks").modal();
 }
 

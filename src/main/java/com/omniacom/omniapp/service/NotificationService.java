@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Notification;
+import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.NotificationRepository;
@@ -113,6 +114,20 @@ public class NotificationService {
 		if (notificationRepository.findByUserAndIssue(user.getId(), issue.getId()) == null) {
 			Notification notification = this.createIssueNotificationObject("You have a new issue " + issue.getName(),
 					user, issue);
+			this.save(notification);
+			return true;
+		}
+		return false;
+	}
+	
+	public Notification createProjectNotificationObject(String message, User user, Project project) {
+		return new Notification(message, new Date(), user, project);
+	}
+	
+	public boolean sendProjectNotification(User user, Project project) {
+		if (notificationRepository.findByUserAndProject(user.getId(), project.getId()) == null) {
+			Notification notification = this.createProjectNotificationObject("You got a new project to work on : " + project.getName(),
+					user, project);
 			this.save(notification);
 			return true;
 		}

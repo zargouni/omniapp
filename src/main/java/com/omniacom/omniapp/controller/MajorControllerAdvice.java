@@ -127,6 +127,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		model.addAttribute("task", new Task());
 		model.addAttribute("selectedProject", new Project());
 		model.addAttribute("sessionUser", userService.getSessionUser());
+		model.addAttribute("managers",userService.findAllProjectManagers());
 		model.addAttribute("newOperation", new Operation());
 		model.addAttribute("client", new Client());
 		model.addAttribute("site", new Site());
@@ -137,6 +138,8 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		model.addAttribute("unseenNotifications", notificationService.findAllUnseenByUser(userService.getSessionUser()));
 
 	}
+	
+	
 
 	// private List<Service> selectedProjectServices;
 
@@ -297,7 +300,9 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 		if (!result.hasErrors()) {
 			Project addedProject = projectService.addProject(project);
-
+			if(addedProject.getOwner().getId() != userService.getSessionUser().getId()) {
+				notificationService.sendProjectNotification(addedProject.getOwner(), addedProject);
+			}
 			response.setStatus("SUCCESS");
 			response.setResult(addedProject.getId());
 			// projectsApi.pushProject(project, getSessionUser());

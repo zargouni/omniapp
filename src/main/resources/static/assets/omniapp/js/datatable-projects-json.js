@@ -78,7 +78,7 @@ var projectsDatatableRemoteAjax = function() {
         	  return '<a style="font-weight: 500;" href="/project?id='+row.id+'">'+row.name + '</a>';
           },
         }, {
-          field: 'client',
+          field: 'finalClient',
           title: 'Client',
           width: 100,
 //          template: function(row) {
@@ -86,7 +86,7 @@ var projectsDatatableRemoteAjax = function() {
 //            return row.ShipCountry + ' - ' + row.ShipCity;
 //          },
         },{
-            field: 'finalClient',
+            field: 'client',
             title: 'Final Client',
             width: 100,
 //            template: function(row) {

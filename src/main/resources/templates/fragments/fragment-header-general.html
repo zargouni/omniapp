@@ -42,7 +42,9 @@
 								class="m-menu__submenu m-menu__submenu--classic m-menu__submenu--left">
 								<span class="m-menu__arrow m-menu__arrow--adjust"></span>
 								<ul class="m-menu__subnav">
-									<li th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}" id="m_new_project_sidebar_toggle" class="m-menu__item "
+									<li
+										th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}"
+										id="m_new_project_sidebar_toggle" class="m-menu__item "
 										aria-haspopup="true"><a href="#" class="m-menu__link "><i
 											class="m-menu__link-icon flaticon-add"></i><span
 											class="m-menu__link-text">New Project</span></a></li>
@@ -67,8 +69,7 @@
 
 							<li th:if="${sessionUser.role.name == 'ADMIN'}"
 								class="m-nav__item m-topbar__quick-actions m-topbar__quick-actions--img m-dropdown m-dropdown--large m-dropdown--header-bg-fill m-dropdown--arrow m-dropdown--align-right m-dropdown--align-push m-dropdown--mobile-full-width m-dropdown--skin-light"
-								data-dropdown-toggle="click" aria-expanded="true">
-								<a
+								data-dropdown-toggle="click" aria-expanded="true"><a
 								title="Manager" href="#" class="m-nav__link m-dropdown__toggle">
 									<span
 									class="m-nav__link-badge m-badge m-badge--dot m-badge--info m--hide"></span>
@@ -82,7 +83,7 @@
 									<div class="m-dropdown__inner">
 										<div class="m-dropdown__header m--align-center"
 											style="background: url(assets/app/media/img/misc/quick_actions_bg.jpg); background-size: cover;">
-											<span class="m-dropdown__header-title">Manager</span> 
+											<span class="m-dropdown__header-title">Manager</span>
 										</div>
 										<div class="m-dropdown__body m-dropdown__body--paddingless">
 											<div class="m-dropdown__content">
@@ -99,11 +100,10 @@
 															</a>
 														</div>
 														<div class="m-nav-grid__row">
-															<a href="/service-templates" class="m-nav-grid__item"> <i
-																class="m-nav-grid__icon flaticon-layers"></i> <span
+															<a href="/service-templates" class="m-nav-grid__item">
+																<i class="m-nav-grid__icon flaticon-layers"></i> <span
 																class="m-nav-grid__text">Service Templates</span>
-															</a> 
-															<a href="/users" class="m-nav-grid__item"> <i
+															</a> <a href="/users" class="m-nav-grid__item"> <i
 																class="m-nav-grid__icon flaticon-user"></i> <span
 																class="m-nav-grid__text">Users</span>
 															</a>
@@ -151,7 +151,13 @@
 																<span
 																	class="m-list-timeline__badge -m-list-timeline__badge--state-success"></span>
 
-																<span th:if="${notification.task != null}"
+																<a th:if="${notification.project != null}"
+																	th:href="'/project?id=' + ${notification.project.id}"
+																	class="m-list-timeline__text"> <span
+																	th:text="${notification.message}"></span> <span
+																	th:if="${!notification.isRead}"
+																	class="m-badge m-badge--danger m-badge--wide">New</span>
+																</a> <span th:if="${notification.task != null}"
 																	th:onclick="'handleNotificationClick(\'' + ${notification.task.id} + '\');'"
 																	class="m-list-timeline__text"> <span
 																	th:text="${notification.message}"></span> <span
@@ -186,9 +192,11 @@
 								</div>
 							</li>
 
-							<li th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}" onclick="populateSidebarAdd()"
-								id="m_quick_sidebar_add_toggle" class="m-nav__item"><a
-								href="#" class="m-nav__link m-dropdown__toggle"> <span
+							<li
+								th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PROJECT_MANAGER'}"
+								onclick="populateSidebarAdd()" id="m_quick_sidebar_add_toggle"
+								class="m-nav__item"><a href="#"
+								class="m-nav__link m-dropdown__toggle"> <span
 									class="m-nav__link-icon"><i class="flaticon-plus"></i></span>
 							</a></li>
 
@@ -300,23 +308,25 @@
 
 
 	<!-- begin::New Project Sidebar -->
-	<div th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}"
+	<div
+		th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}"
 		data-th-replace="fragments/fragment-new-project-sidebar :: new-project-sidebar"></div>
 	<!-- end::New Project Sidebar -->
 
 	<!-- begin::New Project Sidebar -->
-<!-- 	<div -->
-<!-- 		data-th-replace="fragments/fragment-project-details-sidebar :: project-details-sidebar"></div> -->
+	<!-- 	<div -->
+	<!-- 		data-th-replace="fragments/fragment-project-details-sidebar :: project-details-sidebar"></div> -->
 	<!-- end::New Project Sidebar -->
 
 	<!-- begin::Quick Sidebar Add -->
-	<div th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}"
+	<div
+		th:if="${sessionUser.role.name == 'ADMIN' || sessionUser.role.name == 'PM'}"
 		data-th-replace="fragments/fragment-quick-sidebar-add :: quick-sidebar-add"></div>
 	<!-- end::Quick Sidebar Add -->
 
 	<!-- begin::Quick Sidebar Messenger -->
-<!-- 	<div -->
-<!-- 		data-th-replace="fragments/fragment-quick-sidebar-messenger :: quick-sidebar-messenger"></div> -->
+	<!-- 	<div -->
+	<!-- 		data-th-replace="fragments/fragment-quick-sidebar-messenger :: quick-sidebar-messenger"></div> -->
 	<!-- end::Quick Sidebar Messenger -->
 
 

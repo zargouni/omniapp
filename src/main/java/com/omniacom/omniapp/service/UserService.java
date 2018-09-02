@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Project;
+import com.omniacom.omniapp.entity.Role;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.ProjectRepository;
@@ -373,7 +375,8 @@ public class UserService implements UserDetailsService {
 					.element("registerDate",
 							new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(user.getRegisterDate()))
 					.element("picture", user.getProfilePic() == null ? "assets/app/media/img/users/user-icon.png"
-							: user.getProfilePic()));
+							: user.getProfilePic())
+					.element("status", user.isEnabled()));
 		}
 		return array;
 	}
@@ -392,5 +395,28 @@ public class UserService implements UserDetailsService {
 
 	public User findByConfirmationToken(String confirmationToken) {
 		return userRepo.findOneConfirmationToken(confirmationToken);
+	}
+
+	public void activateUserAccount(User user) {
+		// TODO Auto-generated method stub
+		user.setEnabled(true);
+		userRepo.save(user);
+	}
+
+	public void updateUserRole(User user, Role role) {
+		// TODO Auto-generated method stub
+		user.setRole(role);
+		userRepo.save(user);
+		
+	}
+
+	public List<User> findAllProjectManagers() {
+		List<User> users = (List<User>) userRepo.findAll();
+		List<User> pms = new ArrayList<User>();
+		for(User user: users) {
+			if(user.getRole().getName().equals("PROJECT_MANAGER"))
+				pms.add(user);
+		}
+		return pms;
 	}
 }

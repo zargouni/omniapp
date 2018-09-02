@@ -63,14 +63,14 @@ public class ClientsController {
 		return clientService.findAllClientsJson();
 	}
 
-	@GetMapping("/get-client-stats")
-	public @ResponseBody JSONObject getClientStats(@RequestParam("clientId") long clientId) {
-		Client client = clientService.findById(clientId);
-		JSONObject json = new JSONObject().element("projects", clientService.projectsCount(client)).element("money",
-				clientService.moneyCount(client));
-
-		return json;
-	}
+//	@GetMapping("/get-client-stats")
+//	public @ResponseBody JSONObject getClientStats(@RequestParam("clientId") long clientId) {
+//		Client client = clientService.findById(clientId);
+//		JSONObject json = new JSONObject().element("projects", clientService.projectsCount(client)).element("money",
+//				clientService.moneyCount(client));
+//
+//		return json;
+//	}
 
 	@GetMapping("/get-client-sites")
 	public @ResponseBody JSONArray getClientSites(@RequestParam("clientId") long clientId) {

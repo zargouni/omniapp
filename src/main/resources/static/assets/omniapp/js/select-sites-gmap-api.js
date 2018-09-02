@@ -11,6 +11,8 @@ function initializeSitesGmap(projectId) {
         div: '#sites_map_canvas_sidebar',
         lat: 34.7615155,
         lng: 10.6630578,
+        disableDefaultUI: true,
+        fullscreenControl: true,
         
         
     });

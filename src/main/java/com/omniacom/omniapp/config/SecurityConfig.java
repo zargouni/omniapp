@@ -34,6 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/ajax/**").permitAll()
 				.antMatchers("/register").permitAll()
 				.antMatchers("/confirm").permitAll()
+				.antMatchers("/reports-data").permitAll()
 				.antMatchers("/boqs").hasAnyAuthority("ADMIN")
 				.antMatchers("/clients").hasAnyAuthority("ADMIN")
 				.antMatchers("/service-templates").hasAnyAuthority("ADMIN")

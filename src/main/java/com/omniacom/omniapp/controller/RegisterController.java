@@ -127,7 +127,7 @@ public class RegisterController {
 		 user.setPassword(bCryptPasswordEncoder.encode((CharSequence) requestParams.get("password")));
 
 		 // Set user to enabled
-		user.setEnabled(true);
+		//user.setEnabled(true);
 
 		// Save user
 		userService.save(user);

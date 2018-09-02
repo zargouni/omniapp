@@ -134,7 +134,7 @@
 						class="custom-select form-control">
 						<option th:value="${sessionUser.id}"
 							th:text="${sessionUser.userName} " selected>Me</option>
-						<option value="1">Other</option>
+						<option th:each="user : ${managers}" th:value="${user.id}" th:text="${user.userName}">Other</option>
 					</select>
 				</div>
 			</div>

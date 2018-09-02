@@ -99,7 +99,8 @@ public class ProjectController {
 		if (projectService.getCurrentProject() == null)
 			return new ModelAndView("404");
 		else if (!userService.getSessionUser().getContributedProjectList().contains(projectService.getCurrentProject())
-				&& projectService.getCurrentProject().getOwner() != userService.getSessionUser())
+				&& projectService.getCurrentProject().getOwner() != userService.getSessionUser()
+				&& !userService.getSessionUser().getRole().getName().equals("ADMIN"))
 			return new ModelAndView("403");
 		return new ModelAndView("project");
 	}

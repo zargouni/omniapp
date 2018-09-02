@@ -71,7 +71,7 @@ var DatatableUsersRemote = function () {
 					field: "name",
 					title: "Name",
 					sortable: true,
-					width: 250,
+					width: 200,
 					template: function(row) {
 						return '<a style="font-weight: 500;" href="/profile?id='+row.id+'">'+row.name + '</a>';
 					}
@@ -87,7 +87,7 @@ var DatatableUsersRemote = function () {
 				}, {
 			        field: 'email',
 			        title: 'Email',
-			        width: 300,
+			        width: 200,
 			        template: function(row) {
 			        	return '<span style="font-weight:400;font-size:14px;">'+row.email+'</span>'
 					},
@@ -95,7 +95,7 @@ var DatatableUsersRemote = function () {
 					field: "registerDate",
 					title: "Register Date",
 					sortable: true,
-					width: 250,
+					width: 100,
 					template: function(row) {
 						return row.registerDate ;
 					}
@@ -107,6 +107,49 @@ var DatatableUsersRemote = function () {
 					responsive: {visible: 'lg'},
 					template: function(row){
 						return '<span style="font-weight:400;font-size:14px;">'+row.role+'</span>'
+					}
+				}, {
+					field: "status",
+					title: "Account status",
+					sortable: true,
+					width: 100,
+					responsive: {visible: 'lg'},
+					template: function(row){
+						switch (row.status){
+						case true:
+							return '<span style="font-weight:400;font-size:14px;">Enabled</span>';
+							break;	
+						}
+						return '<span style="font-weight:400;font-size:14px;">Disabled</span>';
+					}
+				},
+				{
+					field: "Actions",
+					width: 80,
+					title: "Actions",
+					sortable: false,
+					overflow: 'visible',
+					template: function (row, index, datatable) {
+						var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
+						var activateAction = "";
+						if(!row.status){
+							activateAction += '<a onclick="activateUserAccount('+row.id+')"  ' 
+							+' class="m-portlet__nav-link btn m-btn m-btn--hover-success m-btn--icon m-btn--icon-only m-btn--pill" title="Activate Account"> '
+							+'	<i class="la la-check"></i>'
+							+' </a>';
+						}
+						
+						return '\
+							<div class="dropdown ' + dropup + '">\
+								<a href="#" class="btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" data-toggle="dropdown">\
+	                                <i class="la la-ellipsis-h"></i>\
+	                            </a>\
+							  	<div class="dropdown-menu dropdown-menu-right">\
+							    	<a href="#" onclick="toggleModalEditUserDetails('+row.id+',\''+row.role+'\')" class="dropdown-item"><i class="la la-edit"></i> Edit Details</a>\
+							  	</div>\
+							</div>'
+						+	activateAction 						
+						;
 					}
 				}
 				]
@@ -135,6 +178,79 @@ var DatatableUsersRemote = function () {
 		
 	};
 }();
+
+function populateUserRoles(){
+	$.ajax({
+		type : "GET",
+		url : '/json-roles',
+		success : function(response) {
+			var arr = [];
+			for (i = 0; i < response.length; i++) {
+						arr.push({
+							 id: response[i].name,
+				             text: response[i].name
+					   	});
+
+			}
+			
+			$("#user-role-select").select2({
+				data: arr,
+		         
+	            width: '100%'
+			});
+			
+		},
+		error : function(e) {
+			alert('Error: user roles ' + e);
+		}
+	});
+}
+
+function activateUserAccount(userId){
+	$.ajax({
+		type : "POST",
+		url : '/activate-user-account',
+		data: "userId="+userId,
+		success : function(response) {
+			if( response.status=="SUCCESS" ){
+				$('#users_datatable').mDatatable('reload');
+			}
+		},
+		error : function(e) {
+			alert('Error: user account activation ' + e);
+		}
+	});
+}
+
+function toggleModalEditUserDetails(userId,role){
+	populateUserRoles();
+	$('#user-role-select').val(role); // Select the option with a value of '1'
+	$('#user-role-select').trigger('change'); // Notify any JS components that the value changed
+	$('#modal_update_user_details').modal('show');
+	$('#button_update_user_details').attr('onClick','doUpdateUserRole('+userId+')');
+	
+}
+
+function doUpdateUserRole(userId){
+	var role = $('#user-role-select').val();
+	$.ajax({
+		type: "POST",
+		url : '/update-user-role',
+		data: "userId="+userId+"&role="+role,
+		success : function(response) {
+			if( response.status=="SUCCESS" ){
+				$('#users_datatable').mDatatable('reload');
+				$('#modal_update_user_details').modal('hide');
+				toastr.success("User role updated successfully");
+			}else{
+				toastr.error("Failed to update user role");
+			}
+		},
+		error : function(e) {
+			alert('Error: user role update ' + e);
+		}
+	});
+}
 
 
 
