@@ -246,7 +246,12 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@GetMapping("/set-select-owned-projects")
 	public @ResponseBody JSONArray setSelectOwnedProjects() {
-		List<Project> ownedProjects = (List<Project>) userService.findAllOwnedProjects(userService.getSessionUser());
+		List<Project> ownedProjects = null;
+		if(userService.getSessionUser().getRole().getName().equals("ADMIN")) {
+			ownedProjects = projectService.findAll();
+		}else {
+			ownedProjects = (List<Project>) userService.findAllOwnedProjects(userService.getSessionUser());	
+		}
 		List<JSONObject> jsonArray = new ArrayList<JSONObject>();
 		for (Project p : ownedProjects) {
 			jsonArray.add(jsonProject(p));
@@ -357,6 +362,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		JsonResponse response = new JsonResponse();
 
 		if (!result.hasErrors()) {
+			service.setCreatedBy(userService.getSessionUser());
 			serviceService.addService(service);
 
 			response.setStatus("SUCCESS");
@@ -379,6 +385,7 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 		if (!result.hasErrors()) {
 			if (responsible != null) {
 				operation.setResponsible(responsible);
+				operation.setCreatedBy(userService.getSessionUser());
 				addedOperation = operationService.addOperation(operation);
 				resultSuccess.add(addedOperation.getId());
 				resultSuccess.add(projectService.findAllBoqs(operation.getProject()).size());

@@ -60,14 +60,16 @@ var DatatableBoqsJsonRemote = function () {
 			},
 
 			// columns definition
-			columns: [{
-				field: "id",
-				title: "#",
-				width: 50,
-				sortable: false,
-				selector: false,
-				textAlign: 'center'
-			}, {
+			columns: [
+//				{
+//				field: "id",
+//				title: "#",
+//				width: 50,
+//				sortable: false,
+//				selector: false,
+//				textAlign: 'center'
+//			},
+			{
 				field: "name",
 				title: "Name",
 				sortable: true,

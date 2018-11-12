@@ -147,14 +147,17 @@
 									th:if="${element.key.operation != null}" th:inline="text">
 									<span style="font-size: 18px; font-weight: 600;">[[${element.key.name}]]</span>
 
-									<small style="margin-left: 20px; color: #36a3f7;"
+									<small style="color: #36a3f7;"
 									th:text="|in ${element.key.operation.name}|"></small>
+									
+									<small style="color: #f4516c;"
+									th:text="|(${element.key.operation.site.name})|"></small>
 
 								</span> <span class="m-accordion__item-title"
 									th:if="${element.key.operation == null}"
 									th:text="|${element.key.name} |">Lorem Ipsum has been
 									the industry</span> <span th:inline="text"> <span
-									style="color: #716aca; font-size: 18px; font-weight: 600;">[[${element.value.size()}]]</span>
+									style="color: #34bfa3; font-size: 18px; font-weight: 600;">[[${element.value.size()}]]</span>
 								</span>
 							</div>
 

@@ -255,13 +255,15 @@ public class ProjectService {
 				if (op.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
 					if (feed.containsKey(date)) {
 						feed.get(date)
-								.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation"));
+								.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation")
+										.accumulate("createdBy", op.getCreatedBy().getFirstName()+" "+ op.getCreatedBy().getLastName()));
 						feed.get(date).sort(getFeedDatesComparator());
 					} else {
 						json = new JSONArray();
 						// activities = new TreeSet<>(getFeedDatesComparator());
 						// activities.add(op);
-						json.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation"));
+						json.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation")
+								.accumulate("createdBy", op.getCreatedBy().getFirstName()+" "+ op.getCreatedBy().getLastName()));
 						json.sort(getFeedDatesComparator());
 						feed.put(date, json);
 					}
@@ -274,12 +276,14 @@ public class ProjectService {
 				if (service.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
 					if (feed.containsKey(date)) {
 						feed.get(date).add(serviceService.jsonService(service).accumulate("type", "service")
-								.accumulate("activityType", "creation"));
+								.accumulate("activityType", "creation")
+								.accumulate("createdBy", service.getCreatedBy().getFirstName()+" "+ service.getCreatedBy().getLastName()));
 						feed.get(date).sort(getFeedDatesComparator());
 					} else {
 						json = new JSONArray();
 						json.add(serviceService.jsonService(service).accumulate("type", "service")
-								.accumulate("activityType", "creation"));
+								.accumulate("activityType", "creation")
+								.accumulate("createdBy", service.getCreatedBy().getFirstName()+" "+ service.getCreatedBy().getLastName()));
 						json.sort(getFeedDatesComparator());
 						feed.put(date, json);
 					}
@@ -590,6 +594,11 @@ public class ProjectService {
 			}
 		}
 		return json;
+	}
+
+	public List<Project> findAll() {
+		// TODO Auto-generated method stub
+		return (List<Project>) projectRepo.findAll();
 	}
 
 }

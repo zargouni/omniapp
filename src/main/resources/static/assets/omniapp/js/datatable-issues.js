@@ -61,14 +61,14 @@ var DatatableIssuesJsonRemote = function () {
 
 			// columns definition
 			columns: [
-				{
-				field: "id",
-				title: "#",
-				width: 20,
-				sortable: false,
-				selector: false,
-				textAlign: 'center',
-			}, 
+//				{
+//				field: "id",
+//				title: "#",
+//				width: 20,
+//				sortable: false,
+//				selector: false,
+//				textAlign: 'center',
+//			}, 
 			{
 				field: "name",
 				title: "Issue",

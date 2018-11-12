@@ -37,6 +37,9 @@ public class Operation implements Serializable {
 	@ManyToOne
 	private User responsible;
 	
+	@ManyToOne
+	private User createdBy;
+	
 	@OneToMany( mappedBy = "operation")
 	private List<Service> services;
 	
@@ -283,6 +286,20 @@ public class Operation implements Serializable {
 	 */
 	public void setIssues(List<Issue> issues) {
 		this.issues = issues;
+	}
+
+	/**
+	 * @return the createdBy
+	 */
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	/**
+	 * @param createdBy the createdBy to set
+	 */
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
 	}
 	
 	

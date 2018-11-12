@@ -41,6 +41,9 @@ public class Service implements Serializable, Comparable<Service> {
 	@ManyToOne
 	private Operation operation;
 
+	@ManyToOne
+	private User createdBy;
+	
 	@OneToMany(mappedBy = "service")
 	private List<Task> tasks;
 
@@ -264,6 +267,20 @@ public class Service implements Serializable, Comparable<Service> {
 	 */
 	public void setPoNumber(String poNumber) {
 		this.poNumber = poNumber;
+	}
+
+	/**
+	 * @return the createdBy
+	 */
+	public User getCreatedBy() {
+		return createdBy;
+	}
+
+	/**
+	 * @param createdBy the createdBy to set
+	 */
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
 	}
 
 }

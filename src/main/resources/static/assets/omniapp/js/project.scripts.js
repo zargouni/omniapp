@@ -416,6 +416,11 @@ function doAddNewIssueAjax(){
 					$('#m_modal_issue').modal('hide');
 					doAddIssueOwners(response.result);
 					toastr.success("Issue submitted successfully", "Well done!");
+					
+					$('#input_new_issue_name').val("");
+					$('#input_new_issue_description').val("");
+					$('#input_new_issue_due_date').val("");
+					$('#input_new_issue_severity').val("");
 				}
 					
 				else{
@@ -688,8 +693,6 @@ function populateProjectFeed(){
 						}
 			
 
-						
-						
 						dateWrapper = '<div class="m-timeline-1__item m-timeline-1__item--'+alignContent+' '+firstItem+'">'
 							+'<div style="background:#36a3f7; " class="m-timeline-1__item-circle">'
 							+'	<i class="fa fa-circle m--font-light"></i>'
@@ -702,8 +705,6 @@ function populateProjectFeed(){
 							+'</div>';
 						feedWrapper.append(dateWrapper);
 						 
-						
-							  
 							  for (var j = 0; j < val.length; j++) {
 								  var content = "";
 								  content = getDetailedActivityUI(val[j],val[j].type,val[j].activityType)
@@ -715,17 +716,11 @@ function populateProjectFeed(){
 									  operations.push(val[j]);
 								  }
 								  
-								  
 							  }
 							  $("#content_"+date).append(contentWrapper);
 							  
-							 
-							  
 							  i++;
-							  
-							  
-							  
-							  
+						
 						});
 					
 					 for (var cpt = 0; cpt < operations.length; cpt++){
@@ -762,7 +757,7 @@ function getDetailedActivityUI(object,objectType,activityType){
 			content = '<div class="m-list-badge m--margin-top-15">'
 			+'<div class="m-list-badge__label m--font-metal">'+object.closedDate+'</div>'
 				+'<div class="m-list-badge__items">'
-				+'<span style="background:#ddffcc;" class="m-list-badge__item">service <span style="color:#34bfa3;">'+object.name+'</span> is closed</span> '
+				+'<span style="font-size: 24px; color: #c4c5d6;" >‍🚀</span><span style="background:transparent;" class="m-list-badge__item">Service <span style="color:#34bfa3;">'+object.name+'</span> is now closed</span> '
 						+'	</div>'
 			+'</div>';
 		
@@ -777,7 +772,7 @@ function getDetailedActivityUI(object,objectType,activityType){
 			content = '<div class="m-list-badge m--margin-top-15">'
 				+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
 					+'<div class="m-list-badge__items">'
-					+'<span style="background:#e6f2ff;" class="m-list-badge__item">PM created service <span style="color:#34bfa3;">'+object.name+'</span>'
+					+'<span style="font-size: 24px; color: #c4c5d6;" >‍🔧</span><span style="background:transparent;" class="m-list-badge__item">'+object.createdBy+' created service <span style="color:#34bfa3;">'+object.name+'</span>'
 					+parentSpan+'</span> '
 							+'	</div>'
 				+'</div>';
@@ -798,7 +793,7 @@ function getDetailedActivityUI(object,objectType,activityType){
 			+'<td>'
 			
 			+'<div style="position:relative;width:100%;" class="m-list-badge__items">'
-			+'<span style="background:#f2e6ff;" class="m-list-badge__item">PM created operation <span style="color:#f4516c;">'+object.name+'</span>'
+			+'<span style="font-size: 24px; color: #c4c5d6;" >🚩</span><span style="background:transparent;" class="m-list-badge__item">'+object.createdBy+' created operation <span style="color:#f4516c;">'+object.name+'</span>'
 			+' in site <span style="color:#36a3f7;">'+object.site.name+'</span>'
 			+'</span> '
 			+'	</div>'
@@ -810,10 +805,10 @@ function getDetailedActivityUI(object,objectType,activityType){
 			+'</td>'
 			+'<td>'
 			
-+'<div style="position:relative;float:right;width:100%;height:120px;" >'
+			+'<div class="boxshadow" style="position:relative;float:right;width:100%;height:120px; border:5px #000; " >'
 			
 			
-			+'<div class="sites_map boxshadow" style="width:100% !important;height:120px  !important;border:2px #000; " id="'+object.id+'"></div>'
+			+'<div class="sites_map boxshadow" style="width:100% !important;height:120px  !important;" id="'+object.id+'"></div>'
 			
 			// +'</div>'
 			
@@ -823,13 +818,6 @@ function getDetailedActivityUI(object,objectType,activityType){
 			+'</tr>'
 			+'</table>'
 			
-			
-			
-			
-			
-			
-			
-		
 			
 			+'</div>';
 		
@@ -848,10 +836,10 @@ function getFeedMapUI(object){
         div: map_div,
         lat: 34.7615155,
         lng: 10.6630578,
-        scrollwheel : false,
+        scrollwheel : true,
         disableDefaultUI: true,
         fullscreenControl: true,
-        zoomControl: true,
+        zoomControl: false,
         
     });
 	
@@ -860,7 +848,7 @@ function getFeedMapUI(object){
         lng: object.site.longitude,
         title: object.site.name,
         id: object.site.id,
-        icon : "https://cdn1.iconfinder.com/data/icons/Map-Markers-Icons-Demo-PNG/48/Map-Marker-Flag--Right-Pink.png",
+        icon : "https://png.icons8.com/cotton/30/000000/place-marker.png",
         natures: object.site.natures,
        
         click: function(e,id,title) {
@@ -1160,6 +1148,7 @@ function populateDashboardMap() {
 	var map_div = "#dashboard_map";
 	var open = 0;
 	var closed = 0;
+	var in_progress = 0;
 	$('#operation_status_filter').on('change',function(){
 		filterMarkersByOperationStatus(map,$(this).val())
 	});
@@ -1183,10 +1172,13 @@ function populateDashboardMap() {
 				success : function(response) {
 					var icons = {
 						open : {
-							icon : 'https://mt.google.com/vt/icon?psize=30&font=fonts/arialuni_t.ttf&color=ff304C13&name=icons/spotlight/spotlight-waypoint-a.png&ax=43&ay=48&text=•'
-						},
+							icon : '/assets/omniapp/img/green_marker.png'
+								},
 						closed : {
-							icon : 'https://mt.googleapis.com/vt/icon/name=icons/spotlight/spotlight-poi.png&scale=1'
+							icon : '/assets/omniapp/img/red_marker.png'
+						},
+						in_progress : {
+							icon : '/assets/omniapp/img/yellow_marker.png'
 						}
 					};
 					for (i = 0; i < response.length; i++) {
@@ -1195,6 +1187,8 @@ function populateDashboardMap() {
 							open++;
 						else if(response[i].status == "closed")
 							closed++;
+						else if (response[i].status == "in_progress")
+							in_progress++;
 						
 						map.addMarker({
 							lat : response[i].latitude,
@@ -1220,6 +1214,7 @@ function populateDashboardMap() {
 					}
 					$('#open_operations').html(open);
 					$('#closed_operations').html(closed);
+					$('#in_progress_operations').html(in_progress);
 					map.setZoom(6);
 					map.refresh();
 				},

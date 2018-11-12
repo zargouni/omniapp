@@ -59,14 +59,15 @@ var projectsDatatableRemoteAjax = function() {
 
       // columns definition
       columns: [
+//        {
+//          field: 'id',
+//          title: '#',
+//          sortable: false, // disable sort for this column
+//          width: 40,
+//          selector: false,
+//          textAlign: 'center',
+//        },
         {
-          field: 'id',
-          title: '#',
-          sortable: false, // disable sort for this column
-          width: 40,
-          selector: false,
-          textAlign: 'center',
-        }, {
           field: 'name',
           title: 'Project Name',
           // sortable: 'asc', // default sort

@@ -66,6 +66,9 @@ public class OperationService {
 
 	@Autowired
 	TaskService taskService;
+	
+	@Autowired
+	UserService userService;
 
 	public Operation addOperation(Operation operation) {
 		operation.setCreationDate(new Date());
@@ -81,6 +84,7 @@ public class OperationService {
 			newService.setOperation(operation);
 			newService.setPriceHT(boqRepo.findServicePriceBoq(operation.getProject().getBoq(), template));
 			newService.setCreationDate(new Date());
+			newService.setCreatedBy(userService.getSessionUser());
 			returnService = serviceRepo.save(newService);
 			for (TaskTemplate t : template.getTasks()) {
 				Task task = new Task();
@@ -186,14 +190,20 @@ public class OperationService {
 
 	public String getOperationStatus(Operation op) {
 		boolean open = false;
+		int zeroProgressServices = 0;
 		List<com.omniacom.omniapp.entity.Service> services = op.getServices();
 		for (com.omniacom.omniapp.entity.Service service : services) {
-			if (!serviceService.getServicePercentageComplete(service).equals("100%"))
+			if (serviceService.getServicePercentageComplete(service).equals("0%")) {
+				zeroProgressServices++;
 				open = true;
+			}
 		}
-
-		if (open == true)
-			return "open";
+		if (open == true) {
+			if(zeroProgressServices == services.size())
+				return "open";
+			else
+				return "in_progress";
+		}
 		return "closed";
 	}
 
