@@ -64,7 +64,7 @@ var DatatablePosJsonRemote = function() {
 									{
 										field : "number",
 										title : "#",
-										width : 300,
+										width : 200,
 										sortable : true,
 										selector : false,
 										textAlign : 'center',
@@ -74,10 +74,28 @@ var DatatablePosJsonRemote = function() {
 										}
 									},
 									{
+										field : "actual_money",
+										title : "Progress",
+										width : 200,
+										sortable : true,
+										selector : false,
+										textAlign : 'center',
+										template : function(row) {
+											if(row.number != "NOPO")
+											 return '<div style="width:200px !important;" class="progress m-progress--sm">'
+								          	  +'<div class="progress-bar m--bg-success" role="progressbar" style="width: '+row.money_percentage+'%;" aria-valuemin="0" aria-valuemax="100"></div>'
+								          	  +'</div>'
+								          	  +'<span style="font-weight:600;font-size:12px;float:right;" class="m-widget4__number m--font-info">'+row.actual_money+' '+row.currency+'</span>'
+								          	+'<span style="font-weight:600;font-size:12px;float:left;" class="m-widget4__number m--font-info">'+row.money_percentage+'%</span>'
+								          	  ;
+											return "-"; 
+										}
+									},
+									{
 										field : "services",
 										title : "Total Services",
 										sortable : true,
-										width : 100,
+										width : 80,
 										textAlign : 'center',
 										template : function(row) {
 											return '<span style="font-weight: 400;">'

@@ -61,14 +61,14 @@ var DatatablePoServicesJsonRemote = function () {
 
 			// columns definition
 			columns: [
-				{
-				field: "id",
-				title: "#",
-				width: 40,
-				sortable: true,
-				selector: false,
-				textAlign: 'center',
-			}, 
+//				{
+//				field: "id",
+//				title: "#",
+//				width: 40,
+//				sortable: true,
+//				selector: false,
+//				textAlign: 'center',
+//			}, 
 			{
 				field: "name",
 				title: "Service",
@@ -84,7 +84,7 @@ var DatatablePoServicesJsonRemote = function () {
 				field: "site_name",
 				title: "Site",
 				sortable: true,
-				width: 100,
+				width: 80,
 				textAlign: 'center',
 //				template: function(row) {
 //					return '<a style="font-weight: 500;" href="#" onclick="toggleIssueFragment('+ row.id +')">'+row.name + '</a>';
@@ -109,6 +109,17 @@ var DatatablePoServicesJsonRemote = function () {
 //				template: function(row) {
 //					return '<a style="font-weight: 500;" href="#" onclick="toggleIssueFragment('+ row.id +')">'+row.name + '</a>';
 //				}
+			},
+			{
+				field: "price",
+				title: "Price",
+				sortable: true,
+				width: 80,
+				textAlign: 'center',
+				template: function(row) {
+					return '<span style="font-weight:600;font-size:14px;color: #f4516c;">'
+					+ row.price +' ' + row.currency + '</span>';
+				}
 			},
 			{
 				field: "Actions",

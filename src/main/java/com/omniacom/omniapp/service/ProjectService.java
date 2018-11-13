@@ -1,10 +1,13 @@
 package com.omniacom.omniapp.service;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
@@ -448,11 +451,43 @@ public class ProjectService {
 			String poNumber = entry.getKey();
 			List<com.omniacom.omniapp.entity.Service> poServices = entry.getValue();
 			Float price = 0f;
+			float overallCurrentMoney = 0;
 			for (com.omniacom.omniapp.entity.Service s : poServices) {
 				price += s.getPriceHT();
+				int globalDuration = 0;
+				float serviceCurrentMoney = 0;
+				
+				//System.out.println("Service : "+s.getName());
+				//calculate service's global duration in days
+				for(Task task : s.getTasks()) {
+					LocalDate startDate = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+					LocalDate endDate = task.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+					long elapsedDays = ChronoUnit.DAYS.between(startDate.atTime(0, 0), endDate.atTime(23, 59));
+					globalDuration += elapsedDays;
+				}
+				
+				//calculate progress in term of money
+				for(Task task : s.getTasks()) {
+						float taskCurrentMoney = 0;
+						long elapsedDays = 0;
+						LocalDate startDate = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						LocalDate endDate = task.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						elapsedDays = ChronoUnit.DAYS.between(startDate.atTime(0, 0), endDate.atTime(23, 59));
+						if(globalDuration != 0)
+							taskCurrentMoney = ( ((float) elapsedDays / globalDuration ) * ((float) Integer.parseInt(task.getCompletionPercentage()) / 100 ) ) * s.getPriceHT();
+							//System.out.println("-----------Task: "+task.getName()+"---Duration: ("+elapsedDays+"/"+ globalDuration+")---Percentage: "+Integer.parseInt(task.getCompletionPercentage())+"------Money: "+taskCurrentMoney+"/"+s.getPriceHT());
+							serviceCurrentMoney += taskCurrentMoney;
+				}
+				
+				overallCurrentMoney += serviceCurrentMoney;
+				//System.out.println("Service: "+s.getName()+" has a global duration of "+globalDuration+" days"); 
+
+				
 			}
 			json.add(new JSONObject().element("number", poNumber).element("services", poServices.size())
-					.element("price", price).element("currency", project.getCurrency()));
+					.element("price", price).element("currency", project.getCurrency())
+					.element("actual_money", new DecimalFormat("##.##").format(overallCurrentMoney))
+					.element("money_percentage",Math.round(overallCurrentMoney/price*100)));
 		}
 
 		return json;
@@ -494,13 +529,14 @@ public class ProjectService {
 					.element("description", s.getDescription())
 					.element("operation_name", s.getOperation() == null ? "none" : s.getOperation().getName())
 					.element("site_name", s.getOperation() == null ? "none" : s.getOperation().getSite().getName())
-					.element("po_number", s.getPoNumber()));
+					.element("po_number", s.getPoNumber())
+					.element("price", s.getPriceHT())
+					.element("currency", s.getOperation() == null ? s.getProject().getCurrency() : s.getOperation().getProject().getCurrency()));
 		}
 		return json;
 	}
 
 	public JSONArray getProjectDetailsForReports(long projectId) {
-		// TODO Auto-generated method stub
 		Project project = findOneById(projectId);
 		JSONArray json = new JSONArray();
 		List<com.omniacom.omniapp.entity.Service> services = null;		

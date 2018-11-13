@@ -2,9 +2,6 @@
 
 
 var DatatableServiceTasksJsonRemote = function () {
-	// == Private functions
-
-	
 	// basic demo
 	var demo = function () {
 		var serviceId = $('#service_fragment_selected_service_id').val();
@@ -152,46 +149,7 @@ var DatatableServiceTasksJsonRemote = function () {
           	  ;
             },
           }
-		//{
-//				field: "priority",
-//				title: "Priority",
-//				sortable: true,
-//				width: 100,
-//				responsive: {visible: 'lg'},
-//				template: function(row) {
-//			           var status = {
-//			        	  'none': {'title': 'None', 'class': 'm-badge--metal'},
-//			              'low': {'title': 'Low', 'class': 'm-badge--metal'},
-//			              'medium': {'title': 'Medium', 'class': ' m-badge--brand'},
-//			              'high': {'title': 'High', 'class': ' m-badge--danger'},
-//			           };
-//			           return '<span class="m-badge ' + status[row.priority].class + ' m-badge--wide">' + status[row.priority].title + '</span>';
-//			         },
-//			}
-//			, {
-//				field: "Actions",
-//				width: 60,
-//				title: "Actions",
-//				sortable: false,
-//				overflow: 'visible',
-//				template: function (row, index, datatable) {
-//					var dropup = (datatable.getPageSize() - index) <= 4 ? 'dropup' : '';
-//					
-//					return '\
-//						<div class="dropdown ' + dropup + '">\
-//							<a href="#" class="btn m-btn m-btn--hover-accent m-btn--icon m-btn--icon-only m-btn--pill" data-toggle="dropdown">\
-//                                <i class="la la-ellipsis-h"></i>\
-//                            </a>\
-//						  	<div class="dropdown-menu dropdown-menu-right">\
-//						    	<a href="#" onclick="toggleModalEditDetails('+row.id+')" class="dropdown-item"><i class="la la-edit"></i> Edit Details</a>\
-//						  	</div>\
-//						</div>\
-//												\<a onclick="handleRemoveBoqClick('+row.id+')" id="btn-remove-boq-'+row.id+'" class="m-portlet__nav-link btn m-btn m-btn--hover-danger m-btn--icon m-btn--icon-only m-btn--pill" title="Delete BOQ">\
-//							<i class="la la-trash-o"></i>\
-//						</a>\
-//					';
-//				}
-//			}
+
 			]
 		});
 
