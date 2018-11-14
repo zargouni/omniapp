@@ -8,10 +8,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
+@SQLDelete(sql = "UPDATE comment SET deleted = true, deletion_date = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted <> true")
 public class Comment implements Serializable{
 	/**
 	 * 
@@ -35,9 +41,18 @@ public class Comment implements Serializable{
 	@ManyToOne
 	private Issue issue;
 	
-	
 	@ManyToOne
 	private User user;
+	
+	private boolean deleted = false;
+
+	private Date deletionDate;
+	
+	@PreRemove
+	public void deleteComment() {
+		this.setDeleted(true);
+		this.setDeletionDate(new Date());
+	}
 	
 	public Comment() {
 
@@ -192,6 +207,22 @@ public class Comment implements Serializable{
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	public Date getDeletionDate() {
+		return deletionDate;
+	}
+
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 	
 	

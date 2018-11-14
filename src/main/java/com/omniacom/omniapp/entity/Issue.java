@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,11 +15,17 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
+@SQLDelete(sql = "UPDATE issue SET deleted = true, deletion_date = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted <> true")
 public class Issue implements Serializable {
 
 	/**
@@ -51,7 +58,7 @@ public class Issue implements Serializable {
 	@ManyToOne
 	private User creator;
 	
-	@OneToMany( mappedBy = "issue", orphanRemoval=true)
+	@OneToMany( mappedBy = "issue", orphanRemoval=true, cascade = CascadeType.PERSIST)
 	private List<Comment> comments;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -59,11 +66,21 @@ public class Issue implements Serializable {
 	@JoinTable(name = "USER_ISSUE", joinColumns = @JoinColumn(name = "issue_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> assignedUsers;
 	
-	@OneToMany(mappedBy="issue", orphanRemoval=true)
+	@OneToMany(mappedBy="issue", orphanRemoval=true, cascade = CascadeType.PERSIST)
 	private List<UploadedFile> attachments;
 	
-	@OneToMany(mappedBy="issue", orphanRemoval=true)
+	@OneToMany(mappedBy="issue", orphanRemoval=true, cascade = CascadeType.PERSIST)
 	private List<Notification> notifications;
+	
+	private boolean deleted = false;
+
+	private Date deletionDate;
+	
+	@PreRemove
+	public void deleteIssue() {
+		this.setDeleted(true);
+		this.setDeletionDate(new Date());
+	}
 	
 	public Issue() {
 		super();
@@ -345,6 +362,22 @@ public class Issue implements Serializable {
 		} else if (!name.equals(other.name))
 			return false;
 		return true;
+	}
+
+	public Date getDeletionDate() {
+		return deletionDate;
+	}
+
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
 	}
 
 }

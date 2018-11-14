@@ -11,10 +11,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
 
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
+@SQLDelete(sql = "UPDATE bill_of_quantities SET deleted = true, deletion_date = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted <> true")
 public class BillOfQuantities implements Serializable {
 
 	/**
@@ -33,15 +39,21 @@ public class BillOfQuantities implements Serializable {
 	private Date startDate;
 	private Date endDate;
 
+	private boolean deleted = false;
+
+	private Date deletionDate;
+
 	@OneToOne
 	private Project project;
 
-	// @JoinTable(name = "BOQ_SERVICES", joinColumns = @JoinColumn(name = "boq_id",
-	// referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name =
-	// "service_id", referencedColumnName = "id"))
-
 	@OneToMany(mappedBy = "boq")
 	private List<BoqService> boqServices;
+
+	@PreRemove
+	public void deleteBOQ() {
+		this.deleted = true;
+		this.setDeletionDate(new Date());
+	}
 
 	public BillOfQuantities() {
 
@@ -195,6 +207,22 @@ public class BillOfQuantities implements Serializable {
 		}
 		boqService.setBoq(this);
 
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Date getDeletionDate() {
+		return deletionDate;
+	}
+
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
 	}
 
 }

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,8 +14,15 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
+
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
+@SQLDelete(sql = "UPDATE operation SET deleted = true, deletion_date = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted <> true")
 public class Operation implements Serializable {
 	/**
 	 * 
@@ -40,7 +48,8 @@ public class Operation implements Serializable {
 	@ManyToOne
 	private User createdBy;
 	
-	@OneToMany( mappedBy = "operation")
+	@OneToMany( mappedBy = "operation",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
 	private List<Service> services;
 	
 	@ManyToMany
@@ -50,14 +59,27 @@ public class Operation implements Serializable {
 	@ManyToOne
 	private Site site;
 	
-	@OneToMany(mappedBy = "operation")
+	@OneToMany(mappedBy = "operation",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
 	private List<Snag> snags;
 	
-	@OneToMany( mappedBy = "operation")
+	@OneToMany( mappedBy = "operation",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
 	private List<Comment> comments;
 	
-	@OneToMany(mappedBy = "operation")
+	@OneToMany(mappedBy = "operation",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
 	private List<Issue> issues;	
+	
+	private boolean deleted = false;
+
+	private Date deletionDate;
+
+	@PreRemove
+	public void deleteOperation() {
+		this.setDeleted(true);
+		this.setDeletionDate(new Date());
+	}
 	
 	public Operation() {
 
@@ -300,6 +322,22 @@ public class Operation implements Serializable {
 	 */
 	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Date getDeletionDate() {
+		return deletionDate;
+	}
+
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
 	}
 	
 	

@@ -8,10 +8,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
+@SQLDelete(sql = "UPDATE snag SET deleted = true, deletion_date = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted <> true")
 public class Snag implements Serializable {
 	
 	/**
@@ -35,6 +41,16 @@ public class Snag implements Serializable {
 	
 	@ManyToOne
 	private User user;
+	
+	private boolean deleted = false;
+
+	private Date deletionDate;
+
+	@PreRemove
+	public void deleteTask() {
+		this.setDeleted(true);
+		this.setDeletionDate(new Date());
+	}
 	
 	public Snag() {
 
@@ -163,6 +179,22 @@ public class Snag implements Serializable {
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Date getDeletionDate() {
+		return deletionDate;
+	}
+
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
 	}
 	
 	

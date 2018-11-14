@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,8 +16,15 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
+
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
+@SQLDelete(sql = "UPDATE task SET deleted = true, deletion_date = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted <> true")
 public class Task implements Serializable {
 	/**
 	 * 
@@ -44,17 +52,29 @@ public class Task implements Serializable {
 	@JoinTable(name = "USER_TASK", joinColumns = @JoinColumn(name = "task_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> users = new ArrayList<User>();
 	
-	@OneToMany(mappedBy="task", orphanRemoval=true)
+	@OneToMany(mappedBy="task", orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
 	private List<UploadedFile> attachments;
 	
-	@OneToMany( mappedBy = "task", orphanRemoval=true)
+	@OneToMany( mappedBy = "task", orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
 	private List<Comment> comments;
 	
 	@ManyToOne
 	private User closedBy;
 	
-	@OneToMany(mappedBy="task", orphanRemoval=true)
+	@OneToMany(mappedBy="task", orphanRemoval=true, cascade = CascadeType.PERSIST)
 	private List<Notification> notifications;
+	
+	private boolean deleted = false;
+
+	private Date deletionDate;
+
+	@PreRemove
+	public void deleteTask() {
+		this.setDeleted(true);
+		this.setDeletionDate(new Date());
+	}
 	
 	public Task() {
 
@@ -329,6 +349,22 @@ public class Task implements Serializable {
 	 */
 	public void setNotifications(List<Notification> notifications) {
 		this.notifications = notifications;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Date getDeletionDate() {
+		return deletionDate;
+	}
+
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
 	}
 	
 

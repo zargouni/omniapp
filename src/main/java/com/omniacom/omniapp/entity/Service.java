@@ -4,16 +4,23 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
+@SQLDelete(sql = "UPDATE service SET deleted = true, deletion_date = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted <> true")
 public class Service implements Serializable, Comparable<Service> {
 
 	/**
@@ -44,8 +51,19 @@ public class Service implements Serializable, Comparable<Service> {
 	@ManyToOne
 	private User createdBy;
 	
-	@OneToMany(mappedBy = "service")
+	@OneToMany(mappedBy = "service",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
 	private List<Task> tasks;
+	
+	private boolean deleted = false;
+
+	private Date deletionDate;
+
+	@PreRemove
+	public void deleteService() {
+		this.setDeleted(true);
+		this.setDeletionDate(new Date());
+	}
 
 	public Service() {
 
@@ -281,6 +299,22 @@ public class Service implements Serializable, Comparable<Service> {
 	 */
 	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Date getDeletionDate() {
+		return deletionDate;
+	}
+
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
 	}
 
 }

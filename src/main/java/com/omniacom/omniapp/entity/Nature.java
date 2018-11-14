@@ -1,6 +1,7 @@
 package com.omniacom.omniapp.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -9,8 +10,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
+
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
+@SQLDelete(sql = "UPDATE nature SET deleted = true, deletion_date = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted <> true")
 public class Nature implements Serializable {
 
 	/**
@@ -23,8 +31,16 @@ public class Nature implements Serializable {
 	private long id;
 	private String name;
 	private String description;
+
 	private boolean deleted = false;
-	
+
+	private Date deletionDate;
+
+	@PreRemove
+	public void deleteComment() {
+		this.setDeleted(true);
+		this.setDeletionDate(new Date());
+	}
 
 	@ManyToMany(mappedBy = "natures")
 	private List<Site> sites;
@@ -115,7 +131,8 @@ public class Nature implements Serializable {
 	}
 
 	/**
-	 * @param projects the projects to set
+	 * @param projects
+	 *            the projects to set
 	 */
 	public void setProjects(List<Project> projects) {
 		this.projects = projects;
@@ -129,10 +146,19 @@ public class Nature implements Serializable {
 	}
 
 	/**
-	 * @param deleted the deleted to set
+	 * @param deleted
+	 *            the deleted to set
 	 */
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	public Date getDeletionDate() {
+		return deletionDate;
+	}
+
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
 	}
 
 }

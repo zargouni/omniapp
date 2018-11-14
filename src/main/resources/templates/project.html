@@ -24,25 +24,27 @@
 			<!-- BEGIN: selected project -->
 			<input type="hidden" id="selected_project_id" />
 			<!-- END: selected project -->
-			
+
 			<!-- BEGIN: session user id -->
 			<input type="hidden" id="session_user_id" />
 			<!-- END: session user id -->
-			
+
 			<!-- BEGIN: project manager id -->
 			<input type="hidden" id="project_manager_id" />
 			<!-- END: project manager id -->
-			
+
 			<!-- BEGIN: Left Aside -->
 			<div
 				data-th-replace="fragments/fragment-left-sidebar-project :: left-sidebar-project"></div>
 			<!-- END: Left Aside -->
+
 			<div class="m-grid__item m-grid__item--fluid m-wrapper">
 				<div id="project_subheader" class="m-subheader ">
 					<div class="d-flex align-items-center">
 						<div class="mr-auto">
 							<h3 th:text="${selectedProject.name}"
-								class="m-subheader__title m-subheader__title--separator">Stack</h3>
+								class="m-subheader__title m-subheader__title--separator">Project
+								Name</h3>
 							<ul class="m-subheader__breadcrumbs m-nav m-nav--inline">
 								<li class="m-nav__item m-nav__item--home"><a href="/home"
 									class="m-nav__link m-nav__link--icon"> <i
@@ -55,12 +57,26 @@
 								<li class="m-nav__separator">-</li>
 								<li class="m-nav__item"><a href="" class="m-nav__link">
 										<span th:text="${selectedProject.name}"
-										class="m-nav__link-text">Stack</span>
+										class="m-nav__link-text">Project Name</span>
 								</a></li>
 							</ul>
 						</div>
 
+						<div th:if="${sessionUser.id == selectedProject.owner.id}"
+							class="ml-auto">
+							<button title="Edit project" type="button"
+								class="m-btn btn btn-secondary btn-sm">
+								<i class="fa fa-edit"></i>
+							</button>
+							<button onclick="handleRemoveProject()"
+								title="Delete project" type="button"
+								class="m-btn btn btn-secondary btn-sm">
+								<i class="fa fa-trash-o"></i>
+							</button>
+						</div>
+
 					</div>
+
 				</div>
 
 				<!-- begin::Content -->
@@ -86,13 +102,13 @@
 
 					<div
 						th:replace="fragments/project-fragments/fragment-task :: fragment-task"></div>
-						
-						<div
+
+					<div
 						th:replace="fragments/project-fragments/fragment-issue :: fragment-issue"></div>
-						
-						<div
+
+					<div
 						th:replace="fragments/project-fragments/fragment-pos :: fragment-pos"></div>
-						
+
 				</div>
 				<!-- End::Content -->
 			</div>
@@ -106,38 +122,39 @@
 				let param = searchParams.get('id');
 				$('#selected_project_id').attr('value', param);
 				/*<![CDATA[*/
-			   
 
-			    var sessionUserId = /*[[${sessionUser.id}]]*/ '0';
-			   
-			    $('#session_user_id').attr('value', sessionUserId);
-			    
-			    var managerId = /*[[${selectedProject.owner.id}]]*/ '0';
-				   
-			    $('#project_manager_id').attr('value', managerId);
+				var sessionUserId = /*[[${sessionUser.id}]]*/'0';
 
-			   
-			/*]]>*/
-			
-				
+				$('#session_user_id').attr('value', sessionUserId);
+
+				var managerId = /*[[${selectedProject.owner.id}]]*/'0';
+
+				$('#project_manager_id').attr('value', managerId);
+
+				/*]]>*/
+
 			});
 		</script>
 
 
 		<script type="text/javascript"
 			src="assets/omniapp/js/datatable-operations-json.js">
+			
 		</script>
-		
+
 		<script type="text/javascript"
 			src="assets/omniapp/js/datatable-issues.js">
+			
 		</script>
-		
+
 		<script type="text/javascript"
 			src="assets/omniapp/js/datatable-pos.js">
+			
 		</script>
-		
+
 		<script type="text/javascript"
 			src="assets/omniapp/js/datatable-po-services.js">
+			
 		</script>
 
 		<script type="text/javascript"

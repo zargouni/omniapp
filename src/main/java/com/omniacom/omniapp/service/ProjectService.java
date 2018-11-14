@@ -245,14 +245,13 @@ public class ProjectService {
 	}
 
 	public Map<LocalDate, JSONArray> getProjectFeed(Project project) {
-		// JSONArray json = new JSONArray();
-		// Set<Object> activities = null;
 		TreeMap<LocalDate, JSONArray> feed = new TreeMap<LocalDate, JSONArray>();
 		LocalDate currentDate = LocalDate.now();
 		LocalDate startDate = project.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		JSONArray json = null;
 		for (LocalDate date = startDate; date.isBefore(currentDate)
 				|| date.isEqual(currentDate); date = date.plusDays(1)) {
+			
 			// Populate operation activities into map
 			for (Operation op : project.getOperations()) {
 				if (op.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
@@ -263,8 +262,6 @@ public class ProjectService {
 						feed.get(date).sort(getFeedDatesComparator());
 					} else {
 						json = new JSONArray();
-						// activities = new TreeSet<>(getFeedDatesComparator());
-						// activities.add(op);
 						json.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation")
 								.accumulate("createdBy", op.getCreatedBy().getFirstName()+" "+ op.getCreatedBy().getLastName()));
 						json.sort(getFeedDatesComparator());

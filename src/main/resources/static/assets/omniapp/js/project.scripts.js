@@ -1,3 +1,48 @@
+function handleRemoveOperation(){
+	var operationId = $('#operation_fragment_selected_operation_id').val();
+	swal({
+		title : 'Are you sure?',
+		text : "You won't be able to revert this!",
+		type : 'warning',
+		showCancelButton : true,
+		confirmButtonText : 'Yes, delete it!'
+	}).then(
+			function(result) {
+				if (result.value) {
+					$
+							.ajax({
+								type : "POST",
+								url : '/delete-operation',
+								data : "id=" + operationId,
+								async : true,
+								success : function(response) {
+									if (response.status == "SUCCESS") {
+										swal('Deleted!',
+												'Operation has been deleted.',
+												'success');
+										$('#operations_datatable').mDatatable('reload');
+										goToProjectOperations();
+										
+									} else {
+										swal('Fail!', 'Operation not deleted.',
+												'error');
+									}
+
+								},
+								error : function(e) {
+									toastr.error("Couldn't delete Operation",
+											"Server Error");
+									result = false;
+								}
+							});
+
+				}
+
+			}
+
+	);
+}
+
 function populateIssueComments(issueId){
 	$('#issue_comments_wrapper').html("");
 	$.ajax({
@@ -1082,16 +1127,8 @@ function filterMarkersByOperationStatus(map,status){
 }
 
 function handleDashboardMapControls(map){
-	// var googleMapWidth = $("#m_portlet_tab_1_2").css('width');
-	// var googleMapHeight = $("#m_portlet_tab_1_2").css('height');
-
 	$('#btn-enter-full-screen-dashboard-map').click(function() {
-		
-// if(!(clientId % 2))
-// $('#clients_container_odd_row').hide();
-// else
-// $('#clients_container_even_row').hide();
-//		
+				
 		$('#general-header').hide();
 		
 	    $('#dashboard_map').parent().css({
@@ -1157,7 +1194,7 @@ function populateDashboardMap() {
 		div : map_div,
 		lat : 34.7615155,
 		lng : 10.6630578,
-		disableDefaultUI: true,
+		disableDefaultUI: false,
 		
 	});
 	

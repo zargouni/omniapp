@@ -18,6 +18,7 @@ import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
+import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.TaskTemplate;
@@ -326,6 +327,15 @@ public class OperationService {
 
 	public List<Issue> findAllUnsyncedIssues(Operation op) {
 		return operationRepo.findAllUnsyncedIssues(op);
+	}
+
+	public boolean deleteOperation(long operationId) {
+		if (operationRepo.exists(operationId)) {
+			Operation op = operationRepo.findOne(operationId);
+			operationRepo.delete(op);
+			return true;
+		}
+		return false;
 	}
 
 }

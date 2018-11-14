@@ -136,6 +136,10 @@ var DatatableJsonRemoteDemo = function () {
 	};
 }();
 
+$('.loader-wrapper').show();
+
 jQuery(document).ready(function () {
 	DatatableJsonRemoteDemo.init();
+	$('.loader-wrapper').hide();
+
 });

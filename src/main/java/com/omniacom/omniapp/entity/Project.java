@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,8 +14,15 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
+
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 @Entity
+@SQLDelete(sql = "UPDATE project SET deleted = true, deletion_date = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted <> true")
 public class Project implements Serializable {
 
 	/**
@@ -56,13 +64,26 @@ public class Project implements Serializable {
 	private List<User> workingUsersList;
 
 	@OneToMany(mappedBy = "project")
+	@Where(clause="deleted <> true")
 	private List<Operation> operations;
 
-	@OneToMany(mappedBy = "project")
+	@OneToMany(mappedBy = "project",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
 	private List<Service> services;
 
-	@OneToMany(mappedBy = "project")
+	@OneToMany(mappedBy = "project",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
 	private List<Issue> issues;
+	
+	private boolean deleted = false;
+
+	private Date deletionDate;
+
+	@PreRemove
+	public void deleteOperation() {
+		this.setDeleted(true);
+		this.setDeletionDate(new Date());
+	}
 
 	public Project() {
 
@@ -378,6 +399,50 @@ public class Project implements Serializable {
 	 */
 	public void setFinalClient(Client finalClient) {
 		this.finalClient = finalClient;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Date getDeletionDate() {
+		return deletionDate;
+	}
+
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (id ^ (id >>> 32));
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Project other = (Project) obj;
+		if (id != other.id)
+			return false;
+		return true;
 	}
 
 }

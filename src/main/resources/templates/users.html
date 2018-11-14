@@ -17,7 +17,9 @@
 		<!-- begin::Content -->
 		<div
 			class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
-
+			<div class="loader-wrapper" style="display: none;">
+				<div id="loader"></div>
+			</div>
 
 			<div class="m-grid__item m-grid__item--fluid m-wrapper">
 
@@ -70,14 +72,14 @@
 					</div>
 				</div>
 				<!-- BEGIN: Edit User Details Modal -->
-				<div class="modal fade show"
-					id="modal_update_user_details" tabindex="-1" role="dialog"
-					aria-labelledby="exampleModalLabel"
+				<div class="modal fade show" id="modal_update_user_details"
+					tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
 					style="display: none; padding-right: 17px; background: transparent;">
 					<div class="modal-dialog modal-sm " role="document">
 						<div class="modal-content" style="background: #f1f1f1">
 							<div class="modal-header">
-								<h5 class="modal-title" id="exampleModalLabel">Update User Details</h5>
+								<h5 class="modal-title" id="exampleModalLabel">Update User
+									Details</h5>
 								<button type="button" class="close" data-dismiss="modal"
 									aria-label="Close">
 									<span aria-hidden="true">×</span>
@@ -86,11 +88,12 @@
 
 							<div class="modal-body">
 								<form>
-								
-								<div class="form-group">
-										<label for="" class="form-control-label">Role:</label>
-										<select id="user-role-select" style="width:100%" class="form-control">
-																	
+
+									<div class="form-group">
+										<label for="" class="form-control-label">Role:</label> <select
+											id="user-role-select" style="width: 100%"
+											class="form-control">
+
 										</select>
 									</div>
 								</form>
@@ -118,8 +121,10 @@
 		<script type="text/javascript"
 			src="assets/omniapp/js/datatable-users-json.js"></script>
 		<script type="text/javascript">
+			$('.loader-wrapper').show();
 			$(document).ready(function() {
 				DatatableUsersRemote.init();
+				$('.loader-wrapper').hide();
 
 			});
 		</script>

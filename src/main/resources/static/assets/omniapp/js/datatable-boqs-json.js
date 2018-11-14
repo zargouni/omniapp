@@ -410,9 +410,12 @@ function doUpdateServiceTemplatesToBoq( boqId ){
 	});
 }
 
+$('.loader-wrapper').show();
 
 jQuery(document).ready(function () {
 	//$.fn.dataTable.moment( 'dd MM YYYY' );
 	DatatableBoqsJsonRemote.init();
+	$('.loader-wrapper').hide();
+
 	
 });

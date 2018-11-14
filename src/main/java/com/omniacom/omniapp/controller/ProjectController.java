@@ -762,6 +762,20 @@ public class ProjectController {
 		}
 		return response;
 	}
+	
+	@PostMapping("/delete-operation")
+	public @ResponseBody JsonResponse deleteSite(@RequestParam("id") long operationId) {
+		JsonResponse response = new JsonResponse();
+
+		if (operationService.deleteOperation(operationId)) {
+
+			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
+			// response.setResult(result.getFieldErrors());
+		}
+		return response;
+	}
 
 	public JSONObject jsonTask(Task task) {
 		JSONObject jsonTask = new JSONObject().element("TaskId", task.getId()).element("TaskName", task.getName())

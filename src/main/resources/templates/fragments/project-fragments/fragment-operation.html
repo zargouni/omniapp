@@ -16,8 +16,6 @@
 						style="position: absolute; left: 1%; padding: 10px 10px 10px 10px;"
 						class="mr-auto">
 
-
-
 						<h1 style="font-size: 32px !important; color: #fff;"
 							id="operation_fragment_header_name"
 							class="m-subheader__title m-subheader__title--separator"></h1>
@@ -36,24 +34,24 @@
 						</ul>
 
 
-
-
-
-
 					</div>
 
 				</div>
 			</div>
+			
 			<div class="col-xl-1">
+					
 				<div class="d-flex align-items-center">
-					<a style="z-index: 1; position: absolute;"
+				
+					
+					<a style="z-index: 1;"
 						class="btn btn-danger m-btn m-btn--icon"> <span> <i
 							class="flaticon-coins"></i> <span id="operation_price">Secondary</span>
 					</span>
 					</a>
 				</div>
 			</div>
-
+			
 		</div>
 		<br />
 		<div class="row">
@@ -79,7 +77,10 @@
 								</a></li>
 
 								<li th:if="${sessionUser.id == selectedProject.owner.id}"
-									style="margin: auto; margin-right: 0; float: right;"><button
+									style="margin: auto; margin-right: 0; float: right;">
+					 					<button title="Edit operation" type="button" class="m-btn btn btn-warning btn-sm"><i style="color: #fff;" class="fa fa-edit"></i></button>
+					    				<button onclick="handleRemoveOperation()" title="Delete operation" type="button" class="m-btn btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+									<button
 										class="btn btn-primary btn-sm operation_add_new_service">Add
 										new service</button></li>
 							</ul>
