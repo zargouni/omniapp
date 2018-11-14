@@ -59,6 +59,7 @@ public class Issue implements Serializable {
 	private User creator;
 	
 	@OneToMany( mappedBy = "issue", orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause = "deleted <> true")
 	private List<Comment> comments;
 	
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -67,9 +68,11 @@ public class Issue implements Serializable {
 	private List<User> assignedUsers;
 	
 	@OneToMany(mappedBy="issue", orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause = "deleted <> true")
 	private List<UploadedFile> attachments;
 	
 	@OneToMany(mappedBy="issue", orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause = "deleted <> true")
 	private List<Notification> notifications;
 	
 	private boolean deleted = false;

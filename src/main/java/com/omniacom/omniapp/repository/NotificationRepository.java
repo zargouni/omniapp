@@ -16,23 +16,23 @@ public interface NotificationRepository extends CrudRepository<Notification, Lon
 
 	Notification findByUser(User user);
 
-	@Query("select n from Notification n where n.user.id=:userId ORDER BY n.createdAt DESC")
-	List<Notification> userNotifications(@Param("userId") Long userId,Pageable pageSize);
-	
-	@Query("select n from Notification n where n.user.id=:userId ORDER BY n.createdAt DESC")
+	@Query("select n from Notification n where n.user.id=:userId and n.deleted = false ORDER BY n.createdAt DESC")
+	List<Notification> userNotifications(@Param("userId") Long userId, Pageable pageSize);
+
+	@Query("select n from Notification n where n.user.id=:userId and n.deleted = false ORDER BY n.createdAt DESC")
 	List<Notification> userNotifications(@Param("userId") Long userId);
-	
-	@Query("select n from Notification n where n.task.id=:taskId and n.user.id=:userId")
+
+	@Query("select n from Notification n where n.task.id=:taskId and n.user.id=:userId and n.deleted = false")
 	Notification findByUserAndTask(@Param("userId") Long userId, @Param("taskId") Long taskId);
-	
-	@Query("select n from Notification n where n.issue.id=:issueId and n.user.id=:userId")
+
+	@Query("select n from Notification n where n.issue.id=:issueId and n.user.id=:userId and n.deleted = false")
 	Notification findByUserAndIssue(@Param("userId") Long userId, @Param("issueId") Long issueId);
-	
-	@Query("select n from Notification n where n.project.id=:projectId and n.user.id=:userId")
+
+	@Query("select n from Notification n where n.project.id=:projectId and n.user.id=:userId and n.deleted = false")
 	Notification findByUserAndProject(@Param("userId") Long userId, @Param("projectId") Long projectId);
-	
-	@Query("select n from Notification n where n.user.id=:userId and n.isRead = false ORDER BY n.createdAt DESC")
+
+	@Query("select n from Notification n where n.user.id=:userId and n.isRead = false and n.deleted = false ORDER BY n.createdAt DESC")
 	List<Notification> unseenUserNotifications(@Param("userId") Long userId);
 
-	Notification findByUserAndId(User user,Long id);
+	Notification findByUserAndId(User user, Long id);
 }

@@ -27,17 +27,17 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@Override
-	public List<Operation> findAllOperations(Project project) {
-		// TODO Auto-generated method stub
-		List<Operation> operations = null;
-		Query query = entityManager.createQuery("SELECT op FROM Operation op WHERE op.project=:param")
-				.setParameter("param", project);
-		operations = (List<Operation>) query.getResultList();
-		project.setOperations(operations);
-		return project.getOperations();
-
-	}
+//	@Override
+//	public List<Operation> findAllOperations(Project project) {
+//		// TODO Auto-generated method stub
+//		List<Operation> operations = null;
+//		Query query = entityManager.createQuery("SELECT op FROM Operation op WHERE op.project=:param")
+//				.setParameter("param", project);
+//		operations = (List<Operation>) query.getResultList();
+//		project.setOperations(operations);
+//		return project.getOperations();
+//
+//	}
 
 	@Override
 	public List<User> findContributingUsers(Project project) {

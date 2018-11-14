@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Issue;
+import com.omniacom.omniapp.entity.Notification;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
@@ -478,6 +480,9 @@ public class ProjectController {
 			issue.setCreator(userService.getSessionUser());
 			issue.setCreationDate(new Date());
 			issue.setStatus(StaticString.ISSUE_STATUS_OPEN);
+			issue.setAttachments(new ArrayList<UploadedFile>());
+			issue.setComments(new ArrayList<Comment>());
+			issue.setNotifications(new ArrayList<Notification>());
 			Issue savedIssue = issueRepo.save(issue);
 			if (savedIssue != null) {
 				response.setStatus("SUCCESS");
@@ -764,10 +769,24 @@ public class ProjectController {
 	}
 	
 	@PostMapping("/delete-operation")
-	public @ResponseBody JsonResponse deleteSite(@RequestParam("id") long operationId) {
+	public @ResponseBody JsonResponse deleteOperation(@RequestParam("id") long operationId) {
 		JsonResponse response = new JsonResponse();
 
 		if (operationService.deleteOperation(operationId)) {
+
+			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
+			// response.setResult(result.getFieldErrors());
+		}
+		return response;
+	}
+	
+	@PostMapping("/delete-project")
+	public @ResponseBody JsonResponse deleteProject(@RequestParam("id") long projectId) {
+		JsonResponse response = new JsonResponse();
+
+		if (projectService.deleteProject(projectId)) {
 
 			response.setStatus("SUCCESS");
 		} else {

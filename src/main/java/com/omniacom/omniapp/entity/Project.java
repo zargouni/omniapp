@@ -63,7 +63,7 @@ public class Project implements Serializable {
 	// @JoinColumn(name = "user_id", referencedColumnName = "id"))
 	private List<User> workingUsersList;
 
-	@OneToMany(mappedBy = "project")
+	@OneToMany(mappedBy = "project", orphanRemoval=true, cascade = CascadeType.PERSIST)
 	@Where(clause="deleted <> true")
 	private List<Operation> operations;
 
@@ -284,6 +284,7 @@ public class Project implements Serializable {
 	 *            the operations to set
 	 */
 	public void setOperations(List<Operation> operations) {
+		this.operations.clear();
 		this.operations = operations;
 	}
 

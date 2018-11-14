@@ -9,11 +9,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.ResultCheckStyle;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 import org.ocpsoft.prettytime.PrettyTime;
 
 @Entity
+@SQLDelete(sql = "UPDATE notification SET deleted = true, deletion_date = CURRENT_TIMESTAMP WHERE id = ?", check = ResultCheckStyle.COUNT)
+@Where(clause = "deleted <> true")
 public class Notification implements Serializable {
 
 	/**
@@ -49,7 +55,15 @@ public class Notification implements Serializable {
 	@Transient
 	private PrettyTime prettyTime = new PrettyTime(Locale.ENGLISH);
 
+	private boolean deleted = false;
+
+	private Date deletionDate;
 	
+	@PreRemove
+	public void deleteIssue() {
+		this.setDeleted(true);
+		this.setDeletionDate(new Date());
+	}
 
 	public Notification() {
 
@@ -222,6 +236,22 @@ public class Notification implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public boolean isDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public Date getDeletionDate() {
+		return deletionDate;
+	}
+
+	public void setDeletionDate(Date deletionDate) {
+		this.deletionDate = deletionDate;
 	}
 
 }

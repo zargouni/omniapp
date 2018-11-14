@@ -234,7 +234,7 @@ public class ProjectService {
 
 	public JSONArray getProjectOperationsStatus(Project project) {
 		JSONArray array = new JSONArray();
-		List<Operation> operations = projectRepo.findAllOperations(project);
+		List<Operation> operations = project.getOperations();
 		for (Operation op : operations) {
 			array.add(new JSONObject().element("operationId", op.getId()).element("operationName", op.getName())
 					.element("siteName", op.getSite().getName()).element("latitude", op.getSite().getLatitude())
@@ -418,7 +418,7 @@ public class ProjectService {
 
 	public JSONArray getGanttContent(Project project) {
 		JSONArray json = new JSONArray();
-		List<Operation> operations = projectRepo.findAllOperations(project);
+		List<Operation> operations = project.getOperations();
 		for (Operation op : operations) {
 			json.add(operationService.jsonOperationGantt(op));
 		}
@@ -632,6 +632,14 @@ public class ProjectService {
 	public List<Project> findAll() {
 		// TODO Auto-generated method stub
 		return (List<Project>) projectRepo.findAll();
+	}
+
+	public boolean deleteProject(long projectId) {
+		if (projectRepo.exists(projectId)) {
+			projectRepo.delete(projectId);
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -111,7 +111,7 @@ public class OperationService {
 	public JSONArray getAllOperationsJson(long projectId) {
 		Project project = projectRepo.findOne(projectId);
 		JSONArray jsonArray = new JSONArray();
-		List<Operation> operations = projectRepo.findAllOperations(project);
+		List<Operation> operations = project.getOperations();
 		for (Operation op : operations) {
 			jsonArray.add(jsonOperationFormattedDates(op));
 		}

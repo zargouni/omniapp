@@ -1,3 +1,51 @@
+function handleRemoveProject(){
+	var projectId = $('#selected_project_id').val();
+	swal({
+		title : 'Are you sure?',
+		text : "You won't be able to revert this!",
+		type : 'warning',
+		showCancelButton : true,
+		confirmButtonText : 'Yes, delete it!'
+	}).then(
+			function(result) {
+				if (result.value) {
+					$
+							.ajax({
+								type : "POST",
+								url : '/delete-project',
+								data : "id=" + projectId,
+								async : true,
+								success : function(response) {
+									if (response.status == "SUCCESS") {
+										swal('Deleted!',
+												'Project has been deleted.',
+												'success');
+										setTimeout(function(){
+											window.location.replace("/all-projects");
+										},2000);
+										//$('#operations_datatable').mDatatable('reload');
+										//goToProjectOperations();
+										
+									} else {
+										swal('Fail!', 'Project not deleted.',
+												'error');
+									}
+
+								},
+								error : function(e) {
+									toastr.error("Couldn't delete Project",
+											"Server Error");
+									result = false;
+								}
+							});
+
+				}
+
+			}
+
+	);
+}
+
 function handleRemoveOperation(){
 	var operationId = $('#operation_fragment_selected_operation_id').val();
 	swal({
@@ -2175,12 +2223,16 @@ function projectDynamicContent() {
 }
 
 function goToDashboard(){
+	$('.loader-wrapper').show();
 	$('#project_subheader').show();
 	 populateGanttChart();
 	populateDashboardMap();
 	$("#m_dynamic_content_project").children().hide();
 	// projectDashboardTaskPieChart();
 	$("#dashboard-fragment").show();
+	setTimeout(function(){
+		$('.loader-wrapper').hide()
+	},500);
 }
 
 function goToProjectFeed(){
