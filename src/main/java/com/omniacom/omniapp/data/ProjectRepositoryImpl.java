@@ -99,6 +99,15 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 	}
 
 	@Override
+	public List<Service> findAllServicesEvenDeleted(Project project){
+		List<Service> services = null;
+		Query query = entityManager.createNativeQuery("SELECT * FROM service s WHERE s.project_id = :param "
+				+ "OR s.operation_id IN (SELECT id FROM operation op WHERE op.project_id = :param ) ORDER BY s.creation_date", Service.class)
+				.setParameter("param", project);
+		services = (List<Service>) query.getResultList();
+		return services;
+	}
+	@Override
 	public List<BillOfQuantities> findAllBoqs(Project project) {
 		List<BillOfQuantities> boqs = null;
 		Query query = entityManager.createQuery("SELECT boq FROM BillOfQuantities boq WHERE boq.project=:param")

@@ -18,6 +18,8 @@ public interface ProjectRepositoryCustom {
 		
 	public List<Service> findAllServices(Project project);
 	
+	public List<Service> findAllServicesEvenDeleted(Project project);
+	
 	public List<User> findContributingUsers(Project project);
 	
 	public List<Task> findAllCompletedTasks(Project project);

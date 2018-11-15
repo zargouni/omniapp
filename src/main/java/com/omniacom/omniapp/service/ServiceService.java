@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.repository.ServiceRepository;
 
@@ -29,6 +30,9 @@ public class ServiceService {
 
 	@Autowired
 	OperationService operationService;
+	
+	@Autowired
+	UserService userService;
 
 	public com.omniacom.omniapp.entity.Service findById(long id) {
 		return serviceRepo.findOne(id);
@@ -99,6 +103,10 @@ public class ServiceService {
 			jsonService.accumulate("parent", "none");
 			jsonService.accumulate("currency", service.getProject().getCurrency());
 		}
+		
+		if(service.isDeleted())
+			jsonService.accumulate("deletionDate", new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(service.getDeletionDate()))
+				.accumulate("deletionTime",new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(service.getDeletionDate()));
 
 		return jsonService;
 
@@ -177,6 +185,17 @@ public class ServiceService {
 
 	public List<Task> findAllUnsyncedTasks(com.omniacom.omniapp.entity.Service s) {
 		return serviceRepo.findAllUnsyncedTasks(s);
+	}
+
+	public boolean deleteService(long serviceId) {
+		if (serviceRepo.exists(serviceId)) {
+			com.omniacom.omniapp.entity.Service service = serviceRepo.findOne(serviceId);
+			service.setDeletedBy(userService.getSessionUser());
+			serviceRepo.save(service);
+			serviceRepo.delete(service);
+			return true;
+		}
+		return false;
 	}
 
 }

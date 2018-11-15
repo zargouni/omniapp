@@ -91,6 +91,51 @@ function handleRemoveOperation(){
 	);
 }
 
+function handleRemoveService(){
+	var serviceId = $('#service_fragment_selected_service_id').val();
+	swal({
+		title : 'Are you sure?',
+		text : "You won't be able to revert this!",
+		type : 'warning',
+		showCancelButton : true,
+		confirmButtonText : 'Yes, delete it!'
+	}).then(
+			function(result) {
+				if (result.value) {
+					$
+							.ajax({
+								type : "POST",
+								url : '/delete-service',
+								data : "id=" + serviceId,
+								async : true,
+								success : function(response) {
+									if (response.status == "SUCCESS") {
+										swal('Deleted!',
+												'Service has been deleted.',
+												'success');
+										//$('#operations_datatable').mDatatable('reload');
+										//goToProjectOperations();
+										
+									} else {
+										swal('Fail!', 'Service not deleted.',
+												'error');
+									}
+
+								},
+								error : function(e) {
+									toastr.error("Couldn't delete Service",
+											"Server Error");
+									result = false;
+								}
+							});
+
+				}
+
+			}
+
+	);
+}
+
 function populateIssueComments(issueId){
 	$('#issue_comments_wrapper').html("");
 	$.ajax({
@@ -845,7 +890,8 @@ function getDetailedActivityUI(object,objectType,activityType){
 			content = '<div class="m-list-badge m--margin-top-15">'
 			+'<div class="m-list-badge__label m--font-metal">'+object.closedDate+'</div>'
 				+'<div class="m-list-badge__items">'
-				+'<span style="font-size: 24px; color: #c4c5d6;" >‍🚀</span><span style="background:transparent;" class="m-list-badge__item">Service <span style="color:#34bfa3;">'+object.name+'</span> is now closed</span> '
+				+'<span style="font-size: 24px; color: #c4c5d6;" >‍🚀</span>'
+				+'<span style="background: transparent;" class="m-list-badge__item">Service <span style="color:#34bfa3;">'+object.name+'</span> is now closed</span> '
 						+'	</div>'
 			+'</div>';
 		
@@ -860,7 +906,23 @@ function getDetailedActivityUI(object,objectType,activityType){
 			content = '<div class="m-list-badge m--margin-top-15">'
 				+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
 					+'<div class="m-list-badge__items">'
-					+'<span style="font-size: 24px; color: #c4c5d6;" >‍🔧</span><span style="background:transparent;" class="m-list-badge__item">'+object.createdBy+' created service <span style="color:#34bfa3;">'+object.name+'</span>'
+					+'<span style="font-size: 24px; color: #c4c5d6;" >‍🔧</span>'
+					+'<span style="background:transparent;" class="m-list-badge__item"><a href="/profile?id='+object.user_id+'">'+object.createdBy+'</a> created service <span style="color:#34bfa3;">'+object.name+'</span>'
+					+parentSpan+'</span> '
+							+'	</div>'
+				+'</div>';
+		}
+		
+		if(activityType=="deletion"){
+			var parentSpan = "";
+			if(getParentSpan(object.parent) != null){
+				parentSpan = getParentSpan(object.parent);
+			}
+			content = '<div class="m-list-badge m--margin-top-15">'
+				+'<div class="m-list-badge__label m--font-metal">'+object.deletionTime+'</div>'
+					+'<div class="m-list-badge__items">'
+					+'<span style="font-size: 24px; color: #c4c5d6;" >‍❌</span>'
+					+'<span style="background:transparent;" class="m-list-badge__item"><a href="/profile?id='+object.user_id+'">'+object.deletedBy+'</a> deleted service <span style="color:#34bfa3;">'+object.name+'</span>'
 					+parentSpan+'</span> '
 							+'	</div>'
 				+'</div>';
@@ -873,7 +935,8 @@ function getDetailedActivityUI(object,objectType,activityType){
 			content = '<div class="m-list-badge m--margin-top-15">'
 				+'<div class="m-list-badge__label m--font-metal">'+object.deletionTime+'</div>'
 					+'<div class="m-list-badge__items">'
-					+'<span style="font-size: 24px; color: #c4c5d6;" >‍❌</span><span style="background:transparent;" class="m-list-badge__item">'+object.deletedBy+' deleted operation <span style="color:#34bfa3;">'+object.name+'</span>'
+					+'<span style="font-size: 24px; color: #c4c5d6;" >‍❌</span>'
+					+'<span style="background:transparent;" class="m-list-badge__item"><a href="/profile?id='+object.user_id+'">'+object.deletedBy+'</a> deleted operation <span style="color:#34bfa3;">'+object.name+'</span>'
 					+'</span> '
 							+'	</div>'
 				+'</div>';
@@ -891,7 +954,8 @@ function getDetailedActivityUI(object,objectType,activityType){
 				+'<td>'
 				
 				+'<div style="position:relative;width:100%;" class="m-list-badge__items">'
-				+'<span style="font-size: 24px; color: #c4c5d6;" >🚩</span><span style="background:transparent;" class="m-list-badge__item">'+object.createdBy+' created operation <span style="color:#f4516c;">'+object.name+'</span>'
+				+'<span style="font-size: 24px; color: #c4c5d6;" >🚩</span>'
+				+'<span style="background:transparent;" class="m-list-badge__item"><a href="/profile?id='+object.user_id+'">'+object.createdBy+'</a> created operation <span style="color:#f4516c;">'+object.name+'</span>'
 				+' in site <span style="color:#36a3f7;">'+object.site.name+'</span>'
 				+'</span> '
 				+'	</div>'
@@ -936,7 +1000,7 @@ function getFeedMapUI(object){
         div: map_div,
         lat: 34.7615155,
         lng: 10.6630578,
-        scrollwheel : true,
+        scrollwheel : false,
         disableDefaultUI: true,
         fullscreenControl: true,
         zoomControl: false,

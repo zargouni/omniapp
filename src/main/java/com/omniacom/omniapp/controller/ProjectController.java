@@ -782,6 +782,20 @@ public class ProjectController {
 		return response;
 	}
 	
+	@PostMapping("/delete-service")
+	public @ResponseBody JsonResponse deleteService(@RequestParam("id") long serviceId) {
+		JsonResponse response = new JsonResponse();
+
+		if (serviceService.deleteService(serviceId)) {
+
+			response.setStatus("SUCCESS");
+		} else {
+			response.setStatus("FAIL");
+			// response.setResult(result.getFieldErrors());
+		}
+		return response;
+	}
+	
 	@PostMapping("/delete-project")
 	public @ResponseBody JsonResponse deleteProject(@RequestParam("id") long projectId) {
 		JsonResponse response = new JsonResponse();
