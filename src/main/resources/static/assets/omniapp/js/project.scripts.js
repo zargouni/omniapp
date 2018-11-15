@@ -800,20 +800,14 @@ function populateProjectFeed(){
 						 
 							  for (var j = 0; j < val.length; j++) {
 								  var content = "";
-								  content = getDetailedActivityUI(val[j],val[j].type,val[j].activityType)
-								 
-								  
-								  
+								  content = getDetailedActivityUI(val[j],val[j].type,val[j].activityType);
 								  contentWrapper += content;
 								  if(val[j].type == "operation"){
 									  operations.push(val[j]);
 								  }
-								  
 							  }
 							  $("#content_"+date).append(contentWrapper);
-							  
 							  i++;
-						
 						});
 					
 					 for (var cpt = 0; cpt < operations.length; cpt++){
@@ -842,6 +836,7 @@ function getParentSpan(parent){
 		return ' in <span style="color:#f4516c;">'+parent.name+'</span>';
 	return null;
 }
+
 function getDetailedActivityUI(object,objectType,activityType){
 	var content = ""; 
 	if(objectType == "service"){
@@ -874,47 +869,59 @@ function getDetailedActivityUI(object,objectType,activityType){
 	
 	if(objectType == "operation"){
 		
-		content = '<div style="width:100%;" class="m-list-badge m--margin-top-15">'
-			
-			+'<table style="width:100%;border-collapse: separate;border-spacing: 0 5px;" >'
-			+'<tr>'
-			+'<td>'
-			
-			+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
-			
-			+'</td>'
-			+'<td>'
-			
-			+'<div style="position:relative;width:100%;" class="m-list-badge__items">'
-			+'<span style="font-size: 24px; color: #c4c5d6;" >🚩</span><span style="background:transparent;" class="m-list-badge__item">'+object.createdBy+' created operation <span style="color:#f4516c;">'+object.name+'</span>'
-			+' in site <span style="color:#36a3f7;">'+object.site.name+'</span>'
-			+'</span> '
-			+'	</div>'
-			
-			+'</td>'
-			+'</tr>'
-			+'<tr>'
-			+'<td>'
-			+'</td>'
-			+'<td>'
-			
-			+'<div class="boxshadow" style="position:relative;float:right;width:100%;height:120px; border:5px #000; " >'
-			
-			
-			+'<div class="sites_map boxshadow" style="width:100% !important;height:120px  !important;" id="'+object.id+'"></div>'
-			
-			// +'</div>'
-			
-			+'</div>'
-			
-			+'</td>'
-			+'</tr>'
-			+'</table>'
-			
-			
-			+'</div>';
+		if(activityType=="deletion"){
+			content = '<div class="m-list-badge m--margin-top-15">'
+				+'<div class="m-list-badge__label m--font-metal">'+object.deletionTime+'</div>'
+					+'<div class="m-list-badge__items">'
+					+'<span style="font-size: 24px; color: #c4c5d6;" >‍❌</span><span style="background:transparent;" class="m-list-badge__item">'+object.deletedBy+' deleted operation <span style="color:#34bfa3;">'+object.name+'</span>'
+					+'</span> '
+							+'	</div>'
+				+'</div>';
+		}else{
 		
+			content = '<div style="width:100%;" class="m-list-badge m--margin-top-15">'
+				
+				+'<table style="width:100%;border-collapse: separate;border-spacing: 0 5px;" >'
+				+'<tr>'
+				+'<td>'
+				
+				+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
+				
+				+'</td>'
+				+'<td>'
+				
+				+'<div style="position:relative;width:100%;" class="m-list-badge__items">'
+				+'<span style="font-size: 24px; color: #c4c5d6;" >🚩</span><span style="background:transparent;" class="m-list-badge__item">'+object.createdBy+' created operation <span style="color:#f4516c;">'+object.name+'</span>'
+				+' in site <span style="color:#36a3f7;">'+object.site.name+'</span>'
+				+'</span> '
+				+'	</div>'
+				
+				+'</td>'
+				+'</tr>'
+				+'<tr>'
+				+'<td>'
+				+'</td>'
+				+'<td>'
+				
+				+'<div class="boxshadow" style="position:relative;float:right;width:100%;height:120px; border:5px #000; " >'
+				
+				
+				+'<div class="sites_map boxshadow" style="width:100% !important;height:120px  !important;" id="'+object.id+'"></div>'
+				
+				// +'</div>'
+				
+				+'</div>'
+				
+				+'</td>'
+				+'</tr>'
+				+'</table>'
+				
+				
+				+'</div>';
+			
+		}
 		
+				
 		
 	}
 	return content;
@@ -1898,14 +1905,8 @@ function handleDeleteAttachment(fileId){
 function externalTaskLoad() {
 	$("#m_dynamic_content_project").children().hide();
 	var WindowLocation = window.location.hash;
-    
     	var taskId = WindowLocation.substr(WindowLocation.lastIndexOf("=")+1);
-    	 //$('.loader-wrapper').show();
-    	 
-    	 //setTimeout(function(){
-    	toggleTaskFragment(taskId);
-    	 //$('.loader-wrapper').hide();
-    	 //},500);
+      	toggleTaskFragment(taskId); 
     
 }
 
@@ -1930,9 +1931,7 @@ function externalOperationLoad() {
 
 
 function populateTaskParents(taskId) {
-	// var serviceId = $('#service_fragment_selected_service_id').val();
-	// var operationId = $('#operation_fragment_selected_operation_id').val();
-	// var projectId = $('#selected_project_id').val();
+	
 	$.ajax({
 		type : "GET",
 		url : '/get-task-parents',
@@ -2456,6 +2455,73 @@ function populateGanttChart(){
 	});
 	
 
+}
+
+function populateSelectBoqEditProject() {
+	$.ajax({
+		type : "GET",
+		url : '/set-select-boq',
+		async: false,
+		success : function(response) {
+
+			var html_select_options = "";
+
+			var html_text = "<option value=''>Nothing Selected</option>";
+			var selectedOption = "";
+			if (response.length == 1) {
+				html_text += "<option value='" + response[0].id + "'>"
+						+ response[0].name + "</option>";
+				$("#select_boq_edit_project").html(html_text);
+			} else {
+				for (i = 0; i < response.length; i++) {
+					html_text += "<option value='" + response[i].id + "'>" + response[i].name
+							+ "</option>";
+				}
+				$("#select_boq_edit_project").html(html_text);
+
+			}
+			$("#select_boq_edit_project").selectpicker('refresh');
+
+		},
+		error : function(e) {
+			alert("error");
+			$("#select_boq_edit_project").html(
+					"<option value=''>Nothing selected</option>");
+			
+
+		}
+	});
+
+}
+
+function populateEditProjectSidebar(){
+	populateSelectBoqEditProject();
+	var projectId = $('#selected_project_id').val();
+	$.ajax({
+		type : "GET",
+		url : '/get-project-details',
+		data : 'id=' + projectId,
+		async : false,
+		success : function(response) {
+			$("#project_name_edit").val(response.name);
+			$("#project_client_edit").val(response.client_id);
+			$("#project_final_client_edit").val(response.finalClient_id);
+			$("#project_country_edit").val(response.country);
+			$("#project_currency_edit").val(response.currency);
+			//$("#select_boq_edit_project").val(response.boq);
+			//$("#select_boq_edit_project").selectpicker('refresh');
+			//$("#select_nature_edit_project").val(response.nature);
+			//$("#select_nature_edit_project").select2();
+			//$('#select_nature_edit_project').trigger('change.select2');
+			$("#project_owner_edit").val(response.owner);
+
+			
+			
+		},
+		error : function(e) {
+			alert('Error: Gantt ' + e);
+		}
+	});
 }
 
 $(document).ready(function() {

@@ -143,6 +143,9 @@ public class OperationService {
 			if (getOperationStatus(op).equals("open"))
 				json.accumulate("status", "Open");
 		}
+		if(op.isDeleted())
+			json.accumulate("deletionDate", new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(op.getDeletionDate()))
+				.accumulate("deletionTime",new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(op.getDeletionDate()));
 
 		return json;
 	}
@@ -332,6 +335,8 @@ public class OperationService {
 	public boolean deleteOperation(long operationId) {
 		if (operationRepo.exists(operationId)) {
 			Operation op = operationRepo.findOne(operationId);
+			op.setDeletedBy(userService.getSessionUser());
+			operationRepo.save(op);
 			operationRepo.delete(op);
 			return true;
 		}

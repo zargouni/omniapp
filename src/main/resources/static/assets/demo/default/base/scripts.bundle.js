@@ -6302,20 +6302,20 @@ var mNewProjectSelectZone = function() {
     
 }
 
-var mProjectDetailsSidebar = function() {
-    var topbarAside = $('.m_project_details_sidebar');
+var mProjectEditSidebar = function() {
+    var topbarAside = $('.m_project_edit_sidebar');
     // var topbarAsideTabs = $('#m_project_details_sidebar_tabs');
-    var topbarAsideClose = $('#m_project_details_sidebar_close');
-    var topbarAsideToggle = $('.m_project_details_sidebar_toggle');
-    var topbarAsideContent = topbarAside.find('.m-project-details-sidebar__content');
+    var topbarAsideClose = $('#m_project_edit_sidebar_close');
+    var topbarAsideToggle = $('#m_project_edit_sidebar_toggle');
+    var topbarAsideContent = topbarAside.find('.m-project-edit-sidebar__content');
 
     var initForm = function() {
-        var messenger = $('#m_project_details_sidebar_tabs_new_task');  
+        var messenger = $('#m_project_edit_sidebar_tabs_new_task');  
 
           
         
         // reinit on window resize
-        mUtil.addResizeHandler(init);
+       // mUtil.addResizeHandler(init);
     }
 
    
@@ -6326,7 +6326,7 @@ var mProjectDetailsSidebar = function() {
 
     var initOffcanvas = function() {
         topbarAside.mOffcanvas({
-            class: 'm-project-details-sidebar',
+            class: 'm-project-edit-sidebar',
             overlay: true,  
             close: topbarAsideClose,
             toggle: topbarAsideToggle
@@ -6365,7 +6365,7 @@ $(document).ready(function() {
     mNewProjectSidebar.init();
     mNewProjectSelectZone();
     
-	 mProjectDetailsSidebar.init();
+	 mProjectEditSidebar.init();
 });
 
 

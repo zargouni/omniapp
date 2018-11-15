@@ -12,7 +12,7 @@ import com.omniacom.omniapp.entity.User;
 
 public interface ProjectRepositoryCustom {
 
-//	public List<Operation> findAllOperations(Project project);
+	public List<Operation> findAllOperations(Project project);
 	
 	public List<Issue> findAllIssues(Project project);
 		

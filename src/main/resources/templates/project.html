@@ -12,9 +12,18 @@
 <body
 	class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-aside-left--enabled m-aside-left--skin-dark m-aside-left--offcanvas m-footer--push m-aside--offcanvas-default">
 
+
 	<!-- begin:: Page -->
 	<div layout:fragment="content"
 		class="m-grid m-grid--hor m-grid--root m-page">
+
+		<!-- begin::Edit Project Sidebar -->
+		<div
+			th:if="${sessionUser.id == selectedProject.owner.id || sessionUser.role.name == 'ADMIN'}"
+			data-th-replace="fragments/fragment-project-edit-sidebar :: project-edit-sidebar"></div>
+		<!-- end::Edit Project Sidebar -->
+
+
 		<!-- begin::Body -->
 		<div id="high"
 			class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
@@ -33,14 +42,15 @@
 			<input type="hidden" id="project_manager_id" />
 			<!-- END: project manager id -->
 
+
 			<!-- BEGIN: Left Aside -->
 			<div
 				data-th-replace="fragments/fragment-left-sidebar-project :: left-sidebar-project"></div>
 			<!-- END: Left Aside -->
 
 			<div class="m-grid__item m-grid__item--fluid m-wrapper">
-				<div id="project_subheader" class="m-subheader ">
-					<div class="d-flex align-items-center">
+				<div id="project_subheader" class="m-subheader">
+					<div class="d-flex align-items-center project-subheader-omniapp">
 						<div class="mr-auto">
 							<h3 th:text="${selectedProject.name}"
 								class="m-subheader__title m-subheader__title--separator">Project
@@ -62,15 +72,19 @@
 							</ul>
 						</div>
 
-						<div th:if="${sessionUser.id == selectedProject.owner.id}"
+						<div
+							th:if="${sessionUser.id == selectedProject.owner.id || sessionUser.role.name == 'ADMIN'}"
 							class="ml-auto">
-							<button title="Edit project" type="button"
-								class="m-btn btn btn-secondary btn-sm">
-								<i class="fa fa-edit"></i>
-							</button>
-							<button onclick="handleRemoveProject()"
-								title="Delete project" type="button"
-								class="m-btn btn btn-secondary btn-sm">
+							<a href="#" onclick="populateEditProjectSidebar()" id="m_project_edit_sidebar_toggle" class="m-btn btn btn-secondary btn-sm m-nav__link m-dropdown__toggle" title="Edit project">
+							<span><i class="fa fa-edit"></i>
+							</span>
+							</a>
+<!-- 							<button id="m_project_edit_sidebar_toggle" title="Edit project" -->
+<!-- 								class="m-btn btn btn-secondary btn-sm"> -->
+<!-- 								<i class="fa fa-edit"></i> -->
+<!-- 							</button> -->
+							<button onclick="handleRemoveProject()" title="Delete project"
+								type="button" class="m-btn btn btn-secondary btn-sm">
 								<i class="fa fa-trash-o"></i>
 							</button>
 						</div>
@@ -114,6 +128,8 @@
 			</div>
 		</div>
 		<!-- end:: Body -->
+
+
 
 		<script th:inline="javascript" type="text/javascript">
 			$(document).ready(function() {

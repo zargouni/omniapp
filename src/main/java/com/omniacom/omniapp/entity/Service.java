@@ -55,6 +55,9 @@ public class Service implements Serializable, Comparable<Service> {
 	@Where(clause="deleted <> true")
 	private List<Task> tasks;
 	
+	@ManyToOne
+	private User deletedBy;
+	
 	private boolean deleted = false;
 
 	private Date deletionDate;
@@ -315,6 +318,20 @@ public class Service implements Serializable, Comparable<Service> {
 
 	public void setDeletionDate(Date deletionDate) {
 		this.deletionDate = deletionDate;
+	}
+
+	/**
+	 * @return the deletedBy
+	 */
+	public User getDeletedBy() {
+		return deletedBy;
+	}
+
+	/**
+	 * @param deletedBy the deletedBy to set
+	 */
+	public void setDeletedBy(User deletedBy) {
+		this.deletedBy = deletedBy;
 	}
 
 }

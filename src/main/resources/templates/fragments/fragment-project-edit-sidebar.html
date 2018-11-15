@@ -1,0 +1,164 @@
+<!-- begin::Edit Project Sidebar -->
+<div th:fragment="project-edit-sidebar"
+	class="m_project_edit_sidebar m-project-edit-sidebar m-project-edit-sidebar--tabbed m-project-edit-sidebar--skin-dark">
+
+	<div class="m-project-edit-sidebar__content m--hide">
+
+		<span id="m_project_edit_sidebar_close"
+			class="m-project-edit-sidebar__close"><i class="la la-close"></i></span>
+
+		<ul class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--brand"
+			role="tablist">
+			<li class="nav-item m-tabs__item"><a
+				class="nav-link m-tabs__link active" data-toggle="tab" href=""
+				role="tab">Edit Project</a></li>
+		</ul>
+
+		<!--begin::Form Edit Project-->
+		<form class="m-form m-form--state" target="noTarget">
+			<div class="m-portlet__body">
+
+
+				<div class="form-group m-form__group row">
+
+					<div class="col-lg-4">
+						<label for="">Project Name : </label>
+					</div>
+					<div class="col-lg-8">
+						<input id="project_name_edit" type="text" class="form-control m-input"
+							placeholder="Project Name">
+						<div id="project_name_edit_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">Please
+							enter a valid project name</div>
+
+
+					</div>
+				</div>
+
+				<div class="form-group m-form__group row">
+					<div class="col-lg-6">
+						<select id="project_client_edit" class="custom-select form-control">
+							<option value="">Client</option>
+							<option th:each="client : ${clients}" th:value="${client.id}"
+								th:text="${client.name}">Ooredoo</option>
+
+						</select>
+						<div id="project_client_edit_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">Please
+							select a client</div>
+					</div>
+					<div class="col-lg-6">
+						<select id="project_final_client_edit"
+							class="custom-select form-control">
+							<option value="">Final client</option>
+							<option th:each="client : ${clients}" th:value="${client.id}"
+								th:text="${client.name}">Ooredoo</option>
+
+						</select>
+						<div id="project_final_client_edit_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">Please
+							select a final client</div>
+					</div>
+				</div>
+
+				<div class="form-group m-form__group row">
+
+					<div class="col-lg-6">
+						<select id="project_country_edit" class="custom-select form-control">
+							<option value="">Select country</option>
+							<option value="TN">Tunisia</option>
+							<option value="SN">Senegal</option>
+							<option value="OTHER">Other</option>
+						</select>
+						<div id="project_country_edit_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">Please
+							select a country</div>
+					</div>
+					<div class="col-lg-6">
+						<select id="project_currency_edit" class="custom-select form-control">
+							<option value="">Select currency</option>
+							<option value="TND">TND</option>
+							<option value="EUR">EUR</option>
+							<option value="USD">USD</option>
+						</select>
+						<div id="project_currency_edit_error" class="form-control-feedback"
+							style="color: red; float: right; display: none;">Please
+							select a currency</div>
+					</div>
+				</div>
+
+
+<!-- 				<div class="form-group m-form__group row"> -->
+<!-- 					<div class="col-lg-8"> -->
+<!-- 						<label for="">Do you want to select a BOQ now ?</label> -->
+<!-- 					</div> -->
+<!-- 					<div class="col-lg-4"> -->
+<!-- 						<span class="m-switch m-switch--outline m-switch--info"> <label> -->
+<!-- 								<input type="checkbox" id="m_switch_project_boq" name=""> -->
+<!-- 								<span></span> -->
+<!-- 						</label> -->
+<!-- 						</span> -->
+
+<!-- 					</div> -->
+<!-- 				</div> -->
+
+
+				<div
+					class="form-group m-form__group row">
+
+					<div class="col-lg-8">
+						<select id="select_boq_edit_project"
+							class="form-control m-bootstrap-select m_selectpicker"
+							data-live-search="true">
+
+
+						</select>
+					</div>
+					<div class="col-lg-4">
+						<button type="button"
+							class="btn m-btn--square  btn-primary m-btn m-btn--custom"
+							data-toggle="modal" data-target="#m_modal_boq">New BOQ</button>
+					</div>
+				</div>
+
+				<div class="m-form__group form-group">
+					<label for="">Owner:</label> <select id="project_owner_edit"
+						class="custom-select form-control">
+						<option th:value="${sessionUser.id}"
+							th:text="${sessionUser.userName} " selected>Me</option>
+						<option th:each="user : ${managers}" th:value="${user.id}"
+							th:text="${user.userName}">Other</option>
+					</select>
+				</div>
+			</div>
+			<div class="m-portlet__foot m-portlet__foot--fit">
+				<div class="m-form__actions m-form__actions--right">
+					<div class="row">
+						<div class="col m--align-left m-demo__preview">
+
+							<button onclick="doUpdateProjectAjaxPost()"
+								class="btn m-btn--square  btn-primary btn-block">Add</button>
+
+						</div>
+
+						<div class="col m--align-right">
+							<button type="reset"
+								class="btn m-btn--square btn-secondary btn-block">Cancel</button>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</form>
+
+		<!--end::Form Edit Project-->
+	</div>
+	<iframe width="0" height="0" border="0" name="noTarget" id="noTarget"></iframe>
+
+
+
+
+</div>
+
+
+<!-- end::Edit Project Sidebar -->

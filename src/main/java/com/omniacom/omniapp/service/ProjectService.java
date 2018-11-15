@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -132,10 +131,13 @@ public class ProjectService {
 
 	public JSONObject jsonProject(Project project) {
 		JSONObject json = new JSONObject().element("id", project.getId()).element("name", project.getName())
-				.element("client", project.getClient().getName())
+				.element("client", project.getClient().getName()).element("client_id", project.getClient().getId())
 				.element("finalClient", project.getFinalClient().getName())
+				.element("finalClient_id", project.getFinalClient().getId())
 				.element("owner", project.getOwner().getFirstName() + " " + project.getOwner().getLastName())
 				.element("country", project.getCountry()).element("currency", project.getCurrency())
+				.element("nature", project.getNature().getId())
+				.element("boq", project.getBoq() == null ? "none" : project.getBoq().getName())
 				.element("percentage", getProjectProgress(project))
 				.element("unassignedTasksCount", getProjectUnassignedTasksCount(project))
 				.element("unplanifiedTasksCount", getProjectUnplanifiedTasksCount(project))
@@ -251,23 +253,42 @@ public class ProjectService {
 		JSONArray json = null;
 		for (LocalDate date = startDate; date.isBefore(currentDate)
 				|| date.isEqual(currentDate); date = date.plusDays(1)) {
-			
+
 			// Populate operation activities into map
-			for (Operation op : project.getOperations()) {
+			for (Operation op : projectRepo.findAllOperations(project)) {
 				if (op.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
 					if (feed.containsKey(date)) {
-						feed.get(date)
-								.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation")
-										.accumulate("createdBy", op.getCreatedBy().getFirstName()+" "+ op.getCreatedBy().getLastName()));
+						feed.get(date).add(operationService.jsonOperationFormattedDates(op)
+								.accumulate("type", "operation").accumulate("createdBy",
+										op.getCreatedBy().getFirstName() + " " + op.getCreatedBy().getLastName()));
 						feed.get(date).sort(getFeedDatesComparator());
 					} else {
 						json = new JSONArray();
 						json.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation")
-								.accumulate("createdBy", op.getCreatedBy().getFirstName()+" "+ op.getCreatedBy().getLastName()));
+								.accumulate("createdBy",
+										op.getCreatedBy().getFirstName() + " " + op.getCreatedBy().getLastName()));
 						json.sort(getFeedDatesComparator());
 						feed.put(date, json);
 					}
 				}
+				
+				if (op.isDeleted())
+					if (op.getDeletionDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+						if (feed.containsKey(date)) {
+							feed.get(date).add(operationService.jsonOperationFormattedDates(op)
+									.accumulate("type", "operation").accumulate("activityType", "deletion").accumulate("deletedBy",
+											op.getDeletedBy().getFirstName() + " " + op.getDeletedBy().getLastName()));
+							feed.get(date).sort(getFeedDatesComparator());
+						} else {
+							json = new JSONArray();
+							json.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation")
+									.accumulate("activityType", "deletion")
+									.accumulate("deletedBy",
+											op.getDeletedBy().getFirstName() + " " + op.getDeletedBy().getLastName()));
+							json.sort(getFeedDatesComparator());
+							feed.put(date, json);
+						}
+					}
 
 			}
 
@@ -275,15 +296,18 @@ public class ProjectService {
 			for (com.omniacom.omniapp.entity.Service service : findAllServices(project)) {
 				if (service.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
 					if (feed.containsKey(date)) {
-						feed.get(date).add(serviceService.jsonService(service).accumulate("type", "service")
-								.accumulate("activityType", "creation")
-								.accumulate("createdBy", service.getCreatedBy().getFirstName()+" "+ service.getCreatedBy().getLastName()));
+						feed.get(date)
+								.add(serviceService.jsonService(service).accumulate("type", "service")
+										.accumulate("activityType", "creation")
+										.accumulate("createdBy", service.getCreatedBy().getFirstName() + " "
+												+ service.getCreatedBy().getLastName()));
 						feed.get(date).sort(getFeedDatesComparator());
 					} else {
 						json = new JSONArray();
 						json.add(serviceService.jsonService(service).accumulate("type", "service")
 								.accumulate("activityType", "creation")
-								.accumulate("createdBy", service.getCreatedBy().getFirstName()+" "+ service.getCreatedBy().getLastName()));
+								.accumulate("createdBy", service.getCreatedBy().getFirstName() + " "
+										+ service.getCreatedBy().getLastName()));
 						json.sort(getFeedDatesComparator());
 						feed.put(date, json);
 					}
@@ -453,38 +477,42 @@ public class ProjectService {
 				price += s.getPriceHT();
 				int globalDuration = 0;
 				float serviceCurrentMoney = 0;
-				
-				//System.out.println("Service : "+s.getName());
-				//calculate service's global duration in days
-				for(Task task : s.getTasks()) {
+
+				// System.out.println("Service : "+s.getName());
+				// calculate service's global duration in days
+				for (Task task : s.getTasks()) {
 					LocalDate startDate = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 					LocalDate endDate = task.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 					long elapsedDays = ChronoUnit.DAYS.between(startDate.atTime(0, 0), endDate.atTime(23, 59));
 					globalDuration += elapsedDays;
 				}
-				
-				//calculate progress in term of money
-				for(Task task : s.getTasks()) {
-						float taskCurrentMoney = 0;
-						long elapsedDays = 0;
-						LocalDate startDate = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-						LocalDate endDate = task.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-						elapsedDays = ChronoUnit.DAYS.between(startDate.atTime(0, 0), endDate.atTime(23, 59));
-						if(globalDuration != 0)
-							taskCurrentMoney = ( ((float) elapsedDays / globalDuration ) * ((float) Integer.parseInt(task.getCompletionPercentage()) / 100 ) ) * s.getPriceHT();
-							//System.out.println("-----------Task: "+task.getName()+"---Duration: ("+elapsedDays+"/"+ globalDuration+")---Percentage: "+Integer.parseInt(task.getCompletionPercentage())+"------Money: "+taskCurrentMoney+"/"+s.getPriceHT());
-							serviceCurrentMoney += taskCurrentMoney;
-				}
-				
-				overallCurrentMoney += serviceCurrentMoney;
-				//System.out.println("Service: "+s.getName()+" has a global duration of "+globalDuration+" days"); 
 
-				
+				// calculate progress in term of money
+				for (Task task : s.getTasks()) {
+					float taskCurrentMoney = 0;
+					long elapsedDays = 0;
+					LocalDate startDate = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+					LocalDate endDate = task.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+					elapsedDays = ChronoUnit.DAYS.between(startDate.atTime(0, 0), endDate.atTime(23, 59));
+					if (globalDuration != 0)
+						taskCurrentMoney = (((float) elapsedDays / globalDuration)
+								* ((float) Integer.parseInt(task.getCompletionPercentage()) / 100)) * s.getPriceHT();
+					// System.out.println("-----------Task: "+task.getName()+"---Duration:
+					// ("+elapsedDays+"/"+ globalDuration+")---Percentage:
+					// "+Integer.parseInt(task.getCompletionPercentage())+"------Money:
+					// "+taskCurrentMoney+"/"+s.getPriceHT());
+					serviceCurrentMoney += taskCurrentMoney;
+				}
+
+				overallCurrentMoney += serviceCurrentMoney;
+				// System.out.println("Service: "+s.getName()+" has a global duration of
+				// "+globalDuration+" days");
+
 			}
 			json.add(new JSONObject().element("number", poNumber).element("services", poServices.size())
 					.element("price", price).element("currency", project.getCurrency())
 					.element("actual_money", new DecimalFormat("##.##").format(overallCurrentMoney))
-					.element("money_percentage",Math.round(overallCurrentMoney/price*100)));
+					.element("money_percentage", Math.round(overallCurrentMoney / price * 100)));
 		}
 
 		return json;
@@ -526,9 +554,9 @@ public class ProjectService {
 					.element("description", s.getDescription())
 					.element("operation_name", s.getOperation() == null ? "none" : s.getOperation().getName())
 					.element("site_name", s.getOperation() == null ? "none" : s.getOperation().getSite().getName())
-					.element("po_number", s.getPoNumber())
-					.element("price", s.getPriceHT())
-					.element("currency", s.getOperation() == null ? s.getProject().getCurrency() : s.getOperation().getProject().getCurrency()));
+					.element("po_number", s.getPoNumber()).element("price", s.getPriceHT())
+					.element("currency", s.getOperation() == null ? s.getProject().getCurrency()
+							: s.getOperation().getProject().getCurrency()));
 		}
 		return json;
 	}
@@ -536,94 +564,51 @@ public class ProjectService {
 	public JSONArray getProjectDetailsForReports(long projectId) {
 		Project project = findOneById(projectId);
 		JSONArray json = new JSONArray();
-		List<com.omniacom.omniapp.entity.Service> services = null;		
-		if(project != null) {
+		List<com.omniacom.omniapp.entity.Service> services = null;
+		if (project != null) {
 			services = (List<com.omniacom.omniapp.entity.Service>) findAllServices(project);
-			for(com.omniacom.omniapp.entity.Service service : services) {
-				if(service.getOperation() != null)
-				json.add(new JSONObject().element("Activity", service.getName())
-						.element("Milestone", service.getOperation().getSite().getName())
-						.element("Localité", "")
-						.element("PO Project name", project.getName())
-						.element("Region", "")
-						.element("Operation Type", service.getCategory().name())
-						.element("Client", project.getClient().getName()+"-"+project.getFinalClient().getName())
-						.element("Site Type", "")
-						.element("Nbre de secteurs", "")
-						.element("Date de reception de la demande", "")
-						.element("Delivery PO", "")
-						.element("BC n", service.getPoNumber())
-						.element("Montant BC (HT)", service.getPriceHT() )
-						.element("Currency", project.getCurrency() )
-						.element("Statut", "")
-						.element("Avancement", "")
-						.element("Commentaire", "")
-						.element("order to cash", "")
-						.element("Délai d'exécution", "")
-						.element("OT", "")
-						.element("IF", "")
-						.element("AC", "")
-						.element("Budget de production", "")
-						.element("Cout réel", "")
-						.element("DPM Batteries", "")
-						.element("Batteries Statut", "")
-						.element("Baie Delta2", "")
-						.element("Planned delivery date", "")
-						.element("Actual delivery date", "")
-						.element("Install Team Leader", "")
-						.element("Planned instalaltion start", "")
-						.element("Actual installation Start", "")
-						.element("planned installation end", "")
-						.element("Ready for swap (Installation End)", "")
-						.element("Blocked Days", "")
-						.element("Swap / On air Team Leader", "")
-						.element("Planned swap/on air", "")
-						.element("Acutal swap/on air", "")
-						.element("QCL envoyé le", "")
-						.element("CAC 75% envoyé le", "")
-						.element("CAC 75% validé le", "")
-						.element("Mail scan CAC envoyé le", "")
-						.element("Mail scan CAC vali ldé le (Acceptation et facturion sur système)", "")
-						.element("facuratioon sur système et Attribution de N° facture par Omniacom", "")
-						.element("PAC 25% envoyé le", "")
-						.element("PAC 25% validé le", "")
-						.element("CAC 25% validé le", "")
-						.element("Mail scan PAC envoyé le", "")
-						.element("Mail scan PAC vali ldé le (Acceptation et facturion sur système)", "")
-						.element("Validation de la facuratioon sur système et facturation réelle2", "")
-						.element("PAC date limite", "")
-						.element("Type de travaux", "")
-						.element("Commentaire pour client", "")
-						.element("Prix site (HT)", "")
-						.element("Mob/demob (HT)", "")
-						.element("Crain (HT)", "")
-						.element("Delivery (HT)", "")
-						.element("Mob/demob", "")
-						.element("Access pb", "")
-						.element("Energy pb", "")
-						.element("pb de support", "")
-						.element("nb reserves critiques", "")
-						.element("nb reserves Majeures", "")
-						.element("nb de reserves mineures", "")
-						.element("ATP n°", "")
-						.element("Attachement 75% envoyé le", "")
-						.element("Attachement 75% validé le", "")
-						.element("Column1", "")
-						.element("Prix site HT", "")
-						.element("Delivery price (HT)","" )
-						.element("Extra Work (HT)","" )
-						.element("Extra visit", "")
-						.element("Fourniture TGBT", "")
-						.element("Fourniture Terre","" )
-						.element("Fourniture cable","" )
-						.element("Sous traitant", "INTERNE" )
-						.element("Achat (HT)", "")
-						.element("Description achat", "")
-						.element("Prix Achat Sous Traitance (HT)", "0" )
-						.element("Estimation (J/H)", "" )
-						.element("Country", project.getCountry() )
-						.element("BC Omniacom N", "" )
-						);
+			for (com.omniacom.omniapp.entity.Service service : services) {
+				if (service.getOperation() != null)
+					json.add(new JSONObject().element("Activity", service.getName())
+							.element("Milestone", service.getOperation().getSite().getName()).element("Localité", "")
+							.element("PO Project name", project.getName()).element("Region", "")
+							.element("Operation Type", service.getCategory().name())
+							.element("Client", project.getClient().getName() + "-" + project.getFinalClient().getName())
+							.element("Site Type", "").element("Nbre de secteurs", "")
+							.element("Date de reception de la demande", "").element("Delivery PO", "")
+							.element("BC n", service.getPoNumber()).element("Montant BC (HT)", service.getPriceHT())
+							.element("Currency", project.getCurrency()).element("Statut", "").element("Avancement", "")
+							.element("Commentaire", "").element("order to cash", "").element("Délai d'exécution", "")
+							.element("OT", "").element("IF", "").element("AC", "").element("Budget de production", "")
+							.element("Cout réel", "").element("DPM Batteries", "").element("Batteries Statut", "")
+							.element("Baie Delta2", "").element("Planned delivery date", "")
+							.element("Actual delivery date", "").element("Install Team Leader", "")
+							.element("Planned instalaltion start", "").element("Actual installation Start", "")
+							.element("planned installation end", "").element("Ready for swap (Installation End)", "")
+							.element("Blocked Days", "").element("Swap / On air Team Leader", "")
+							.element("Planned swap/on air", "").element("Acutal swap/on air", "")
+							.element("QCL envoyé le", "").element("CAC 75% envoyé le", "")
+							.element("CAC 75% validé le", "").element("Mail scan CAC envoyé le", "")
+							.element("Mail scan CAC vali ldé le (Acceptation et facturion sur système)", "")
+							.element("facuratioon sur système et Attribution de N° facture par Omniacom", "")
+							.element("PAC 25% envoyé le", "").element("PAC 25% validé le", "")
+							.element("CAC 25% validé le", "").element("Mail scan PAC envoyé le", "")
+							.element("Mail scan PAC vali ldé le (Acceptation et facturion sur système)", "")
+							.element("Validation de la facuratioon sur système et facturation réelle2", "")
+							.element("PAC date limite", "").element("Type de travaux", "")
+							.element("Commentaire pour client", "").element("Prix site (HT)", "")
+							.element("Mob/demob (HT)", "").element("Crain (HT)", "").element("Delivery (HT)", "")
+							.element("Mob/demob", "").element("Access pb", "").element("Energy pb", "")
+							.element("pb de support", "").element("nb reserves critiques", "")
+							.element("nb reserves Majeures", "").element("nb de reserves mineures", "")
+							.element("ATP n°", "").element("Attachement 75% envoyé le", "")
+							.element("Attachement 75% validé le", "").element("Column1", "").element("Prix site HT", "")
+							.element("Delivery price (HT)", "").element("Extra Work (HT)", "")
+							.element("Extra visit", "").element("Fourniture TGBT", "").element("Fourniture Terre", "")
+							.element("Fourniture cable", "").element("Sous traitant", "INTERNE")
+							.element("Achat (HT)", "").element("Description achat", "")
+							.element("Prix Achat Sous Traitance (HT)", "0").element("Estimation (J/H)", "")
+							.element("Country", project.getCountry()).element("BC Omniacom N", ""));
 			}
 		}
 		return json;

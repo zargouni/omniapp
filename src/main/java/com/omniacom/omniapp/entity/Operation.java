@@ -71,9 +71,14 @@ public class Operation implements Serializable {
 	@Where(clause="deleted <> true")
 	private List<Issue> issues;	
 	
+	@ManyToOne
+	private User deletedBy;
+	
 	private boolean deleted = false;
 
 	private Date deletionDate;
+	
+	
 
 	@PreRemove
 	public void deleteOperation() {
@@ -338,6 +343,20 @@ public class Operation implements Serializable {
 
 	public void setDeletionDate(Date deletionDate) {
 		this.deletionDate = deletionDate;
+	}
+
+	/**
+	 * @return the deletedBy
+	 */
+	public User getDeletedBy() {
+		return deletedBy;
+	}
+
+	/**
+	 * @param deletedBy the deletedBy to set
+	 */
+	public void setDeletedBy(User deletedBy) {
+		this.deletedBy = deletedBy;
 	}
 	
 	
