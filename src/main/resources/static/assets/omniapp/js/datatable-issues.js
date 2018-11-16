@@ -73,9 +73,25 @@ var DatatableIssuesJsonRemote = function () {
 				field: "name",
 				title: "Issue",
 				sortable: true,
-				width: 250,
+				width: 200,
 				template: function(row) {
 					return '<a style="font-weight: 500;" href="#" onclick="toggleIssueFragment('+ row.id +')">'+row.name + '</a>';
+				}
+			},{
+				field: "operationName",
+				title: "Operation",
+				sortable: true,
+				width: 100,
+				template: function(row) {
+					return '<a style="font-weight: 500;" href="#" onclick="toggleOperationFragment('+ row.operation_id +')">'+row.operationName + '</a>';
+				}
+			},{
+				field: "site",
+				title: "Site",
+				sortable: true,
+				width: 100,
+				template: function(row) {
+					return '<span style="font-weight: 500;">'+row.site + '</span>';
 				}
 			},{
 				field: "creationDate",
@@ -100,7 +116,7 @@ var DatatableIssuesJsonRemote = function () {
 			}, {
 		        field: 'status',
 		        title: 'Status',
-		        width: 100,
+		        width: 70,
 		        template: function(row) {
 		           var status = {
 		              "OPEN": {'title': 'Open', 'class': 'm-badge--info'},

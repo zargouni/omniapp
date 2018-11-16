@@ -6302,15 +6302,15 @@ var mNewProjectSelectZone = function() {
     
 }
 
-var mProjectEditSidebar = function() {
-    var topbarAside = $('.m_project_edit_sidebar');
+var mOperationEditSidebar = function() {
+    var topbarAside = $('.m_operation_edit_sidebar');
     // var topbarAsideTabs = $('#m_project_details_sidebar_tabs');
-    var topbarAsideClose = $('#m_project_edit_sidebar_close');
-    var topbarAsideToggle = $('#m_project_edit_sidebar_toggle');
-    var topbarAsideContent = topbarAside.find('.m-project-edit-sidebar__content');
+    var topbarAsideClose = $('#m_operation_edit_sidebar_close');
+    var topbarAsideToggle = $('#m_operation_edit_sidebar_toggle');
+    var topbarAsideContent = topbarAside.find('.m-operation-edit-sidebar__content');
 
     var initForm = function() {
-        var messenger = $('#m_project_edit_sidebar_tabs_new_task');  
+        var messenger = $('#m_operation_edit_sidebar_tabs_new_task');  
 
           
         
@@ -6326,7 +6326,7 @@ var mProjectEditSidebar = function() {
 
     var initOffcanvas = function() {
         topbarAside.mOffcanvas({
-            class: 'm-project-edit-sidebar',
+            class: 'm-operation-edit-sidebar',
             overlay: true,  
             close: topbarAsideClose,
             toggle: topbarAsideToggle
@@ -6365,7 +6365,7 @@ $(document).ready(function() {
     mNewProjectSidebar.init();
     mNewProjectSelectZone();
     
-	 mProjectEditSidebar.init();
+	 mOperationEditSidebar.init();
 });
 
 

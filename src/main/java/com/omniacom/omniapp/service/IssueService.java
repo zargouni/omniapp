@@ -76,7 +76,10 @@ public class IssueService {
 
 				.element("status", issue.getStatus()).element("severity", issue.getSeverity())
 				.element("creator", issue.getCreator().getFirstName() + ' ' + issue.getCreator().getLastName())
-				.element("operationName", issue.getOperation().getName()).element("creationDate",
+				.element("operationName", issue.getOperation().getName())
+				.element("operation_id", issue.getOperation().getId())
+				.element("site", issue.getOperation().getSite().getName())
+				.element("creationDate",
 						new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(issue.getCreationDate()));
 		if (issue.getAssignedUsers().isEmpty())
 			json.accumulate("owners", "Unassigned");

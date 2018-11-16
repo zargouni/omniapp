@@ -782,6 +782,33 @@ public class ProjectController {
 		return response;
 	}
 	
+	@PostMapping("/update-operation")
+	public @ResponseBody JsonResponse doUpdateOperation(@RequestParam("id") long operationId, @Validated Operation updatedOperation,
+			@RequestParam("responsible") String responsibleUserName,
+			BindingResult result) {
+		JsonResponse response = new JsonResponse();
+
+		Operation oldVersionOperation = operationService.findOne(operationId);
+		User responsible = userService.findByUserName(responsibleUserName);
+		
+		if (!result.hasErrors()) {
+			if (responsible != null) {
+				if(!updatedOperation.equals(oldVersionOperation)) {
+					//operationService.updateOperation(oldVersionOperation, updatedOperation);
+					response.setStatus("SUCCESS");
+				}
+			} else {
+				response.setStatus("FAIL");
+				response.setResult("INVALIDUSER");
+			}
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+	
 	@PostMapping("/delete-service")
 	public @ResponseBody JsonResponse deleteService(@RequestParam("id") long serviceId) {
 		JsonResponse response = new JsonResponse();

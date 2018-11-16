@@ -71,6 +71,10 @@ public class Operation implements Serializable {
 	@Where(clause="deleted <> true")
 	private List<Issue> issues;	
 	
+	@OneToMany(mappedBy = "operation",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
+	private List<UpdateLog> updates;	
+	
 	@ManyToOne
 	private User deletedBy;
 	
@@ -357,6 +361,61 @@ public class Operation implements Serializable {
 	 */
 	public void setDeletedBy(User deletedBy) {
 		this.deletedBy = deletedBy;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((endDate == null) ? 0 : endDate.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((responsible == null) ? 0 : responsible.hashCode());
+		result = prime * result + ((site == null) ? 0 : site.hashCode());
+		result = prime * result + ((startDate == null) ? 0 : startDate.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Operation other = (Operation) obj;
+		if (endDate == null) {
+			if (other.endDate != null)
+				return false;
+		} else if (!endDate.equals(other.endDate))
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (responsible == null) {
+			if (other.responsible != null)
+				return false;
+		} else if (!responsible.equals(other.responsible))
+			return false;
+		if (site == null) {
+			if (other.site != null)
+				return false;
+		} else if (!site.equals(other.site))
+			return false;
+		if (startDate == null) {
+			if (other.startDate != null)
+				return false;
+		} else if (!startDate.equals(other.startDate))
+			return false;
+		return true;
 	}
 	
 	

@@ -44,7 +44,7 @@ public class BillOfQuantities implements Serializable {
 
 	private Date deletionDate;
 
-	@OneToOne(mappedBy = "boq",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@OneToOne
 	private Project project;
 
 	@OneToMany(mappedBy = "boq")

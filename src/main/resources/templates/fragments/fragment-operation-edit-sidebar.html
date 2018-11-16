@@ -1,0 +1,30 @@
+<!-- begin::Edit Project Sidebar -->
+<div th:fragment="operation-edit-sidebar"
+	class="m_operation_edit_sidebar m-operation-edit-sidebar m-operation-edit-sidebar--tabbed m-operation-edit-sidebar--skin-dark">
+
+	<div class="m-operation-edit-sidebar__content m--hide">
+
+		<span id="m_operation_edit_sidebar_close"
+			class="m-operation-edit-sidebar__close"><i class="la la-close"></i></span>
+
+		<ul class="nav nav-tabs m-tabs m-tabs-line m-tabs-line--brand"
+			role="tablist">
+			<li class="nav-item m-tabs__item"><a
+				class="nav-link m-tabs__link active" data-toggle="tab" href=""
+				role="tab">Edit Operation</a></li>
+		</ul>
+
+		<!--begin::Form Edit Operation-->
+		<form th:replace="fragments/form-fragments/fragment-edit-operation-form :: edit-operation-form"></form>
+
+		<!--end::Form Edit Operation-->
+	</div>
+	<iframe width="0" height="0" border="0" name="noTarget" id="noTarget"></iframe>
+
+
+
+
+</div>
+
+
+<!-- end::Edit Project Sidebar -->

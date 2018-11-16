@@ -55,6 +55,10 @@ public class Service implements Serializable, Comparable<Service> {
 	@Where(clause="deleted <> true")
 	private List<Task> tasks;
 	
+	@OneToMany(mappedBy = "service",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@Where(clause="deleted <> true")
+	private List<UpdateLog> updates;
+	
 	@ManyToOne
 	private User deletedBy;
 	

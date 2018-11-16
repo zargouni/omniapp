@@ -123,8 +123,10 @@ public class OperationService {
 		JSONObject json = new JSONObject().element("id", op.getId()).element("name", op.getName())
 				.element("startDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(op.getStartDate()))
 				.element("endDate", new SimpleDateFormat("dd MMMM YYYY", Locale.ENGLISH).format(op.getEndDate()))
-
+				.element("startDate_for_edit", new SimpleDateFormat("dd/MM/yyyy").format(op.getStartDate()))
+				.element("endDate_for_edit", new SimpleDateFormat("dd/MM/yyyy").format(op.getEndDate()))
 				.element("serviceCount", getOperationServiceCount(op)).element("flag", op.getFlag())
+				.element("responsible_username", op.getResponsible().getUserName())
 				.element("project", projectService.jsonProject(op.getProject()))
 				.element("site", siteService.jsonSite(op.getSite())).element("price", getOperationPrice(op))
 				.element("currency", op.getProject().getCurrency())
@@ -337,6 +339,10 @@ public class OperationService {
 			Operation op = operationRepo.findOne(operationId);
 			op.setDeletedBy(userService.getSessionUser());
 			operationRepo.save(op);
+			for(com.omniacom.omniapp.entity.Service s : op.getServices()) {
+				s.setDeletedBy(userService.getSessionUser());
+				serviceRepo.save(s);
+			}
 			operationRepo.delete(op);
 			return true;
 		}

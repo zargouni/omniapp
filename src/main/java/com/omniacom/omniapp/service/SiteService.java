@@ -59,7 +59,7 @@ public class SiteService {
 	}
 
 	public JSONObject jsonSite(Site site) {
-		return new JSONObject().element("name", site.getName()).element("latitude", site.getLatitude())
+		return new JSONObject().element("id", site.getId()).element("name", site.getName()).element("latitude", site.getLatitude())
 				.element("longitude", site.getLongitude()).element("deleted", site.isDeleted());
 	}
 

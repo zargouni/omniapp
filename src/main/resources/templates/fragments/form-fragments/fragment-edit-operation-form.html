@@ -1,34 +1,33 @@
 
 <form class="m-form" th:fragment="edit-operation-form" target="noTarget">
 	<div class="m-portlet__body">
-		<div class="form-group m-form__group">
-		hello
-			<label for="">Select project:</label> <select
+		<div style="display: none;" class="form-group m-form__group">
+			<select
 				id="select_project_edit_operation"
 				class="form-control m-bootstrap-select m_selectpicker"
 				data-live-search="true">
 			</select>
-			<div id="operation_project_error" class="form-control-feedback"
-				style="color: red; float: right; display: none;">Please select
-				a project</div>
+<!-- 			<div id="operation_project_error" class="form-control-feedback" -->
+<!-- 				style="color: red; float: right; display: none;">Please select -->
+<!-- 				a project</div> -->
 
 		</div>
 		<div class="m-form__group form-group">
 			<label for="">Operation name:</label> <input type="text"
-				class="form-control m-input" id="input_operation_name"
+				class="form-control m-input" id="input_edit_operation_name"
 				placeholder="Operation Name">
-			<div id="operation_name_error" class="form-control-feedback"
+			<div id="edit_operation_name_error" class="form-control-feedback"
 				style="color: red; float: right; display: none;">Please enter
 				a valid operation name</div>
 
 		</div>
-		<div id="sites_map_container" class="m-form__group form-group" style="display:none;width:100%; height:50px;position: relative;">
+		<div id="sites_map_container_edit_operation" class="m-form__group form-group" style="display:none;width:100%; height:50px;position: relative;">
 		<label for="">Select Site:</label>
 		<div style="position:relative;top: -3%;float:right;">
-		<select id="select_site_new_operation" data-placeholder="select site" class="form-control m-bootstrap-select m_selectpicker" data-live-search="true" >
+		<select id="select_site_edit_operation" data-placeholder="select site" class="form-control m-bootstrap-select m_selectpicker" data-live-search="true" >
 							</select>
 		</div>
-			<div id="sites_map_canvas_sidebar" style="position: absolute; top: 20%; right: 0; bottom: 0; left: 0;">
+			<div id="sites_map_canvas_edit_operation_sidebar" style="position: absolute; top: 20%; right: 0; bottom: 0; left: 0;">
 			</div>
 		</div>
 		<div class="m-form__group form-group">
@@ -38,14 +37,14 @@
 					<label for="">Start Date</label>
 					<div class="input-group date">
 						<input type="text" class="form-control m-input"
-							placeholder="Start date" id="m_datepicker_4_3">
+							placeholder="Start date" id="input_edit_operation_start_date">
 						<div class="input-group-append">
 							<span class="input-group-text"> <i
 								class="la la-calendar-check-o"></i>
 							</span>
 						</div>
 					</div>
-					<div id="operation_startDate_error" class="form-control-feedback"
+					<div id="edit_operation_startDate_error" class="form-control-feedback"
 						style="color: red; float: right; display: none;">* required</div>
 
 				</div>
@@ -56,14 +55,14 @@
 					<div class="input-group date">
 
 						<input type="text" class="form-control m-input"
-							placeholder="End date" id="m_datepicker_4_4">
+							placeholder="End date" id="input_edit_operation_end_date">
 						<div class="input-group-append">
 							<span class="input-group-text"> <i
 								class="la la-calendar-check-o"></i>
 							</span>
 						</div>
 					</div>
-					<div id="operation_endDate_error" class="form-control-feedback"
+					<div id="edit_operation_endDate_error" class="form-control-feedback"
 						style="color: red; float: right; display: none;">* required</div>
 				</div>
 
@@ -75,7 +74,7 @@
 		<div class="m-form__group form-group">
 			<label for="">Who is responsible ?</label> 
 			<div class="m-typeahead">
-						<input class="form-control m-input" id="operation_responsible" type="text" placeholder="Responsible">
+						<input class="form-control m-input" id="edit_operation_responsible" type="text" placeholder="Responsible">
 					</div>
 		</div>
 
@@ -86,10 +85,10 @@
 		<div class="m-form__actions m-form__actions--right">
 			<div class="row">
 				<div class="col m--align-left">
-					<button onclick="doAddOperationAjaxPost()" class="btn btn-brand">Add</button>
+					<button onclick="doUpdateOperationAjaxPost()" class="btn btn-brand">Save Changes</button>
 				</div>
 				<div class="col m--align-right">
-					<button type="reset" class="btn btn-secondary">Cancel</button>
+					<button onclick="$('#m_operation_edit_sidebar_close').click()" type="reset" class="btn btn-secondary">Cancel</button>
 				</div>
 			</div>
 		</div>

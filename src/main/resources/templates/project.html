@@ -17,13 +17,6 @@
 	<div layout:fragment="content"
 		class="m-grid m-grid--hor m-grid--root m-page">
 
-		<!-- begin::Edit Project Sidebar -->
-		<div
-			th:if="${sessionUser.id == selectedProject.owner.id || sessionUser.role.name == 'ADMIN'}"
-			data-th-replace="fragments/fragment-project-edit-sidebar :: project-edit-sidebar"></div>
-		<!-- end::Edit Project Sidebar -->
-
-
 		<!-- begin::Body -->
 		<div id="high"
 			class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
@@ -75,10 +68,7 @@
 						<div
 							th:if="${sessionUser.id == selectedProject.owner.id || sessionUser.role.name == 'ADMIN'}"
 							class="ml-auto">
-							<a href="#" onclick="populateEditProjectSidebar()" id="m_project_edit_sidebar_toggle" class="m-btn btn btn-secondary btn-sm m-nav__link m-dropdown__toggle" title="Edit project">
-							<span><i class="fa fa-edit"></i>
-							</span>
-							</a>
+							
 <!-- 							<button id="m_project_edit_sidebar_toggle" title="Edit project" -->
 <!-- 								class="m-btn btn btn-secondary btn-sm"> -->
 <!-- 								<i class="fa fa-edit"></i> -->

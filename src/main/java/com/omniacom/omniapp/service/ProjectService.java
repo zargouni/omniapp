@@ -137,7 +137,8 @@ public class ProjectService {
 				.element("owner", project.getOwner().getFirstName() + " " + project.getOwner().getLastName())
 				.element("country", project.getCountry()).element("currency", project.getCurrency())
 				.element("nature", project.getNature().getId())
-				.element("boq", project.getBoq() == null ? "none" : project.getBoq().getName())
+				.element("boq_name", project.getBoq() == null ? "none" : project.getBoq().getName())
+				.element("boq_id", project.getBoq() == null ? "none" : project.getBoq().getId())
 				.element("percentage", getProjectProgress(project))
 				.element("unassignedTasksCount", getProjectUnassignedTasksCount(project))
 				.element("unplanifiedTasksCount", getProjectUnplanifiedTasksCount(project))
@@ -340,7 +341,8 @@ public class ProjectService {
 					if (service.getDeletionDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
 						if (feed.containsKey(date)) {
 							feed.get(date).add(serviceService.jsonService(service)
-									.accumulate("type", "service").accumulate("activityType", "deletion").accumulate("deletedBy",
+									.accumulate("type", "service").accumulate("activityType", "deletion")
+									.accumulate("deletedBy",
 											service.getDeletedBy().getFirstName() + " " + service.getDeletedBy().getLastName())
 									.accumulate("user_id", service.getDeletedBy().getId()));
 							feed.get(date).sort(getFeedDatesComparator());

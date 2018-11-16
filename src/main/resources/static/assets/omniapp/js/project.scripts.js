@@ -2521,69 +2521,212 @@ function populateGanttChart(){
 
 }
 
-function populateSelectBoqEditProject() {
+function populateSelectOwnedProjectsEditOperationSidebar() {
+	var projectId = $('#selected_project_id').val();
 	$.ajax({
 		type : "GET",
-		url : '/set-select-boq',
+		url : '/set-select-owned-projects',
 		async: false,
 		success : function(response) {
 
 			var html_select_options = "";
 
-			var html_text = "<option value=''>Nothing Selected</option>";
-			var selectedOption = "";
+			var html_text = "<option value=' '>Nothing Selected</option>";
 			if (response.length == 1) {
+				if(response[0].id == projectId )
+					html_text += "<option value='" + response[0].id + "' selected>"
+					+ response[0].name + "</option>";
+				else
 				html_text += "<option value='" + response[0].id + "'>"
 						+ response[0].name + "</option>";
-				$("#select_boq_edit_project").html(html_text);
+				$("#select_project_edit_operation").html(html_text);
 			} else {
 				for (i = 0; i < response.length; i++) {
-					html_text += "<option value='" + response[i].id + "'>" + response[i].name
-							+ "</option>";
+					if(response[i].id == projectId )
+						html_text += "<option value='" + response[i].id + "' selected>"
+						+ response[i].name + "</option>";
+					else
+					html_text += "<option value='" + response[i].id + "'>"
+							+ response[i].name + "</option>";
 				}
-				$("#select_boq_edit_project").html(html_text);
+				$("#select_project_edit_operation").html(html_text);
 
 			}
-			$("#select_boq_edit_project").selectpicker('refresh');
+			$("#select_project_edit_operation").selectpicker('refresh');
+
+			$("#select_project_edit_operation").on('change', function() {
+				var projectId = $("#select_project_edit_operation").val();
+				
+				if(projectId == ' '){ 
+					$('#sites_map_container_edit_operation').attr("style","display:none;width:100%; height:50px;position: relative;");
+					$('#sites_map_canvas_sidebar_edit_operation').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
+				}else{
+					initializeSitesGmapEditOperation(projectId);
+				}
+			});
+
 
 		},
 		error : function(e) {
-			alert("error");
-			$("#select_boq_edit_project").html(
+			$("#select_project_edit_operation").html(
 					"<option value=''>Nothing selected</option>");
-			
 
 		}
 	});
 
 }
 
-function populateEditProjectSidebar(){
-	populateSelectBoqEditProject();
+function editOperationSelectProject(){
 	var projectId = $('#selected_project_id').val();
+	
+	$('#select_project_edit_operation').val(projectId).change();
+
+	$('#select_project_edit_operation').selectpicker('refresh');
+}
+
+function populateEditOperationResponsibleTypeAhead() {
+    var users = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.whitespace,
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        prefetch: './get-all-users-json'
+    });
+
+    $('#edit_operation_responsible').typeahead(null, {
+        name: 'users',
+        source: users
+    });
+}
+
+function populateEditOperationSidebar(){
+	populateSelectOwnedProjectsEditOperationSidebar();
+	editOperationSelectProject();
+	populateEditOperationResponsibleTypeAhead();
+	var operationId = $('#operation_fragment_selected_operation_id').val();
 	$.ajax({
 		type : "GET",
-		url : '/get-project-details',
-		data : 'id=' + projectId,
+		url : '/get-operation-details',
+		data : 'id=' + operationId,
 		async : false,
 		success : function(response) {
-			$("#project_name_edit").val(response.name);
-			$("#project_client_edit").val(response.client_id);
-			$("#project_final_client_edit").val(response.finalClient_id);
-			$("#project_country_edit").val(response.country);
-			$("#project_currency_edit").val(response.currency);
-			//$("#select_boq_edit_project").val(response.boq);
-			//$("#select_boq_edit_project").selectpicker('refresh');
-			//$("#select_nature_edit_project").val(response.nature);
-			//$("#select_nature_edit_project").select2();
-			//$('#select_nature_edit_project').trigger('change.select2');
-			$("#project_owner_edit").val(response.owner);
-
-			
-			
+			$("#input_edit_operation_name").val(response.name);
+			$("#select_site_edit_operation").val(response.site.id).change();
+			$('#select_site_edit_operation').selectpicker('refresh');
+			$('#input_edit_operation_start_date').val(response.startDate_for_edit);
+			$('#input_edit_operation_end_date').val(response.endDate_for_edit);
+			$("#edit_operation_responsible").val(response.responsible_username);
 		},
 		error : function(e) {
 			alert('Error: Gantt ' + e);
+		}
+	});
+}
+
+function doUpdateOperationAjaxPost() {
+
+	var operationId = $('#operation_fragment_selected_operation_id').val();
+	
+	var nameError = $('#edit_operation_name_error');
+	//var projectError = $('#operation_project_error');
+	var startDateError = $('#edit_operation_startDate_error');
+	var endDateError = $('#edit_operation_endDate_error');
+	var name = $('#input_edit_operation_name').val();
+	//var project = $('#select_project_new_operation').val();
+	var startDate = $('#input_edit_operation_start_date').val();
+	var endDate = $('#input_edit_operation_end_date').val();
+	var site = $('#select_site_edit_operation').val();
+	var responsible = $('#edit_operation_responsible').val();
+
+	nameError.hide('fast');
+	projectError.hide('fast');
+	startDateError.hide('fast');
+	endDateError.hide('fast');
+
+	
+	$.ajax({
+		type : "POST",
+		url : '/update-operation',
+		data : "id="+operationId +"&name=" + name + "&site="+site+"&startDate="
+				+ startDate + "&endDate=" + endDate+"&responsible="+responsible,
+		success : function(response) {
+			if (response.status == "SUCCESS") {
+				var addedOperationId = response.result[0];
+				var parentProjectId = project;
+				$('#operation_name').val('');
+				$('#select_project_new_operation').val('');
+				$('#m_datepicker_4_3').val('');
+				$('#m_datepicker_4_4').val('');
+				
+
+				if(response.result[1] != 0){
+				swal({
+					title : 'Operation added',
+					text : "Do you want to generate its services ?         " +
+							"You can generate services and tasks from predefined templates within a second ",
+					showCancelButton : true,
+					type: 'success',
+					confirmButtonText : 'Yes, do it!',
+					background: '#f1f1f1'
+				}).then(
+						function(result) {
+							if (result.value) {
+								generateNewOperationServicesFromTemplates(parentProjectId,addedOperationId);
+
+								$('#generate_operation_services_modal').modal('show');
+
+							}else{
+								if(window.location.pathname.indexOf('/project') != 0)
+									redirectToAddedOperation(addedOperationId);
+								else
+									toggleOperationFragment(addedOperationId);
+								
+							}
+
+						}
+
+				);
+				
+				}else{
+					toastr.success("Operation Added successfully", "Well done!");
+					  setTimeout(function (){
+						  if(window.location.pathname.indexOf('/project') != 0)
+								redirectToAddedOperation(addedOperationId);
+							else
+								toggleOperationFragment(addedOperationId);
+				   },2000);
+					
+				}
+				$('#m_quick_sidebar_add_close').click();
+				if($('#operations_datatable').length){
+					$('#operations_datatable').mDatatable('reload');
+				}
+
+
+			} else {
+				if(response.result == "INVALIDUSER"){
+					toastr.error('Invalid responsible');
+					
+				}else{
+					toastr.error("", "Please fill all required fields");
+					for (i = 0; i < response.result.length; i++) {
+						if (response.result[i].code == "operation.name.empty")
+							nameError.show('slow');
+						if (response.result[i].code == "operation.project.empty")
+							projectError.show('slow');
+						if (response.result[i].code == "operation.startDate.empty")
+							startDateError.show('slow');
+						if (response.result[i].code == "operation.endDate.empty")
+							endDateError.show('slow');
+						if (response.result[i].code == "operation.date.nomatch" || response.result[i].code == "operation.date.nomatch.operation")
+							toastr.warning("Dates don't match", "Warning");
+						if (response.result[i].code == "operation.site.empty")
+							toastr.warning('Select a site for the operation');
+					}
+				}
+
+			}
+		},
+		error : function(e) {
+			toastr.error("Couldn't update operation", "Server Error");
 		}
 	});
 }
