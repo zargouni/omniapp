@@ -830,7 +830,6 @@ function populateProjectFeed(){
 							alignContent = "left";
 						}
 			
-
 						dateWrapper = '<div class="m-timeline-1__item m-timeline-1__item--'+alignContent+' '+firstItem+'">'
 							+'<div style="background:#36a3f7; " class="m-timeline-1__item-circle">'
 							+'	<i class="fa fa-circle m--font-light"></i>'
@@ -842,16 +841,32 @@ function populateProjectFeed(){
 							+'</div>'
 							+'</div>';
 						feedWrapper.append(dateWrapper);
-						 
+						// console.log("taille des valeurs: "+val.length);
 							  for (var j = 0; j < val.length; j++) {
 								  var content = "";
+								  //console.log("objet: "+val[j].name+" Type: "+val[j].type+" activityType: "+val[j].activityType)
 								  content = getDetailedActivityUI(val[j],val[j].type,val[j].activityType);
 								  contentWrapper += content;
-								  if(val[j].type == "operation"){
+								  if(val[j].type == "operation" && val[j].activityType == "creation"){
 									  operations.push(val[j]);
 								  }
 							  }
 							  $("#content_"+date).append(contentWrapper);
+							  
+							  for (var j = 0; j < val.length; j++) {
+								  if(val[j].type == "operation" && val[j].activityType == "update"){
+									  var object = val[j];
+									  $('#popover-dismiss-'+val[j].op_id+''+val[j].up_id).popover({
+										 	html: true, 
+										 	animation: true,
+										 	trigger: 'hover',
+										 	placement: "auto",
+										 	content: getUpdateChangesUI(object)
+										 	
+										});
+								  }
+							  }
+							  
 							  i++;
 						});
 					
@@ -873,7 +888,17 @@ function populateProjectFeed(){
 	       
 	    },500);
 	 
-	
+}
+
+
+function getUpdateChangesUI(object){
+	var html_content = "<ul>";
+	//console.log("hi forom here!! ")
+	for(cmpt = 0; cmpt< object.changes.length ; cmpt++){
+		html_content += "<li style='margin: 10px 0;padding: 0;font-weight: 450;color: #5867dd;'>Changed <span style='color: #36a3f7;'>"+object.changes[cmpt].field+"</span> from "
+		+"<span style='color: #f4516c;'>"+object.changes[cmpt].old_value+"</span> to <span style='color: #34bfa3;'>"+object.changes[cmpt].new_value+"</div></li>";
+	}
+	return html_content+'</ul>';
 }
 
 function getParentSpan(parent){
@@ -886,7 +911,6 @@ function getDetailedActivityUI(object,objectType,activityType){
 	var content = ""; 
 	if(objectType == "service"){
 		if(activityType=="closed")
-		
 			content = '<div class="m-list-badge m--margin-top-15">'
 			+'<div class="m-list-badge__label m--font-metal">'+object.closedDate+'</div>'
 				+'<div class="m-list-badge__items">'
@@ -940,6 +964,21 @@ function getDetailedActivityUI(object,objectType,activityType){
 					+'</span> '
 							+'	</div>'
 				+'</div>';
+		}else if(activityType=="update"){
+			//var html_content = "";
+			var detailsPopoverId = 'popover-dismiss-'+object.op_id+''+object.up_id;
+			var popoverButton = '<span  style="margin-left: 8px;padding: 0 10px;" id='+detailsPopoverId+' class="m-badge m-badge--success m-badge--rounded">'
+					+'Details</span>';
+			
+			content = '<div class="m-list-badge m--margin-top-15">'
+				+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
+					+'<div class="m-list-badge__items">'
+					+'<span style="font-size: 24px; color: #c4c5d6;" >✔</span>'
+					+'<span style="background:transparent;" class="m-list-badge__item"><a href="/profile?id='+object.user_id+'">'+object.updatedBy+'</a> updated operation <span style="color:#34bfa3;">'+object.name+'</span> '
+					+popoverButton+'</span>'
+							+'	</div>'
+				+'</div>';
+			//content += update;
 		}else{
 		
 			content = '<div style="width:100%;" class="m-list-badge m--margin-top-15">'
@@ -2630,75 +2669,35 @@ function doUpdateOperationAjaxPost() {
 	var startDateError = $('#edit_operation_startDate_error');
 	var endDateError = $('#edit_operation_endDate_error');
 	var name = $('#input_edit_operation_name').val();
-	//var project = $('#select_project_new_operation').val();
+	var project = $('#select_project_edit_operation').val();
 	var startDate = $('#input_edit_operation_start_date').val();
 	var endDate = $('#input_edit_operation_end_date').val();
 	var site = $('#select_site_edit_operation').val();
 	var responsible = $('#edit_operation_responsible').val();
 
-	nameError.hide('fast');
-	projectError.hide('fast');
-	startDateError.hide('fast');
-	endDateError.hide('fast');
+//	nameError.hide('fast');
+//	projectError.hide('fast');
+//	startDateError.hide('fast');
+//	endDateError.hide('fast');
 
 	
 	$.ajax({
 		type : "POST",
 		url : '/update-operation',
 		data : "id="+operationId +"&name=" + name + "&site="+site+"&startDate="
-				+ startDate + "&endDate=" + endDate+"&responsible="+responsible,
+				+ startDate + "&endDate=" + endDate+"&responsible="+responsible+"&project="+project,
 		success : function(response) {
 			if (response.status == "SUCCESS") {
-				var addedOperationId = response.result[0];
-				var parentProjectId = project;
-				$('#operation_name').val('');
-				$('#select_project_new_operation').val('');
-				$('#m_datepicker_4_3').val('');
-				$('#m_datepicker_4_4').val('');
+				//var addedOperationId = response.result[0];
+				//var parentProjectId = project;
+//				$('#operation_name').val('');
+//				$('#select_project_new_operation').val('');
+//				$('#m_datepicker_4_3').val('');
+//				$('#m_datepicker_4_4').val('');
 				
-
-				if(response.result[1] != 0){
-				swal({
-					title : 'Operation added',
-					text : "Do you want to generate its services ?         " +
-							"You can generate services and tasks from predefined templates within a second ",
-					showCancelButton : true,
-					type: 'success',
-					confirmButtonText : 'Yes, do it!',
-					background: '#f1f1f1'
-				}).then(
-						function(result) {
-							if (result.value) {
-								generateNewOperationServicesFromTemplates(parentProjectId,addedOperationId);
-
-								$('#generate_operation_services_modal').modal('show');
-
-							}else{
-								if(window.location.pathname.indexOf('/project') != 0)
-									redirectToAddedOperation(addedOperationId);
-								else
-									toggleOperationFragment(addedOperationId);
-								
-							}
-
-						}
-
-				);
-				
-				}else{
-					toastr.success("Operation Added successfully", "Well done!");
-					  setTimeout(function (){
-						  if(window.location.pathname.indexOf('/project') != 0)
-								redirectToAddedOperation(addedOperationId);
-							else
-								toggleOperationFragment(addedOperationId);
-				   },2000);
-					
-				}
-				$('#m_quick_sidebar_add_close').click();
-				if($('#operations_datatable').length){
-					$('#operations_datatable').mDatatable('reload');
-				}
+				toastr.success("","Operation updated successfully ");
+				$('#m_operation_edit_sidebar_close').click();
+				toggleOperationFragment(operationId);
 
 
 			} else {
@@ -2710,8 +2709,8 @@ function doUpdateOperationAjaxPost() {
 					for (i = 0; i < response.result.length; i++) {
 						if (response.result[i].code == "operation.name.empty")
 							nameError.show('slow');
-						if (response.result[i].code == "operation.project.empty")
-							projectError.show('slow');
+//						if (response.result[i].code == "operation.project.empty")
+//							projectError.show('slow');
 						if (response.result[i].code == "operation.startDate.empty")
 							startDateError.show('slow');
 						if (response.result[i].code == "operation.endDate.empty")

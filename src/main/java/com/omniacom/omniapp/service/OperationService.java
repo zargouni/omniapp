@@ -15,19 +15,23 @@ import org.springframework.stereotype.Service;
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Issue;
+import com.omniacom.omniapp.entity.LogChange;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
-import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.TaskTemplate;
+import com.omniacom.omniapp.entity.UpdateLog;
+import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.BoqRepository;
+import com.omniacom.omniapp.repository.LogChangeRepository;
 import com.omniacom.omniapp.repository.OperationRepository;
 import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
 import com.omniacom.omniapp.repository.TaskRepository;
 import com.omniacom.omniapp.repository.TaskTemplateRepository;
+import com.omniacom.omniapp.repository.UpdateLogRepository;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -55,6 +59,12 @@ public class OperationService {
 
 	@Autowired
 	BoqRepository boqRepo;
+	
+	@Autowired
+	LogChangeRepository changeRepo;
+	
+	@Autowired
+	UpdateLogRepository updateLogRepo;
 
 	@Autowired
 	ServiceService serviceService;
@@ -67,7 +77,7 @@ public class OperationService {
 
 	@Autowired
 	TaskService taskService;
-	
+
 	@Autowired
 	UserService userService;
 
@@ -145,9 +155,10 @@ public class OperationService {
 			if (getOperationStatus(op).equals("open"))
 				json.accumulate("status", "Open");
 		}
-		if(op.isDeleted())
-			json.accumulate("deletionDate", new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(op.getDeletionDate()))
-				.accumulate("deletionTime",new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(op.getDeletionDate()));
+		if (op.isDeleted())
+			json.accumulate("deletionDate",
+					new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(op.getDeletionDate())).accumulate(
+							"deletionTime", new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(op.getDeletionDate()));
 
 		return json;
 	}
@@ -205,7 +216,7 @@ public class OperationService {
 			}
 		}
 		if (open == true) {
-			if(zeroProgressServices == services.size())
+			if (zeroProgressServices == services.size())
 				return "open";
 			else
 				return "in_progress";
@@ -339,7 +350,7 @@ public class OperationService {
 			Operation op = operationRepo.findOne(operationId);
 			op.setDeletedBy(userService.getSessionUser());
 			operationRepo.save(op);
-			for(com.omniacom.omniapp.entity.Service s : op.getServices()) {
+			for (com.omniacom.omniapp.entity.Service s : op.getServices()) {
 				s.setDeletedBy(userService.getSessionUser());
 				serviceRepo.save(s);
 			}
@@ -347,6 +358,67 @@ public class OperationService {
 			return true;
 		}
 		return false;
+	}
+
+	public void updateOperation(Operation oldVersionOperation, Operation updatedOperation, User responsible) {
+		List<LogChange> changesDone = new ArrayList<LogChange>();
+		
+		if (!oldVersionOperation.getName().equals(updatedOperation.getName())) {
+			changesDone.add(new LogChange("name", oldVersionOperation.getName(), updatedOperation.getName()));
+			oldVersionOperation.setName(updatedOperation.getName());		
+		}
+
+		if (!oldVersionOperation.getSite().equals(updatedOperation.getSite())) {
+			changesDone.add(new LogChange("site", oldVersionOperation.getSite().getName(), updatedOperation.getSite().getName()));
+			oldVersionOperation.setSite(updatedOperation.getSite());
+		}
+
+		String oldStartDate = new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(oldVersionOperation.getStartDate());
+		String newStartDate = new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(updatedOperation.getStartDate());
+		
+		if (!oldStartDate.equals(newStartDate)) {
+			changesDone.add(new LogChange("start date", oldStartDate, newStartDate));
+			oldVersionOperation.setStartDate(updatedOperation.getStartDate());
+		}
+
+		String oldEndDate = new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(oldVersionOperation.getEndDate());
+		String newEndDate = new SimpleDateFormat("dd/MM/YYYY", Locale.ENGLISH).format(updatedOperation.getEndDate());
+		
+		if (!oldEndDate.equals(newEndDate)) {
+			changesDone.add(new LogChange("end date", oldEndDate, newEndDate));
+			oldVersionOperation.setEndDate(updatedOperation.getEndDate());
+		}
+
+		if (!oldVersionOperation.getResponsible().equals(responsible)) {
+			changesDone.add(new LogChange("responsible", oldVersionOperation.getResponsible().getUserName(), responsible.getUserName()));
+			oldVersionOperation.setResponsible(responsible);
+		}
+		
+
+		
+		
+		UpdateLog updateAction = new UpdateLog();
+		updateAction.setActor(userService.getSessionUser());
+		updateAction.setDate(new Date());
+		updateAction.setOperation(oldVersionOperation);
+		
+		for(LogChange change : changesDone) {
+			updateAction.addChange(change);//change.setUpdateLog(updateAction);
+		}
+		
+		updateLogRepo.save(updateAction);
+		
+		oldVersionOperation.addUpdate(updateAction);
+		
+
+		operationRepo.save(oldVersionOperation);
+
+		
+		
+//		updateAction.setChanges(changesDone);
+
+		
+		//updateLogRepo.save(updateAction);
 	}
 
 }

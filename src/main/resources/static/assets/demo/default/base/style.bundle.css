@@ -5065,9 +5065,11 @@ button.close {
 	line-break: auto;
 	font-size: 0.875rem;
 	word-wrap: break-word;
-	background-color: #fff;
+/* 	background-color: #fff; */
+	background-image: linear-gradient(#ffffff, #f2f2f2);
+	box-shadow: -1px 2px 10px 3px rgba(140, 140, 140, 0.05) inset;
 	background-clip: padding-box;
-	border: 1px solid rgba(0, 0, 0, 0.2);
+	border: 1px solid rgba(0, 0, 0, 0.1);
 	border-radius: 0.3rem;
 }
 
@@ -25682,7 +25684,7 @@ body.m-portlet--fullscreen.m-aside-left--fixed .m-aside-left {
 }
 
 .m-timeline-1.m-timeline-1--fixed {
-	width: 80%;
+	width: 100%;
 	margin: 0 auto 0 auto;
 }
 

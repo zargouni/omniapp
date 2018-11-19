@@ -22,11 +22,14 @@ import org.springframework.stereotype.Service;
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.Issue;
+import com.omniacom.omniapp.entity.LogChange;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
+import com.omniacom.omniapp.entity.UpdateLog;
 import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
+import com.omniacom.omniapp.repository.UpdateLogRepository;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -47,6 +50,9 @@ public class ProjectService {
 	OperationService operationService;
 
 	@Autowired
+	UserService userService;
+
+	@Autowired
 	TaskService taskService;
 
 	private Project currentProject;
@@ -57,6 +63,7 @@ public class ProjectService {
 		com.omniacom.omniapp.entity.Service generalService = new com.omniacom.omniapp.entity.Service("General",
 				project);
 		generalService.setCreationDate(new Date());
+		generalService.setCreatedBy(userService.getSessionUser());
 		serviceRepo.save(generalService);
 		return proj;
 	}
@@ -246,40 +253,114 @@ public class ProjectService {
 		}
 		return array;
 	}
+	
+	@Autowired
+	UpdateLogRepository updateRepo;
 
 	public Map<LocalDate, JSONArray> getProjectFeed(Project project) {
 		TreeMap<LocalDate, JSONArray> feed = new TreeMap<LocalDate, JSONArray>();
 		LocalDate currentDate = LocalDate.now();
 		LocalDate startDate = project.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 		JSONArray json = null;
-		for (LocalDate date = startDate; date.isBefore(currentDate)
-				|| date.isEqual(currentDate); date = date.plusDays(1)) {
+		
+
 
 			// Populate operation activities into map
-			for (Operation op : projectRepo.findAllOperations(project)) {
+			System.out.println("number of operations: "+projectRepo.findAllOperations(project).size());
+			List<Operation> ops = projectRepo.findAllOperations(project);
+			for (Operation op : ops) {
+			
+				// populate feed with updates
+			 List<UpdateLog> updates = op.getUpdates();//updateRepo.findUpdatesByOperation(ops.get(i).getId());
+			System.out.println("Number of updates: " + updates.size());
+			if (!updates.isEmpty())
+				for (UpdateLog update : updates) {
+					System.out.println("iterating through updates");
+					for (LocalDate date = startDate; date.isBefore(currentDate)
+							|| date.isEqual(currentDate); date = date.plusDays(1)) {
+						if (update.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+							//System.out.println("enter first if");
+							JSONArray changes = new JSONArray();
+							if (!update.getChanges().isEmpty())
+								for (LogChange change : update.getChanges()) {
+									changes.add(new JSONObject().element("field", change.getConcernedField())
+											.element("old_value", change.getOldValue())
+											.element("new_value", change.getNewValue()));
+								}
+
+							if (feed.containsKey(date)) {
+								System.out.println("enter second if");
+								feed.get(date).add(new JSONObject().element("type", "operation")
+										.element("activityType", "update")
+										.element("name", op.getName())
+										.element("op_id", op.getId())
+										.element("up_id", update.getId())
+										.element("creationTime",
+												new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(update.getDate()))
+										.element("updatedBy",update.getActor().getFirstName()
+												+ " " + update.getActor().getLastName())
+										.element("user_id", update.getActor().getId())
+										.element("changes", changes));
+								feed.get(date).sort(getFeedDatesComparator());
+
+							} else {
+								System.out.println("enter third if");
+								json = new JSONArray();
+								json.add(new JSONObject().element("type", "operation").element("activityType", "update")
+										.element("name", op.getName())
+										.element("op_id", op.getId())
+										.element("up_id", update.getId())
+										.element("creationTime",
+												new SimpleDateFormat("HH:mm", Locale.ENGLISH).format(update.getDate()))
+										.element("updatedBy",update.getActor().getFirstName()
+												+ " " + update.getActor().getLastName())
+										.element("user_id", update.getActor().getId())
+										.element("changes", changes));
+								json.sort(getFeedDatesComparator());
+								feed.put(date, json);
+							}
+						}
+
+					}
+				}
+				
+				for (LocalDate date = startDate; date.isBefore(currentDate)
+						|| date.isEqual(currentDate); date = date.plusDays(1)) {
 				if (op.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+					System.out.println("operation creation");
+					
 					if (feed.containsKey(date)) {
-						feed.get(date).add(operationService.jsonOperationFormattedDates(op)
-								.accumulate("type", "operation")
-								.accumulate("createdBy",op.getCreatedBy().getFirstName() + " " + op.getCreatedBy().getLastName())
-								.accumulate("user_id", op.getCreatedBy().getId()));
+						feed.get(date)
+								.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation")
+										.accumulate("activityType", "creation")
+										.accumulate("createdBy",
+												op.getCreatedBy().getFirstName() + " "
+														+ op.getCreatedBy().getLastName())
+										.accumulate("user_id", op.getCreatedBy().getId()));
 						feed.get(date).sort(getFeedDatesComparator());
 					} else {
 						json = new JSONArray();
 						json.add(operationService.jsonOperationFormattedDates(op).accumulate("type", "operation")
+								.accumulate("activityType", "creation")
 								.accumulate("createdBy",
 										op.getCreatedBy().getFirstName() + " " + op.getCreatedBy().getLastName())
 								.accumulate("user_id", op.getCreatedBy().getId()));
 						json.sort(getFeedDatesComparator());
 						feed.put(date, json);
 					}
+					
 				}
-				
-				if (op.isDeleted())
+				}
+
+				if (op.isDeleted()) {
+					System.out.println("operation delete");
+					for (LocalDate date = startDate; date.isBefore(currentDate)
+							|| date.isEqual(currentDate); date = date.plusDays(1)) {
 					if (op.getDeletionDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
 						if (feed.containsKey(date)) {
 							feed.get(date).add(operationService.jsonOperationFormattedDates(op)
-									.accumulate("type", "operation").accumulate("activityType", "deletion").accumulate("deletedBy",
+									.accumulate("type", "operation").accumulate("activityType", "deletion")
+									.accumulate("deletedBy",
 											op.getDeletedBy().getFirstName() + " " + op.getDeletedBy().getLastName())
 									.accumulate("user_id", op.getDeletedBy().getId()));
 							feed.get(date).sort(getFeedDatesComparator());
@@ -294,26 +375,40 @@ public class ProjectService {
 							feed.put(date, json);
 						}
 					}
-
+					}
+				}
+					
+				
+				
+				
+				System.out.println("done iterating through operations");
 			}
 
 			// Populate service activities into map
+			System.out.println("------------------------------------------------");
+			System.out.println("services size: "+findAllServicesEvenDeleted(project).size());
 			for (com.omniacom.omniapp.entity.Service service : findAllServicesEvenDeleted(project)) {
+				System.out.println("iterating through services !");
+				
+				for (LocalDate date = startDate; date.isBefore(currentDate)
+						|| date.isEqual(currentDate); date = date.plusDays(1)) {
 				if (service.getCreationDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
 					if (feed.containsKey(date)) {
 						feed.get(date)
 								.add(serviceService.jsonService(service).accumulate("type", "service")
 										.accumulate("activityType", "creation")
-										.accumulate("createdBy", service.getCreatedBy().getFirstName() + " "
-												+ service.getCreatedBy().getLastName())
+										.accumulate("createdBy",
+												service.getCreatedBy().getFirstName() + " "
+														+ service.getCreatedBy().getLastName())
 										.accumulate("user_id", service.getCreatedBy().getId()));
 						feed.get(date).sort(getFeedDatesComparator());
 					} else {
 						json = new JSONArray();
 						json.add(serviceService.jsonService(service).accumulate("type", "service")
 								.accumulate("activityType", "creation")
-								.accumulate("createdBy", service.getCreatedBy().getFirstName() + " "
-										+ service.getCreatedBy().getLastName())
+								.accumulate("createdBy",
+										service.getCreatedBy().getFirstName() + " "
+												+ service.getCreatedBy().getLastName())
 								.accumulate("user_id", service.getCreatedBy().getId()));
 						json.sort(getFeedDatesComparator());
 						feed.put(date, json);
@@ -336,31 +431,36 @@ public class ProjectService {
 							feed.put(date, json);
 						}
 					}
-				
+
 				if (service.isDeleted())
-					if (service.getDeletionDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
+					if (service.getDeletionDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+							.equals(date)) {
 						if (feed.containsKey(date)) {
-							feed.get(date).add(serviceService.jsonService(service)
-									.accumulate("type", "service").accumulate("activityType", "deletion")
-									.accumulate("deletedBy",
-											service.getDeletedBy().getFirstName() + " " + service.getDeletedBy().getLastName())
-									.accumulate("user_id", service.getDeletedBy().getId()));
+							feed.get(date)
+									.add(serviceService.jsonService(service).accumulate("type", "service")
+											.accumulate("activityType", "deletion")
+											.accumulate("deletedBy",
+													service.getDeletedBy().getFirstName() + " "
+															+ service.getDeletedBy().getLastName())
+											.accumulate("user_id", service.getDeletedBy().getId()));
 							feed.get(date).sort(getFeedDatesComparator());
 						} else {
 							json = new JSONArray();
 							json.add(serviceService.jsonService(service).accumulate("type", "service")
 									.accumulate("activityType", "deletion")
 									.accumulate("deletedBy",
-											service.getDeletedBy().getFirstName() + " " + service.getDeletedBy().getLastName())
+											service.getDeletedBy().getFirstName() + " "
+													+ service.getDeletedBy().getLastName())
 									.accumulate("user_id", service.getDeletedBy().getId()));
 							json.sort(getFeedDatesComparator());
 							feed.put(date, json);
 						}
 					}
+			}
 
 			}
 
-		}
+		
 		return (Map<LocalDate, JSONArray>) feed.descendingMap();
 	}
 

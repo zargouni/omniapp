@@ -32,7 +32,9 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 		// TODO Auto-generated method stub
 		List<Operation> operations = null;
 		Query query = entityManager.createNativeQuery("SELECT * FROM operation op WHERE op.project_id = :param", Operation.class)
-				.setParameter("param", project);
+				.setParameter("param", project.getId());
+//		Query query = entityManager.createQuery("SELECT op FROM Operation op WHERE op.project.id = :param AND (op.deleted = true OR op.deleted = false)", Operation.class)
+//				.setParameter("param", project.getId());
 		operations = (List<Operation>) query.getResultList();
 		//project.setOperations(operations);
 		return operations;

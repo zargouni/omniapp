@@ -1,6 +1,7 @@
 package com.omniacom.omniapp.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,10 +28,10 @@ public class Operation implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID =  1L;
-	
+	private static final long serialVersionUID = 1L;
+
 	@Id
-	@GeneratedValue( strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	private String name;
 	private Date startDate;
@@ -38,68 +39,67 @@ public class Operation implements Serializable {
 	private Date creationDate;
 	private int flag;
 	private long zohoId;
-	
+
 	@ManyToOne
 	private Project project;
-	
+
 	@ManyToOne
 	private User responsible;
-	
+
 	@ManyToOne
 	private User createdBy;
-	
-	@OneToMany( mappedBy = "operation",orphanRemoval=true, cascade = CascadeType.PERSIST)
-	@Where(clause="deleted <> true")
+
+	@OneToMany(mappedBy = "operation", orphanRemoval = true, cascade = CascadeType.PERSIST)
+	@Where(clause = "deleted <> true")
 	private List<Service> services;
-	
+
 	@ManyToMany
 	@JoinTable(name = "USER_OPERATION", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "operation_id", referencedColumnName = "id"))
 	private List<User> workingUsersList;
-	
+
 	@ManyToOne
 	private Site site;
-	
-	@OneToMany(mappedBy = "operation",orphanRemoval=true, cascade = CascadeType.PERSIST)
-	@Where(clause="deleted <> true")
+
+	@OneToMany(mappedBy = "operation", orphanRemoval = true, cascade = CascadeType.PERSIST)
+	@Where(clause = "deleted <> true")
 	private List<Snag> snags;
-	
-	@OneToMany( mappedBy = "operation",orphanRemoval=true, cascade = CascadeType.PERSIST)
-	@Where(clause="deleted <> true")
+
+	@OneToMany(mappedBy = "operation", orphanRemoval = true, cascade = CascadeType.PERSIST)
+	@Where(clause = "deleted <> true")
 	private List<Comment> comments;
-	
-	@OneToMany(mappedBy = "operation",orphanRemoval=true, cascade = CascadeType.PERSIST)
-	@Where(clause="deleted <> true")
-	private List<Issue> issues;	
-	
-	@OneToMany(mappedBy = "operation",orphanRemoval=true, cascade = CascadeType.PERSIST)
-	@Where(clause="deleted <> true")
-	private List<UpdateLog> updates;	
-	
+
+	@OneToMany(mappedBy = "operation", orphanRemoval = true, cascade = CascadeType.PERSIST)
+	@Where(clause = "deleted <> true")
+	private List<Issue> issues;
+
+	@OneToMany(mappedBy = "operation", orphanRemoval = true, cascade = CascadeType.ALL)
+	@Where(clause = "deleted <> true")
+	private List<UpdateLog> updates = new ArrayList<>();
+
 	@ManyToOne
 	private User deletedBy;
-	
+
 	private boolean deleted = false;
 
 	private Date deletionDate;
-	
-	
 
 	@PreRemove
 	public void deleteOperation() {
 		this.setDeleted(true);
 		this.setDeletionDate(new Date());
 	}
-	
+
 	public Operation() {
 
 	}
-	
+
 	public Operation(String name, Date startDate, Date endDate, int flag) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.flag = flag;
 	}
+
 	public Operation(String name, Date startDate, Date endDate, int flag, long zohoId) {
 		this.name = name;
 		this.startDate = startDate;
@@ -107,6 +107,7 @@ public class Operation implements Serializable {
 		this.flag = flag;
 		this.zohoId = zohoId;
 	}
+
 	public Operation(long id, String name, Date startDate, Date endDate, int flag, long zohoId) {
 		this.id = id;
 		this.name = name;
@@ -115,74 +116,92 @@ public class Operation implements Serializable {
 		this.flag = flag;
 		this.zohoId = zohoId;
 	}
+
 	/**
 	 * @return the id
 	 */
 	public long getId() {
 		return id;
 	}
+
 	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return name;
 	}
+
 	/**
 	 * @return the startDate
 	 */
 	public Date getStartDate() {
 		return startDate;
 	}
+
 	/**
 	 * @return the endDate
 	 */
 	public Date getEndDate() {
 		return endDate;
 	}
+
 	/**
 	 * @return the flag
 	 */
 	public int getFlag() {
 		return flag;
 	}
+
 	/**
 	 * @return the zohoId
 	 */
 	public long getZohoId() {
 		return zohoId;
 	}
+
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
 	public void setId(long id) {
 		this.id = id;
 	}
+
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	/**
-	 * @param startDate the startDate to set
+	 * @param startDate
+	 *            the startDate to set
 	 */
 	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
+
 	/**
-	 * @param endDate the endDate to set
+	 * @param endDate
+	 *            the endDate to set
 	 */
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
+
 	/**
-	 * @param flag the flag to set
+	 * @param flag
+	 *            the flag to set
 	 */
 	public void setFlag(int flag) {
 		this.flag = flag;
 	}
+
 	/**
-	 * @param zohoId the zohoId to set
+	 * @param zohoId
+	 *            the zohoId to set
 	 */
 	public void setZohoId(long zohoId) {
 		this.zohoId = zohoId;
@@ -231,42 +250,48 @@ public class Operation implements Serializable {
 	}
 
 	/**
-	 * @param project the project to set
+	 * @param project
+	 *            the project to set
 	 */
 	public void setProject(Project project) {
 		this.project = project;
 	}
 
 	/**
-	 * @param responsible the responsible to set
+	 * @param responsible
+	 *            the responsible to set
 	 */
 	public void setResponsible(User responsible) {
 		this.responsible = responsible;
 	}
 
 	/**
-	 * @param services the services to set
+	 * @param services
+	 *            the services to set
 	 */
 	public void setServices(List<Service> services) {
 		this.services = services;
 	}
 
 	/**
-	 * @param workingUserList the workingUserList to set
+	 * @param workingUserList
+	 *            the workingUserList to set
 	 */
 	public void setWorkingUsersList(List<User> workingUsersList) {
 		this.workingUsersList = workingUsersList;
 	}
 
 	/**
-	 * @param snags the snags to set
+	 * @param snags
+	 *            the snags to set
 	 */
 	public void setSnags(List<Snag> snags) {
 		this.snags = snags;
 	}
 
 	/**
-	 * @param comments the comments to set
+	 * @param comments
+	 *            the comments to set
 	 */
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
@@ -280,12 +305,13 @@ public class Operation implements Serializable {
 	}
 
 	/**
-	 * @param site the site to set
+	 * @param site
+	 *            the site to set
 	 */
 	public void setSite(Site site) {
 		this.site = site;
 	}
-	
+
 	public void addUser(User user) {
 		this.workingUsersList.add(user);
 		user.getContributedOperationList().add(this);
@@ -299,7 +325,8 @@ public class Operation implements Serializable {
 	}
 
 	/**
-	 * @param creationDate the creationDate to set
+	 * @param creationDate
+	 *            the creationDate to set
 	 */
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
@@ -313,7 +340,8 @@ public class Operation implements Serializable {
 	}
 
 	/**
-	 * @param issues the issues to set
+	 * @param issues
+	 *            the issues to set
 	 */
 	public void setIssues(List<Issue> issues) {
 		this.issues = issues;
@@ -327,7 +355,8 @@ public class Operation implements Serializable {
 	}
 
 	/**
-	 * @param createdBy the createdBy to set
+	 * @param createdBy
+	 *            the createdBy to set
 	 */
 	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
@@ -357,13 +386,16 @@ public class Operation implements Serializable {
 	}
 
 	/**
-	 * @param deletedBy the deletedBy to set
+	 * @param deletedBy
+	 *            the deletedBy to set
 	 */
 	public void setDeletedBy(User deletedBy) {
 		this.deletedBy = deletedBy;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -378,7 +410,9 @@ public class Operation implements Serializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -417,6 +451,25 @@ public class Operation implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
+
+	/**
+	 * @return the updates
+	 */
+	public List<UpdateLog> getUpdates() {
+		return updates;
+	}
+
+	/**
+	 * @param updates
+	 *            the updates to set
+	 */
+	public void setUpdates(List<UpdateLog> updates) {
+		this.updates = updates;
+	}
+
+	public void addUpdate(UpdateLog update) {
+		this.updates.add(update);
+		update.setOperation(this);
+	}
+
 }

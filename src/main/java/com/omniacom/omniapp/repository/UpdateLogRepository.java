@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.omniacom.omniapp.entity.UpdateLog;
 
-public interface UpdateLogRepository extends CrudRepository<UpdateLog, Long>{
+public interface UpdateLogRepository extends CrudRepository<UpdateLog, Long> {
 
 }

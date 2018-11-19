@@ -794,7 +794,7 @@ public class ProjectController {
 		if (!result.hasErrors()) {
 			if (responsible != null) {
 				if(!updatedOperation.equals(oldVersionOperation)) {
-					//operationService.updateOperation(oldVersionOperation, updatedOperation);
+					operationService.updateOperation(oldVersionOperation, updatedOperation, responsible);
 					response.setStatus("SUCCESS");
 				}
 			} else {
