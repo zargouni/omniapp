@@ -42,10 +42,9 @@ public class UpdateLog implements Serializable {
 	private User actor;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "operation_id")
 	private Operation operation;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Service service;
 
 	@OneToMany(mappedBy = "updateLog", orphanRemoval = true, cascade = CascadeType.ALL)

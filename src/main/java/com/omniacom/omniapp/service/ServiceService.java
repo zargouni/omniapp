@@ -12,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.omniacom.StaticString;
+import com.omniacom.omniapp.entity.LogChange;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Task;
+import com.omniacom.omniapp.entity.UpdateLog;
 import com.omniacom.omniapp.repository.ServiceRepository;
+import com.omniacom.omniapp.repository.UpdateLogRepository;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -33,6 +36,9 @@ public class ServiceService {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	UpdateLogRepository updateLogRepo;
 
 	public com.omniacom.omniapp.entity.Service findById(long id) {
 		return serviceRepo.findOne(id);
@@ -75,7 +81,7 @@ public class ServiceService {
 		JSONObject jsonService = new JSONObject().element("id", service.getId()).element("name", service.getName())
 				.element("category", service.getCategory()).element("description", service.getDescription())
 				.element("price", service.getPriceHT())
-
+				.element("flag", service.getFlag())
 				.element("creationDate",
 						// new SimpleDateFormat("dd MM YYYY",
 						// Locale.ENGLISH).format(service.getCreationDate()))
@@ -196,6 +202,57 @@ public class ServiceService {
 			return true;
 		}
 		return false;
+	}
+
+	public void updateService(com.omniacom.omniapp.entity.Service oldVersionService,
+			com.omniacom.omniapp.entity.Service updatedService) {
+List<LogChange> changesDone = new ArrayList<LogChange>();
+		
+		if (!oldVersionService.getName().equals(updatedService.getName())) {
+			changesDone.add(new LogChange("name", oldVersionService.getName(), updatedService.getName()));
+			oldVersionService.setName(updatedService.getName());		
+		}
+
+		if (oldVersionService.getPriceHT() != updatedService.getPriceHT()) {
+			changesDone.add(new LogChange("price", String.valueOf(oldVersionService.getPriceHT()), String.valueOf(updatedService.getPriceHT())));
+			oldVersionService.setPriceHT(updatedService.getPriceHT());
+		}
+		
+		if (!oldVersionService.getCategory().equals(updatedService.getCategory())) {
+			changesDone.add(new LogChange("category", oldVersionService.getCategory().toString(), updatedService.getCategory().toString()));
+			oldVersionService.setCategory(updatedService.getCategory());		
+		}
+
+		if (oldVersionService.getFlag() != updatedService.getFlag()) {
+			changesDone.add(new LogChange("flag", String.valueOf(oldVersionService.getFlag()), String.valueOf(updatedService.getFlag())));
+			oldVersionService.setFlag(updatedService.getFlag());
+		}
+		
+		if (!oldVersionService.getOperation().equals(updatedService.getOperation())) {
+			changesDone.add(new LogChange("operation", oldVersionService.getOperation().getName(), updatedService.getOperation().getName()));
+			oldVersionService.setOperation(updatedService.getOperation());
+		}
+		
+
+		
+		
+		UpdateLog updateAction = new UpdateLog();
+		updateAction.setActor(userService.getSessionUser());
+		updateAction.setDate(new Date());
+		updateAction.setService(oldVersionService);
+		
+		for(LogChange change : changesDone) {
+			updateAction.addChange(change);
+		}
+		
+		updateLogRepo.save(updateAction);
+		
+		oldVersionService.addUpdate(updateAction);
+		
+
+		serviceRepo.save(oldVersionService);
+
+		
 	}
 
 }

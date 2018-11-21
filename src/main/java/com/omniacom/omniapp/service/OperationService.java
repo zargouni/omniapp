@@ -147,6 +147,8 @@ public class OperationService {
 		if (op.getEndDate().before(new Date())) {
 			if (getOperationStatus(op).equals("open"))
 				json.accumulate("status", "Overdue");
+			else if (getOperationStatus(op).equals("in_progress"))
+				json.accumulate("status", "Overdue");
 			else
 				json.accumulate("status", "Closed");
 		} else {
@@ -154,6 +156,8 @@ public class OperationService {
 				json.accumulate("status", "Closed");
 			if (getOperationStatus(op).equals("open"))
 				json.accumulate("status", "Open");
+			if (getOperationStatus(op).equals("in_progress"))
+				json.accumulate("status", "In Progress");
 		}
 		if (op.isDeleted())
 			json.accumulate("deletionDate",
@@ -212,6 +216,10 @@ public class OperationService {
 		for (com.omniacom.omniapp.entity.Service service : services) {
 			if (serviceService.getServicePercentageComplete(service).equals("0%")) {
 				zeroProgressServices++;
+				open = true;
+			}
+			if (!serviceService.getServicePercentageComplete(service).equals("100%")) {
+				//zeroProgressServices++;
 				open = true;
 			}
 		}

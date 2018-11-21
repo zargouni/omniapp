@@ -55,7 +55,7 @@ public class Service implements Serializable, Comparable<Service> {
 	@Where(clause="deleted <> true")
 	private List<Task> tasks;
 	
-	@OneToMany(mappedBy = "service",orphanRemoval=true, cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "service",orphanRemoval=true, cascade = CascadeType.ALL)
 	@Where(clause="deleted <> true")
 	private List<UpdateLog> updates;
 	
@@ -336,6 +336,77 @@ public class Service implements Serializable, Comparable<Service> {
 	 */
 	public void setDeletedBy(User deletedBy) {
 		this.deletedBy = deletedBy;
+	}
+	
+	public void addUpdate(UpdateLog update) {
+		this.updates.add(update);
+		update.setService(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
+		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + flag;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((operation == null) ? 0 : operation.hashCode());
+		result = prime * result + Float.floatToIntBits(priceHT);
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Service other = (Service) obj;
+		if (category != other.category)
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		if (flag != other.flag)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (operation == null) {
+			if (other.operation != null)
+				return false;
+		} else if (!operation.equals(other.operation))
+			return false;
+		if (Float.floatToIntBits(priceHT) != Float.floatToIntBits(other.priceHT))
+			return false;
+		return true;
+	}
+
+	/**
+	 * @return the updates
+	 */
+	public List<UpdateLog> getUpdates() {
+		return updates;
+	}
+
+	/**
+	 * @param updates the updates to set
+	 */
+	public void setUpdates(List<UpdateLog> updates) {
+		this.updates = updates;
 	}
 
 }

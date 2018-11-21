@@ -42720,6 +42720,133 @@ select.m-select2 {
 }
 /* end edit operation sidebar */
 
+
+
+/* edit service sidebar */
+.m-service-edit-sidebar {
+	padding: 20px 30px 30px 30px;
+}
+
+.m-service-edit-sidebar .m-service-edit-sidebar__close {
+	position: absolute;
+	font-size: 1.4rem;
+	cursor: pointer;
+}
+
+.m-service-edit-sidebar .mCSB_scrollTools {
+	right: -13px !important;
+}
+
+.m-service-edit-sidebar.m-service-edit-sidebar--tabbed .m-service-edit-sidebar__close
+	{
+	top: 16px;
+	right: 30px;
+}
+
+.m-service-edit-sidebar.m-service-edit-sidebar--tabbed .m-tabs.m-tabs-line
+	{
+	margin: 0 0 30px 0;
+}
+
+.m-service-edit-sidebar.m-service-edit-sidebar--tabbed .m-tabs.m-tabs-line>.m-tabs__item>.m-tabs__link
+	{
+	padding: 15px 0;
+}
+
+.m-service-edit-sidebar {
+	background-color: #ffffff;
+	-webkit-box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.2);
+	-moz-box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.2);
+	box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.2);
+}
+
+.m-service-edit-sidebar .m-service-edit-sidebar__close {
+	color: #cfcedb;
+}
+
+.m-service-edit-sidebar .m-service-edit-sidebar__close:hover {
+	color: #716aca;
+}
+
+.m-service-edit-sidebar.m-service-edit-sidebar--skin-dark {
+	background-color: #f2f2f2;
+	-webkit-box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.4);
+	-moz-box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.4);
+	box-shadow: 0px 0px 15px 1px rgba(69, 65, 78, 0.4);
+}
+
+.m-service-edit-sidebar.m-service-edit-sidebar--skin-dark .m-service-edit-sidebar__close
+	{
+	color: #dfdff1;
+}
+
+.m-service-edit-sidebar.m-service-edit-sidebar--skin-dark .m-service-edit-sidebar__close:hover
+	{
+	color: #716aca;
+}
+
+.m-service-edit-sidebar-close {
+	display: none;
+}
+
+.m-service-edit-sidebar {
+	display: block !important;
+	z-index: 1001;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	overflow-y: auto;
+	-webkit-transform: translate3d(0, 0, 0);
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
+	width: 455px !important;
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	right: -465px;
+}
+
+.m-service-edit-sidebar.m-service-edit-sidebar--on {
+	-webkit-transition: all 0.3s ease;
+	-moz-transition: all 0.3s ease;
+	-ms-transition: all 0.3s ease;
+	-o-transition: all 0.3s ease;
+	transition: all 0.3s ease;
+	right: 0;
+}
+
+.m-service-edit-sidebar-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	overflow: hidden;
+	z-index: 1000;
+	background: rgba(0, 0, 0, 0.1);
+	-webkit-animation: m-offcanvas-overlay-fade-in .3s linear 1;
+	-moz-animation: m-offcanvas-overlay-fade-in .3s linear 1;
+	-ms-animation: m-offcanvas-overlay-fade-in .3s linear 1;
+	-o-animation: m-offcanvas-overlay-fade-in .3s linear 1;
+	animation: m-offcanvas-overlay-fade-in .3s linear 1;
+}
+
+@media screen and (-ms-high-contrast: active) , ( -ms-high-contrast :
+	none) {
+	.m-service-edit-sidebar-overlay {
+		animation: none !important;
+	}
+}
+
+@media ( max-width : 455px) {
+	.m-service-edit-sidebar {
+		width: 90% !important;
+	}
+}
+/* end edit service sidebar */
+
 .m-pricing-table-1.m-pricing-table-1--fixed {
 	width: 75%;
 	margin: 0 auto;

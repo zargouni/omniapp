@@ -6357,6 +6357,61 @@ var mOperationEditSidebar = function() {
     };
 }();
 
+var mServiceEditSidebar = function() {
+    var topbarAside = $('.m_service_edit_sidebar');
+    // var topbarAsideTabs = $('#m_project_details_sidebar_tabs');
+    var topbarAsideClose = $('#m_service_edit_sidebar_close');
+    var topbarAsideToggle = $('#m_service_edit_sidebar_toggle');
+    var topbarAsideContent = topbarAside.find('.m-service-edit-sidebar__content');
+
+    var initForm = function() {
+        var messenger = $('#m_service_edit_sidebar_tabs_new_task');  
+
+          
+        
+        // reinit on window resize
+       // mUtil.addResizeHandler(init);
+    }
+
+   
+    var initOffcanvasTabs = function() {
+        initForm();
+        
+    }
+
+    var initOffcanvas = function() {
+        topbarAside.mOffcanvas({
+            class: 'm-service-edit-sidebar',
+            overlay: true,  
+            close: topbarAsideClose,
+            toggle: topbarAsideToggle
+        });   
+
+        // run once on first time dropdown shown
+        topbarAside.mOffcanvas().one('afterShow', function() {
+            mApp.block(topbarAside);
+
+            setTimeout(function() {
+                mApp.unblock(topbarAside);
+                
+                topbarAsideContent.removeClass('m--hide');
+
+                initOffcanvasTabs();
+            }, 1000);                         
+        });
+    }
+
+    return {     
+        init: function() {  
+            if (topbarAside.length === 0) {
+                return;
+            }
+
+            initOffcanvas(); 
+        }
+    };
+}();
+
 
 $(document).ready(function() {
 
@@ -6366,6 +6421,7 @@ $(document).ready(function() {
     mNewProjectSelectZone();
     
 	 mOperationEditSidebar.init();
+	 mServiceEditSidebar.init();
 });
 
 

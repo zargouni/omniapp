@@ -81,14 +81,21 @@ var DatatablePosJsonRemote = function() {
 										selector : false,
 										textAlign : 'center',
 										template : function(row) {
-											if(row.number != "NOPO")
-											 return '<div style="width:200px !important;" class="progress m-progress--sm">'
-								          	  +'<div class="progress-bar m--bg-success" role="progressbar" style="width: '+row.money_percentage+'%;" aria-valuemin="0" aria-valuemax="100"></div>'
-								          	  +'</div>'
-								          	  +'<span style="font-weight:600;font-size:12px;float:right;" class="m-widget4__number m--font-info">'+row.actual_money+' '+row.currency+'</span>'
-								          	+'<span style="font-weight:600;font-size:12px;float:left;" class="m-widget4__number m--font-info">'+row.money_percentage+'%</span>'
-								          	  ;
-											return "-"; 
+											if (row.number != "NOPO")
+												return '<div style="width:200px !important;" class="progress m-progress--sm">'
+														+ '<div class="progress-bar m--bg-success" role="progressbar" style="width: '
+														+ row.money_percentage
+														+ '%;" aria-valuemin="0" aria-valuemax="100"></div>'
+														+ '</div>'
+														+ '<span style="font-weight:600;font-size:12px;float:right;" class="m-widget4__number m--font-info">'
+														+ row.actual_money
+														+ ' '
+														+ row.currency
+														+ '</span>'
+														+ '<span style="font-weight:600;font-size:12px;float:left;" class="m-widget4__number m--font-info">'
+														+ row.money_percentage
+														+ '%</span>';
+											return "-";
 										}
 									},
 									{
@@ -219,39 +226,40 @@ function toggleModalAddPO() {
 function doAddPo() {
 	var poNumber = $('#input_new_po_number').val();
 	var projectId = $('#selected_project_id').val();
+	if (poNumber.length != 0)
+		$
+				.ajax({
+					type : "POST",
+					url : '/check-po-existance',
+					data : "id=" + projectId + "&number=" + poNumber,
+					async : false,
+					success : function(response) {
+						// we have the response
+						if (response.status == "EXISTS") {
+							toastr
+									.error(
+											"Couldn't add PO, a PO with the same number already exists in this project",
+											"Error");
+						} else if (response.status == "SUCCESS") {
+							if ($('#nopo_services_checkbox_list_add').find(
+									":checkbox:checked").length == 0) {
+								toastr
+										.warning("You have to select at least one service");
+							} else {
+								handleAddPoServices(poNumber);
+								toastr.success("PO Added successfully",
+										"Well done");
+								$('#add_po_modal').modal('hide');
+							}
 
-	$
-			.ajax({
-				type : "POST",
-				url : '/check-po-existance',
-				data : "id=" + projectId + "&number=" + poNumber,
-				async : false,
-				success : function(response) {
-					// we have the response
-					if (response.status == "EXISTS") {
-						toastr
-								.error(
-										"Couldn't add PO, a PO with the same number already exists in this project",
-										"Error");
-					} else if (response.status == "SUCCESS") {
-						if ($('#nopo_services_checkbox_list_add').find(
-								":checkbox:checked").length == 0) {
-							toastr
-									.warning("You have to select at least one service");
-						} else {
-							handleAddPoServices(poNumber);
-							toastr
-									.success("PO Added successfully",
-											"Well done");
-							$('#add_po_modal').modal('hide');
 						}
-
+					},
+					error : function(e) {
+						toastr.error("Couldn't add PO", "Server Error");
 					}
-				},
-				error : function(e) {
-					toastr.error("Couldn't add PO", "Server Error");
-				}
-			});
+				});
+	else
+		toastr.error("Please fill PO Number ");
 }
 
 function handleAddPoServices(number) {
@@ -290,9 +298,9 @@ function toggleModalEditDetailsPO(number) {
 	$('#po_title').html("PO n°: " + number);
 	$('#po_datatable').mDatatable('destroy');
 	DatatablePoServicesJsonRemote.init(number);
-	if(number == "NOPO"){
+	if (number == "NOPO") {
 		$('#toggle_add_po_services').hide();
-	}else{
+	} else {
 		$('#toggle_add_po_services').show();
 	}
 

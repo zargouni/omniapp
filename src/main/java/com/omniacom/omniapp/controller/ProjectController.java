@@ -809,6 +809,32 @@ public class ProjectController {
 		return response;
 	}
 	
+	@PostMapping("/update-service")
+	public @ResponseBody JsonResponse doUpdateService(@RequestParam("id") long serviceId, @Validated Service updatedService,
+			BindingResult result) {
+		JsonResponse response = new JsonResponse();
+
+		Service oldVersionService = serviceService.findById(serviceId);
+		//User responsible = userService.findByUserName(responsibleUserName);
+		
+		if (!result.hasErrors()) {
+			//if (responsible != null) {
+				if(!updatedService.equals(oldVersionService)) {
+					serviceService.updateService(oldVersionService, updatedService);
+					response.setStatus("SUCCESS");
+				}
+//			} else {
+//				response.setStatus("FAIL");
+//				response.setResult("INVALIDUSER");
+//			}
+		} else {
+			response.setStatus("FAIL");
+			response.setResult(result.getFieldErrors());
+		}
+
+		return response;
+	}
+	
 	@PostMapping("/delete-service")
 	public @ResponseBody JsonResponse deleteService(@RequestParam("id") long serviceId) {
 		JsonResponse response = new JsonResponse();

@@ -1,5 +1,12 @@
 <div id="service-fragment" style="display: none;"
 	th:fragment="fragment-service">
+	
+	<!-- begin::Edit Service Sidebar -->
+		<div
+			th:if="${sessionUser.id == selectedProject.owner.id || sessionUser.role.name == 'ADMIN'}"
+			data-th-replace="fragments/fragment-service-edit-sidebar :: service-edit-sidebar"></div>
+		<!-- end::Edit Service Sidebar -->
+		
 	<div class="m-portlet">
 		<div class="m-portlet__body m-portlet__body--no-padding">
 			<div class="row m-row--no-padding m-row--col-separator-xl">
@@ -98,7 +105,9 @@
 					<li th:if="${sessionUser.id == selectedProject.owner.id}"
 						class="m-portlet__nav-item">
 						<button title="Edit service" type="button"
-							class="m-btn btn btn-warning btn-sm">
+							class="m-btn btn btn-warning btn-sm"
+							onclick="populateEditServiceSidebar()"
+							id="m_service_edit_sidebar_toggle">
 							<i style="color: #fff;" class="fa fa-edit"></i>
 						</button>
 					</li>

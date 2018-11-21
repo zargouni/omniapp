@@ -865,6 +865,18 @@ function populateProjectFeed(){
 										 	
 										});
 								  }
+								  
+								  if(val[j].type == "service" && val[j].activityType == "update"){
+									  var object = val[j];
+									  $('#popover-dismiss-'+val[j].service_id+''+val[j].up_id).popover({
+										 	html: true, 
+										 	animation: true,
+										 	trigger: 'hover',
+										 	placement: "auto",
+										 	content: getUpdateChangesUI(object)
+										 	
+										});
+								  }
 							  }
 							  
 							  i++;
@@ -951,6 +963,21 @@ function getDetailedActivityUI(object,objectType,activityType){
 							+'	</div>'
 				+'</div>';
 		}
+		
+		if(activityType=="update"){
+			var detailsPopoverId = 'popover-dismiss-'+object.service_id+''+object.up_id;
+			var popoverButton = '<span  style="margin-left: 8px;padding: 0 10px;" id='+detailsPopoverId+' class="m-badge m-badge--success m-badge--rounded">'
+					+'Details</span>';
+			
+			content = '<div class="m-list-badge m--margin-top-15">'
+				+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
+					+'<div class="m-list-badge__items">'
+					+'<span style="font-size: 24px; color: #c4c5d6;" >✔</span>'
+					+'<span style="background:transparent;" class="m-list-badge__item"><a href="/profile?id='+object.user_id+'">'+object.updatedBy+'</a> updated service <span style="color:#34bfa3;">'+object.name+'</span> '
+					+popoverButton+'</span>'
+							+'	</div>'
+				+'</div>';
+		}
 	}
 	
 	if(objectType == "operation"){
@@ -974,7 +1001,7 @@ function getDetailedActivityUI(object,objectType,activityType){
 				+'<div class="m-list-badge__label m--font-metal">'+object.creationTime+'</div>'
 					+'<div class="m-list-badge__items">'
 					+'<span style="font-size: 24px; color: #c4c5d6;" >✔</span>'
-					+'<span style="background:transparent;" class="m-list-badge__item"><a href="/profile?id='+object.user_id+'">'+object.updatedBy+'</a> updated operation <span style="color:#34bfa3;">'+object.name+'</span> '
+					+'<span style="background:transparent;" class="m-list-badge__item"><a href="/profile?id='+object.user_id+'">'+object.updatedBy+'</a> updated operation <span style="color:#f4516c;">'+object.name+'</span> '
 					+popoverButton+'</span>'
 							+'	</div>'
 				+'</div>';
@@ -2688,16 +2715,11 @@ function doUpdateOperationAjaxPost() {
 				+ startDate + "&endDate=" + endDate+"&responsible="+responsible+"&project="+project,
 		success : function(response) {
 			if (response.status == "SUCCESS") {
-				//var addedOperationId = response.result[0];
-				//var parentProjectId = project;
-//				$('#operation_name').val('');
-//				$('#select_project_new_operation').val('');
-//				$('#m_datepicker_4_3').val('');
-//				$('#m_datepicker_4_4').val('');
-				
+
 				toastr.success("","Operation updated successfully ");
 				$('#m_operation_edit_sidebar_close').click();
 				toggleOperationFragment(operationId);
+				$('#operations_datatable').mDatatable('reload');
 
 
 			} else {
@@ -2726,6 +2748,197 @@ function doUpdateOperationAjaxPost() {
 		},
 		error : function(e) {
 			toastr.error("Couldn't update operation", "Server Error");
+		}
+	});
+}
+
+function populateSelectOwnedProjectsEditServiceSidebar() {
+	var projectId = $('#selected_project_id').val();
+	$.ajax({
+		type : "GET",
+		url : '/set-select-owned-projects',
+		async: false,
+		success : function(response) {
+
+			var html_select_options = "";
+
+			var html_text = "<option value=' '>Nothing Selected</option>";
+			if (response.length == 1) {
+				if(response[0].id == projectId )
+					html_text += "<option value='" + response[0].id + "' selected>"
+					+ response[0].name + "</option>";
+				else
+				html_text += "<option value='" + response[0].id + "'>"
+						+ response[0].name + "</option>";
+				$("#select_project_edit_service").html(html_text);
+			} else {
+				for (i = 0; i < response.length; i++) {
+					if(response[i].id == projectId )
+						html_text += "<option value='" + response[i].id + "' selected>"
+						+ response[i].name + "</option>";
+					else
+					html_text += "<option value='" + response[i].id + "'>"
+							+ response[i].name + "</option>";
+				}
+				$("#select_project_edit_service").html(html_text);
+
+			}
+			$("#select_project_edit_service").selectpicker('refresh');
+
+//			$("#select_project_edit_operation").on('change', function() {
+//				var projectId = $("#select_project_edit_operation").val();
+//				
+//				if(projectId == ' '){ 
+//					$('#sites_map_container_edit_operation').attr("style","display:none;width:100%; height:50px;position: relative;");
+//					$('#sites_map_canvas_sidebar_edit_operation').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
+//				}else{
+//					initializeSitesGmapEditOperation(projectId);
+//				}
+//			});
+
+
+		},
+		error : function(e) {
+			alert('populate select project edit service Error!');
+			$("#select_project_edit_service").html(
+					"<option value=''>Nothing selected</option>");
+
+		}
+	});
+
+}
+
+function populateSelectOperationEditService(projectId){
+	var selectedOperationId = $('#operation_fragment_selected_operation_id').val();
+
+	$.ajax({
+		type : "GET",
+		url : '/get-project-operations',
+		async: false,
+		data: "projectId="+projectId,
+		success : function(response) {
+			
+			var html_text = "<option value=' ' selected>Nothing Selected</option>";
+			if (response.length == 1) {
+				html_text += "<option value='" + response[0].id + "'>"
+						+ response[0].name + "</option>";
+				$("#select_operation_edit_service").html(html_text);
+				} else {
+				for (i = 0; i < response.length; i++) {
+					if(selectedOperationId == response[i].id){
+						html_text += "<option value='" + response[i].id + "' selected>" + response[i].name
+						+ "</option>";
+					}else{
+						html_text += "<option value='" + response[i].id + "'>" + response[i].name
+						+ "</option>";	
+					}
+					
+				}
+				$("#select_operation_edit_service").html(html_text);
+
+
+			}
+			$("#select_operation_edit_service").selectpicker('refresh');
+
+			
+			
+		},
+	error : function(e) {
+		alert('Select operation edit service Error !');
+		$("#select_operation_edit_service").html(
+				"<option value=''>Nothing selected</option>");
+		
+	}
+});
+}
+
+function populateEditServiceSidebar(){
+	populateSelectOwnedProjectsEditServiceSidebar();
+	
+	var projectId = $("#select_project_edit_service").val();
+	populateSelectOperationEditService(projectId);
+
+	var serviceId = $('#service_fragment_selected_service_id').val();
+	$.ajax({
+		type : "GET",
+		url : '/get-service-details',
+		data : 'id=' + serviceId,
+		async : false,
+		success : function(response) {
+			$("#input_edit_service_name").val(response.name);
+			
+			$('#input_edit_service_price').val(response.price);
+			$('#input_edit_service_category').val(response.category);
+			$('#input_edit_service_category').selectpicker('refresh');
+			$("#input_edit_service_flag").val(response.flag);
+			$("#input_edit_service_flag").selectpicker('refresh');
+		},
+		error : function(e) {
+			alert('Error: Service Details population ' + e);
+		}
+	});
+}
+
+function doUpdateServiceAjaxPost() {
+
+	var serviceId = $('#service_fragment_selected_service_id').val();
+	
+	var nameError = $('#edit_service_name_error');
+	var projectError = $('#edit_service_operation_error');
+	var operationError = $('#edit_service_operation_error');
+	var priceError = $('#edit_service_price_error');
+	var categoryError = $('#edit_service_category_error');
+	
+	var name = $('#input_edit_service_name').val();
+	var project = $('#select_project_edit_service').val();
+	var operation = $('#select_operation_edit_service').val();
+	var price = $('#input_edit_service_price').val();
+	var category = $('#input_edit_service_category').val();
+	var flag = $('#input_edit_service_flag').val();
+	
+
+	nameError.hide('fast');
+	projectError.hide('fast');
+	operationError.hide('fast');
+	priceError.hide('fast');
+	categoryError.hide('fast');
+
+	$.ajax({
+		type : "POST",
+		url : '/update-service',
+		data : "id="+serviceId +"&name=" + name + "&priceHT="+price+"&category="
+				+ category + "&flag=" + flag+"&operation="+operation+"&project="+project,
+		success : function(response) {
+			if (response.status == "SUCCESS") {
+
+				toastr.success("","Service updated successfully ");
+				$('#m_service_edit_sidebar_close').click();
+				toggleServiceFragment(serviceId);
+				$('#services_datatable').mDatatable('reload');
+
+			} else {
+
+					toastr.error("", "Please fill all required fields");
+					for (i = 0; i < response.result.length; i++) {
+						console.log(response.result[i].code);
+						if (response.result[i].code == "service.name.empty")
+							nameError.show('slow');
+						if (response.result[i].code == "service.project.empty")
+							projectError.show('slow');
+						if (response.result[i].code == "service.operation.empty")
+							operationError.show('slow');
+						if (response.result[i].code == "service.price.empty")
+							priceError.show('slow');
+						if (response.result[i].code == "service.category.empty")
+							categoryError.show('slow');
+						if (response.result[i].code == "service.price.undefined")
+							toastr.warning("please enter a valid price",
+							"Check Price");
+					}
+			}
+		},
+		error : function(e) {
+			toastr.error("Couldn't update service", "Server Error");
 		}
 	});
 }
