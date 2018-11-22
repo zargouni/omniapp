@@ -23,7 +23,7 @@ import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 import com.omniacom.omniapp.zohoAPI.SyncZohoPortal;
 
 
-@Configuration
+//@Configuration
 public class SchedulerConfig {
 
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerConfig.class);

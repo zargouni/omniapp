@@ -1821,14 +1821,14 @@ function populateServicesTabOperationFragment(operationId) {
 									+ '<div style="width:200px !important;" class="progress m-progress--sm">'
 									+ '<div class="progress-bar m--bg-success" role="progressbar" style="width: '
 									+ response[i].percentage
-									+ ';" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>'
+									+ '%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>'
 									+ '</div>'
 									+ '<span style="font-size:11px;" class="m-widget4__number m--font-info">'
 									+ response[i].taskCount
 									+ ' Tasks</span>'
 									+ '<span style="font-size:11px;float:right;" class="m-widget4__number m--font-info">'
 									+ response[i].percentage
-									+ '</span>'
+									+ '%</span>'
 									+ '</div>'
 									// + '<div class="m-widget4__ext">'
 									// + '<span title="'+response[i].taskCount+'

@@ -23,9 +23,9 @@ public class UploadedFileService {
 
 	private String destinationLocation = "D:/files/";
 
-	private String picturesDestinationLocation = new File("").getAbsolutePath()+"/src/main/resources/static";
+	private String picturesDestinationLocation = new File("").getAbsolutePath()+"/omnia/resources";//+"/src/main/resources/static";
 
-	private String picturesLocation = "/assets/app/media/img/users/";
+	private String picturesLocation = "/users/";///assets/app/media/img/users/";
 	
 	private String logosLocation = "/assets/app/media/img/logos/";
 
@@ -50,7 +50,7 @@ public class UploadedFileService {
 
 		FileCopyUtils.copy(multipartFile.getBytes(), new FileOutputStream(outputFileName));
 		
-		return miniFileName;
+		return outputFileName;//miniFileName;
 	}
 	
 	public String saveLogoToLocalDisk(Client client, MultipartFile multipartFile) throws IOException, FileNotFoundException {

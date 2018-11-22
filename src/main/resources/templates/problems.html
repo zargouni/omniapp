@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="layouts/default">
+<!-- begin::Head -->
+<head th:replace="fragments/fragment-head-html :: head"></head>
+<!-- end::Head -->
+
+<!-- Begin::Body -->
+<body
+	class="m-page--fluid m--skin- m-content--skin-light2 m-header--fixed m-header--fixed-mobile m-footer--push m-aside--offcanvas-default">
+
+	<!-- begin:: Page -->
+	<div layout:fragment="content"
+		class="m-grid m-grid--hor m-grid--root m-page">
+		<div class="loader-wrapper" style="display: none;">
+			<div id="loader"></div>
+		</div>
+		<!-- begin::Content -->
+		<div
+			class="m-grid__item m-grid__item--fluid m-grid m-grid--ver-desktop m-grid--desktop m-body">
+			<div class="m-grid__item m-grid__item--fluid m-wrapper">
+			<h1>PROBLEMS HERE !</h1>
+<!-- 				<div -->
+<!-- 					th:replace="fragments/fragment-boqs-content :: boqs-content"></div> -->
+			</div>
+		</div>
+
+		<!-- end:: Content -->
+
+		
+<!-- <script type="text/javascript" -->
+<!-- 		src="assets/omniapp/js/datatable-boqs-json.js"></script> -->
+		
+		
+	</div>
+	<!-- end:: Page -->
+
+		
+</body>
+<!-- end::Body -->
+
+</html>

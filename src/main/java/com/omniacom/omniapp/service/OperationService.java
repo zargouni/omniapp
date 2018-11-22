@@ -233,22 +233,22 @@ public class OperationService {
 	}
 
 	public String getOperationProgress(Operation op) {
+
+		
 		List<com.omniacom.omniapp.entity.Service> services = op.getServices();
-		List<Task> opTasks = new ArrayList<Task>();
-		Integer closed = 0;
+		Integer percentage = 0;
+		Integer fullServices = 0;
 		for (com.omniacom.omniapp.entity.Service service : services) {
-			opTasks.addAll(service.getTasks());
-
-		}
-		if (!opTasks.isEmpty()) {
-			for (Task t : opTasks) {
-				if (t.getStatus().equals(StaticString.TASK_STATUS_COMPLETED))
-					closed++;
+			percentage += Integer.valueOf(serviceService.getServicePercentageComplete(service));
+			if(!service.getTasks().isEmpty()) {
+				fullServices++;
 			}
-			return (closed * 100 / opTasks.size()) + "%";
-		}
 
-		return "0%";
+		}
+		if(!services.isEmpty()) {
+			return (percentage/fullServices)+"";
+		}
+		return "0";
 	}
 
 	public JSONArray getOperationComments(long operationId) {

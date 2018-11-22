@@ -5810,7 +5810,7 @@ var mLayout = function() {
             function initScrollableMenu(obj) {    
                 if (mUtil.isInResponsiveRange('tablet-and-mobile')) {
                     // destroy if the instance was previously created
-                    mApp.destroyScroller(obj);
+                    //mApp.destroyScroller(obj);
                     return;
                 }
 

@@ -187,10 +187,14 @@ public class ProjectService {
 	}
 
 	public String getProjectProgress(Project project) {
-		Integer taskCount = findTaskCount(project);
-		if (taskCount != 0)
-			return (findCompletedTasksCount(project) * 100 / taskCount) + "%";
-		return "0%";
+		List<Operation> ops = project.getOperations();
+		Integer percentage = 0;
+		for(Operation op : ops) {
+			percentage += Integer.valueOf(operationService.getOperationProgress(op));
+		}
+		if(!ops.isEmpty())
+			return (percentage/ops.size())+"";
+		return "0";
 	}
 
 	public JSONObject getProjectTaskStats(long projectId) {
@@ -717,18 +721,13 @@ public class ProjectService {
 					if (globalDuration != 0)
 						taskCurrentMoney = (((float) elapsedDays / globalDuration)
 								* ((float) Integer.parseInt(task.getCompletionPercentage()) / 100)) * s.getPriceHT();
-					// System.out.println("-----------Task: "+task.getName()+"---Duration:
-					// ("+elapsedDays+"/"+ globalDuration+")---Percentage:
-					// "+Integer.parseInt(task.getCompletionPercentage())+"------Money:
-					// "+taskCurrentMoney+"/"+s.getPriceHT());
+					
 					serviceCurrentMoney += taskCurrentMoney;
 				}
 
 				overallCurrentMoney += serviceCurrentMoney;
-				// System.out.println("Service: "+s.getName()+" has a global duration of
-				// "+globalDuration+" days");
-
 			}
+			
 			json.add(new JSONObject().element("number", poNumber).element("services", poServices.size())
 					.element("price", price).element("currency", project.getCurrency())
 					.element("actual_money", new DecimalFormat("##.##").format(overallCurrentMoney))

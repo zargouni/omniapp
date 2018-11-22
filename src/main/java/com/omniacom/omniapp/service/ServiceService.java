@@ -55,14 +55,14 @@ public class ServiceService {
 
 	public String getServicePercentageComplete(com.omniacom.omniapp.entity.Service service) {
 		List<Task> tasks = serviceRepo.findAllTasks(service);
-		Integer complete = 0;
+		Integer percentage = 0;
 		for (Task t : tasks) {
-			if (t.getStatus().equals(StaticString.TASK_STATUS_COMPLETED))
-				complete++;
+			percentage += Integer.valueOf(t.getCompletionPercentage());
+			
 		}
 		if (tasks.size() != 0)
-			return (complete * 100 / tasks.size() + "%");
-		return "0%";
+			return (percentage / tasks.size()+"");
+		return "0";
 	}
 
 	public String getServiceOpenTasksPercentage(com.omniacom.omniapp.entity.Service service) {

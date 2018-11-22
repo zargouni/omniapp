@@ -24,7 +24,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @RestController
-
 public class BoqsController {
 
 	@Autowired
