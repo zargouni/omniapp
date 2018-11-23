@@ -477,6 +477,7 @@ public class ProjectController {
 		if (!result.hasErrors() && project != null) {
 			issue.setProject(project);
 			// issue.setOperation(operation);
+			issue.setId(0);
 			issue.setCreator(userService.getSessionUser());
 			issue.setCreationDate(new Date());
 			issue.setStatus(StaticString.ISSUE_STATUS_OPEN);

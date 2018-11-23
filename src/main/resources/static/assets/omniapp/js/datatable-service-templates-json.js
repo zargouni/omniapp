@@ -27,7 +27,7 @@ var DatatableJsonRemoteDemo = function () {
 		            },
 		          },
 		        },
-		        pageSize: 10,
+		        pageSize: 5,
 		        serverPaging: false,
 		        serverFiltering: false,
 		        serverSorting: false,
@@ -35,7 +35,7 @@ var DatatableJsonRemoteDemo = function () {
 
 		      // layout definition
 		      layout: {
-		        scroll: false,
+		        scroll: true,
 		        footer: false
 		      },
 
@@ -50,7 +50,7 @@ var DatatableJsonRemoteDemo = function () {
 		          // pagination
 		          pagination: {
 		            // page size select
-		            pageSizeSelect: [10, 20, 30, 50, 100],
+		            pageSizeSelect: [5, 10, 20, 40, 50],
 		          },
 		        },
 		      },

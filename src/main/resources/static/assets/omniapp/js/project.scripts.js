@@ -528,12 +528,13 @@ function doAddNewIssueAjax(){
 	var descriptionError = $('#new_issue_description_error');
 	var dateError = $('#new_issue_date_error'); 
 	var operationError = $('#new_issue_operation_error'); 
+	var severityError = $('#new_issue_severity_error');
 	
 	nameError.hide('fast');
 	descriptionError.hide('fast');
 	dateError.hide('fast');
 	operationError.hide('fast');
-
+	severityError.hide('fast');
 
 	if($('#input_new_issue_operation').val() == 'none'){
 		toastr.warning("You have to select the concerned operation", "Select Operation");
@@ -551,6 +552,10 @@ function doAddNewIssueAjax(){
 					if($('#issues_datatable').length){
 						$('#issues_datatable').mDatatable('reload');
 					}
+					if($('#snags_count').length || $('#operation_snags_datatable').length){
+						var operationId = $('#operation_fragment_selected_operation_id').val();
+						populateOperationSnags(operationId);
+					}
 					$('#m_modal_issue').modal('hide');
 					doAddIssueOwners(response.result);
 					toastr.success("Issue submitted successfully", "Well done!");
@@ -559,6 +564,7 @@ function doAddNewIssueAjax(){
 					$('#input_new_issue_description').val("");
 					$('#input_new_issue_due_date').val("");
 					$('#input_new_issue_severity').val("");
+					$('#input_new_issue_severity').selectpicker("refresh");
 				}
 					
 				else{
@@ -571,6 +577,8 @@ function doAddNewIssueAjax(){
 							descriptionError.show('slow');
 						if (response.result[i].code == "issue.endDate.empty")
 							dateError.show('slow');
+						if (response.result[i].code == "issue.severity.empty")
+							severityError.show('slow');
 
 						
 					}
