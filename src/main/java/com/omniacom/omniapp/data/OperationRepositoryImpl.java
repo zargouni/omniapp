@@ -13,7 +13,7 @@ import com.omniacom.omniapp.entity.Comment;
 import com.omniacom.omniapp.entity.Issue;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Service;
-import com.omniacom.omniapp.entity.Snag;
+//import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.custom.OperationRepositoryCustom;
 
@@ -44,15 +44,15 @@ public class OperationRepositoryImpl implements OperationRepositoryCustom {
 		return comments;
 	}
 
-	@Override
-	public List<Snag> findAllSnags(Operation operation) {
-		// TODO Auto-generated method stub
-		List<Snag> snags = null;
-		String q = "SELECT c FROM Snag c WHERE c.operation.id = :param";
-		Query query = entityManager.createQuery(q).setParameter("param", operation.getId());
-		snags = (List<Snag>) query.getResultList();
-		return snags;
-	}
+//	@Override
+//	public List<Snag> findAllSnags(Operation operation) {
+//		// TODO Auto-generated method stub
+//		List<Snag> snags = null;
+//		String q = "SELECT c FROM Snag c WHERE c.operation.id = :param";
+//		Query query = entityManager.createQuery(q).setParameter("param", operation.getId());
+//		snags = (List<Snag>) query.getResultList();
+//		return snags;
+//	}
 
 	@Override
 	public List<User> findContributingUsers(Operation operation) {

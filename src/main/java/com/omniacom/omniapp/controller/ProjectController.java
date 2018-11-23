@@ -43,13 +43,13 @@ import com.omniacom.omniapp.entity.Notification;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
-import com.omniacom.omniapp.entity.Snag;
+//import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.CommentRepository;
 import com.omniacom.omniapp.repository.IssueRepository;
-import com.omniacom.omniapp.repository.SnagRepository;
+//import com.omniacom.omniapp.repository.SnagRepository;
 import com.omniacom.omniapp.repository.UploadedFileRepository;
 import com.omniacom.omniapp.service.IssueService;
 import com.omniacom.omniapp.service.NotificationService;
@@ -61,7 +61,7 @@ import com.omniacom.omniapp.service.UploadedFileService;
 import com.omniacom.omniapp.service.UserService;
 import com.omniacom.omniapp.validator.IssueValidator;
 import com.omniacom.omniapp.validator.JsonResponse;
-import com.omniacom.omniapp.validator.SnagValidator;
+//import com.omniacom.omniapp.validator.SnagValidator;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -87,8 +87,8 @@ public class ProjectController {
 	@Autowired
 	UploadedFileService fileService;
 
-	@Autowired
-	SnagValidator snagValidator;
+//	@Autowired
+//	SnagValidator snagValidator;
 
 	@Autowired
 	IssueValidator issueValidator;
@@ -441,30 +441,30 @@ public class ProjectController {
 		return response;
 	}
 
-	@Autowired
-	private SnagRepository snagRepo;
+//	@Autowired
+//	private SnagRepository snagRepo;
 
-	@PostMapping("/do-post-snag")
-	public JsonResponse doPostSnag(@RequestParam("id") long operationId, @Validated Snag snag, BindingResult result) {
-		JsonResponse response = new JsonResponse();
-		Operation operation = operationService.findOne(operationId);
-		if (!result.hasErrors() && operation != null) {
-			snag.setOperation(operation);
-			snag.setUser(userService.getSessionUser());
-			snag.setDate(new Date());
-			if (snagRepo.save(snag) != null) {
-				response.setStatus("SUCCESS");
-			} else {
-				response.setStatus("FAIL");
-			}
-
-		} else if (result.hasErrors()) {
-			response.setStatus("FAIL");
-			response.setResult(result.getFieldErrors());
-		}
-
-		return response;
-	}
+//	@PostMapping("/do-post-snag")
+//	public JsonResponse doPostSnag(@RequestParam("id") long operationId, @Validated Snag snag, BindingResult result) {
+//		JsonResponse response = new JsonResponse();
+//		Operation operation = operationService.findOne(operationId);
+//		if (!result.hasErrors() && operation != null) {
+//			snag.setOperation(operation);
+//			snag.setUser(userService.getSessionUser());
+//			snag.setDate(new Date());
+//			if (snagRepo.save(snag) != null) {
+//				response.setStatus("SUCCESS");
+//			} else {
+//				response.setStatus("FAIL");
+//			}
+//
+//		} else if (result.hasErrors()) {
+//			response.setStatus("FAIL");
+//			response.setResult(result.getFieldErrors());
+//		}
+//
+//		return response;
+//	}
 
 	@Autowired
 	IssueRepository issueRepo;
@@ -876,10 +876,10 @@ public class ProjectController {
 		return jsonService;
 	}
 
-	@InitBinder("snag")
-	protected void setSnagValidator(WebDataBinder binder) {
-		binder.addValidators(snagValidator);
-	}
+//	@InitBinder("snag")
+//	protected void setSnagValidator(WebDataBinder binder) {
+//		binder.addValidators(snagValidator);
+//	}
 
 	@InitBinder("issue")
 	protected void setIssueValidator(WebDataBinder binder) {

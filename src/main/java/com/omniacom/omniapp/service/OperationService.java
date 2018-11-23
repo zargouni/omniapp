@@ -19,7 +19,7 @@ import com.omniacom.omniapp.entity.LogChange;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.ServiceTemplate;
-import com.omniacom.omniapp.entity.Snag;
+//import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.TaskTemplate;
 import com.omniacom.omniapp.entity.UpdateLog;
@@ -47,6 +47,9 @@ public class OperationService {
 
 	@Autowired
 	ServiceRepository serviceRepo;
+	
+	@Autowired
+	IssueService issueService;
 
 	@Autowired
 	TaskRepository taskRepo;
@@ -214,11 +217,11 @@ public class OperationService {
 		int zeroProgressServices = 0;
 		List<com.omniacom.omniapp.entity.Service> services = op.getServices();
 		for (com.omniacom.omniapp.entity.Service service : services) {
-			if (serviceService.getServicePercentageComplete(service).equals("0%")) {
+			if (serviceService.getServicePercentageComplete(service).equals("0")) {
 				zeroProgressServices++;
 				open = true;
 			}
-			if (!serviceService.getServicePercentageComplete(service).equals("100%")) {
+			if (!serviceService.getServicePercentageComplete(service).equals("100")) {
 				//zeroProgressServices++;
 				open = true;
 			}
@@ -282,31 +285,30 @@ public class OperationService {
 	public JSONArray getOperationSnags(long operationId) {
 		JSONArray array = new JSONArray();
 		Operation operation = operationRepo.findOne(operationId);
-		if (!operation.getSnags().isEmpty()) {
-			Collections.sort(operation.getSnags(), new Comparator<Snag>() {
-				public int compare(Snag o1, Snag o2) {
-					return o2.getDate().compareTo(o1.getDate());
+		if (!operation.getIssues().isEmpty()) {
+			Collections.sort(operation.getIssues(), new Comparator<Issue>() {
+				public int compare(Issue o1, Issue o2) {
+					return o2.getCreationDate().compareTo(o1.getCreationDate());
 				}
 			});
-			for (Snag s : operation.getSnags()) {
-				array.add(jsonSnag(s));
+			for (Issue s : operation.getIssues()) {
+				array.add(issueService.jsonIssueFormattedDates(s));
 			}
 		}
-
 		return array;
 	}
 
-	private Object jsonSnag(Snag s) {
-		return new JSONObject().element("id", s.getId()).element("title", s.getTitle())
-				.element("severity", s.getSeverity())
-				.element("user", s.getUser().getFirstName() + " " + s.getUser().getLastName())
-				.element("user_id", s.getUser().getId())
-				.element("user_pic",
-						s.getUser().getProfilePic() == null ? "assets/app/media/img/users/user-icon.png"
-								: s.getUser().getProfilePic())
-				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(s.getDate()))
-				.element("content", s.getContent());
-	}
+//	private Object jsonSnag(Snag s) {
+//		return new JSONObject().element("id", s.getId()).element("title", s.getTitle())
+//				.element("severity", s.getSeverity())
+//				.element("user", s.getUser().getFirstName() + " " + s.getUser().getLastName())
+//				.element("user_id", s.getUser().getId())
+//				.element("user_pic",
+//						s.getUser().getProfilePic() == null ? "assets/app/media/img/users/user-icon.png"
+//								: s.getUser().getProfilePic())
+//				.element("date", new SimpleDateFormat("dd MMMM YYYY - hh:mm", Locale.ENGLISH).format(s.getDate()))
+//				.element("content", s.getContent());
+//	}
 
 	public JSONObject jsonOperationGantt(Operation op) {
 		JSONObject json = new JSONObject().element("id", op.getId()).element("name", op.getName())

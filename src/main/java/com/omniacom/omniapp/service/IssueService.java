@@ -95,10 +95,14 @@ public class IssueService {
 	}
 
 	public JSONObject jsonIssue(Issue issue) {
-		return new JSONObject().element("id", issue.getId()).element("name", issue.getName())
+		return new JSONObject().element("id", issue.getId())
+				.element("name", issue.getName())
 				.element("endDate", new SimpleDateFormat("dd/MM/yyyy").format(issue.getEndDate()))
-				.element("status", issue.getStatus()).element("severity", issue.getSeverity())
+				.element("status", issue.getStatus())
+				.element("severity", issue.getSeverity())
 				.element("description", issue.getDescription())
+				.element("creator",issue.getCreator().getFirstName()+" "+issue.getCreator().getLastName())
+				.element("creator_id", issue.getCreator().getId())
 				.element("creationDate", new SimpleDateFormat("yyyy-MM-dd").format(issue.getCreationDate()))
 				.element("files", findAllFiles(issue));
 	}

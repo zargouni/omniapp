@@ -58,6 +58,9 @@ public class Issue implements Serializable {
 	@ManyToOne
 	private User creator;
 	
+	@ManyToOne 
+	private Classification classification;
+	
 	@OneToMany( mappedBy = "issue", orphanRemoval=true, cascade = CascadeType.PERSIST)
 	@Where(clause = "deleted <> true")
 	private List<Comment> comments;

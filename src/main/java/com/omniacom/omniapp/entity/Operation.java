@@ -60,9 +60,9 @@ public class Operation implements Serializable {
 	@ManyToOne
 	private Site site;
 
-	@OneToMany(mappedBy = "operation", orphanRemoval = true, cascade = CascadeType.PERSIST)
-	@Where(clause = "deleted <> true")
-	private List<Snag> snags;
+//	@OneToMany(mappedBy = "operation", orphanRemoval = true, cascade = CascadeType.PERSIST)
+//	@Where(clause = "deleted <> true")
+//	private List<Snag> snags;
 
 	@OneToMany(mappedBy = "operation", orphanRemoval = true, cascade = CascadeType.PERSIST)
 	@Where(clause = "deleted <> true")
@@ -238,9 +238,9 @@ public class Operation implements Serializable {
 	/**
 	 * @return the snags
 	 */
-	public List<Snag> getSnags() {
-		return snags;
-	}
+//	public List<Snag> getSnags() {
+//		return snags;
+//	}
 
 	/**
 	 * @return the comments
@@ -285,9 +285,9 @@ public class Operation implements Serializable {
 	 * @param snags
 	 *            the snags to set
 	 */
-	public void setSnags(List<Snag> snags) {
-		this.snags = snags;
-	}
+//	public void setSnags(List<Snag> snags) {
+//		this.snags = snags;
+//	}
 
 	/**
 	 * @param comments

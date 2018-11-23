@@ -1,19 +1,19 @@
 
 <div id="operation-fragment" style="display: none;"
 	th:fragment="fragment-operation">
-	
+
 	<!-- begin::Edit Operation Sidebar -->
-		<div
-			th:if="${sessionUser.id == selectedProject.owner.id || sessionUser.role.name == 'ADMIN'}"
-			data-th-replace="fragments/fragment-operation-edit-sidebar :: operation-edit-sidebar"></div>
-		<!-- end::Edit Operation Sidebar -->
-	
-	
-<!-- 	<div id="map_wrapper" style="overflow:auto; "> -->
-		<div id="operation_map" 
-			style="position: absolute;width: 100% !important;height:130% !important;overflow-y: hidden;overflow-x:hidden;  top: 0; right: 0; bottom: 0; left: 0; z-index: 0;">
-		</div>
-<!-- 	</div> -->
+	<div
+		th:if="${sessionUser.id == selectedProject.owner.id || sessionUser.role.name == 'ADMIN'}"
+		data-th-replace="fragments/fragment-operation-edit-sidebar :: operation-edit-sidebar"></div>
+	<!-- end::Edit Operation Sidebar -->
+
+
+	<!-- 	<div id="map_wrapper" style="overflow:auto; "> -->
+	<div id="operation_map"
+		style="position: absolute; width: 100% !important; height: 130% !important; overflow-y: hidden; overflow-x: hidden; top: 0; right: 0; bottom: 0; left: 0; z-index: 0;">
+	</div>
+	<!-- 	</div> -->
 	<div
 		style="margin-top: 5%; height: 100%; z-index: 1; position: relative;">
 		<div style="margin-bottom: 20px;" class="m-subheader row">
@@ -46,20 +46,20 @@
 
 				</div>
 			</div>
-			
+
 			<div class="col-xl-1">
-					
+
 				<div class="d-flex align-items-center">
-				
-					
-					<a style="z-index: 1;"
-						class="btn btn-danger m-btn m-btn--icon"> <span> <i
-							class="flaticon-coins"></i> <span id="operation_price">Secondary</span>
+
+
+					<a style="z-index: 1;" class="btn btn-danger m-btn m-btn--icon">
+						<span> <i class="flaticon-coins"></i> <span
+							id="operation_price">Secondary</span>
 					</span>
 					</a>
 				</div>
 			</div>
-			
+
 		</div>
 		<br />
 		<div class="row">
@@ -86,11 +86,20 @@
 
 								<li th:if="${sessionUser.id == selectedProject.owner.id}"
 									style="margin: auto; margin-right: 0; float: right;">
-					 					<button onclick="populateEditOperationSidebar()" id="m_operation_edit_sidebar_toggle" title="Edit operation" type="button" class="m-btn btn btn-warning btn-sm"><i style="color: #fff;" class="fa fa-edit"></i></button>
-					    				<button onclick="handleRemoveOperation()" title="Delete operation" type="button" class="m-btn btn btn-danger btn-sm"><i class="fa fa-trash-o"></i></button>
+									<button onclick="populateEditOperationSidebar()"
+										id="m_operation_edit_sidebar_toggle" title="Edit operation"
+										type="button" class="m-btn btn btn-warning btn-sm">
+										<i style="color: #fff;" class="fa fa-edit"></i>
+									</button>
+									<button onclick="handleRemoveOperation()"
+										title="Delete operation" type="button"
+										class="m-btn btn btn-danger btn-sm">
+										<i class="fa fa-trash-o"></i>
+									</button>
 									<button
 										class="btn btn-primary btn-sm operation_add_new_service">Add
-										new service</button></li>
+										new service</button>
+								</li>
 							</ul>
 
 						</div>
@@ -152,21 +161,22 @@
 
 							</div>
 							<div class="tab-pane" id="operation_snags" role="tabpanel">
-								<div style="text-align:center;">
-								<a style="position:relative;margin: 0 auto 30px auto;" href="#" data-toggle="modal"
-									data-target="#snag-modal"
-									class="btn btn-danger m-btn btn-sm 	m-btn m-btn--icon m-btn--pill">
-									<span> <i class="la la-warning"></i> <span>New
-											Snag</span>
-								</span>
-								</a>
+								<div style="position: absolute; width: 80%;text-align: center;">
+									<a title="Submit Snag" style="margin-top: 1.5%;left: 57%;position: relative;z-index: 10001;"
+									onclick="populateNewIssueModal()"
+										href="#" data-toggle="modal" data-target="#m_modal_issue"
+										class="btn btn-danger m-btn m-btn--icon btn-sm m-btn--icon-only">
+										<i class="la la-warning"></i> 
+									
+									</a>
 								</div>
 
 								<div id="scrollable_snags" class="m-scrollable"
-									data-scrollable="true" data-max-height="350"
+									data-scrollable="true" data-max-height="400"
 									data-scrollbar-shown="true">
-									<div id="operation_snags_wrapper"
-										style="margin-right: -50px; padding-right: 50px; max-height: 100%; overflow-y: scroll;"></div>
+									<!-- 									<div id="operation_snags_wrapper" -->
+									<!-- 										style="margin-right: -50px; padding-right: 50px; max-height: 100%; overflow-y: scroll;"></div> -->
+									<div id="operation_snags_datatable"></div>
 								</div>
 
 							</div>
@@ -226,9 +236,16 @@
 		</div>
 	</div>
 
-	<div
-		th:replace="fragments/modal-fragments/fragment-snag-modal :: snag-modal"></div>
+<!-- 	<div -->
+<!-- 		th:replace="fragments/modal-fragments/fragment-snag-modal :: snag-modal"></div> -->
+		
+<!-- 		<div -->
+<!-- 			th:replace="fragments/modal-fragments/fragment-new-issue-modal :: new-issue-modal"></div> -->
+			
+	<script type="text/javascript"
+		src="assets/omniapp/js/datatable-operation-snags.js"></script>
+		
+		<input id="operation_fragment_selected_operation_id" type="hidden" />
 
-	<input id="operation_fragment_selected_operation_id" type="hidden" />
-
-</div>
+		</div>
+	
