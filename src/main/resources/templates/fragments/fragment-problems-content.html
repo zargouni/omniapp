@@ -1,0 +1,230 @@
+<div class="m-content" th:fragment="problems-content">
+
+	<div class="m-portlet m-portlet--mobile">
+		<div class="m-portlet__head">
+			<div class="m-portlet__head-caption">
+				<div class="m-portlet__head-title">
+					<h3 class="m-portlet__head-text">
+						Issues Classifications<small>these are all created classifications.</small>
+					</h3>
+				</div>
+			</div>
+			
+		</div>
+		<div class="m-portlet__body">
+			<!--begin: Search Form -->
+			<div
+				class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
+				<div class="row align-items-center">
+					<div class="col-xl-8 order-2 order-xl-1">
+						<div class="form-group m-form__group row align-items-center">
+							<div class="col-md-4">
+								<div class="m-input-icon m-input-icon--left">
+									<input type="text" class="form-control m-input m-input--solid"
+										placeholder="Search..." id="generalSearchClassifications"> <span
+										class="m-input-icon__icon m-input-icon__icon--left"> <span><i
+											class="la la-search"></i></span>
+									</span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-4 order-1 order-xl-2 m--align-right">
+						<a data-toggle="modal" data-target="#m_modal_classification"
+							href="#"
+							class="btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
+							<span> <i class="flaticon-plus"></i> <span>New
+									Classification</span>
+						</span>
+						</a>
+						<div class="m-separator m-separator--dashed d-xl-none"></div>
+					</div>
+				</div>
+			</div>
+			<!--end: Search Form -->
+
+<!-- begin : modals -->
+	<div class="modal fade show" id="edit-classification-details"
+		tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		style="display: none; padding-right: 17px;">
+		<div class="modal-dialog modal-lg " role="document">
+			<div class="modal-content" style="background: #f1f1f1">
+				<div class="modal-header">
+					<h5 class="modal-title" id="edit-service-template-modal-title">Edit
+						details</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+
+							<div class="modal-body">
+				<form class="m-form" target="noTarget">
+					<div class="m-portlet__body">
+						<div class="m-form__group form-group row">
+							<div class="col-lg-12">
+								<label for="">Boq Name:</label> <input id="input_boq_name"
+									type="text" class="form-control m-input "
+									placeholder="Bill Of Quantities Name">
+								<div id="boq_name_error" class="form-control-feedback"
+									style="color: red; float: right; display: none;">* name
+									must not be empty</div>
+							</div>
+						</div>
+
+						<div class="m-form__group form-group row">
+							<div class="col-lg-6">
+
+								<label for="">Start Date:</label>
+								<div class="input-group date">
+									<input type="text" class="form-control m-input"
+										placeholder="Start date" id="input_boq_start_date">
+									<div class="input-group-append">
+										<span class="input-group-text"> <i
+											class="la la-calendar-check-o"></i>
+										</span>
+									</div>
+
+								</div>
+
+								<div id="boq_start_date_error" class="form-control-feedback"
+									style="color: red; float: right; display: none;">*
+									required</div>
+							</div>
+							<div class="col-lg-6">
+								<label for="">End Date:</label>
+								<div class="input-group date">
+									<input type="text" class="form-control m-input"
+										placeholder="End date" id="input_boq_end_date">
+									<div class="input-group-append">
+										<span class="input-group-text"> <i
+											class="la la-calendar-check-o"></i>
+										</span>
+									</div>
+
+								</div>
+
+								<div id="boq_end_date_error" class="form-control-feedback"
+									style="color: red; float: right; display: none;">*
+									required</div>
+							</div>
+
+						</div>
+
+						<div class="m-form__seperator "></div>
+						<span></span>
+						<h5 class="modal-title" id="exampleModalLabel">Available
+							Services</h5>
+						<div class="m-form__group form-group">
+
+							<div id="service_templates_checkbox_list"
+								class="m-checkbox-inline">
+								<label th:each="serviceTemplate : ${serviceTemplateList}"
+									class="m-checkbox m-checkbox--success"> <input
+									th:id="${serviceTemplate.id}" type="checkbox"
+									th:text="${serviceTemplate.name}"> <span></span>
+									<input type="hidden" th:id="|service_name_${serviceTemplate.id}|" th:value="${serviceTemplate.name}">
+									<input type="hidden" th:id="|service_price_hidden_${serviceTemplate.id}|" value="" />
+								</label>
+
+							</div>
+							<span class="m-form__help">These are all the service
+								templates available</span>
+						</div>
+						
+						<div class="m-form__group form-group">
+
+							<div id="selected_service_templates_edit_boq">
+								
+							</div>
+							
+						</div>
+
+
+
+
+					</div>
+
+
+				</form>
+
+			</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Close</button>
+					<button id="button_update_boq" class="btn btn-primary">Save changes</button>
+				</div>
+
+
+			</div>
+		</div>
+
+
+	</div>
+
+
+<!-- end: modals -->
+
+<!-- begin: modal new classification -->
+	<div class="modal fade show" id="m_modal_classification"
+		tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+		style="display: none; padding-right: 17px;">
+		<div class="modal-dialog modal-sm " role="document">
+			<div class="modal-content" style="background: #f1f1f1">
+				<div class="modal-header">
+					<h5 class="modal-title" id="edit-service-template-modal-title">New Classification</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">×</span>
+					</button>
+				</div>
+
+							<div class="modal-body">
+				<form class="m-form" target="noTarget">
+					<div class="m-portlet__body">
+						<div class="m-form__group form-group row">
+							<div class="col-lg-12">
+								<label for="">Classification Name:</label> <input id="input_classification_name"
+									type="text" class="form-control m-input "
+									placeholder="Classification Name">
+								<div id="classification_name_error" class="form-control-feedback"
+									style="color: red; float: right; display: none;">* name
+									must not be empty</div>
+							</div>
+						</div>
+
+						
+					</div>
+
+
+				</form>
+
+			</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-dismiss="modal">Close</button>
+					<button onclick="doAddClassification()" class="btn btn-primary">Add</button>
+				</div>
+
+
+			</div>
+		</div>
+
+
+	</div>
+
+<!-- end: modal new classification -->
+
+			<!--begin: Datatable -->
+			<div
+				class="m_datatable m-datatable m-datatable--default m-datatable--error m-datatable"
+				id="classifications_datatable" style="position: static; zoom: 1;">
+			</div>
+			<!--end: Datatable -->
+		</div>
+
+
+	</div>
+
+
+</div>
