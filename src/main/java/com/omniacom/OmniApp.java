@@ -8,12 +8,14 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.multipart.support.MultipartFilter;
 
+import com.omniacom.omniapp.config.FileStorageProperties;
 import com.omniacom.omniapp.entity.Role;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.RoleRepository;
@@ -21,6 +23,9 @@ import com.omniacom.omniapp.repository.UserRepository;
 
 //@Import({ SchedulerConfig.class })
 @SpringBootApplication
+@EnableConfigurationProperties({
+    FileStorageProperties.class
+})
 public class OmniApp {
 
 	// @Autowired

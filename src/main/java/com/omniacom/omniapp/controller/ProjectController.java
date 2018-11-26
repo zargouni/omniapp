@@ -16,10 +16,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.util.FileCopyUtils;
@@ -29,12 +33,14 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Comment;
@@ -45,12 +51,14 @@ import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
 //import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
+import com.omniacom.omniapp.entity.UploadFileResponse;
 import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.CommentRepository;
 import com.omniacom.omniapp.repository.IssueRepository;
 //import com.omniacom.omniapp.repository.SnagRepository;
 import com.omniacom.omniapp.repository.UploadedFileRepository;
+import com.omniacom.omniapp.service.FileStorageService;
 import com.omniacom.omniapp.service.IssueService;
 import com.omniacom.omniapp.service.NotificationService;
 import com.omniacom.omniapp.service.OperationService;
@@ -533,7 +541,7 @@ public class ProjectController {
 		}
 		return response;
 	}
-
+	
 	@PostMapping(value = "/upload")
 	public ResponseEntity handleFileUpload(@RequestParam("id") long id, @RequestParam("file") MultipartFile[] files) {
 		boolean success = true;

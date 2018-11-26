@@ -43,6 +43,7 @@ public class Issue implements Serializable {
 	private Date completedOn;
 	private String status;
 	private String severity;
+	private String responsible;
 	
 	private long zohoId;
 	
@@ -384,6 +385,34 @@ public class Issue implements Serializable {
 
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
+	}
+
+	/**
+	 * @return the responsible
+	 */
+	public String getResponsible() {
+		return responsible;
+	}
+
+	/**
+	 * @return the classification
+	 */
+	public Classification getClassification() {
+		return classification;
+	}
+
+	/**
+	 * @param responsible the responsible to set
+	 */
+	public void setResponsible(String responsible) {
+		this.responsible = responsible;
+	}
+
+	/**
+	 * @param classification the classification to set
+	 */
+	public void setClassification(Classification classification) {
+		this.classification = classification;
 	}
 
 }

@@ -37,4 +37,13 @@ public class ClassificationService {
 		return false;
 	}
 
+	public void delete(Classification classification) {
+		classRepo.delete(classification);
+	}
+
+	public boolean updateClassification(Classification old, Classification c) {
+		old.setName(c.getName());
+		return classRepo.save(old) != null;
+	}
+
 }

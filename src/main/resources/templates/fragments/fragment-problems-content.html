@@ -47,7 +47,7 @@
 	<div class="modal fade show" id="edit-classification-details"
 		tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
 		style="display: none; padding-right: 17px;">
-		<div class="modal-dialog modal-lg " role="document">
+		<div class="modal-dialog modal-sm " role="document">
 			<div class="modal-content" style="background: #f1f1f1">
 				<div class="modal-header">
 					<h5 class="modal-title" id="edit-service-template-modal-title">Edit
@@ -58,91 +58,22 @@
 					</button>
 				</div>
 
+
 							<div class="modal-body">
 				<form class="m-form" target="noTarget">
 					<div class="m-portlet__body">
 						<div class="m-form__group form-group row">
 							<div class="col-lg-12">
-								<label for="">Boq Name:</label> <input id="input_boq_name"
+								<label for="">Classification Name:</label> <input id="edit_classification_name"
 									type="text" class="form-control m-input "
-									placeholder="Bill Of Quantities Name">
-								<div id="boq_name_error" class="form-control-feedback"
+									placeholder="Classification Name">
+								<div id="edit_classification_name_error" class="form-control-feedback"
 									style="color: red; float: right; display: none;">* name
 									must not be empty</div>
 							</div>
 						</div>
 
-						<div class="m-form__group form-group row">
-							<div class="col-lg-6">
-
-								<label for="">Start Date:</label>
-								<div class="input-group date">
-									<input type="text" class="form-control m-input"
-										placeholder="Start date" id="input_boq_start_date">
-									<div class="input-group-append">
-										<span class="input-group-text"> <i
-											class="la la-calendar-check-o"></i>
-										</span>
-									</div>
-
-								</div>
-
-								<div id="boq_start_date_error" class="form-control-feedback"
-									style="color: red; float: right; display: none;">*
-									required</div>
-							</div>
-							<div class="col-lg-6">
-								<label for="">End Date:</label>
-								<div class="input-group date">
-									<input type="text" class="form-control m-input"
-										placeholder="End date" id="input_boq_end_date">
-									<div class="input-group-append">
-										<span class="input-group-text"> <i
-											class="la la-calendar-check-o"></i>
-										</span>
-									</div>
-
-								</div>
-
-								<div id="boq_end_date_error" class="form-control-feedback"
-									style="color: red; float: right; display: none;">*
-									required</div>
-							</div>
-
-						</div>
-
-						<div class="m-form__seperator "></div>
-						<span></span>
-						<h5 class="modal-title" id="exampleModalLabel">Available
-							Services</h5>
-						<div class="m-form__group form-group">
-
-							<div id="service_templates_checkbox_list"
-								class="m-checkbox-inline">
-								<label th:each="serviceTemplate : ${serviceTemplateList}"
-									class="m-checkbox m-checkbox--success"> <input
-									th:id="${serviceTemplate.id}" type="checkbox"
-									th:text="${serviceTemplate.name}"> <span></span>
-									<input type="hidden" th:id="|service_name_${serviceTemplate.id}|" th:value="${serviceTemplate.name}">
-									<input type="hidden" th:id="|service_price_hidden_${serviceTemplate.id}|" value="" />
-								</label>
-
-							</div>
-							<span class="m-form__help">These are all the service
-								templates available</span>
-						</div>
 						
-						<div class="m-form__group form-group">
-
-							<div id="selected_service_templates_edit_boq">
-								
-							</div>
-							
-						</div>
-
-
-
-
 					</div>
 
 
@@ -152,7 +83,7 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-dismiss="modal">Close</button>
-					<button id="button_update_boq" class="btn btn-primary">Save changes</button>
+					<button id="button_update_classification" class="btn btn-primary">Save changes</button>
 				</div>
 
 

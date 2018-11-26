@@ -17,8 +17,8 @@
 								: </small><span id="issue_fragment_project"></span></span></li>
 					<li style="color: #fff;" class="m-nav__item m-nav__item"><span><small>Operation
 								: </small><span id="issue_fragment_operation"></span></span></li>
-<!-- 					<li style="color: #fff;" class="m-nav__item m-nav__item"><span><small>Service -->
-<!-- 								: </small><span id="task_fragment_service"></span></span></li> -->
+					<!-- 					<li style="color: #fff;" class="m-nav__item m-nav__item"><span><small>Service -->
+					<!-- 								: </small><span id="task_fragment_service"></span></span></li> -->
 
 
 				</ul>
@@ -27,8 +27,10 @@
 			<div style="display: none;" id="issue_actions"
 				class="m-portlet__head-tools">
 				<ul class="m-portlet__nav">
-					<li class="m-portlet__nav-item"><a th:if="${selectedProject.owner.id == sessionUser.id}" title="Delete Issue"
-						href="#" onclick="deleteIssue()" class="m-portlet__nav-link m-portlet__nav-link--icon"><i
+					<li class="m-portlet__nav-item"><a
+						th:if="${selectedProject.owner.id == sessionUser.id}"
+						title="Delete Issue" href="#" onclick="deleteIssue()"
+						class="m-portlet__nav-link m-portlet__nav-link--icon"><i
 							class="la la-close"></i></a></li>
 					<li class="m-portlet__nav-item"><a title="Edit Issue" href="#"
 						onclick="toggleUpdateModeIssue()"
@@ -55,18 +57,20 @@
 					</div>
 
 				</div>
-				
+
 				<div class="form-group m-form__group row">
 					<label class="col-lg-2 col-form-label">Description:</label>
 					<div class="col-lg-8">
-						<textarea disabled class="form-control m-input" id="issue_description" rows="3"></textarea>
-						<div id="issue_fragment_description_error" class="form-control-feedback"
+						<textarea disabled class="form-control m-input"
+							id="issue_description" rows="3"></textarea>
+						<div id="issue_fragment_description_error"
+							class="form-control-feedback"
 							style="color: red; float: right; display: none;">Please
 							enter a valid description</div>
 					</div>
 
 				</div>
-				
+
 				<div class="form-group m-form__group row">
 					<label class="col-lg-2 col-form-label">Owner(s):</label>
 					<div class="col-lg-8">
@@ -100,11 +104,13 @@
 					</div>
 				</div>
 				<div class="form-group m-form__group row">
-				<label class="col-lg-2 col-form-label">Due Date:</label>
+					<label class="col-lg-2 col-form-label">Due Date:</label>
+
 					<div class="col-lg-3">
 						<div class="input-group date">
 							<input type="text" class="form-control m-input task_date"
-								readonly="true" placeholder="Due Date" id="issue_end_date_select">
+								readonly="true" placeholder="Due Date"
+								id="issue_end_date_select">
 							<div class="input-group-append">
 								<span class="input-group-text"> <i
 									class="la la-calendar-check-o"></i>
@@ -115,48 +121,47 @@
 							class="form-control-feedback"
 							style="color: red; float: right; display: none;">* required</div>
 					</div>
-					
-<!-- 					<label class="col-lg-2 col-form-label">Start Date:</label> -->
-<!-- 					<div class="col-lg-3"> -->
-<!-- 						<div class="input-group date"> -->
-<!-- 							<input type="text" class="form-control m-input task_date" -->
-<!-- 								readonly="true" placeholder="Start Date" -->
-<!-- 								id="task_start_date_select"> -->
-<!-- 							<div class="input-group-append"> -->
-<!-- 								<span class="input-group-text"> <i -->
-<!-- 									class="la la-calendar-check-o"></i> -->
-<!-- 								</span> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 						<div id="task_fragment_startDate_error" -->
-<!-- 							class="form-control-feedback" -->
-<!-- 							style="color: red; float: right; display: none;">* required</div> -->
-<!-- 					</div> -->
-					
+					<label class="col-lg-2 col-form-label">Responsible:</label>
+					<div class="col-lg-3">
+						<select id="issue_responsible_select" data-placeholder="None"
+							class="form-control m-bootstrap-select m_selectpicker"
+							data-live-search="true">
+
+						</select>
+						<div id="issue_fragment_responsible_error"
+							class="form-control-feedback"
+							style="color: red; float: right; display: none;">* Required</div>
+					</div>
+
+
 				</div>
 
-<!-- 				<div class="form-group m-form__group row"> -->
-<!-- 					<label class="col-lg-2 col-form-label">Estimated HR:</label> -->
-<!-- 					<div class="col-lg-3"> -->
-<!-- 						<input type="number" class="form-control m-input" -->
-<!-- 							id="task_estimation_hr_input"> -->
-<!-- 					</div> -->
-<!-- 					<label class="col-lg-2 col-form-label">Estimated Days:</label> -->
-<!-- 					<div class="col-lg-3"> -->
-<!-- 						<input type="number" class="form-control m-input" -->
-<!-- 							id="task_estimation_days_input"> -->
-<!-- 					</div> -->
-<!-- 				</div> -->
+				<div class="form-group m-form__group row">
+				<label class="col-lg-4 col-form-label">Classification:</label> 
+					<div class="col-lg-6">
+						<select
+							id="issue_classification_select" data-placeholder="None"
+							class="form-control m-bootstrap-select m_selectpicker"
+							data-live-search="true">
 
-<hr />
+						</select>
+						<div id="issue_fragment_classification_error"
+							class="form-control-feedback"
+							style="color: red; float: right; display: none;">* Required</div>
+					</div>
+				</div>
+
+
+
+				<hr />
 
 				<div class="form-group m-form__group row">
 					<label class="col-lg-2 col-form-label">Attachments:</label>
 					<div id="issue_attachments_div" class="col-lg-10"></div>
 
 				</div>
-				
-				
+
+
 
 				<!--  BEGIN: Attachments block -->
 				<div
@@ -252,7 +257,7 @@
 
 
 		<input type="hidden" id="selected_issue_id" />
-<!-- 		<input type="hidden" id="issue_operation" /> -->
+		<!-- 		<input type="hidden" id="issue_operation" /> -->
 
 
 
@@ -271,34 +276,36 @@
 				</div>
 			</div>
 
-<div class="m-portlet__head-tools">
-					<div style="float: right; width: 60%;"
-				class="form-group m-form__group">
+			<div class="m-portlet__head-tools">
+				<div style="float: right; width: 60%;"
+					class="form-group m-form__group">
 
-				<div class="input-group">
-					<input style="border-top-left-radius: 10px;border-bottom-left-radius: 10px;" id="issue_comment_content" type="text"
-						class="form-control m-input m-input--square"
-						placeholder="Comment ...">
-					<div class="input-group-append">
-						<button
-							class="btn btn-warning m-btn m-btn--icon btn-lg m-btn--icon-only"
-							type="button" onclick="doPostIssueComment()">
-							<i class="fa fa-send-o"></i>
-						</button>
+					<div class="input-group">
+						<input
+							style="border-top-left-radius: 10px; border-bottom-left-radius: 10px;"
+							id="issue_comment_content" type="text"
+							class="form-control m-input m-input--square"
+							placeholder="Comment ...">
+						<div class="input-group-append">
+							<button
+								class="btn btn-warning m-btn m-btn--icon btn-lg m-btn--icon-only"
+								type="button" onclick="doPostIssueComment()">
+								<i class="fa fa-send-o"></i>
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>
-				</div>
-			
+
 		</div>
 
 		<div class="m-portlet__body"
-			style="height:300px;max-height: 300px; overflow: hidden;">
+			style="height: 300px; max-height: 300px; overflow: hidden;">
 
-<!-- 			<div style="width: 100%; position: absolute;"></div> -->
+			<!-- 			<div style="width: 100%; position: absolute;"></div> -->
 
-			<div style="margin-right: -40px; padding-right: 40px; height: 100%;max-height: 100%;overflow-y: scroll;"
-				
+			<div
+				style="margin-right: -40px; padding-right: 40px; height: 100%; max-height: 100%; overflow-y: scroll;"
 				id="issue_comments_wrapper"></div>
 
 

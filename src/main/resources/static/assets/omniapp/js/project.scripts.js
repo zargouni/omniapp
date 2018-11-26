@@ -23,8 +23,8 @@ function handleRemoveProject(){
 										setTimeout(function(){
 											window.location.replace("/all-projects");
 										},2000);
-										//$('#operations_datatable').mDatatable('reload');
-										//goToProjectOperations();
+										// $('#operations_datatable').mDatatable('reload');
+										// goToProjectOperations();
 										
 									} else {
 										swal('Fail!', 'Project not deleted.',
@@ -113,8 +113,8 @@ function handleRemoveService(){
 										swal('Deleted!',
 												'Service has been deleted.',
 												'success');
-										//$('#operations_datatable').mDatatable('reload');
-										//goToProjectOperations();
+										// $('#operations_datatable').mDatatable('reload');
+										// goToProjectOperations();
 										
 									} else {
 										swal('Fail!', 'Service not deleted.',
@@ -218,14 +218,20 @@ function doUpdateIssue(issueId) {
 	var severity = $('#issue_severity_select').val();
 	var description = $('#issue_description').val();
 	var endDate = $('#issue_end_date_select').val();
+	var responsible = $('#issue_responsible_select').val();
+	var classification = $('#issue_classification_select').val();
 
 	var nameError = $('#issue_fragment_name_error');
 	var descriptionError = $('#issue_fragment_description_error');
 	var EndDateError = $('#issue_fragment_endDate_error');
-
+	var responsibleError = $('#issue_fragment_responsible_error');
+	var classificationError = $('#issue_fragment_classification_error');
+	
 	nameError.hide('fast');
 	EndDateError.hide('fast');
 	descriptionError.hide('fast');
+	responsibleError.hide('fast');
+	classificationError.hide('fast');
 
 	if ($('#issue_owner_select').find(":selected").length != 0) {
 		$
@@ -235,7 +241,7 @@ function doUpdateIssue(issueId) {
 					async: false,
 					data : "id=" + issueId + "&name=" + name + "&status=" + status
 							+ "&severity=" + severity + "&endDate="
-							+ endDate + "&description=" + description,
+							+ endDate + "&description=" + description+"&responsible="+responsible+"&classification="+classification,
 					success : function(response) {
 						// we have the response
 						if (response.status == "SUCCESS") {
@@ -256,10 +262,14 @@ function doUpdateIssue(issueId) {
 									nameError.show('slow');
 								if (response.result[i].code == "issue.description.empty")
 									descriptionError.show('slow');
-								if (response.result[i].code == "task.endDate.empty")
+								if (response.result[i].code == "issue.endDate.empty")
 									endDateError.show('slow');
 								if (response.result[i].code == "issue.operation.empty")
-									toastr.warning("no op");
+									toastr.warning("no operation selected");
+								if (response.result[i].code == "issue.responsible.empty")
+									responsibleError.show('slow');
+								if (response.result[i].code == "issue.classification.empty")
+									classificationError.show('slow');
 							}
 
 						}
@@ -300,10 +310,7 @@ function deleteIssue(){
 								goToProjectIssues();
 								$('#issues_datatable').mDatatable(
 								'reload');
-//								if (response.result != 'undefined') {
-//									$('#service_tasks_datatable').mDatatable(
-//											'reload');
-//								}
+
 							} else {
 								swal('Fail!', 'Couldn\'t delete issue.',
 								'error');
@@ -345,14 +352,12 @@ function doUpdateIssueOwners(issueId) {
 
 function populateIssueFragmentDetails(issueId) {
 	
-	
-// $('#task_start_date_select').datepicker({
-// format : 'dd/mm/yyyy'
-// });
 	$('#issue_end_date_select').datepicker({
 		format : 'dd/mm/yyyy'
 	});
 	
+	populateSelectResponsible();
+	populateSelectClassification();
 
 	$.ajax({
 		type : "GET",
@@ -367,12 +372,14 @@ function populateIssueFragmentDetails(issueId) {
 
 			$('#issue_severity_select').val(response.severity);
 			$('#issue_description').val(response.description);
+			$('#issue_responsible_select').val(response.responsible);
+			$('#issue_classification_select').val(response.classification_id);
 			
+			$('#issue_responsible_select').selectpicker("refresh");
+			$('#issue_classification_select').selectpicker("refresh");
 
-			// $('#task_start_date_select').val(response.startDate);
 			$('#issue_end_date_select').val(response.endDate);
-// $('#task_estimation_hr_input').val(response.estimationHR);
-// $('#task_estimation_days_input').val(response.estimationTime);
+			
 			toggleReadOnlyModeIssue();
 			for(i=0 ; i < response.files.length ; i++){
 				html_text += '<div><div class="row">'
@@ -523,18 +530,27 @@ function doAddNewIssueAjax(){
 	var severity = $('#input_new_issue_severity').val();
 	var operationId = $('#input_new_issue_operation').val();
 	var projectId = $('#selected_project_id').val();
+	var responsible = $('#input_new_issue_responsible').val();
+	var classification = $('#input_new_issue_classification').val();
 	
 	var nameError = $('#new_issue_name_error'); 
 	var descriptionError = $('#new_issue_description_error');
 	var dateError = $('#new_issue_date_error'); 
 	var operationError = $('#new_issue_operation_error'); 
 	var severityError = $('#new_issue_severity_error');
+	var classificationError = $('#new_issue_classification_error');
+	var responsibleError = $('#new_issue_responsible_error');
+
+
 	
 	nameError.hide('fast');
 	descriptionError.hide('fast');
 	dateError.hide('fast');
 	operationError.hide('fast');
 	severityError.hide('fast');
+	responsibleError.hide('fast');
+	classificationError.hide('fast');
+	
 
 	if($('#input_new_issue_operation').val() == 'none'){
 		toastr.warning("You have to select the concerned operation", "Select Operation");
@@ -545,14 +561,14 @@ function doAddNewIssueAjax(){
 			type : "POST",
 			url : '/add-issue',
 			data : 'name=' + name+'&description='+description+'&endDate='+dueDate+'&severity='+severity+'&operation='+operationId
-			+'&id='+projectId,
+			+'&id='+projectId+'&classification='+classification+'&responsible='+responsible,
 			async : false,
 			success : function(response) {
 				if (response.status == "SUCCESS") {
 					if($('#issues_datatable').length){
 						$('#issues_datatable').mDatatable('reload');
 					}
-					if($('#snags_count').length || $('#operation_snags_datatable').length){
+					if($('#operation-fragment').length || $('#operation_snags_datatable').length){
 						var operationId = $('#operation_fragment_selected_operation_id').val();
 						populateOperationSnags(operationId);
 					}
@@ -564,7 +580,12 @@ function doAddNewIssueAjax(){
 					$('#input_new_issue_description').val("");
 					$('#input_new_issue_due_date').val("");
 					$('#input_new_issue_severity').val("");
+					$('#input_new_issue_classification').val("0");
+					$('#input_new_issue_responsible').val("0");
+
 					$('#input_new_issue_severity').selectpicker("refresh");
+					$('#input_new_issue_classification').selectpicker("refresh");
+					$('#input_new_issue_responsible').selectpicker("refresh");
 				}
 					
 				else{
@@ -579,6 +600,10 @@ function doAddNewIssueAjax(){
 							dateError.show('slow');
 						if (response.result[i].code == "issue.severity.empty")
 							severityError.show('slow');
+						if (response.result[i].code == "issue.responsible.empty")
+							responsibleError.show('slow');
+						if (response.result[i].code == "issue.classification.empty")
+							classificationError.show('slow');
 
 						
 					}
@@ -621,8 +646,70 @@ function doAddIssueOwners(issueId){
 
 function populateNewIssueModal(){
 	var projectId = $('#selected_project_id').val();
+	populateSelectClassification();
+	populateSelectResponsible();
 	populateSelectOperations(projectId);
 	populateSelectUsers();
+}
+
+function populateSelectClassification(){
+	var classificationSelect = $('#input_new_issue_classification');
+	$.ajax({
+		type: "GET",
+		url: "/json-classifications",
+		async: false,
+		success : function(response){
+			var html_text = "<option value='0'>None</option>";
+			for(i=0; i < response.length; i++){
+				html_text += '<option value="'+response[i].id+'">'+response[i].name+'</option>';
+			}
+			if(classificationSelect.length){
+				classificationSelect.html(html_text);
+				classificationSelect.selectpicker('refresh');
+			}
+			
+			if($('#issue-fragment').length){
+				$('#issue_classification_select').html(html_text);
+				$('#issue_classification_select').selectpicker('refresh');
+			}
+			
+		},
+		error: function(e){
+			alert('Error: populate select classifications' + e);
+		}
+	});
+}
+
+function populateSelectResponsible(){
+	var projectId = $('#selected_project_id').val();
+	$.ajax({
+		type: "GET",
+		url: "/get-project-details",
+		data: "id="+projectId,
+		async: false,
+		success : function(response){
+			var html_text = "<option value='0'>None</option>";
+			html_text += "<option value='"+response.client+"'>"+response.client+"</option>'>";
+			html_text += "<option value='"+response.finalClient+"'>"+response.finalClient+"</option>'>";
+			html_text += "<option value='Omniacom'>Omniacom</option>'>";
+			html_text += "<option value='Other'>Other</option>'>";
+			
+			if($('#input_new_issue_responsible').length){
+				$('#input_new_issue_responsible').html(html_text);
+				$('#input_new_issue_responsible').selectpicker('refresh');
+			}
+			
+			if($('#issue-fragment').length){
+				$('#issue_responsible_select').html(html_text);
+				$('#issue_responsible_select').selectpicker('refresh');
+			}
+			
+			
+		},
+		error: function(e){
+			alert('Error: populate select responsible'+ e);
+		}
+	})
 }
 
 function populateSelectOperations(projectId){
@@ -672,6 +759,7 @@ function populateOperationSnags(operationId){
 	DatatableOperationSnagsJsonRemote.init();
 	$('#operation_snags_datatable').mDatatable("reload");
 	
+	if($('#snags_count') != null)
 	$.ajax({
 		type : "GET",
 		url : '/get-operation-snags',
@@ -681,96 +769,102 @@ function populateOperationSnags(operationId){
 			$('#snags_count').html(response.length);
 		},
 		error : function(e) {
-			alert('Error: operation snags ' + e);
+			alert('Error: operation snags fff ' + e);
 		}
 	});
 }
 
-//function getSnagUI(snag){
-//	var bgColor;
-//	switch(snag.severity) {
-//    case 'minor':
-//        bgColor = "#34bfa3";
-//        break;
-//    case 'major':
-//    	bgColor = "#ffb822";
-//        break;
-//    default:
-//    	bgColor = "#f4516c";
-//}
-//	return '<div style="border-radius: 5px;background:'+bgColor+';padding: 10px 20px;" class="m-widget3">'
-//	+'<div class="m-widget3__item">'
-//	+	'<div class="m-widget3__header">'
-//	+		'<div class="m-widget3__user-img">'
-//	+'<a href="/profile?id='+snag.creator_id+'" >'
-//	+			'<img style="box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);width: 44px; height:44px;" class="m-widget3__img"'
-//	+			'	src="' + snag.user_pic + '" alt="">'
-//	+' </a>'
-//	+		'</div>'
-//	+		'<div class="m-widget3__info">'
-//	+'<a href="/profile?id='+snag.creator_id+'" style=" text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);font-weight: 600;color: white;" >'
-//	+			'<span style="color: white;"  class="m-widget3__username">' + snag.creator + '</span>'
-//	+' </a>'
+// function getSnagUI(snag){
+// var bgColor;
+// switch(snag.severity) {
+// case 'minor':
+// bgColor = "#34bfa3";
+// break;
+// case 'major':
+// bgColor = "#ffb822";
+// break;
+// default:
+// bgColor = "#f4516c";
+// }
+// return '<div style="border-radius: 5px;background:'+bgColor+';padding: 10px
+// 20px;" class="m-widget3">'
+// +'<div class="m-widget3__item">'
+// + '<div class="m-widget3__header">'
+// + '<div class="m-widget3__user-img">'
+// +'<a href="/profile?id='+snag.creator_id+'" >'
+// + '<img style="box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);width: 44px;
+// height:44px;" class="m-widget3__img"'
+// + ' src="' + snag.user_pic + '" alt="">'
+// +' </a>'
+// + '</div>'
+// + '<div class="m-widget3__info">'
+// +'<a href="/profile?id='+snag.creator_id+'" style=" text-shadow: 2px 2px 4px
+// rgba(0, 0, 0, 0.3);font-weight: 600;color: white;" >'
+// + '<span style="color: white;" class="m-widget3__username">' + snag.creator +
+// '</span>'
+// +' </a>'
 //
-//	+'<br>'
-//	+			'<span style="color: white;" class="m-widget3__time">' + snag.creationDate + '</span>'
-//	+		'</div>'
+// +'<br>'
+// + '<span style="color: white;" class="m-widget3__time">' + snag.creationDate
+// + '</span>'
+// + '</div>'
 //	
-//	+	'</div>'
-//	+	'<div class="m-widget3__body">'
-//	+		'<p  style="color: white;" class="m-widget3__text">'
-//	+' <strong>'+snag.name+': </strong> '
-//	+ 			snag.description
-//	+		'</p>'
-//	+	'</div>'
-//	+'</div>'
-//+'</div>'
-//+'<hr style="background: #fff;" />';
-//}
+// + '</div>'
+// + '<div class="m-widget3__body">'
+// + '<p style="color: white;" class="m-widget3__text">'
+// +' <strong>'+snag.name+': </strong> '
+// + snag.description
+// + '</p>'
+// + '</div>'
+// +'</div>'
+// +'</div>'
+// +'<hr style="background: #fff;" />';
+// }
 
-//function doPostSnag(){
-//	var content = $('#snag_content').val();
-//	var title = $('#snag_title').val();
-//	var severity = $('#snag_severity').val();
-//	var operationId = $('#operation_fragment_selected_operation_id').val();
+// function doPostSnag(){
+// var content = $('#snag_content').val();
+// var title = $('#snag_title').val();
+// var severity = $('#snag_severity').val();
+// var operationId = $('#operation_fragment_selected_operation_id').val();
 //	
 //	
-//	var titleError = $('#snag_title_error');
-//	var contentError = $('#snag_content_error');
+// var titleError = $('#snag_title_error');
+// var contentError = $('#snag_content_error');
 //	
 //	
-//	titleError.hide('fast');
-//	contentError.hide('fast');
+// titleError.hide('fast');
+// contentError.hide('fast');
 //
 //	
-//	$.ajax({
-//		type : "POST",
-//		url : '/do-post-snag',
-//		data : 'id=' + operationId+"&title="+title+"&content="+content+"&severity="+severity,
-//		async : false,
-//		success : function(response) {
-//			if(response.status == "FAIL"){
-//				toastr.error("Couldn't submit snag","Error !");
-//				for (i = 0; i < response.result.length; i++) {
-//					if (response.result[i].code == "snag.title.empty")
-//						titleError.show('slow');
-//					if (response.result[i].code == "snag.content.empty")
-//						contentError.show('slow');	
-//				}
-//			}else{
-//				$('#snag-modal').modal("hide");
-//				toastr.success("Snag submitted successfully","Well done !");
-//				$('#snag_content').val("");
-//				$('#snag_title').val("");
-//				populateOperationSnags(operationId);
-//			}
-//		},
-//		error : function(e) {
-//			alert('Error: snag operation ' + e);
-//		}
-//	});
+// $.ajax({
+// type : "POST",
+// url : '/do-post-snag',
+// data : 'id=' +
+// operationId+"&title="+title+"&content="+content+"&severity="+severity,
+// async : false,
+// success : function(response) {
+// if(response.status == "FAIL"){
+// toastr.error("Couldn't submit snag","Error !");
+// for (i = 0; i < response.result.length; i++) {
+// if (response.result[i].code == "snag.title.empty")
+// titleError.show('slow');
+// if (response.result[i].code == "snag.content.empty")
+// contentError.show('slow');
+// }
+// }else{
+// $('#snag-modal').modal("hide");
+// toastr.success("Snag submitted successfully","Well done !");
+// $('#snag_content').val("");
+// $('#snag_title').val("");
+// populateOperationSnags(operationId);
+// }
+// },
+// error : function(e) {
+// alert('Error: snag operation ' + e);
+// }
+// });
 //
-//}
+// }
 
 function populateProjectFeed(){
 	var projectId = $('#selected_project_id').val();
@@ -818,7 +912,9 @@ function populateProjectFeed(){
 						// console.log("taille des valeurs: "+val.length);
 							  for (var j = 0; j < val.length; j++) {
 								  var content = "";
-								  //console.log("objet: "+val[j].name+" Type: "+val[j].type+" activityType: "+val[j].activityType)
+								  // console.log("objet: "+val[j].name+" Type:
+									// "+val[j].type+" activityType:
+									// "+val[j].activityType)
 								  content = getDetailedActivityUI(val[j],val[j].type,val[j].activityType);
 								  contentWrapper += content;
 								  if(val[j].type == "operation" && val[j].activityType == "creation"){
@@ -879,7 +975,7 @@ function populateProjectFeed(){
 
 function getUpdateChangesUI(object){
 	var html_content = "<ul>";
-	//console.log("hi forom here!! ")
+	// console.log("hi forom here!! ")
 	for(cmpt = 0; cmpt< object.changes.length ; cmpt++){
 		html_content += "<li style='margin: 10px 0;padding: 0;font-weight: 450;color: #5867dd;'>Changed <span style='color: #36a3f7;'>"+object.changes[cmpt].field+"</span> from "
 		+"<span style='color: #f4516c;'>"+object.changes[cmpt].old_value+"</span> to <span style='color: #34bfa3;'>"+object.changes[cmpt].new_value+"</div></li>";
@@ -966,7 +1062,7 @@ function getDetailedActivityUI(object,objectType,activityType){
 							+'	</div>'
 				+'</div>';
 		}else if(activityType=="update"){
-			//var html_content = "";
+			// var html_content = "";
 			var detailsPopoverId = 'popover-dismiss-'+object.op_id+''+object.up_id;
 			var popoverButton = '<span  style="margin-left: 8px;padding: 0 10px;" id='+detailsPopoverId+' class="m-badge m-badge--success m-badge--rounded">'
 					+'Details</span>';
@@ -979,7 +1075,7 @@ function getDetailedActivityUI(object,objectType,activityType){
 					+popoverButton+'</span>'
 							+'	</div>'
 				+'</div>';
-			//content += update;
+			// content += update;
 		}else{
 		
 			content = '<div style="width:100%;" class="m-list-badge m--margin-top-15">'
@@ -2131,7 +2227,7 @@ function deleteTask(){
 										'Task has been deleted.',
 										'success');
 								window.location.href = '#tasks';
-								//goToProjectTasks();
+								// goToProjectTasks();
 							} else {
 								swal('Fail!', 'Couldn\'t delete task.',
 								'error');
@@ -2363,7 +2459,7 @@ function goToProjectIssues(){
 function goToProjectPos(){
 	$('#project_subheader').show();
 	$("#m_dynamic_content_project").children().hide();
-	//populateIssuesFragmentWidget();
+	// populateIssuesFragmentWidget();
 	DatatablePosJsonRemote.init();
 	$("#pos-fragment").show();
 }
@@ -2391,7 +2487,8 @@ function taskDropZone(){
 	var previewTemplate = previewNode.parentNode.innerHTML;
 	previewNode.parentNode.removeChild(previewNode);
 
-	var myDropzone = new Dropzone(".attachments_block", { // Make the whole body a
+	var myDropzone = new Dropzone(".attachments_block", { // Make the whole
+															// body a
 														// dropzone
 	  url: "/upload", // Set the url
 	  thumbnailWidth: 80,
@@ -2666,7 +2763,7 @@ function doUpdateOperationAjaxPost() {
 	var operationId = $('#operation_fragment_selected_operation_id').val();
 	
 	var nameError = $('#edit_operation_name_error');
-	//var projectError = $('#operation_project_error');
+	// var projectError = $('#operation_project_error');
 	var startDateError = $('#edit_operation_startDate_error');
 	var endDateError = $('#edit_operation_endDate_error');
 	var name = $('#input_edit_operation_name').val();
@@ -2676,10 +2773,10 @@ function doUpdateOperationAjaxPost() {
 	var site = $('#select_site_edit_operation').val();
 	var responsible = $('#edit_operation_responsible').val();
 
-//	nameError.hide('fast');
-//	projectError.hide('fast');
-//	startDateError.hide('fast');
-//	endDateError.hide('fast');
+// nameError.hide('fast');
+// projectError.hide('fast');
+// startDateError.hide('fast');
+// endDateError.hide('fast');
 
 	
 	$.ajax({
@@ -2705,8 +2802,8 @@ function doUpdateOperationAjaxPost() {
 					for (i = 0; i < response.result.length; i++) {
 						if (response.result[i].code == "operation.name.empty")
 							nameError.show('slow');
-//						if (response.result[i].code == "operation.project.empty")
-//							projectError.show('slow');
+// if (response.result[i].code == "operation.project.empty")
+// projectError.show('slow');
 						if (response.result[i].code == "operation.startDate.empty")
 							startDateError.show('slow');
 						if (response.result[i].code == "operation.endDate.empty")
@@ -2759,16 +2856,18 @@ function populateSelectOwnedProjectsEditServiceSidebar() {
 			}
 			$("#select_project_edit_service").selectpicker('refresh');
 
-//			$("#select_project_edit_operation").on('change', function() {
-//				var projectId = $("#select_project_edit_operation").val();
+// $("#select_project_edit_operation").on('change', function() {
+// var projectId = $("#select_project_edit_operation").val();
 //				
-//				if(projectId == ' '){ 
-//					$('#sites_map_container_edit_operation').attr("style","display:none;width:100%; height:50px;position: relative;");
-//					$('#sites_map_canvas_sidebar_edit_operation').attr("style","position: absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
-//				}else{
-//					initializeSitesGmapEditOperation(projectId);
-//				}
-//			});
+// if(projectId == ' '){
+// $('#sites_map_container_edit_operation').attr("style","display:none;width:100%;
+// height:50px;position: relative;");
+// $('#sites_map_canvas_sidebar_edit_operation').attr("style","position:
+// absolute; display:none;top: 20%; right: 0; bottom: 0; left: 0;");
+// }else{
+// initializeSitesGmapEditOperation(projectId);
+// }
+// });
 
 
 		},

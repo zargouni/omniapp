@@ -104,7 +104,9 @@ public class IssueService {
 				.element("creator",issue.getCreator().getFirstName()+" "+issue.getCreator().getLastName())
 				.element("creator_id", issue.getCreator().getId())
 				.element("creationDate", new SimpleDateFormat("yyyy-MM-dd").format(issue.getCreationDate()))
-				.element("files", findAllFiles(issue));
+				.element("files", findAllFiles(issue))
+				.element("responsible", issue.getResponsible())
+				.element("classification_id", issue.getClassification().getId());
 	}
 
 	public JSONArray findAllFiles(Issue issue) {
@@ -152,6 +154,8 @@ public class IssueService {
 			issue.setDescription(issueCopy.getDescription());
 			issue.setEndDate(issueCopy.getEndDate());
 			issue.setSeverity(issueCopy.getSeverity());
+			issue.setClassification(issueCopy.getClassification());
+			issue.setResponsible(issueCopy.getResponsible());
 
 			if (!issue.getStatus().equals(StaticString.ISSUE_STATUS_CLOSED)
 					&& issueCopy.getStatus().equals(StaticString.ISSUE_STATUS_CLOSED)) {

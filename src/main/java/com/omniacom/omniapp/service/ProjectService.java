@@ -275,7 +275,6 @@ public class ProjectService {
 			List<UpdateLog> updates = op.getUpdates();
 			if (!updates.isEmpty())
 				for (UpdateLog update : updates) {
-					System.out.println("iterating through updates");
 					for (LocalDate date = startDate; date.isBefore(currentDate)
 							|| date.isEqual(currentDate); date = date.plusDays(1)) {
 						if (update.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().equals(date)) {
