@@ -542,98 +542,86 @@ public class ProjectController {
 		return response;
 	}
 	
-	@PostMapping(value = "/upload")
-	public ResponseEntity handleFileUpload(@RequestParam("id") long id, @RequestParam("file") MultipartFile[] files) {
-		boolean success = true;
-		UploadedFile dbFile = new UploadedFile();
-		for (int i = 0; i < files.length; i++) {
-			try {
-				fileService.saveFileToLocalDisk(files[i]);
-				dbFile.setName(files[i].getOriginalFilename());
-				dbFile.setSize(files[i].getSize());
-				dbFile.setType(files[i].getContentType());
-				dbFile.setCreationDate(new Date());
-				dbFile.setLocation(fileService.getDestinationLocation());
-				dbFile.setTask(taskService.findOne(id));
+//	@PostMapping(value = "/upload")
+//	public ResponseEntity handleFileUpload(@RequestParam("id") long id, @RequestParam("file") MultipartFile[] files) {
+//		boolean success = true;
+//		UploadedFile dbFile = new UploadedFile();
+//		for (int i = 0; i < files.length; i++) {
+//			try {
+//				fileService.saveFileToLocalDisk(files[i]);
+//				dbFile.setName(files[i].getOriginalFilename());
+//				dbFile.setSize(files[i].getSize());
+//				dbFile.setType(files[i].getContentType());
+//				dbFile.setCreationDate(new Date());
+//				dbFile.setLocation(fileService.getDestinationLocation());
+//				dbFile.setTask(taskService.findOne(id));
+//
+//				fileService.saveFileToDatabase(dbFile);
+//
+//			} catch (IOException e) {
+//				success = false;
+//			}
+//		}
+//		if (success)
+//			return ResponseEntity.status(HttpStatus.ACCEPTED).body("All Files uploaded");
+//
+//		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all files were not uploaded");
+//
+//	}
 
-				fileService.saveFileToDatabase(dbFile);
+//	@Autowired
+//	UploadedFileRepository fileRepo;
 
-			} catch (IOException e) {
-				success = false;
-			}
-		}
-		if (success)
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("All Files uploaded");
+//	@GetMapping("/attachment")
+//	public void handleFileDownload(HttpServletResponse response, @RequestParam("id") long id) throws IOException {
+//		File file = null;
+//		UploadedFile dbFile = fileRepo.findOne(id);
+//		if (dbFile != null) {
+//			file = new File(dbFile.getLocation() + "" + dbFile.getName());
+//		} else {
+//			String errorMessage = "Sorry. The file you are looking for does not exist";
+//			System.out.println(errorMessage);
+//			OutputStream outputStream = response.getOutputStream();
+//			outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
+//			outputStream.close();
+//			return;
+//		}
+//
+//		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+//		if (mimeType == null) {
+//			System.out.println("mimetype is not detectable, will take default");
+//			mimeType = "application/octet-stream";
+//		}
+//
+//		System.out.println("mimetype : " + mimeType);
+//
+//		response.setContentType(mimeType);
+//
+//		/*
+//		 * "Content-Disposition : inline" will show viewable types [like
+//		 * images/text/pdf/anything viewable by browser] right on browser while
+//		 * others(zip e.g) will be directly downloaded [may provide save as popup, based
+//		 * on your browser setting.]
+//		 */
+//		response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+//
+//		/*
+//		 * "Content-Disposition : attachment" will be directly download, may provide
+//		 * save as popup, based on your browser setting
+//		 */
+//		// response.setHeader("Content-Disposition", String.format("attachment;
+//		// filename=\"%s\"", file.getName()));
+//
+//		response.setContentLength((int) file.length());
+//
+//		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+//
+//		// Copy bytes from source to destination(outputstream in this example), closes
+//		// both streams.
+//		FileCopyUtils.copy(inputStream, response.getOutputStream());
+//	}
 
-		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all files were not uploaded");
-
-	}
-
-	@Autowired
-	UploadedFileRepository fileRepo;
-
-	@GetMapping("/attachment")
-	public void handleFileDownload(HttpServletResponse response, @RequestParam("id") long id) throws IOException {
-		File file = null;
-		UploadedFile dbFile = fileRepo.findOne(id);
-		if (dbFile != null) {
-			file = new File(dbFile.getLocation() + "" + dbFile.getName());
-		} else {
-			String errorMessage = "Sorry. The file you are looking for does not exist";
-			System.out.println(errorMessage);
-			OutputStream outputStream = response.getOutputStream();
-			outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
-			outputStream.close();
-			return;
-		}
-
-		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-		if (mimeType == null) {
-			System.out.println("mimetype is not detectable, will take default");
-			mimeType = "application/octet-stream";
-		}
-
-		System.out.println("mimetype : " + mimeType);
-
-		response.setContentType(mimeType);
-
-		/*
-		 * "Content-Disposition : inline" will show viewable types [like
-		 * images/text/pdf/anything viewable by browser] right on browser while
-		 * others(zip e.g) will be directly downloaded [may provide save as popup, based
-		 * on your browser setting.]
-		 */
-		response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
-
-		/*
-		 * "Content-Disposition : attachment" will be directly download, may provide
-		 * save as popup, based on your browser setting
-		 */
-		// response.setHeader("Content-Disposition", String.format("attachment;
-		// filename=\"%s\"", file.getName()));
-
-		response.setContentLength((int) file.length());
-
-		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-
-		// Copy bytes from source to destination(outputstream in this example), closes
-		// both streams.
-		FileCopyUtils.copy(inputStream, response.getOutputStream());
-	}
-
-	@PostMapping("/delete-attachment")
-	public @ResponseBody JsonResponse deleteFile(@RequestParam("id") long fileId) {
-		JsonResponse response = new JsonResponse();
-
-		if (fileService.deleteFile(fileId)) {
-
-			response.setStatus("SUCCESS");
-		} else {
-			response.setStatus("FAIL");
-			// response.setResult(result.getFieldErrors());
-		}
-		return response;
-	}
+	
 
 	@GetMapping("/get-issue-details")
 	public @ResponseBody JSONObject getIssueDetails(@RequestParam("id") long issueId) {
@@ -653,33 +641,7 @@ public class ProjectController {
 		return issueService.findAllUsersForIssue(issueId);
 	}
 
-	@PostMapping(value = "/upload-issue-attachment")
-	public ResponseEntity handleFileUploadForIssue(@RequestParam("id") long id,
-			@RequestParam("file") MultipartFile[] files) {
-		boolean success = true;
-		UploadedFile dbFile = new UploadedFile();
-		for (int i = 0; i < files.length; i++) {
-			try {
-				fileService.saveFileToLocalDisk(files[i]);
-				dbFile.setName(files[i].getOriginalFilename());
-				dbFile.setSize(files[i].getSize());
-				dbFile.setType(files[i].getContentType());
-				dbFile.setCreationDate(new Date());
-				dbFile.setLocation(fileService.getDestinationLocation());
-				dbFile.setIssue(issueService.findOne(id));
-
-				fileService.saveFileToDatabase(dbFile);
-
-			} catch (IOException e) {
-				success = false;
-			}
-		}
-		if (success)
-			return ResponseEntity.status(HttpStatus.ACCEPTED).body("All Files uploaded");
-
-		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all files were not uploaded");
-
-	}
+	
 
 	@PostMapping("/update-issue")
 	public @ResponseBody JsonResponse doUpdateIssue(@RequestParam("id") long issueId, @Validated Issue updatedIssue,

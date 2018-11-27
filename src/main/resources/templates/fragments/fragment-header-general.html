@@ -211,7 +211,7 @@
 									class="m-topbar__userpic"> <img
 										style="height: 41px; width: 41px;"
 										th:if="${sessionUser.profilePic != null}"
-										th:src="@{ ${sessionUser.profilePic}}"
+										th:src="@{${sessionUser.profilePic}}"
 										class="m--img-rounded m--marginless m--img-centered" /> <img
 										th:if="${sessionUser.profilePic == null}"
 										src="assets/app/media/img/users/user-icon.png"

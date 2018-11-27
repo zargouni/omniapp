@@ -1,6 +1,5 @@
 package com.omniacom.omniapp.controller;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -17,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.UserRepository;
-import com.omniacom.omniapp.service.UploadedFileService;
+import com.omniacom.omniapp.service.FileStorageService;
 import com.omniacom.omniapp.service.UserService;
 import com.omniacom.omniapp.validator.JsonResponse;
 
@@ -31,7 +30,7 @@ public class ProfileController {
 	private UserService userService;
 
 	@Autowired
-	private UploadedFileService fileService;
+	private FileStorageService fileService;
 
 	@Autowired
 	UserRepository userRepo;
@@ -97,17 +96,11 @@ public class ProfileController {
 	public JsonResponse handleProfilePictureUpload(@RequestParam("file") MultipartFile file) {
 		boolean success = true;
 		JsonResponse response = new JsonResponse();
-		try {
-			User user = userRepo.findOne(userService.getSessionUser().getId());
-			String picture = fileService.savePicToLocalDisk(user, file);
-			user.setProfilePic(picture);
+		User user = userRepo.findOne(userService.getSessionUser().getId());
+		String picture = fileService.storePic(user, file);
+		user.setProfilePic("/pic/" + picture);
 
-			userRepo.save(user);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			success = false;
-		}
+		userRepo.save(user);
 
 		if (success) {
 			response.setStatus("SUCCESS");

@@ -4,13 +4,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,9 +30,9 @@ import com.omniacom.omniapp.entity.Nature;
 import com.omniacom.omniapp.entity.Site;
 import com.omniacom.omniapp.repository.ClientRepository;
 import com.omniacom.omniapp.service.ClientService;
+import com.omniacom.omniapp.service.FileStorageService;
 import com.omniacom.omniapp.service.NatureService;
 import com.omniacom.omniapp.service.SiteService;
-import com.omniacom.omniapp.service.UploadedFileService;
 import com.omniacom.omniapp.validator.JsonResponse;
 import com.omniacom.omniapp.validator.NatureValidator;
 
@@ -48,7 +55,7 @@ public class ClientsController {
 	NatureValidator natureValidator;
 
 	@Autowired
-	UploadedFileService fileService;
+	FileStorageService fileService;
 
 	@Autowired
 	ClientRepository clientRepo;
@@ -63,14 +70,16 @@ public class ClientsController {
 		return clientService.findAllClientsJson();
 	}
 
-//	@GetMapping("/get-client-stats")
-//	public @ResponseBody JSONObject getClientStats(@RequestParam("clientId") long clientId) {
-//		Client client = clientService.findById(clientId);
-//		JSONObject json = new JSONObject().element("projects", clientService.projectsCount(client)).element("money",
-//				clientService.moneyCount(client));
-//
-//		return json;
-//	}
+	// @GetMapping("/get-client-stats")
+	// public @ResponseBody JSONObject getClientStats(@RequestParam("clientId") long
+	// clientId) {
+	// Client client = clientService.findById(clientId);
+	// JSONObject json = new JSONObject().element("projects",
+	// clientService.projectsCount(client)).element("money",
+	// clientService.moneyCount(client));
+	//
+	// return json;
+	// }
 
 	@GetMapping("/get-client-sites")
 	public @ResponseBody JSONArray getClientSites(@RequestParam("clientId") long clientId) {
@@ -310,17 +319,11 @@ public class ClientsController {
 		boolean success = true;
 		JsonResponse response = new JsonResponse();
 
-		try {
-			Client client = clientService.findById(clientId);
-			String logo = fileService.saveLogoToLocalDisk(client, file);
-			client.setLogo(logo);
+		Client client = clientService.findById(clientId);
+		String logo = fileService.storeLogo(client, file);
+		client.setLogo("/logo/" + logo);
 
-			clientRepo.save(client);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			success = false;
-		}
+		clientRepo.save(client);
 
 		if (success) {
 			response.setStatus("SUCCESS");
@@ -328,5 +331,28 @@ public class ClientsController {
 		}
 		response.setStatus("FAIL");
 		return response;
+	}
+
+	@GetMapping("/logo/{fileName:.+}")
+	public ResponseEntity<Resource> getClientLogo(@PathVariable String fileName, HttpServletRequest request) {
+		// Load file as Resource
+		Resource resource = fileService.loadLogoAsResource(fileName);
+
+		// Try to determine file's content type
+		String contentType = null;
+		try {
+			contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+		} catch (IOException ex) {
+			System.out.println("Could not determine file type.");
+		}
+
+		// Fallback to the default content type if type could not be determined
+		if (contentType == null) {
+			contentType = "application/octet-stream";
+		}
+
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
 	}
 }

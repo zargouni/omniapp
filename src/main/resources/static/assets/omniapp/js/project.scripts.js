@@ -383,7 +383,7 @@ function populateIssueFragmentDetails(issueId) {
 			toggleReadOnlyModeIssue();
 			for(i=0 ; i < response.files.length ; i++){
 				html_text += '<div><div class="row">'
-				+'<div class="col-md-8"><i class="fa fa-file-text"></i><a target="self" href="/attachment?id='+response.files[i].id+'"> '
+				+'<div class="col-md-8"><i class="fa fa-file-text"></i><a target="self" href="/download/'+response.files[i].name+'"> '
 				+response.files[i].name+'</a>'
 				+'<span><p><small>size: '+parseInt(response.files[i].size/1024) +' KB</small>'
 				+'<small> Added on: '+response.files[i].creationDate+'</small></p></span>'
@@ -2023,7 +2023,7 @@ function populateTaskFragmentDetails(taskId) {
 			else
 			for(i=0 ; i < response.files.length ; i++){
 				html_text += '<div><div class="row">'
-				+'<div class="col-md-8"><i class="fa fa-file-text"></i><a target="self" href="/attachment?id='+response.files[i].id+'"> '
+				+'<div class="col-md-8"><i class="fa fa-file-text"></i><a target="self" href="/download/'+response.files[i].name+'"> '
 				+response.files[i].name+'</a>'
 				+'<span><p><small>size: '+parseInt(response.files[i].size/1024) +' KB</small>'
 				+'<small> Added on: '+response.files[i].creationDate+'</small></p></span>'

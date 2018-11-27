@@ -30,8 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests()
-			.antMatchers("/uploadFile").permitAll()
-			.antMatchers("/downloadFile/**").permitAll()
 				.antMatchers("/assets/**").permitAll()
 				.antMatchers("/ajax/**").permitAll()
 				.antMatchers("/register").permitAll()

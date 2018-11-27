@@ -155,8 +155,8 @@ public class MajorControllerAdvice extends ResponseEntityExceptionHandler {
 
 	@GetMapping("/")
 	public String index(Model model) {
-		if (userService.getSessionUser().getZohoToken() == null)
-			return "redirect:/zoho";
+//		if (userService.getSessionUser().getZohoToken() == null)
+//			return "redirect:/zoho";
 
 		return "redirect:/home";
 	}
