@@ -59,7 +59,6 @@ public class ProfileController {
 	@PostMapping("/update-user-infos")
 	public JsonResponse updateUserInfos(@RequestParam("id") long userId, @RequestParam("firstName") String firstName,
 			@RequestParam("lastName") String lastName, @RequestParam("email") String email) {
-		// Long userId = Long.valueOf(id);
 		User user = new User();
 		user.setFirstName(firstName);
 		user.setLastName(lastName);

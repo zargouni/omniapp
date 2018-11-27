@@ -1,13 +1,5 @@
 package com.omniacom.omniapp.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,31 +8,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.omniacom.StaticString;
 import com.omniacom.omniapp.entity.Comment;
@@ -49,16 +29,11 @@ import com.omniacom.omniapp.entity.Notification;
 import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Service;
-//import com.omniacom.omniapp.entity.Snag;
 import com.omniacom.omniapp.entity.Task;
-import com.omniacom.omniapp.entity.UploadFileResponse;
 import com.omniacom.omniapp.entity.UploadedFile;
 import com.omniacom.omniapp.entity.User;
 import com.omniacom.omniapp.repository.CommentRepository;
 import com.omniacom.omniapp.repository.IssueRepository;
-//import com.omniacom.omniapp.repository.SnagRepository;
-import com.omniacom.omniapp.repository.UploadedFileRepository;
-import com.omniacom.omniapp.service.FileStorageService;
 import com.omniacom.omniapp.service.IssueService;
 import com.omniacom.omniapp.service.NotificationService;
 import com.omniacom.omniapp.service.OperationService;
@@ -69,7 +44,6 @@ import com.omniacom.omniapp.service.UploadedFileService;
 import com.omniacom.omniapp.service.UserService;
 import com.omniacom.omniapp.validator.IssueValidator;
 import com.omniacom.omniapp.validator.JsonResponse;
-//import com.omniacom.omniapp.validator.SnagValidator;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -94,9 +68,15 @@ public class ProjectController {
 
 	@Autowired
 	UploadedFileService fileService;
+	
+	@Autowired
+	IssueRepository issueRepo;
+	
+	@Autowired
+	CommentRepository commentRepo;
 
-//	@Autowired
-//	SnagValidator snagValidator;
+	@Autowired
+	IssueService issueService;
 
 	@Autowired
 	IssueValidator issueValidator;
@@ -126,8 +106,6 @@ public class ProjectController {
 		model.addAttribute("onGoingTasksCount",
 				projectService.findOnGoingTasksCount(projectService.getCurrentProject()));
 		model.addAttribute("allServices", projectService.findAllServices(projectService.getCurrentProject()));
-		// System.out.println("services count:
-		// "+projectService.getMapServiceTasks(projectService.getCurrentProject()).keySet().size());
 		model.addAttribute("ServiceTasksMap", projectService.getMapServiceTasks(projectService.getCurrentProject()));
 
 	}
@@ -315,7 +293,6 @@ public class ProjectController {
 		JsonResponse response = new JsonResponse();
 
 		if (!result.hasErrors()) {
-			// if (!taskService.boqNameExists(boq.getName())) {
 			taskUsers = taskService.findOne(taskId).getUsers();
 			if (taskService.updateTask(taskId, updatedTask)) {
 
@@ -323,19 +300,6 @@ public class ProjectController {
 			} else {
 				response.setStatus("FAIL");
 			}
-			// } else if (boq.getName().equals(boqService.findOne(boqId).getName())) {
-			// if (boqService.updateBoq(boqId, boq)) {
-
-			// response.setStatus("SUCCESS");
-			// } else {
-			// response.setStatus("FAIL");
-			// }
-			// } else {
-
-			// response.setStatus("FAIL");
-			// response.setResult("boq-exists");
-
-			// }
 
 		} else {
 			response.setStatus("FAIL");
@@ -382,8 +346,6 @@ public class ProjectController {
 
 		JsonResponse response = new JsonResponse();
 
-		// ServiceTemplate template = stService.findOne(templateId);
-		// Site site = siteService.findSite(siteId);
 		User user = userService.findById(userId);
 		Task task = taskService.findOne(taskId);
 		if (task != null && user != null) {
@@ -406,8 +368,7 @@ public class ProjectController {
 		return response;
 	}
 
-	@Autowired
-	CommentRepository commentRepo;
+
 
 	@PostMapping("/do-post-comment")
 	public JsonResponse doPostComment(@RequestParam("id") long operationId, @RequestParam("content") String content) {
@@ -449,42 +410,12 @@ public class ProjectController {
 		return response;
 	}
 
-//	@Autowired
-//	private SnagRepository snagRepo;
-
-//	@PostMapping("/do-post-snag")
-//	public JsonResponse doPostSnag(@RequestParam("id") long operationId, @Validated Snag snag, BindingResult result) {
-//		JsonResponse response = new JsonResponse();
-//		Operation operation = operationService.findOne(operationId);
-//		if (!result.hasErrors() && operation != null) {
-//			snag.setOperation(operation);
-//			snag.setUser(userService.getSessionUser());
-//			snag.setDate(new Date());
-//			if (snagRepo.save(snag) != null) {
-//				response.setStatus("SUCCESS");
-//			} else {
-//				response.setStatus("FAIL");
-//			}
-//
-//		} else if (result.hasErrors()) {
-//			response.setStatus("FAIL");
-//			response.setResult(result.getFieldErrors());
-//		}
-//
-//		return response;
-//	}
-
-	@Autowired
-	IssueRepository issueRepo;
-
 	@PostMapping("/add-issue")
 	public JsonResponse doAddIssue(@RequestParam("id") long projectId, @Validated Issue issue, BindingResult result) {
 		JsonResponse response = new JsonResponse();
-		// Operation operation = operationService.findOne(operationId);
 		Project project = projectService.findOneById(projectId);
 		if (!result.hasErrors() && project != null) {
 			issue.setProject(project);
-			// issue.setOperation(operation);
 			issue.setId(0);
 			issue.setCreator(userService.getSessionUser());
 			issue.setCreationDate(new Date());
@@ -507,9 +438,6 @@ public class ProjectController {
 
 		return response;
 	}
-
-	@Autowired
-	IssueService issueService;
 
 	@PostMapping("/add-issue-owner")
 	public @ResponseBody JsonResponse addUserToIssue(@RequestParam("id") long issueId,
@@ -541,87 +469,7 @@ public class ProjectController {
 		}
 		return response;
 	}
-	
-//	@PostMapping(value = "/upload")
-//	public ResponseEntity handleFileUpload(@RequestParam("id") long id, @RequestParam("file") MultipartFile[] files) {
-//		boolean success = true;
-//		UploadedFile dbFile = new UploadedFile();
-//		for (int i = 0; i < files.length; i++) {
-//			try {
-//				fileService.saveFileToLocalDisk(files[i]);
-//				dbFile.setName(files[i].getOriginalFilename());
-//				dbFile.setSize(files[i].getSize());
-//				dbFile.setType(files[i].getContentType());
-//				dbFile.setCreationDate(new Date());
-//				dbFile.setLocation(fileService.getDestinationLocation());
-//				dbFile.setTask(taskService.findOne(id));
-//
-//				fileService.saveFileToDatabase(dbFile);
-//
-//			} catch (IOException e) {
-//				success = false;
-//			}
-//		}
-//		if (success)
-//			return ResponseEntity.status(HttpStatus.ACCEPTED).body("All Files uploaded");
-//
-//		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all files were not uploaded");
-//
-//	}
 
-//	@Autowired
-//	UploadedFileRepository fileRepo;
-
-//	@GetMapping("/attachment")
-//	public void handleFileDownload(HttpServletResponse response, @RequestParam("id") long id) throws IOException {
-//		File file = null;
-//		UploadedFile dbFile = fileRepo.findOne(id);
-//		if (dbFile != null) {
-//			file = new File(dbFile.getLocation() + "" + dbFile.getName());
-//		} else {
-//			String errorMessage = "Sorry. The file you are looking for does not exist";
-//			System.out.println(errorMessage);
-//			OutputStream outputStream = response.getOutputStream();
-//			outputStream.write(errorMessage.getBytes(Charset.forName("UTF-8")));
-//			outputStream.close();
-//			return;
-//		}
-//
-//		String mimeType = URLConnection.guessContentTypeFromName(file.getName());
-//		if (mimeType == null) {
-//			System.out.println("mimetype is not detectable, will take default");
-//			mimeType = "application/octet-stream";
-//		}
-//
-//		System.out.println("mimetype : " + mimeType);
-//
-//		response.setContentType(mimeType);
-//
-//		/*
-//		 * "Content-Disposition : inline" will show viewable types [like
-//		 * images/text/pdf/anything viewable by browser] right on browser while
-//		 * others(zip e.g) will be directly downloaded [may provide save as popup, based
-//		 * on your browser setting.]
-//		 */
-//		response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
-//
-//		/*
-//		 * "Content-Disposition : attachment" will be directly download, may provide
-//		 * save as popup, based on your browser setting
-//		 */
-//		// response.setHeader("Content-Disposition", String.format("attachment;
-//		// filename=\"%s\"", file.getName()));
-//
-//		response.setContentLength((int) file.length());
-//
-//		InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
-//
-//		// Copy bytes from source to destination(outputstream in this example), closes
-//		// both streams.
-//		FileCopyUtils.copy(inputStream, response.getOutputStream());
-//	}
-
-	
 
 	@GetMapping("/get-issue-details")
 	public @ResponseBody JSONObject getIssueDetails(@RequestParam("id") long issueId) {
@@ -640,8 +488,6 @@ public class ProjectController {
 	public @ResponseBody JSONArray getAllUsersForIssue(@RequestParam("id") long issueId) {
 		return issueService.findAllUsersForIssue(issueId);
 	}
-
-	
 
 	@PostMapping("/update-issue")
 	public @ResponseBody JsonResponse doUpdateIssue(@RequestParam("id") long issueId, @Validated Issue updatedIssue,
@@ -671,8 +517,6 @@ public class ProjectController {
 
 		JsonResponse response = new JsonResponse();
 
-		// ServiceTemplate template = stService.findOne(templateId);
-		// Site site = siteService.findSite(siteId);
 		User user = userService.findById(userId);
 		Issue issue = issueService.findOne(issueId);
 		if (issue != null && user != null) {
@@ -685,12 +529,7 @@ public class ProjectController {
 				}
 
 				// Add contributing user to task's project
-				// if (task.getService().getOperation() != null)
 				userService.addContributingUserToProject(user, issue.getProject());
-				// else
-				// userService.addContributingUserToProject(user,
-				// task.getService().getProject());
-
 			}
 		}
 		return response;
@@ -738,7 +577,7 @@ public class ProjectController {
 		}
 		return response;
 	}
-	
+
 	@PostMapping("/delete-operation")
 	public @ResponseBody JsonResponse deleteOperation(@RequestParam("id") long operationId) {
 		JsonResponse response = new JsonResponse();
@@ -752,19 +591,19 @@ public class ProjectController {
 		}
 		return response;
 	}
-	
+
 	@PostMapping("/update-operation")
-	public @ResponseBody JsonResponse doUpdateOperation(@RequestParam("id") long operationId, @Validated Operation updatedOperation,
-			@RequestParam("responsible") String responsibleUserName,
+	public @ResponseBody JsonResponse doUpdateOperation(@RequestParam("id") long operationId,
+			@Validated Operation updatedOperation, @RequestParam("responsible") String responsibleUserName,
 			BindingResult result) {
 		JsonResponse response = new JsonResponse();
 
 		Operation oldVersionOperation = operationService.findOne(operationId);
 		User responsible = userService.findByUserName(responsibleUserName);
-		
+
 		if (!result.hasErrors()) {
 			if (responsible != null) {
-				if(!updatedOperation.equals(oldVersionOperation)) {
+				if (!updatedOperation.equals(oldVersionOperation)) {
 					operationService.updateOperation(oldVersionOperation, updatedOperation, responsible);
 					response.setStatus("SUCCESS");
 				}
@@ -779,25 +618,19 @@ public class ProjectController {
 
 		return response;
 	}
-	
+
 	@PostMapping("/update-service")
-	public @ResponseBody JsonResponse doUpdateService(@RequestParam("id") long serviceId, @Validated Service updatedService,
-			BindingResult result) {
+	public @ResponseBody JsonResponse doUpdateService(@RequestParam("id") long serviceId,
+			@Validated Service updatedService, BindingResult result) {
 		JsonResponse response = new JsonResponse();
 
 		Service oldVersionService = serviceService.findById(serviceId);
-		//User responsible = userService.findByUserName(responsibleUserName);
-		
+
 		if (!result.hasErrors()) {
-			//if (responsible != null) {
-				if(!updatedService.equals(oldVersionService)) {
-					serviceService.updateService(oldVersionService, updatedService);
-					response.setStatus("SUCCESS");
-				}
-//			} else {
-//				response.setStatus("FAIL");
-//				response.setResult("INVALIDUSER");
-//			}
+			if (!updatedService.equals(oldVersionService)) {
+				serviceService.updateService(oldVersionService, updatedService);
+				response.setStatus("SUCCESS");
+			}
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());
@@ -805,7 +638,7 @@ public class ProjectController {
 
 		return response;
 	}
-	
+
 	@PostMapping("/delete-service")
 	public @ResponseBody JsonResponse deleteService(@RequestParam("id") long serviceId) {
 		JsonResponse response = new JsonResponse();
@@ -815,11 +648,10 @@ public class ProjectController {
 			response.setStatus("SUCCESS");
 		} else {
 			response.setStatus("FAIL");
-			// response.setResult(result.getFieldErrors());
 		}
 		return response;
 	}
-	
+
 	@PostMapping("/delete-project")
 	public @ResponseBody JsonResponse deleteProject(@RequestParam("id") long projectId) {
 		JsonResponse response = new JsonResponse();
@@ -829,7 +661,6 @@ public class ProjectController {
 			response.setStatus("SUCCESS");
 		} else {
 			response.setStatus("FAIL");
-			// response.setResult(result.getFieldErrors());
 		}
 		return response;
 	}
@@ -846,11 +677,6 @@ public class ProjectController {
 		JSONObject jsonService = new JSONObject().element("id", service.getId()).element("name", service.getName());
 		return jsonService;
 	}
-
-//	@InitBinder("snag")
-//	protected void setSnagValidator(WebDataBinder binder) {
-//		binder.addValidators(snagValidator);
-//	}
 
 	@InitBinder("issue")
 	protected void setIssueValidator(WebDataBinder binder) {

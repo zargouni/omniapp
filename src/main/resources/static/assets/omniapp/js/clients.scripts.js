@@ -6,7 +6,6 @@ function populateClientsUI(){
 		url : '/get-all-clients-details-json',
 		async: false,
 		success : function(response) {
-			response.length = 0;
 			if(response.length == 0){
 				$('#clients_container').html('<div style="display: block; margin: auto; vertical-align: middle;">'
 											+'	<table width="100%" align="center" border="0" cellpadding="0"'

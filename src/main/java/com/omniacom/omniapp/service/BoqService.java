@@ -1,6 +1,8 @@
 package com.omniacom.omniapp.service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,7 @@ import com.omniacom.omniapp.entity.BillOfQuantities;
 import com.omniacom.omniapp.entity.ServiceTemplate;
 import com.omniacom.omniapp.repository.BoqRepository;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Service
@@ -99,5 +102,35 @@ public class BoqService {
 
 	public List<BillOfQuantities> findAllAvailableValidBoqs() {
 		return boqRepo.findAllAvailableValidBoqs();
+	}
+
+	public JSONArray getBoqsNotifications() {
+		JSONArray json = new JSONArray();
+		LocalDate currentDate = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+		List<BillOfQuantities> boqs = (List<BillOfQuantities>) boqRepo.findAll();
+		for(BillOfQuantities boq : boqs) {
+			LocalDate endDate = boq.getEndDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			if(endDate.isAfter(currentDate)) {
+				int daysBetween = currentDate.until(endDate).getDays();
+				if(endDate.getYear() == currentDate.getYear() && daysBetween <= 31) {
+					JSONObject element = new JSONObject()
+							.element("boq_name", boq.getName())
+							.element("boq_id", boq.getId())
+							.element("endDate", new SimpleDateFormat("dd/MM", Locale.ENGLISH).format(boq.getEndDate()))
+							.element("days", daysBetween);
+					
+					if( daysBetween >= 1 && daysBetween <= 7 )
+						element.accumulate("severity", "high");
+					else if( daysBetween >= 8 && daysBetween <= 15)
+						element.accumulate("severity", "medium");
+					else if( daysBetween >= 16 && daysBetween <= currentDate.lengthOfMonth())
+						element.accumulate("severity", "low");
+					json.add(element);
+				}
+			}
+			
+			
+		}
+		return json;
 	}
 }

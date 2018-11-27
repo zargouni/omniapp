@@ -54,20 +54,14 @@ public class FileController {
 			dbFile.setLocation(fileName);
 			dbFile.setTask(taskService.findOne(id));
 
-			fileService.saveFileToDatabase(dbFile);
+			if(fileService.saveFileToDatabase(dbFile) == null)
+				success = false;
 		}
 
 		if (success)
 			return ResponseEntity.status(HttpStatus.ACCEPTED).body("All Files uploaded");
 
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all files were not uploaded");
-		// String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-		// .path("/downloadFile/")
-		// .path(fileName)
-		// .toUriString();
-		//
-		// return new UploadFileResponse(fileName, fileDownloadUri,
-		// file.getContentType(), file.getSize());
 	}
 
 	@PostMapping(value = "/upload-issue-attachment")
@@ -84,7 +78,8 @@ public class FileController {
 			dbFile.setLocation(fileName);
 			dbFile.setIssue(issueService.findOne(id));
 
-			fileService.saveFileToDatabase(dbFile);
+			if(fileService.saveFileToDatabase(dbFile) == null)
+				success = false;
 		}
 
 		if (success)
@@ -94,35 +89,7 @@ public class FileController {
 
 	}
 
-	// @PostMapping(value = "/upload")
-	// public ResponseEntity handleFileUpload(@RequestParam("id") long id,
-	// @RequestParam("file") MultipartFile[] files) {
-	// boolean success = true;
-	// UploadedFile dbFile = new UploadedFile();
-	// for (int i = 0; i < files.length; i++) {
-	// try {
-	// fileService.saveFileToLocalDisk(files[i]);
-	// dbFile.setName(files[i].getOriginalFilename());
-	// dbFile.setSize(files[i].getSize());
-	// dbFile.setType(files[i].getContentType());
-	// dbFile.setCreationDate(new Date());
-	// dbFile.setLocation(fileService.getDestinationLocation());
-	// dbFile.setTask(taskService.findOne(id));
-	//
-	// fileService.saveFileToDatabase(dbFile);
-	//
-	// } catch (IOException e) {
-	// success = false;
-	// }
-	// }
-	// if (success)
-	// return ResponseEntity.status(HttpStatus.ACCEPTED).body("All Files uploaded");
-	//
-	// return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Some or all
-	// files were not uploaded");
-	//
-	// }
-
+	
 	@GetMapping("/download/{fileName:.+}")
 	public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
 		// Load file as Resource
@@ -178,7 +145,6 @@ public class FileController {
 			response.setStatus("SUCCESS");
 		} else {
 			response.setStatus("FAIL");
-			// response.setResult(result.getFieldErrors());
 		}
 		return response;
 	}

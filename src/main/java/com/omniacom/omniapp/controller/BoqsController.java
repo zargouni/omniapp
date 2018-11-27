@@ -71,12 +71,9 @@ public class BoqsController {
 	public @ResponseBody JsonResponse updateBoq(@RequestParam("id") long boqId, @Validated BillOfQuantities boq,
 			BindingResult result) {
 		JsonResponse response = new JsonResponse();
-
 		if (!result.hasErrors()) {
 			if (!boqService.boqNameExists(boq.getName())) {
-
 				if (boqService.updateBoq(boqId, boq)) {
-
 					response.setStatus("SUCCESS");
 				} else {
 					response.setStatus("FAIL");
@@ -89,17 +86,13 @@ public class BoqsController {
 					response.setStatus("FAIL");
 				}
 			} else {
-
 				response.setStatus("FAIL");
 				response.setResult("boq-exists");
-
 			}
-
 		} else {
 			response.setStatus("FAIL");
 			response.setResult(result.getFieldErrors());
 		}
-
 		return response;
 	}
 
@@ -116,6 +109,11 @@ public class BoqsController {
 				response.setStatus("FAIL");
 		}
 		return response;
+	}
+	
+	@GetMapping("/boqs-notifications")
+	public @ResponseBody JSONArray getBoqsNotifs() {
+		return boqService.getBoqsNotifications();
 	}
 
 }

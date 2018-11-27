@@ -27,6 +27,7 @@ import com.omniacom.omniapp.entity.Operation;
 import com.omniacom.omniapp.entity.Project;
 import com.omniacom.omniapp.entity.Task;
 import com.omniacom.omniapp.entity.UpdateLog;
+import com.omniacom.omniapp.repository.BoqRepository;
 import com.omniacom.omniapp.repository.ProjectRepository;
 import com.omniacom.omniapp.repository.ServiceRepository;
 import com.omniacom.omniapp.repository.UpdateLogRepository;
@@ -45,7 +46,10 @@ public class ProjectService {
 
 	@Autowired
 	UpdateLogRepository updateRepo;
-
+	
+	@Autowired
+	BoqRepository boqRepo;
+	
 	@Autowired
 	ServiceService serviceService;
 
@@ -502,7 +506,6 @@ public class ProjectService {
 
 	private Comparator<JSONObject> getFeedDatesComparator() {
 		return new Comparator<JSONObject>() {
-
 			@Override
 			public int compare(JSONObject o1, JSONObject o2) {
 				LocalDateTime o1Time = LocalDate.now().atTime(LocalTime.parse((String) o1.get("creationTime")));
@@ -513,7 +516,6 @@ public class ProjectService {
 				return -1;
 			}
 		};
-
 	}
 
 	public Map<LocalDate, List<Date>> getRawProjectFeed(Project project) {
@@ -627,7 +629,6 @@ public class ProjectService {
 	}
 
 	public JSONArray getProjectEvents(Project project) {
-		// TODO Auto-generated method stub
 		JSONArray events = new JSONArray();
 		List<com.omniacom.omniapp.entity.Service> services = (List<com.omniacom.omniapp.entity.Service>) findAllServices(
 				project);
@@ -635,8 +636,6 @@ public class ProjectService {
 		for (Operation op : operations) {
 			Date startDate = op.getStartDate();
 			Date endDate = op.getEndDate();
-			// System.out.println("startDate: "+startDate);
-			// System.out.println("endDate: "+endDate);
 			events.add(new JSONObject().element("id", op.getId()).element("type", "operation")
 					.element("name", op.getName())
 					.element("startDate", new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH).format(endDate))
@@ -648,15 +647,10 @@ public class ProjectService {
 		for (com.omniacom.omniapp.entity.Service service : services) {
 			JSONObject json = new JSONObject().element("id", service.getId()).element("type", "service").element("name",
 					service.getName());
-			// if(serviceService.getServiceDates(service).size() != 0) {
 			json.element("startDate", new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH)
 					.format(serviceService.getServiceDates(service)));
 			json.element("endDate", new SimpleDateFormat("dd MMMM YYYY hh:mm", Locale.ENGLISH)
 					.format(serviceService.getServiceDates(service).getDay() + 1));
-			// }else {
-			// json.element("startDate", new Date());
-			// json.element("endDate", new Date());
-			// }
 			events.add(json);
 
 		}
@@ -673,12 +667,10 @@ public class ProjectService {
 	}
 
 	public List<Project> getUnsyncProjects() {
-		// TODO Auto-generated method stub
 		return projectRepo.getUnsyncProjects();
 	}
 
 	public List<Project> getSyncProjects() {
-		// TODO Auto-generated method stub
 		return projectRepo.getSyncProjects();
 	}
 
@@ -701,7 +693,6 @@ public class ProjectService {
 				int globalDuration = 0;
 				float serviceCurrentMoney = 0;
 
-				// System.out.println("Service : "+s.getName());
 				// calculate service's global duration in days
 				for (Task task : s.getTasks()) {
 					LocalDate startDate = task.getStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -839,6 +830,9 @@ public class ProjectService {
 
 	public boolean deleteProject(long projectId) {
 		if (projectRepo.exists(projectId)) {
+			BillOfQuantities boq = projectRepo.findOne(projectId).getBoq();
+			boq.setProject(null);
+			boqRepo.save(boq);
 			projectRepo.delete(projectId);
 			return true;
 		}

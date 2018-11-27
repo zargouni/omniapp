@@ -35,7 +35,7 @@ var DatatableBoqsJsonRemote = function () {
 
 		      // layout definition
 		      layout: {
-		        scroll: true,
+		        scroll: false,
 		        footer: false
 		      },
 
@@ -61,23 +61,20 @@ var DatatableBoqsJsonRemote = function () {
 
 			// columns definition
 			columns: [
-//				{
-//				field: "id",
-//				title: "#",
-//				width: 50,
-//				sortable: false,
-//				selector: false,
-//				textAlign: 'center'
-//			},
+
 			{
 				field: "name",
 				title: "Name",
 				sortable: true,
-				width: 400,
+				width: 150,
+				template: function(row){
+					return '<span style="font-weight: 500;">'+row.name+'</span>';
+				}
 				
 			}, {
 		        field: 'valid',
 		        title: 'Status',
+		        width: 80,
 		          // callback function support for column rendering
 		        template: function(row) {
 		           var status = {
@@ -92,22 +89,31 @@ var DatatableBoqsJsonRemote = function () {
 				type: 'date',
 				format: 'DD MMMM YYYY',
 				sortable: true,
-				width: 150
+				width: 100,
+				template: function(row){
+					return '<span style="font-weight: 500;">'+row.startDate+'</span>';
+				}
 			}, {
 				field: "endDate",
 				title: "Due Date",
 				type: 'date',
 				format: 'DD MMMM YYYY',
 				sortable: true,
-				width: 150,
-				responsive: {visible: 'lg'}
+				width: 100,
+				responsive: {visible: 'lg'},
+				template: function(row){
+					return '<span style="font-weight: 500;">'+row.endDate+'</span>';
+				}
 			},{
 				field: "serviceCount",
 				title: "Services",
 				type: 'number',
 				sortable: true,
-				width: 100,
-				responsive: {visible: 'lg'}
+				width: 70,
+				responsive: {visible: 'lg'},
+				template: function(row){
+					return '<span style="font-weight: 500;">'+row.serviceCount+'</span>';
+				}
 			},
 			{
 				field: "Actions",
@@ -160,7 +166,6 @@ var DatatableBoqsJsonRemote = function () {
 }();
 
 
-
 function populateBoqDetails(id){
 	$('#selected_service_templates_edit_boq').html("");
 	$('#service_templates_checkbox_list').find(":checkbox").prop('checked',false);
@@ -200,7 +205,6 @@ function populateCheckboxPopoversEditBoq(){
 	$('#service_templates_checkbox_list').find(":checkbox").each(function () {
 		var serviceId = $(this).attr('id');
 		var serviceName = $('#service_name_'+serviceId).val();
-		
 		$(this).popover({
 			placement: 'top',
 			trigger: 'manual',
@@ -213,14 +217,10 @@ function populateCheckboxPopoversEditBoq(){
 								+'</a>',
 			
 			title: "Price "+serviceId,
-		
 		});	
-		
 		$(this).on('change', function(){
-			
 			var that = $(this);
 			$(document).off('focusin.modal');
-			//$(this).popover('show');
 			$(this).popover().focus();
 			if($(this).is(':checked')){
 				$(this).popover('show');
@@ -236,14 +236,7 @@ function populateCheckboxPopoversEditBoq(){
 					if( price == '' ||  price <= 0){
 						toastr.warning("hey","price_"+serviceId);
 						$(this).popover().focus();
-					}
-//					else{
-//						$('#service_price_hidden_'+$(this).attr('id')).val($("#service_price_"+serviceId).val());
-//						$(':checkbox').not(this).parent().removeClass('m-checkbox--disabled');
-//						$(':checkbox').not(this).attr('disabled',false);
-//						$(this).popover('hide');
-//					}
-//						
+					}	
 				});
 				
 				$('#service_price_save_btn_'+serviceId).on('click',function(){
@@ -264,8 +257,7 @@ function populateCheckboxPopoversEditBoq(){
 								  +serviceName+' <span style="font-weight:400;font-size:14px;color:#34bfa3;" class="badge badge-light">'+$("#service_price_hidden_"+that.attr("id")).val()+'</span>'
 								  +'</span>');
 					}
-				});
-				
+				});	
 			}
 			if($(this).is(':unchecked')){
 				$(this).popover('hide');
@@ -273,16 +265,12 @@ function populateCheckboxPopoversEditBoq(){
 				$(':checkbox').not(this).parent().removeClass('m-checkbox--disabled');
 				$(':checkbox').not(this).attr('disabled',false);
 			}
-		});
-		
-
+		});		
 	});
 }
 
-
 function handleRemoveBoqClick(id){
 	var boqId = $("#btn-remove-boq-" + id).attr('id').substring(15);
-
 	swal({
 		title : 'Are you sure?',
 		text : "You won't be able to revert this!",
@@ -292,8 +280,7 @@ function handleRemoveBoqClick(id){
 	}).then(
 			function(result) {
 				if (result.value) {
-					$
-							.ajax({
+					$.ajax({
 								type : "POST",
 								url : '/delete-boq',
 								data : "boqId=" + boqId,
@@ -304,12 +291,10 @@ function handleRemoveBoqClick(id){
 												'BOQ has been deleted.',
 												'success');
 										$('#boqs_datatable').mDatatable('reload');
-
 									} else {
 										swal('Fail!', 'BOQ not deleted.',
 												'error');
 									}
-
 								},
 								error : function(e) {
 									toastr.error("Couldn't delete BOQ",
@@ -317,17 +302,12 @@ function handleRemoveBoqClick(id){
 									result = false;
 								}
 							});
-
 				}
-
 			}
-
 	);
-
 }
 
 function handleUpdateBoq(id){
-	// TODO
 	var name = $('#input_boq_name').val();
 	var startDate = $('#input_boq_start_date').val();
 	var endDate = $('#input_boq_end_date').val();
@@ -337,7 +317,6 @@ function handleUpdateBoq(id){
 		url : '/update-boq',
 		data : "id="+id+"&name="+name+"&startDate="+startDate+"&endDate="+endDate,
 	    success : function(response) {
-			// we have the response
 			if (response.status == "SUCCESS") {
 				toastr.success("BOQ updated successfully", "Well done!");
 				if(response.result != 'undefined'){
@@ -375,7 +354,6 @@ function handleUpdateBoq(id){
 	}else{
 		toastr.warning("Couldn't add BOQ, you have to select at least 1 service", "Select Services");
 	}
-	//console.log("hi"+id);
 }
 
 function toggleModalEditDetails(id){
@@ -398,7 +376,6 @@ function doUpdateServiceTemplatesToBoq( boqId ){
 			data : "id=" + templateId + "&boqId=" + boqId+"&price="+price,
 			async: false,
 			success : function(response) {
-				// we have the response
 				if (response.status == "FAIL") {
 					toastr.error("Couldn't add template", "Error");
 				} 
@@ -410,10 +387,60 @@ function doUpdateServiceTemplatesToBoq( boqId ){
 	});
 }
 
+function populateBoqsNotifications(){
+	var container = $('#boqs_notifications');
+	$.ajax({
+		type : "GET",
+		url : '/boqs-notifications',
+		async: true,
+		success : function(response) {
+			var html_content = "";
+			console.log(response.length);
+			for(i = 0; i < response.length; i++){
+				var item = response[i];
+				var itemClass = "";
+				switch(item.severity) {
+			    case "high":
+			        itemClass = "danger";
+			        break;
+			    case "medium":
+			    	itemClass = "warning";
+			        break;
+			    case "low":
+			    	itemClass = "info";
+			    	break;
+			}
+				var html_item = '<div class="m-timeline-3__item m-timeline-3__item--'+itemClass+'">'
+								+'<span class="m-timeline-3__item-time">'+item.endDate+'</span>'
+								+'<div class="m-timeline-3__item-desc">'
+								+'<span class="m-timeline-3__item-text">'
+								+'<a href="#" onclick="toggleModalEditDetails('+item.boq_id+')" class="m-link m-timeline-3__item-link">'
+								+item.boq_name+'</a>'
+								+' is going to be invalid soon.</span><br>'
+								+'<span class="m-timeline-3__item-user-name">'
+								+'<span class="m-link m-link--'+itemClass+' m-timeline-3__item-link">'
+								+item.days+' days</span>'
+								+'</span>'
+								+'</div>'
+								+'</div>';
+				
+				html_content += html_item;
+			}
+			container.html(html_content);
+			 
+		},
+		error : function(e) {
+			toastr.error("Couldn't retrieve boqs notifications", "Server Error");
+		}
+	});
+}
+
+
+
 $('.loader-wrapper').show();
 
 jQuery(document).ready(function () {
-	//$.fn.dataTable.moment( 'dd MM YYYY' );
+	populateBoqsNotifications();
 	DatatableBoqsJsonRemote.init();
 	$('.loader-wrapper').hide();
 
