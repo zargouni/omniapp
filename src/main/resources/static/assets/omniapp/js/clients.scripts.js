@@ -6,7 +6,34 @@ function populateClientsUI(){
 		url : '/get-all-clients-details-json',
 		async: false,
 		success : function(response) {
-
+			response.length = 0;
+			if(response.length == 0){
+				$('#clients_container').html('<div style="display: block; margin: auto; vertical-align: middle;">'
+											+'	<table width="100%" align="center" border="0" cellpadding="0"'
+											+' cellspacing="0">'
+											+'<tbody>'
+											+'<tr>'
+											+' <td align="center"><div style="border-color: #e6e6e6 !important;"'
+											+'		class="emptydashboardbox omnia fonticon40">'
+											+'		<div class="m-demo-icon__preview">'
+											+'			<i style="color: #e6e6e6; font-size: 40px;"'
+											+'				class="flaticon-tool"></i>'
+											+'		</div>'
+											+'	</div>'
+											+'</td>'
+											+'</tr>'
+											+'<tr>'
+											+'	<td align="center" height="110px">'
+											+'		<div>'
+											+'			<span style="color: #a6a6a6;" class="col777 pt12 lh25">Nothing'
+											+'				to show here</span>'
+											+'		</div>'
+											+'	</td>'
+											+'	</tr>'
+											+'</tbody>'
+											+'</table>'
+											+'</div>');
+			}else
 			for (i = 0; i < response.length; i++) {
 				var html_text = '<div '
 					+' class="m-portlet m-portlet--tabs m-portlet--creative m-portlet--first m-portlet--bordered-semi">'

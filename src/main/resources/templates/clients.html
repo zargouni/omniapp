@@ -22,43 +22,48 @@
 			</div>
 
 			<div class="m-grid__item m-grid__item--fluid m-wrapper">
-				<div class="m-subheader ">
-					<div class="d-flex align-items-center">
+
+				<div id="project_subheader" class="m-subheader">
+					<div class="d-flex align-items-center project-subheader-omniapp  inside-shadow">
 						<div class="mr-auto">
-							<!-- 							<h3 class="m-subheader__title m-subheader__title--separator">Clients</h3> -->
-
-						</div>
-						<div>
 							<div
-								class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30">
-								<div class="row align-items-center">
-									<div style="margin-right: 20px;"
-										class="col-xl-4 order-1 order-xl-2 m--align-left">
-										<a id="init_nature_datatable" data-toggle="modal"
-											data-target="#nature-modal" href="#"
-											class="btn btn-primary m-btn m-btn--custom m-btn--air m-btn--pill">
-											<span>Site Natures</span>
+								class="col-xl-4 order-1 order-xl-2 m--align-left">
+								<a title="Manage natures" id="init_nature_datatable" data-toggle="modal"
+									data-target="#nature-modal" href="#"
+									class="btn btn-secondary m-btn m-btn--custom">
+									<span>Site Natures</span>
 
-										</a>
-									</div>
+								</a>
+							</div>
+						</div>
+
+						<div class="ml-auto">
+
+<!-- 							<div -->
+<!-- 								class="m-form m-form--label-align-right m--margin-top-20 m--margin-bottom-30"> -->
+								<div class="row align-items-center">
+
 									<div class="col-xl-4 order-1 order-xl-2 m--align-right">
-										<a data-toggle="modal" data-target="#m_modal_4" href="#"
-											class="btn btn-focus m-btn m-btn--custom m-btn--icon m-btn--air m-btn--pill">
-											<span> <i class="flaticon-plus"></i> <span>New
+										<a title="Add new client" data-toggle="modal" data-target="#m_modal_4" href="#"
+											class="btn btn-secondary m-btn m-btn--custom">
+											<span>New
 													Client</span>
-										</span>
+										
 										</a>
 										<div class="m-separator m-separator--dashed d-xl-none"></div>
 									</div>
 								</div>
-							</div>
+<!-- 							</div> -->
 						</div>
+
 					</div>
+
 				</div>
 
+
 				<!-- begin::Content -->
-						<div
-							th:replace="fragments/fragment-clients-content :: clients-content"></div>
+				<div
+					th:replace="fragments/fragment-clients-content :: clients-content"></div>
 				<!-- end:: Content -->
 
 				<div
